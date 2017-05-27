@@ -2,6 +2,7 @@
 #include "Shared/Media/Animation.hpp"
 
 ResourcePool<sf::Texture> imagePool;
+ResourcePool<AnimationSource> animPool;
 
 template<>
 sf::SoundBuffer* loadResourceFromUri(std::string file)

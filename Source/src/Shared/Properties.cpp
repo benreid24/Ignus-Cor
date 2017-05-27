@@ -3,7 +3,8 @@
 const std::string Properties::GameSavePath;
 const std::string Properties::MapPath = "Resources/Data/Maps/";
 const std::string Properties::TilesetFile = "Resources/Data/tileset.tlst";
-const std::string Properties::MapTilePath = "Resources/Media/Tiles/";
+const std::string Properties::MapTilePath = "Resources/Media/Map/Tiles/";
+const std::string Properties::MapAnimPath = "Resources/Media/Map/Animations/";
 const std::string Properties::AnimationPath = "Resources/Media/Animations/";
 const std::string Properties::SpriteSheetPath = "Resources/Media/Spritesheets/";
 const std::string Properties::ScriptPath = "Resources/Data/Scripts/";

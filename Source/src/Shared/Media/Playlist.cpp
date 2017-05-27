@@ -1,7 +1,7 @@
 #include "Shared/Media/Playlist.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Properties.hpp"
-#include "Shared/Util/Math.hpp"
+#include "Shared/Util/Util.hpp"
 using namespace sf;
 using namespace std;
 

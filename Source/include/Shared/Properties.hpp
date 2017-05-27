@@ -22,6 +22,7 @@ public:
     const static std::string MapPath;
     const static std::string TilesetFile;
     const static std::string MapTilePath;
+    const static std::string MapAnimPath;
     const static std::string AnimationPath;
     const static std::string SpriteSheetPath;
     const static std::string ScriptPath;

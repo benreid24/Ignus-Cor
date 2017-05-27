@@ -14,6 +14,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-DEDITOR" />
 					<Add directory="C:/Users/Ben/SFGUI-0.3.2/include" />
 					<Add directory="C:/Users/Ben/SFML-2.3.2/include" />
 					<Add directory="../../Source/include" />
@@ -26,6 +27,7 @@
 					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-window.a" />
 					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-system.a" />
 					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-main.a" />
+					<Add library="comdlg32" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -36,6 +38,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-DEDITOR" />
 					<Add directory="C:/Users/Ben/SFGUI-0.3.2/include" />
 					<Add directory="C:/Users/Ben/SFML-2.3.2/include" />
 					<Add directory="../../Source/include" />
@@ -49,28 +52,33 @@
 					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-window.a" />
 					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-system.a" />
 					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-main.a" />
+					<Add library="comdlg32" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="../../Source/include/Editor/MapEditor.hpp" />
+		<Unit filename="../../Source/include/Shared/Maps/Map.hpp" />
+		<Unit filename="../../Source/include/Shared/Maps/Tileset.hpp" />
 		<Unit filename="../../Source/include/Shared/Media/Animation.hpp" />
 		<Unit filename="../../Source/include/Shared/Media/Playlist.hpp" />
 		<Unit filename="../../Source/include/Shared/Properties.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/File.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/GameClock.hpp" />
-		<Unit filename="../../Source/include/Shared/Util/Math.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/ResourcePool.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/ResourceTypes.hpp" />
+		<Unit filename="../../Source/include/Shared/Util/Util.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/Vector2d.hpp" />
 		<Unit filename="../../Source/src/Editor/main.cpp" />
+		<Unit filename="../../Source/src/Shared/Maps/Tileset.cpp" />
 		<Unit filename="../../Source/src/Shared/Media/Animation.cpp" />
 		<Unit filename="../../Source/src/Shared/Media/Playlist.cpp" />
 		<Unit filename="../../Source/src/Shared/Properties.cpp" />
 		<Unit filename="../../Source/src/Shared/Util/File.cpp" />
-		<Unit filename="../../Source/src/Shared/Util/Math.cpp" />
 		<Unit filename="../../Source/src/Shared/Util/ResourcePool.cpp" />
+		<Unit filename="../../Source/src/Shared/Util/Util.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

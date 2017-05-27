@@ -196,4 +196,16 @@ class File : private sf::NonCopyable
  */
 bool FileExists(std::string filename);
 
+/**
+ * Copies the given file to the given destination
+ *
+ * \param src The file to copy from
+ * \param dest The file to copy to
+ */
+void copyFile(std::string src, std::string dest);
+
+#ifdef EDITOR
+std::string getFilename(const char* f, bool s, bool c);
+#endif
+
 #endif

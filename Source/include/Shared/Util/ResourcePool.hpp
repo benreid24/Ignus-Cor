@@ -135,5 +135,6 @@ public:
 };
 
 extern ResourcePool<sf::Texture> imagePool;
+extern ResourcePool<AnimationSource> animPool;
 
 #endif // RESOURCEPOOL_HPP
