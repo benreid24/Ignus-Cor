@@ -1,14 +1,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include <SFGUI/SFGUI.hpp>
-#include <SFGUI/Widget.hpp>
-#include <SFGUI/Window.hpp>
-#include <SFGUI/Desktop.hpp>
-#include <SFGUI/Notebook.hpp>
-#include <SFGUI/Label.hpp>
-#include <SFGUI/Canvas.hpp>
-#include <SFGUI/Box.hpp>
-#include <SFGUI/Button.hpp>
+#include <SFGUI/Widgets.hpp>
 using namespace std;
 using namespace sf;
 
