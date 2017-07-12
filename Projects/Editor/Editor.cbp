@@ -71,6 +71,7 @@
 		<Unit filename="../../Source/include/Shared/Util/ResourceTypes.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/Util.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/Vector2d.hpp" />
+		<Unit filename="../../Source/src/Editor/MapEditor.cpp" />
 		<Unit filename="../../Source/src/Editor/main.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/Tileset.cpp" />
 		<Unit filename="../../Source/src/Shared/Media/Animation.cpp" />

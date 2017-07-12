@@ -1,21 +1,22 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <SFGUI/SFGUI.hpp>
 #include <SFGUI/Widgets.hpp>
+#include "Editor/MapEditor.hpp"
 using namespace std;
 using namespace sf;
 
 int main() {
-	RenderWindow sfWindow(VideoMode(1920,1080,32), "Ignis Cor Editor", Style::Titlebar|Style::Close);
+	RenderWindow sfWindow(VideoMode(1600,900,32), "Ignis Cor Editor", Style::Titlebar|Style::Close);
 	sfWindow.resetGLStates();
+
 	RectangleShape rect(Vector2f(200,200));
 	rect.setFillColor(Color::Red);
 
 	sfg::SFGUI sfgui;
-
-	sfg::Window::Ptr window = sfg::Window::Create();
 	sfg::Desktop desktop;
 
-	sfg::Box::Ptr mapGeneral = sfg::Box::Create();
+	/*sfg::Box::Ptr mapGeneral = sfg::Box::Create();
 	mapGeneral->Pack(sfg::Button::Create("Load"));
 	mapGeneral->Pack(sfg::Button::Create("Save"));
 
@@ -43,6 +44,10 @@ int main() {
 	tabs->AppendPage(window, sfg::Label::Create("Scripts"));
 	tabs->SetAllocation(FloatRect(0,0,1920,1080));
 
+	desktop.Add(tabs); */
+
+	sfg::Notebook::Ptr tabs = sfg::Notebook::Create();
+	MapEditor mapEditor(desktop, tabs);
 	desktop.Add(tabs);
 
 	Clock timer;
@@ -58,10 +63,10 @@ int main() {
 		desktop.Update(timer.getElapsedTime().asSeconds());
 		timer.restart();
 
-		mapArea->Bind();
+		/*mapArea->Bind();
 		mapArea->Draw(rect);
 		mapArea->Display();
-		mapArea->Unbind();
+		mapArea->Unbind();*/
 
 		sfWindow.clear();
 		sfgui.Display(sfWindow);

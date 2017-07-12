@@ -7,11 +7,6 @@
 #include "Shared/Maps/Tileset.hpp"
 
 /*
-box->Pack( sfg::Separator::Create() );
-
-auto radio_button1 = sfg::RadioButton::Create( "Either this" );
-auto radio_button2 = sfg::RadioButton::Create( "Or this", radio_button1->GetGroup() );
-auto radio_button3 = sfg::RadioButton::Create( "Or maybe even this", radio_button1->GetGroup() );
 
 scrolledwindow->SetScrollbarPolicy( sfg::ScrolledWindow::HORIZONTAL_ALWAYS | sfg::ScrolledWindow::VERTICAL_AUTOMATIC );
 scrolledwindow->AddWithViewport( scrolled_window_box );
@@ -38,13 +33,16 @@ sfml_canvas->Unbind();
  */
 class MapEditor {
 	//Editor
-
+	sfg::Box::Ptr container;
+	sfg::Notebook::Ptr tabs;
+	sfg::Canvas::Ptr mapArea;
 
 	//General page
 	sfg::Box::Ptr generalPage;
-    sfg::Button::Ptr newBut, loadBut, saveBut, propsBut;
-    sfg::RadioButton::Ptr aiBut, itmBut, spwnBut, lightBut, evtBut, colsBut, setBut, selBut, allBut, noneBut;
+    sfg::Button::Ptr newBut, loadBut, saveBut, propsBut, noneBut, allBut;
+    sfg::RadioButton::Ptr aiBut, itmBut, spwnBut, lightBut, evtBut, colsBut, setBut, selBut;
     sfg::Button::Ptr addLayerBut, delLayerBut;
+    std::vector<sfg::Button::Ptr> layerButs;
 
     //Tiles page
     sfg::ScrolledWindow::Ptr tilesPageScroll;
@@ -74,9 +72,9 @@ public:
 	 * Initializes all of the menu elements
 	 *
 	 * \param desktop A reference to the desktop containing everything
-	 * \param parent A pointer to the parent widget of the GUI
+	 * \param parent A pointer to the notebook to add the GUI to
 	 */
-	MapEditor(sfg::Desktop& desktop, sfg::Widget::Ptr parent);
+	MapEditor(sfg::Desktop& desktop, sfg::Notebook::Ptr parent);
 };
 
 #endif // MAPEDITOR_HPP
