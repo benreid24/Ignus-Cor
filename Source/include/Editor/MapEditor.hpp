@@ -5,12 +5,9 @@
 #include <SFGUI/Widgets.hpp>
 #include "Shared/Maps/Map.hpp"
 #include "Shared/Maps/Tileset.hpp"
+#include "Shared/GUI/WrappingBox.hpp"
 
 /*
-
-scrolledwindow->SetScrollbarPolicy( sfg::ScrolledWindow::HORIZONTAL_ALWAYS | sfg::ScrolledWindow::VERTICAL_AUTOMATIC );
-scrolledwindow->AddWithViewport( scrolled_window_box );
-
 sfml_canvas->Bind();
 sfml_canvas->Clear( sf::Color( 0, 0, 0, 0 ) );
 
@@ -42,19 +39,24 @@ class MapEditor {
     sfg::Button::Ptr newBut, loadBut, saveBut, propsBut, noneBut, allBut;
     sfg::RadioButton::Ptr aiBut, itmBut, spwnBut, lightBut, evtBut, colsBut, setBut, selBut;
     sfg::Button::Ptr addLayerBut, delLayerBut;
+    sfg::Box::Ptr layerBox;
     std::vector<sfg::Button::Ptr> layerButs;
 
     //Tiles page
     sfg::ScrolledWindow::Ptr tilesPageScroll;
     sfg::Box::Ptr tilesPage;
-    sfg::Button::Ptr addTileBut, delTileBut, noTileBut;
-    std::vector<sfg::Button::Ptr> tileButs;
+    sfg::Button::Ptr addTileBut, delTileBut;
+    sfg::RadioButton::Ptr noTileBut;
+    std::map<int, sfg::RadioButton::Ptr> tileButs;
+    WrappingBox tileBox;
 
     //Animations page
     sfg::ScrolledWindow::Ptr animPageScroll;
     sfg::Box::Ptr animPage;
-    sfg::Button::Ptr addAnimBut, delAnimBut, noAnimBut;
-    std::vector<sfg::Button::Ptr> animButs;
+    sfg::Button::Ptr addAnimBut, delAnimBut;
+    sfg::RadioButton::Ptr noAnimBut;
+    std::map<int, sfg::RadioButton::Ptr> animButs;
+    WrappingBox animBox;
 
     //Editor data
     Map* mapData;
@@ -62,10 +64,16 @@ class MapEditor {
     sf::Vector2i selCorner1, selCorner2;
 
     //Helper functions
+
     /**
      * Applies the current operation to the selection
      */
 	void applyToSelection();
+
+	/**
+	 * GUI function to add tile
+	 */
+	void addTile();
 
 public:
 	/**
