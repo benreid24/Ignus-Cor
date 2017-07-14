@@ -94,6 +94,7 @@ MapEditor::MapEditor(Desktop& desktop, Notebook::Ptr parent) : tileBox(Box::Orie
     addTileFolderBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->addTileFolder(); });
     tilesCtrl->Pack(addTileFolderBut,false,false);
     delTileBut = Button::Create("Delete");
+    delTileBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->removeTile(); });
     tilesCtrl->Pack(delTileBut,false,false);
     tilesPage->Pack(tilesCtrl,false,false);
     tilesPage->Pack(Separator::Create(),false,false);
@@ -114,8 +115,9 @@ MapEditor::MapEditor(Desktop& desktop, Notebook::Ptr parent) : tileBox(Box::Orie
     addAnimBut = Button::Create("Add");
     addAnimBut->GetSignal(Widget::OnLeftClick).Connect( [me] { me->addAnim(); });
     animCtrl->Pack(addAnimBut,false,false);
-    delTileBut = Button::Create("Delete");
-    animCtrl->Pack(delTileBut,false,false);
+    delAnimBut = Button::Create("Delete");
+    delAnimBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->removeAnim(); });
+    animCtrl->Pack(delAnimBut,false,false);
     animPage->Pack(animCtrl,false,false);
     animPage->Pack(Separator::Create(),false,false);
     noAnimBut = ToggleButton::Create("None");
@@ -135,7 +137,14 @@ MapEditor::MapEditor(Desktop& desktop, Notebook::Ptr parent) : tileBox(Box::Orie
 
 void MapEditor::syncGuiWithTileset() {
 	MapEditor* me = this;
+	tileButs.clear();
+	animButs.clear();
+	tileBox.clear();
+	animBox.clear();
+
 	vector<int> ids = tileset.getTileIds();
+	tileButs[0] = noTileBut;
+	tileBox.addWidget(noTileBut);
 	for (unsigned int i = 0; i<ids.size(); ++i) {
 		int id = ids[i];
 		if (id==0)
@@ -153,6 +162,8 @@ void MapEditor::syncGuiWithTileset() {
 		tileBox.addWidget(but);
 	}
 	ids = tileset.getAnimIds();
+	animButs[0] = noAnimBut;
+	animBox.addWidget(noAnimBut);
 	for (unsigned int i = 0; i<ids.size(); ++i) {
 		int id = ids[i];
 		if (id==0)
@@ -173,6 +184,26 @@ void MapEditor::syncGuiWithTileset() {
 
 		animButs[id] = but;
 		animBox.addWidget(but);
+	}
+}
+
+void MapEditor::removeAnim() {
+	if (selectedAnim!=0) {
+		tileset.removeAnimation(selectedAnim);
+		animBox.removeWidget(animButs[selectedAnim]);
+		animButs.erase(selectedAnim);
+		selectedAnim--;
+		animButs[selectedAnim]->SetActive(true);
+	}
+}
+
+void MapEditor::removeTile() {
+	if (selectedTile!=0) {
+		tileset.removeTile(selectedTile);
+		tileBox.removeWidget(tileButs[selectedTile]);
+		tileButs.erase(selectedTile);
+		selectedTile--;
+		tileButs[selectedTile]->SetActive(true);
 	}
 }
 

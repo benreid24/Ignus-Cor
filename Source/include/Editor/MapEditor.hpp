@@ -103,9 +103,19 @@ class MapEditor {
 	void addTileFolder();
 
 	/**
+	 * GUI function to remove a tile
+	 */
+	void removeTile();
+
+	/**
 	 * GUI function to add animation
 	 */
 	void addAnim();
+
+	/**
+	 * GUI function to remove an animation
+	 */
+	void removeAnim();
 
 	/**
 	 * Updates the currently selected tile or animation

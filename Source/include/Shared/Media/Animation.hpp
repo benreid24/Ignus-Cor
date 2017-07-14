@@ -177,7 +177,7 @@ public:
      *
      * \param window A pointer to the window to render to
      */
-    void draw(sf::RenderWindow* window);
+    void draw(sf::RenderTarget& window);
 
     static sf::Clock clock;
 };

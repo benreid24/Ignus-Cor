@@ -5,6 +5,13 @@
 		<Option title="Editor" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option show_notes="0">
+			<notes>
+				<![CDATA[Create scripting document with functions
+Return uuid to scriptor when spawning entities. Also allow uuid to be fetched from name
+]]>
+			</notes>
+		</Option>
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/Editor" prefix_auto="1" extension_auto="1" />
@@ -60,6 +67,9 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="../../Source/include/Editor/MapEditor.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Entity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/EntityBubble.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/EntityVisual.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/ResizableImage.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/WrappingBox.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/Map.hpp" />
@@ -71,12 +81,15 @@
 		<Unit filename="../../Source/include/Shared/Util/GameClock.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/ResourcePool.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/ResourceTypes.hpp" />
+		<Unit filename="../../Source/include/Shared/Util/UUID.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/Util.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/Vector2d.hpp" />
 		<Unit filename="../../Source/src/Editor/MapEditor.cpp" />
 		<Unit filename="../../Source/src/Editor/MapEditorDialogs.cpp" />
 		<Unit filename="../../Source/src/Editor/main.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/EntityVisual.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/WrappingBox.cpp" />
+		<Unit filename="../../Source/src/Shared/Maps/Map.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/Tileset.cpp" />
 		<Unit filename="../../Source/src/Shared/Media/Animation.cpp" />
 		<Unit filename="../../Source/src/Shared/Media/Playlist.cpp" />

@@ -169,6 +169,7 @@ void Animation::setFrame(int frm)
 {
     curFrm = frm;
     lastFrmChangeTime = Animation::clock.getElapsedTime().asMilliseconds();
+    playing = false;
 }
 
 bool Animation::finished()
@@ -204,7 +205,7 @@ void Animation::setPosition(Vector2f pos)
     position = pos;
 }
 
-void Animation::draw(sf::RenderWindow* window)
+void Animation::draw(sf::RenderTarget& window)
 {
     if (!animSrc)
         return;
