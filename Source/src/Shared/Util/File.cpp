@@ -1,6 +1,7 @@
 #include "Shared/Util/File.hpp"
 #include <iostream>
 #include <algorithm>
+#include <dirent.h>
 using namespace std;
 
 bool FileExists(std::string filename)
@@ -103,17 +104,39 @@ std::string File::getPath(std::string file)
 	return ret;
 }
 
+std::vector<std::string> listDirectory(std::string dir, std::string ext, bool inclSubdirs) {
+    DIR* cDir;
+    struct dirent* cFile;
+    vector<string> total;
+
+    if (dir[dir.size()-1]!='/' && dir[dir.size()-1]!='\\')
+		dir.push_back('/');
+
+    cDir = opendir(dir.c_str());
+    if (cDir!=nullptr)
+    {
+        while ((cFile = readdir(cDir)))
+        {
+            string tmp = cFile->d_name;
+            if (tmp.find(".")!=string::npos)
+            {
+                if (tmp.size()>2 && File::getExtension(tmp)==ext)
+					total.push_back(dir+tmp);
+            }
+            else if (inclSubdirs) {
+                std::vector<std::string> files = listDirectory(dir+tmp,ext,true);
+				total.insert(total.end(), files.begin(), files.end());
+            }
+        }
+    }
+    return total;
+}
+
 #ifdef EDITOR
 
 #include <windows.h>
+#include <shlobj.h>
 
-/**
- * Helper function to open the Window file dialogue window
- *
- * \param f The file extension to look for
- * \param s True if this is a file being saved
- * \param c True if this is a file being created
- */
 std::string getFilename(const char* f, bool s, bool c)
 {
     OPENFILENAME ofn;
@@ -145,6 +168,24 @@ std::string getFilename(const char* f, bool s, bool c)
     }
 
     return fileNameStr;
+}
+
+std::string getFoldername() {
+	BROWSEINFO binf = {0};
+	TCHAR path[MAX_PATH];
+	binf.ulFlags |= BIF_NEWDIALOGSTYLE|BIF_RETURNONLYFSDIRS;
+	LPITEMIDLIST pid = SHBrowseForFolder(&binf);
+	if (pid==0)
+		return "";
+	SHGetPathFromIDList ( pid, path );
+
+	IMalloc* imalloc = 0;
+	if (SUCCEEDED(SHGetMalloc(&imalloc)))
+	{
+		imalloc->Free (pid);
+		imalloc->Release ( );
+	}
+	return path;
 }
 
 #endif // EDITOR

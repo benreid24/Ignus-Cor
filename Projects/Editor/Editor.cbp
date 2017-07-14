@@ -60,6 +60,7 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="../../Source/include/Editor/MapEditor.hpp" />
+		<Unit filename="../../Source/include/Shared/GUI/ResizableImage.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/WrappingBox.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/Map.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/Tileset.hpp" />
@@ -73,6 +74,7 @@
 		<Unit filename="../../Source/include/Shared/Util/Util.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/Vector2d.hpp" />
 		<Unit filename="../../Source/src/Editor/MapEditor.cpp" />
+		<Unit filename="../../Source/src/Editor/MapEditorDialogs.cpp" />
 		<Unit filename="../../Source/src/Editor/main.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/WrappingBox.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/Tileset.cpp" />

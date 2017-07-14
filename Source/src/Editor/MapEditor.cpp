@@ -1,11 +1,17 @@
 #include <iostream>
 #include "Editor/MapEditor.hpp"
+#include "Shared/Util/Util.hpp"
+#include "Shared/Util/File.hpp"
+#include "Shared/GUI/ResizableImage.hpp"
+#include "Shared/Media/Animation.hpp"
+#include "Shared/Properties.hpp"
 using namespace sfg;
 using namespace sf;
 using namespace std;
 
 MapEditor::MapEditor(Desktop& desktop, Notebook::Ptr parent) : tileBox(Box::Orientation::HORIZONTAL,5,6), animBox(Box::Orientation::HORIZONTAL,5,6) {
 	MapEditor* me = this;
+	mapData = nullptr;
 
 	container = Box::Create();
 	tabs = Notebook::Create();
@@ -17,8 +23,11 @@ MapEditor::MapEditor(Desktop& desktop, Notebook::Ptr parent) : tileBox(Box::Orie
 
 	generalPage = Box::Create(Box::Orientation::VERTICAL, 5);
 	newBut = Button::Create("New");
+	newBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->newMap(); });
 	loadBut = Button::Create("Load");
+	loadBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->loadMap(); });
 	saveBut = Button::Create("Save");
+	saveBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->save(); });
 	propsBut = Button::Create("Properties");
 	allBut = Button::Create("Select All");
 	noneBut = Button::Create("Clear Selection");
@@ -81,21 +90,94 @@ MapEditor::MapEditor(Desktop& desktop, Notebook::Ptr parent) : tileBox(Box::Orie
     addTileBut = Button::Create("Add");
     addTileBut->GetSignal(Widget::OnLeftClick).Connect( [me] { me->addTile(); });
     tilesCtrl->Pack(addTileBut,false,false);
+    addTileFolderBut = Button::Create("Add Folder");
+    addTileFolderBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->addTileFolder(); });
+    tilesCtrl->Pack(addTileFolderBut,false,false);
     delTileBut = Button::Create("Delete");
     tilesCtrl->Pack(delTileBut,false,false);
     tilesPage->Pack(tilesCtrl,false,false);
     tilesPage->Pack(Separator::Create(),false,false);
-    noTileBut = RadioButton::Create("None");
+    noTileBut = ToggleButton::Create("None");
+    noTileBut->SetActive(true);
+    noTileBut->GetSignal(ToggleButton::OnToggle).Connect( [me] { me->updateSelected("tile", 0); });
+    tileButs[0] = noTileBut;
     tileBox.addWidget(noTileBut);
     tileBox.setParent(tilesPageScroll);
     tilesPage->Pack(tilesPageScroll);
     tabs->AppendPage(tilesPage, Label::Create("Tiles"));
+    selectedTile = 0;
+
+    animPage = Box::Create(Box::Orientation::VERTICAL,5);
+    animPageScroll = ScrolledWindow::Create();
+    animPageScroll->SetScrollbarPolicy( sfg::ScrolledWindow::HORIZONTAL_AUTOMATIC | sfg::ScrolledWindow::VERTICAL_AUTOMATIC );
+    Box::Ptr animCtrl = Box::Create(Box::Orientation::HORIZONTAL,5);
+    addAnimBut = Button::Create("Add");
+    addAnimBut->GetSignal(Widget::OnLeftClick).Connect( [me] { me->addAnim(); });
+    animCtrl->Pack(addAnimBut,false,false);
+    delTileBut = Button::Create("Delete");
+    animCtrl->Pack(delTileBut,false,false);
+    animPage->Pack(animCtrl,false,false);
+    animPage->Pack(Separator::Create(),false,false);
+    noAnimBut = ToggleButton::Create("None");
+    noAnimBut->SetActive(true);
+    noAnimBut->GetSignal(ToggleButton::OnToggle).Connect( [me] { me->updateSelected("anim", 0); });
+    animButs[0] = noAnimBut;
+    animBox.addWidget(noAnimBut);
+    animBox.setParent(animPageScroll);
+    animPage->Pack(animPageScroll);
+    tabs->AppendPage(animPage, Label::Create("Animations"));
+    selectedAnim = 0;
+
+    syncGuiWithTileset();
 
     parent->AppendPage(container, Label::Create("Map Editor"));
 }
 
-void MapEditor::addTile() {
-	RadioButton::Ptr but = RadioButton::Create("New tile");
-	but->SetGroup(noTileBut->GetGroup());
-	tileBox.addWidget(but);
+void MapEditor::syncGuiWithTileset() {
+	MapEditor* me = this;
+	vector<int> ids = tileset.getTileIds();
+	for (unsigned int i = 0; i<ids.size(); ++i) {
+		int id = ids[i];
+		if (id==0)
+			continue;
+		TextureReference txtr = tileset.getTile(id);
+		sf::Image img = txtr->copyToImage();
+
+		ToggleButton::Ptr but = ToggleButton::Create(intToString(id));
+		but->GetSignal(ToggleButton::OnToggle).Connect( [me, id] { me->updateSelected("tile", id); });
+		ResizableImage::Ptr sfgImg = ResizableImage::Create(img);
+		sfgImg->Resize(40,40);
+		but->SetImage(sfgImg);
+
+		tileButs[id] = but;
+		tileBox.addWidget(but);
+	}
+	ids = tileset.getAnimIds();
+	for (unsigned int i = 0; i<ids.size(); ++i) {
+		int id = ids[i];
+		if (id==0)
+			continue;
+		AnimationReference animSrc = tileset.getAnimation(id);
+		Sprite spr = animSrc->getFrame(0,Vector2f(0,0))[0];
+		RenderTexture render;
+		render.create(spr.getGlobalBounds().width,spr.getGlobalBounds().height);
+		render.draw(spr);
+		render.display();
+		sf::Image img = render.getTexture().copyToImage();
+
+		ToggleButton::Ptr but = ToggleButton::Create(intToString(id));
+		but->GetSignal(ToggleButton::OnToggle).Connect( [me, id] { me->updateSelected("anim", id); });
+		ResizableImage::Ptr sfgImg = ResizableImage::Create(img);
+		sfgImg->Resize(40,40);
+		but->SetImage(sfgImg);
+
+		animButs[id] = but;
+		animBox.addWidget(but);
+	}
+}
+
+void MapEditor::save() {
+	tileset.save();
+	//if (mapData!=nullptr)
+	//	mapData->save();
 }

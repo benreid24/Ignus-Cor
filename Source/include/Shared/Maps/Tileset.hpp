@@ -71,6 +71,16 @@ public:
 	 * \param id The id of the animation to delete
 	 */
 	void removeAnimation(int id);
+
+	/**
+	 * Returns a vector containing all of the valid tile ids
+	 */
+	std::vector<int> getTileIds();
+
+	/**
+	 * Returns a vector containing all of the valid animation ids
+	 */
+	std::vector<int> getAnimIds();
 };
 
 #endif // TILESET_HPP

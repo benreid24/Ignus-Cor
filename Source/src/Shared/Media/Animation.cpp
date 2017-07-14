@@ -31,6 +31,7 @@ void AnimationSource::load(string file)
     string tempStr = File::getPath(file);
 
     file = input.getString();
+    spriteSheetFile = file;
     if (FileExists(Properties::SpriteSheetPath+file))
 		tempStr = Properties::SpriteSheetPath+file;
 	else
@@ -117,6 +118,10 @@ int AnimationSource::incFrame(int cFrm, int lTime)
 int AnimationSource::numFrames()
 {
     return frames.size();
+}
+
+string AnimationSource::getSpritesheetFilename() {
+	return spriteSheetFile;
 }
 
 Animation::Animation()

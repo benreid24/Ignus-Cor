@@ -31,6 +31,7 @@ class AnimationSource
     std::vector<std::vector<AnimationFrame> > frames;
     bool loop;
     std::vector<sf::Sprite> sprites;
+    std::string spriteSheetFile;
 
 public:
     /**
@@ -89,6 +90,11 @@ public:
      * \return The total number of frames in the animation
      */
     int numFrames();
+
+    /**
+     * Returns the base filename of the spritesheet
+     */
+	std::string getSpritesheetFilename();
 };
 
 typedef std::shared_ptr<AnimationSource> AnimationReference;
