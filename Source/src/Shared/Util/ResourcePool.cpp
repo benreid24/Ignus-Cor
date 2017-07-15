@@ -3,6 +3,7 @@
 
 ResourcePool<sf::Texture> imagePool;
 ResourcePool<AnimationSource> animPool;
+ResourcePool<Script> scriptPool;
 
 template<>
 sf::SoundBuffer* loadResourceFromUri(std::string file)

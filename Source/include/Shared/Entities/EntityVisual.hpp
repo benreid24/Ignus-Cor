@@ -3,7 +3,7 @@
 
 #include <string>
 #include <SFML/Graphics.hpp>
-#include "Shared/Util/ResourceManager.hpp"
+#include "Shared/Util/ResourcePool.hpp"
 #include "Shared/Media/Animation.hpp"
 
 /**

@@ -212,5 +212,5 @@ void Animation::draw(sf::RenderTarget& window)
 
     std::vector<Sprite>& t = animSrc->getFrame(curFrm, position);
     for (unsigned int i = 0; i<t.size(); ++i)
-		window->draw(t[i]);
+		window.draw(t[i]);
 }

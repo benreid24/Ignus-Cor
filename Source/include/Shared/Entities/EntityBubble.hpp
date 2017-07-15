@@ -1,12 +1,14 @@
-#ifndef ENTITYTEXT_HPP
-#define ENTITYTEXT_HPP
+#ifndef ENTITYBUBBLE_HPP
+#define ENTITYBUBBLE_HPP
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
-#include "Shared/Util/ResourceManager.hpp"
+#include "Shared/Util/ResourcePool.hpp"
 #include "Shared/Media/Animation.hpp"
+
+class EntityBubble;
 
 /**
  * Helper class for EntityBubble to store content
@@ -15,7 +17,7 @@ class EntityBubbleContent {
 	enum Type {
 		Text,
 		Image,
-		Animation
+		Anim
 	}type;
 
 	TextureReference txtr;
@@ -54,7 +56,7 @@ public:
 
 private:
 	sf::RenderTexture txtr;
-	sf::Sprite
+	sf::Sprite spr;
 
 	static sf::Clock timer;
 	std::vector<EntityBubbleContent> content;
@@ -98,4 +100,4 @@ public:
 	void render(sf::RenderTarget& target, sf::Vector2f position); //note, scale vertical down for visual effect
 };
 
-#endif // ENTITYTEXT_HPP
+#endif
