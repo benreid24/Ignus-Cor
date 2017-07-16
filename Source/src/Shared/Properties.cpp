@@ -14,4 +14,5 @@ const std::string Properties::MusicPath = "Resources/Media/Music/";
 const std::string Properties::AudioPath = "Resources/Media/Audio/";
 const std::string Properties::NpcPath;
 const std::string Properties::ConversationPath;
-const std::string Properties::MenuImagePath = "Resources/Media/Images/";
+const std::string Properties::MenuImagePath = "Resources/Media/Images/Menu/";
+const std::string Properties::MiscImagePath = "Resources/Media/Images/Misc/";

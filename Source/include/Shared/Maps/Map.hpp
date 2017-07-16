@@ -9,6 +9,7 @@
 #include "Shared/Scripts/Script Interpreter.hpp"
 #include "Shared/Maps/Tileset.hpp"
 #include "Shared/Util/File.hpp"
+#include "Shared/Maps/Weather.hpp"
 
 /**
  * Structure to store a tile in the map
@@ -56,6 +57,19 @@ struct MapEvent
     int runs;
 };
 
+/**
+ * Structure to store details of a spawner that is in a map
+ *
+ * \ingroup Map
+ */
+struct MapSpawner {
+	sf::Vector2f position;
+	int coolDown, frequency;
+	int numActiveLimit, spawnLimit;
+	std::string templateFile;
+	//TODO - add actual spawner data or make a separate class
+};
+
 class Map {
 	std::string name;
 	sf::Vector2i size;
@@ -81,8 +95,9 @@ class Map {
     sf::Sprite lightSpr;
     sf::VertexArray light;
 
-    //Weather weather; TODO - copy in weather
+    Weather weather;
     ScriptReference unloadScript;
+    std::string unloadScriptStr;
 
     /**
      * Deletes the entire map from memory
@@ -103,12 +118,19 @@ public:
 	/**
 	 * Creates the map with the given name and size
 	 */
-	Map(std::string name, sf::Vector2i size, Tileset& tileset);
+	Map(std::string name, sf::Vector2i size, Tileset& tileset, SoundEngine* se);
 
 	/**
-	 * Loads the map from the given file
-	 */
-	Map(std::string file, Tileset& tileset);
+     * Loads the map from the given file
+     *
+     * \param file The name of the map to load. Use "LastMap" to load the previous map
+     * \param tileset A reference to the Tileset object
+     * \param entityManager A pointer to the EntityManager
+     * \param se A pointer to the SoundEngine object
+     * \param player A pointer to the player Entity object
+     * \param spId The id of the spawn to put the player at. Use 0 to put the player where they were in the previous map
+     */
+    Map(std::string file, Tileset& tileset, EntityManager* entityManager, SoundEngine* se, Entity* player = nullptr, int spId = 0);
 
 	/**
      * Returns the name of the currently loaded map
@@ -133,15 +155,6 @@ public:
      * \param loadFrom The file to load from
      */
     static void loadGame(File* loadFrom);
-
-    /**
-     * Loads the map from the given file
-     *
-     * \param file The name of the map to load. Use "LastMap" to load the previous map
-     * \param spId The id of the spawn to put the player at. Use 0 to put the player where they were in the previous map
-     * \param trans Whether or not to do a smooth transition
-     */
-    void load(std::string file = "", int spId = 0, bool trans = true); //TODO - Add pointer to player here for spawning
 
     /**
      * Saves the map to the given file

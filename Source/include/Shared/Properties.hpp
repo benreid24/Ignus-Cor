@@ -33,6 +33,7 @@ public:
     const static std::string NpcPath;
     const static std::string ConversationPath;
     const static std::string MenuImagePath;
+    const static std::string MiscImagePath;
 
     static sf::Font PrimaryMenuFont;
     static sf::Font SecondaryMenuFont;

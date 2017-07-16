@@ -2,6 +2,8 @@
 using namespace std;
 using namespace sf;
 
+#ifdef GAME
+
 namespace
 {
     void scriptRunner(shared_ptr<ScriptData> d)
@@ -10,7 +12,7 @@ namespace
         d->finished = true;
     }
 }
-/*
+
 ScriptEnvironment::ScriptEnvironment(Game* g) : thread(&ScriptEnvironment::update,this)
 {
     game = g;
@@ -124,4 +126,5 @@ void ScriptEnvironment::stop()
 	while (!stopped)
 		sleep(milliseconds(300));
 }
-*/
+
+#endif
