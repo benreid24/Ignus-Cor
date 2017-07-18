@@ -6,10 +6,12 @@
 #include "Shared/Entities/EntityManager.hpp"
 #include "Shared/Util/ResourcePool.hpp"
 #include "Shared/Util/Vector2d.hpp"
-#include "Shared/Scripts/Script Interpreter.hpp"
+#include "Shared/Scripts/Script Environment.hpp"
 #include "Shared/Maps/Tileset.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Maps/Weather.hpp"
+
+class Playlist;
 
 /**
  * Structure to store a tile in the map
@@ -78,26 +80,35 @@ class Map {
 	std::vector<Animation> anims;
     std::vector<Vector2D<Tile> > layers;
     std::vector<Vector2D<std::pair<int,Tile*> > > ySortedTiles; //here for actual image size
-    Vector2D<int> collisions, catchables, charCols; //using int b/c stupid specialization of vector<bool> conflicting with 2d vector
+    Vector2D<int> collisions; //using int b/c stupid specialization of vector<bool> conflicting with 2d vector
 
     std::vector<Light> lights;
     std::vector<MapEvent> events;
     sf::Vector2f camPos;
     sf::Vector2i camPosTiles;
 
-    std::string lastMap, pcMap, curMap;
-    sf::Vector2f lastPos;
-    int lastDir, pcSpawn;
+    static std::string lastMap, curMap;
+    static sf::Vector2f lastPos;
+    static int lastDir;
 
     int firstYSortLayer, firstTopLayer;
     int ambientLightOverride, currentLighting;
-    sf::RenderTexture lightTxtr;
-    sf::Sprite lightSpr;
-    sf::VertexArray light;
 
-    Weather weather;
+    static sf::RenderTexture lightTxtr;
+    static sf::Sprite lightSpr;
+    static sf::VertexArray light;
+
+    static ScriptEnvironment* scriptEnv;
+    static Weather* weather;
+	static bool staticMemebersCreated;
+
     ScriptReference unloadScript;
     std::string unloadScriptStr;
+
+    /**
+     * Private constructor containing common init code
+     */
+	Map(Tileset& tlst, SoundEngine* se);
 
     /**
      * Deletes the entire map from memory
@@ -128,9 +139,20 @@ public:
      * \param entityManager A pointer to the EntityManager
      * \param se A pointer to the SoundEngine object
      * \param player A pointer to the player Entity object
-     * \param spId The id of the spawn to put the player at. Use 0 to put the player where they were in the previous map
+     * \param spName The name of the spawn to put the player at. Use "prev" to put the player where they were in the previous map
+     * \param plst A pointer to the Playlist object to update, if any
      */
-    Map(std::string file, Tileset& tileset, EntityManager* entityManager, SoundEngine* se, Entity* player = nullptr, int spId = 0);
+    Map(std::string file, Tileset& tileset, EntityManager* entityManager, SoundEngine* se, Entity* player = nullptr, std::string spName = "", Playlist* plst = nullptr);
+
+    /**
+     * Runs the unload script, if any
+     */
+    ~Map();
+
+    /**
+     * Sets the environment for map scripts to run in
+     */
+    static void setScriptEnvironment(ScriptEnvironment* se);
 
 	/**
      * Returns the name of the currently loaded map

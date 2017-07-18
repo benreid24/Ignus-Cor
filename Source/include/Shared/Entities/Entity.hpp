@@ -42,6 +42,21 @@ public:
 	sf::Vector2f getPosition();
 
 	/**
+	 * Sets the position and direction of the Entity. Leave direction empty to maintain it
+	 */
+	void setPositionAndDirection(sf::Vector2f pos, int d = -1);
+
+	/**
+	 * Shifts the Entity by the given amount of pixels. Set truncate to true to force the Entity onto a tile border
+	 */
+	void shift(sf::Vector2f amount, bool truncate = false);
+
+	/**
+	 * Returns the direction the Entity is facing
+	 */
+    int getDir();
+
+	/**
 	 * Returns the name of the Entity
 	 */
 	std::string getName();

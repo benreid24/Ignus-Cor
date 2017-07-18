@@ -8,6 +8,10 @@ using namespace sf;
 
 Clock Weather::timer;
 
+BaseWeatherType::BaseWeatherType(Map* o) {
+	owner = o;
+}
+
 void BaseWeatherType::update()
 {
     //do nothing
@@ -31,6 +35,10 @@ void BaseWeatherType::draw(RenderTarget& w)
 int BaseWeatherType::getLightChange()
 {
     return 0;
+}
+
+void BaseWeatherType::setOwner(Map* o) {
+	owner = o;
 }
 
 Thunder::Thunder() : flash(Vector2f(800,600))
@@ -73,9 +81,8 @@ void Thunder::draw(RenderTarget& window)
     window.draw(flash);
 }
 
-RainWeather::RainWeather(Map* m, SoundEngine* se, bool isHard, bool thunder)
+RainWeather::RainWeather(Map* m, SoundEngine* se, bool isHard, bool thunder) : BaseWeatherType(m)
 {
-    owner = m;
     isStopping = isDone = false;
     sEngine = se;
     lastTime = 0;
@@ -217,9 +224,8 @@ void RainWeather::draw(RenderTarget& window)
         thunder.draw(window);
 }
 
-SnowWeather::SnowWeather(Map* m, SoundEngine* se, bool h, bool t)
+SnowWeather::SnowWeather(Map* m, SoundEngine* se, bool h, bool t) : BaseWeatherType(m)
 {
-	owner = m;
 	sEngine = se;
     isStopping = isDone = false;
     lastTime = 0;
@@ -357,7 +363,7 @@ void SnowWeather::draw(RenderTarget& window)
         thunder.draw(window);
 }
 
-SunnyWeather::SunnyWeather() : cover(Vector2f(800,600))
+SunnyWeather::SunnyWeather() : cover(Vector2f(Properties::ScreenWidth,Properties::ScreenHeight)), BaseWeatherType(nullptr)
 {
     cover.setFillColor(Color(255,255,60,45));
     t = 0;
@@ -409,9 +415,8 @@ int SunnyWeather::getLightChange()
     return -20;
 }
 
-FogWeather::FogWeather(Map* m, bool isThick)
+FogWeather::FogWeather(Map* m, bool isThick) : BaseWeatherType(m)
 {
-	owner = m;
 	a = 0;
     isStopping = false;
     lastTime = Weather::timer.getElapsedTime().asMilliseconds();
@@ -506,9 +511,8 @@ void FogWeather::draw(RenderTarget& window)
     }
 }
 
-SandstormWeather::SandstormWeather(Map* m) : cover(Vector2f(800,600))
+SandstormWeather::SandstormWeather(Map* m) : cover(Vector2f(800,600)), BaseWeatherType(m)
 {
-	owner = m;
     isStopping = false;
     lastTime = Weather::timer.getElapsedTime().asMilliseconds();
     a = 0;
@@ -715,6 +719,13 @@ void Weather::logWeather(Type tp)
 	t.timeRecorded = Weather::timer.getElapsedTime().asMilliseconds();
 	t.type = tp;
 	pastWeather[curMap] = t;
+}
+
+void Weather::setOwner(Map* o) {
+	owner = o;
+	if (weather) {
+		weather->setOwner(o);
+	}
 }
 
 void Weather::update()

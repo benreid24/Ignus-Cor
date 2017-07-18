@@ -97,7 +97,13 @@ class BaseWeatherType
 {
 protected:
 	int lastTime;
+	Map* owner;
 public:
+	/**
+	 * Creates the weather with the given owner
+	 */
+	BaseWeatherType(Map* o);
+
     /**
      * Here for polymorphism
      */
@@ -122,6 +128,11 @@ public:
      * Updates the weather and its effects
      */
     virtual void update();
+
+    /**
+     * Sets the owner of the weather
+     */
+	void setOwner(Map* owner);
 
     /**
      * Renders the weather to the given window
@@ -170,7 +181,6 @@ public:
  */
 class RainWeather : public BaseWeatherType
 {
-	Map* owner;
     SoundEngine* sEngine;
     AudioReference sound;
     TextureReference airDrop, splashDrop[2];
@@ -239,7 +249,6 @@ public:
  */
 class SnowWeather : public BaseWeatherType
 {
-	Map* owner;
 	SoundEngine* sEngine;
     TextureReference flake;
     sf::Sprite spr; //vary transparency based on time
@@ -304,7 +313,6 @@ public:
  */
 class FogWeather : public BaseWeatherType
 {
-    Map* owner;
     TextureReference fogTxtr;
     sf::Sprite spr;
     std::vector<Particle> particles;
@@ -362,7 +370,6 @@ public:
  */
 class SandstormWeather : public BaseWeatherType
 {
-    Map* owner;
     TextureReference mainTxtr, swirlTxtr;
     sf::Sprite mainSpr, swirlSpr;
     sf::RectangleShape cover;
@@ -529,6 +536,11 @@ public:
      * \return True if weather was restored, false otherwise
      */
 	bool enterMap(std::string name);
+
+	/**
+	 * Sets the owner Map for the Weather
+	 */
+	void setOwner(Map* owner);
 
     /**
      * Updates the internal weather, if any, or chooses a new weather type if a random type was set and the timing is right

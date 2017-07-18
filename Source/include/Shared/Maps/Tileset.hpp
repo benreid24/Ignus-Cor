@@ -58,6 +58,11 @@ public:
 	int addAnim(std::string file, std::string spritesheet = "NONE");
 
 	/**
+	 * Returns the number of tiles in the tileset
+	 */
+	int numTiles();
+
+	/**
 	 * Returns the requested animation from the tileset
 	 *
 	 * \param id The id of the animation to fetch
@@ -71,6 +76,11 @@ public:
 	 * \param id The id of the animation to delete
 	 */
 	void removeAnimation(int id);
+
+	/**
+	 * Returns the number of animations in the tileset
+	 */
+	int numAnims();
 
 	/**
 	 * Returns a vector containing all of the valid tile ids

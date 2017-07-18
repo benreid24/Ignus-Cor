@@ -68,6 +68,10 @@ void Tileset::removeTile(int id) {
 	tileFiles.erase(id);
 }
 
+int Tileset::numTiles() {
+	return tiles.size();
+}
+
 int Tileset::addAnim(std::string file, std::string spritesheet) {
 	string newFile = intToString(nextAnimId)+"__"+File::getBaseName(file)+".anim";
 	copyFile(file,Properties::MapAnimPath+newFile);
@@ -86,6 +90,10 @@ AnimationReference Tileset::getAnimation(int id) {
 void Tileset::removeAnimation(int id) {
 	anims.erase(id);
 	animFiles.erase(id);
+}
+
+int Tileset::numAnims() {
+	return anims.size();
 }
 
 vector<int> Tileset::getTileIds() {
