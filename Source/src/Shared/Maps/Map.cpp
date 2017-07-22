@@ -109,24 +109,21 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
             collisions(x,y) = input.get<uint8_t>();
 
 	//Load tiles
-	map<int,Animation*> tempAnimTable;
-	anims.reserve(tileset.numAnims()+1);
     for (unsigned int i = 0; i<layers.size(); ++i) {
         for (int x = 0; x<size.x; ++x) {
             for (int y = 0; y<size.y; ++y) {
                 layers[i](x,y).isAnim = bool(input.get<uint8_t>());
                 int id = input.get<uint16_t>();
+                layers[i](x,y).id = id;
                 layers[i](x,y).nonZero = id!=0;
                 layers[i](x,y).anim = nullptr;
                 if (layers[i](x,y).isAnim) {
 					if (tileset.getAnimation(id)) {
 						layers[i](x,y).delA = true;
 						if (tileset.getAnimation(id)->isLooping()) { //Animation object is shared between all (sync's water, etc)
-							if (tempAnimTable.find(id)==tempAnimTable.end()) {
-								anims.push_back(Animation(tileset.getAnimation(id)));
-								tempAnimTable[id] = &anims[anims.size()-1];
-							}
-							layers[i](x,y).anim = tempAnimTable[id];
+							if (animTable.find(id)==animTable.end())
+								animTable[id] = new Animation(tileset.getAnimation(id));
+							layers[i](x,y).anim = animTable[id];
 							layers[i](x,y).delA = false;
 						}
 						else //Animation object is unique (so all grass doesn't move at once, etc)
@@ -250,6 +247,16 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
 Map::~Map() {
 	if (name.size()>0 && unloadScript && Map::scriptEnv)
 		unloadScript->run(Map::scriptEnv);
+	for (auto i = animTable.begin(); i!=animTable.end(); ++i)
+		delete i->second;
+	for (unsigned int i = 0; i<layers.size(); ++i) {
+		for (int x = 0; x<size.x; ++x) {
+			for (int y = 0; y<size.y; ++y) {
+				if (layers[i](x,y).delA)
+					delete layers[i](x,y).anim;
+			}
+		}
+	}
 }
 
 void Map::setScriptEnvironment(ScriptEnvironment* se) {
@@ -444,4 +451,211 @@ void Map::moveOntoTile(sf::Vector2i pos) {
 			}
 		}
     }
+}
+
+void Map::setCollision(int x, int y, int c) {
+	collisions(x,y) = c;
+}
+
+int Map::getCollision(int x, int y) {
+	return collisions(x,y);
+}
+
+bool Map::spaceFree(Vector2i pos, Vector2i oldPos) {
+	if (pos.x<=0 || pos.x>size.x || pos.y<=0 || pos.y>size.y)
+		return false;
+
+	int dir = 0;
+	if (oldPos.x>pos.x)
+		dir = 3;
+	else if (oldPos.x<pos.x)
+		dir = 1;
+	else if (oldPos.y<pos.y)
+		dir = 2;
+
+    switch (collisions(pos.x,pos.y))
+    {
+	case 0: //none
+		return false;
+	case 1: //all
+		return true;
+	case 2: //top
+		return dir==2;
+	case 3: //right
+		return dir==3;
+	case 4: //bottom
+		return dir==0;
+	case 5: //left
+		return dir==1;
+	case 6: //topRight
+		return dir==2 || dir==3;
+	case 7: //bottomRight
+		return dir==0 || dir==3;
+	case 8: //bottomLeft
+		return dir==0 || dir==1;
+	case 9: //topLeft
+		return dir==1 || dir==2;
+	case 10: //topBottom
+		return dir==0 || dir==2;
+	case 11: //leftRight
+		return dir==1 || dir==3;
+	case 12: //noTop
+		return dir!=2;
+	case 13: //noRight
+		return dir!=3;
+	case 14: //noBottom
+		return dir!=0;
+	case 15: //noLeft
+		return dir!=1;
+	default:
+		return false;
+    }
+}
+
+bool Map::spaceFree(Vector2i pos) {
+	if (pos.x<=0 || pos.x>size.x || pos.y<=0 || pos.y>size.y)
+		return false;
+
+    return collisions(pos.x,pos.y)==1;
+}
+
+void Map::setItemPickedUp(int id) {
+	pickedUpItems[name].push_back(id);
+}
+
+void Map::lockAllPeople() {
+	//TODO - lock all people
+}
+
+void Map::unlockAllPeople() {
+	//TODO - unlock everyone
+}
+
+void Map::stopAnimations() {
+	//TODO - stop all animations
+}
+
+void Map::addLight(int x, int y, int r) {
+	Light l;
+	l.position.x = x;
+	l.position.y = y;
+	l.radius = r;
+	lights.push_back(l);
+}
+
+void Map::removeLight(int x, int y) {
+    for (unsigned int i = 0; i<lights.size(); ++i) {
+		int d = (lights[i].position.x-x)*(lights[i].position.x-x)+(lights[i].position.y-y)*(lights[i].position.y-y);
+		if (d<lights[i].radius*lights[i].radius) {
+			lights.erase(lights.begin()+i);
+			i--;
+		}
+    }
+}
+
+void Map::removeAllLights() {
+	lights.clear();
+}
+
+void Map::setLightingOverride(int o) {
+	ambientLightOverride = o;
+}
+
+void Map::editTile(int x, int y, int layer, int nId, bool isAnim) {
+	if (layer>=firstYSortLayer && layer<firstTopLayer) {
+		if (layers[layer](x,y).nonZero) {
+			int eY = y+layers[layer](x,y).spr.getGlobalBounds().height/64+1;
+			if (eY>=size.y)
+				eY = size.y-1;
+			if (ySortedTiles[layer-firstYSortLayer](x,eY).second) {
+				ySortedTiles[layer-firstYSortLayer](x,eY).second->nonZero = false;
+			}
+		}
+	}
+
+	if (layers[layer](x,y).delA) {
+		delete layers[layer](x,y).anim;
+		layers[layer](x,y).delA = false;
+		layers[layer](x,y).anim = nullptr;
+	}
+
+	layers[layer](x,y).id = nId;
+	layers[layer](x,y).isAnim = isAnim;
+	layers[layer](x,y).nonZero = nId!=0;
+	if (tileset.getTile(nId) && !isAnim)
+		layers[layer](x,y).spr.setTexture(*tileset.getTile(nId));
+	else if (tileset.getAnimation(nId) && isAnim) {
+		layers[layer](x,y).delA = tileset.getAnimation(nId)->isLooping();
+		if (layers[layer](x,y).delA)
+			layers[layer](x,y).anim = new Animation(tileset.getAnimation(nId));
+		else
+			layers[layer](x,y).anim = animTable[nId];
+	}
+
+	if (layer>=firstYSortLayer && layer<firstTopLayer) {
+		if (layers[layer](x,y).nonZero) {
+			int eY = y+layers[layer](x,y).spr.getGlobalBounds().height/64+1; //TODO - possibly handle animations in this range as well
+			if (eY>=size.y)
+				eY = size.y-1;
+			ySortedTiles[layer-firstYSortLayer](x,eY) = make_pair(y,&layers[layer](x,y));
+		}
+	}
+}
+
+void Map::syncAnimTable() {
+	vector<int> ids = tileset.getAnimIds();
+	vector<int> del;
+	for (unsigned int i = 0; i<ids.size(); ++i) {
+		if (animTable.find(ids[i])==animTable.end())
+			animTable[ids[i]] = new Animation(tileset.getAnimation(ids[i]));
+	}
+	for (auto i = animTable.begin(); i!=animTable.end(); ++i) {
+		if (find(ids.begin(),ids.end(),i->first)==ids.end())
+			del.push_back(i->first);
+	}
+	for (unsigned int i = 0; i<del.size(); ++i) {
+		delete animTable[del[i]];
+		animTable.erase(del[i]);
+	}
+}
+
+void Map::clearBrokenTiles() {
+	for (unsigned int i = 0; i<layers.size(); +i) {
+		for (int x = 0; x<size.x; ++x) {
+			for (int y = 0; y<size.y; ++y) {
+				if (!tileset.getTile(layers[i](x,y).id) && !layers[i](x,y).isAnim) {
+					layers[i](x,y).id = 0;
+					layers[i](x,y).nonZero = false;
+				}
+				else if (!tileset.getAnimation(layers[i](x,y).id) && layers[i](x,y).isAnim) {
+					if (layers[i](x,y).delA)
+						delete layers[i](x,y).anim;
+					layers[i](x,y).id = 0;
+					layers[i](x,y).nonZero = false;
+					layers[i](x,y).anim = nullptr;
+				}
+			}
+		}
+	}
+}
+
+void Map::addEvent(MapEvent event) {
+	events.push_back(event);
+}
+
+void Map::removeEvent(int x, int y) {
+	for (unsigned int i = 0; i<events.size(); ++i) {
+		if (events[i].position.x<=x && events[i].position.x+events[i].size.x>x && events[i].position.y<=y && events[i].position.y+events[i].size.y>y) {
+			events.erase(events.begin()+i);
+			i--;
+		}
+	}
+}
+
+MapEvent* Map::getEvent(int x, int y) {
+	for (unsigned int i = 0; i<events.size(); ++i) {
+		if (events[i].position.x<=x && events[i].position.x+events[i].size.x>x && events[i].position.y<=y && events[i].position.y+events[i].size.y>y)
+			return &events[i];
+	}
+	return nullptr;
 }

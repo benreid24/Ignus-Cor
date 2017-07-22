@@ -18,19 +18,18 @@ class Playlist;
  *
  * \ingroup World
  */
-struct Tile
-{
+struct Tile {
     /**
      * Creates an empty tile
      */
-    Tile()
-    {
+    Tile() {
         nonZero = false;
         isAnim = false;
     }
     bool isAnim, nonZero, delA;
     Animation* anim;
     sf::Sprite spr;
+    int id;
 };
 
 /**
@@ -38,8 +37,7 @@ struct Tile
  *
  * \ingroup World
  */
-struct Light
-{
+struct Light {
     sf::Vector2f position;
     int radius;
 };
@@ -49,8 +47,7 @@ struct Light
  *
  * \ingroup World
  */
-struct MapEvent
-{
+struct MapEvent {
     ScriptReference script;
     std::string scriptStr;
     sf::Vector2i position;
@@ -78,10 +75,10 @@ class Map {
 	Tileset& tileset;
 	EntityManager* entityManager;
 
-	std::vector<Animation> anims;
+	std::map<int,Animation*> animTable;
     std::vector<Vector2D<Tile> > layers;
     std::vector<Vector2D<std::pair<int,Tile*> > > ySortedTiles; //here for actual image size
-    Vector2D<int> collisions; //using int b/c stupid specialization of vector<bool> conflicting with 2d vector
+    Vector2D<int> collisions;
 
     std::vector<Light> lights;
     std::vector<MapEvent> events;
@@ -252,6 +249,11 @@ public:
      */
 	void setCollision(int x, int y, int c);
 
+	/**
+	 * Returns the collision at the specified position
+	 */
+	int getCollision(int x, int y);
+
     /**
      * Returns whether or not the given space can be moved into
      *
@@ -327,8 +329,19 @@ public:
      * \param y The y position of the tile
      * \param layer The layer of the tile
      * \param nId The new id to set the tile to
+     * \param isAnim Whether or not the new tile should be an animation or image
      */
-	void editTile(int x, int y, int layer, int nId);
+	void editTile(int x, int y, int layer, int nId, bool isAnim);
+
+	/**
+	 * Syncs up the internal animation table with the tileset. Use this when adding/removing tiles from the tileset
+	 */
+	void syncAnimTable();
+
+	/**
+	 * Removes all references to tiles/animations that no longer exist in the tileset. Call this after deleting a tile/animation
+	 */
+	void clearBrokenTiles();
 
 	/**
 	 * Adds the given MapEvent to the map
