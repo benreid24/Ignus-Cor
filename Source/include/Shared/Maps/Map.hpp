@@ -76,6 +76,7 @@ class Map {
 	std::string name;
 	sf::Vector2i size;
 	Tileset& tileset;
+	EntityManager* entityManager;
 
 	std::vector<Animation> anims;
     std::vector<Vector2D<Tile> > layers;
@@ -129,7 +130,7 @@ public:
 	/**
 	 * Creates the map with the given name and size
 	 */
-	Map(std::string name, sf::Vector2i size, Tileset& tileset, SoundEngine* se);
+	Map(std::string name, sf::Vector2i size, Tileset& tileset, SoundEngine* se, EntityManager* entityManager);
 
 	/**
      * Loads the map from the given file

@@ -32,7 +32,7 @@ struct ScriptData
  */
 class ScriptEnvironment
 {
-    Game* game;
+    //Game* game;
     std::list<std::shared_ptr<ScriptData> > runningScripts;
 
     sf::Thread thread;
@@ -55,7 +55,7 @@ public:
      *
      * \param g A pointer to the main Game object
      */
-    ScriptEnvironment(Game* g);
+    ScriptEnvironment();
 
     /**
      * Terminates the updater thread and all running scripts
@@ -78,7 +78,7 @@ public:
     /**
      * Returns a pointer to the main Game object
      */
-    Game* getGame();
+    //Game* getGame();
 
     /**
      * Saves the environment variables to the given file

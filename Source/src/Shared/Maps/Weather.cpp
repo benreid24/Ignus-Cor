@@ -363,7 +363,7 @@ void SnowWeather::draw(RenderTarget& window)
         thunder.draw(window);
 }
 
-SunnyWeather::SunnyWeather() : cover(Vector2f(Properties::ScreenWidth,Properties::ScreenHeight)), BaseWeatherType(nullptr)
+SunnyWeather::SunnyWeather() : BaseWeatherType(nullptr),cover(Vector2f(Properties::ScreenWidth,Properties::ScreenHeight))
 {
     cover.setFillColor(Color(255,255,60,45));
     t = 0;
@@ -511,7 +511,7 @@ void FogWeather::draw(RenderTarget& window)
     }
 }
 
-SandstormWeather::SandstormWeather(Map* m) : cover(Vector2f(800,600)), BaseWeatherType(m)
+SandstormWeather::SandstormWeather(Map* m) : BaseWeatherType(m), cover(Vector2f(800,600))
 {
     isStopping = false;
     lastTime = Weather::timer.getElapsedTime().asMilliseconds();

@@ -1,8 +1,7 @@
 #include "Shared/Scripts/Script Environment.hpp"
+#include "Shared/Util/File.hpp"
 using namespace std;
 using namespace sf;
-
-#ifdef GAME
 
 namespace
 {
@@ -13,9 +12,8 @@ namespace
     }
 }
 
-ScriptEnvironment::ScriptEnvironment(Game* g) : thread(&ScriptEnvironment::update,this)
+ScriptEnvironment::ScriptEnvironment() : thread(&ScriptEnvironment::update,this)
 {
-    game = g;
     stopped = stopping = false;
     thread.launch();
 }
@@ -28,6 +26,7 @@ ScriptEnvironment::~ScriptEnvironment()
 
 void ScriptEnvironment::runScript(ScriptReference scr, bool concurrent)
 {
+	#ifdef GAME
 	if (scr->isRunning())
 		return;
 
@@ -44,6 +43,7 @@ void ScriptEnvironment::runScript(ScriptReference scr, bool concurrent)
     }
     else
 		scr->run(this);
+	#endif
 }
 
 void ScriptEnvironment::stopAll()
@@ -79,11 +79,11 @@ void ScriptEnvironment::update()
     }
     stopped = true;
 }
-
+/*
 Game* ScriptEnvironment::getGame()
 {
     return game;
-}
+}*/
 
 void ScriptEnvironment::save(File* file)
 {
@@ -126,5 +126,3 @@ void ScriptEnvironment::stop()
 	while (!stopped)
 		sleep(milliseconds(300));
 }
-
-#endif

@@ -26,8 +26,9 @@ Map::Map(Tileset& tlst, SoundEngine* se) : tileset(tlst) {
 	}
 }
 
-Map::Map(string nm, Vector2i sz, Tileset& tlst, SoundEngine* se) : Map(tlst,se) {
+Map::Map(string nm, Vector2i sz, Tileset& tlst, SoundEngine* se, EntityManager* em) : Map(tlst,se) {
 	Map::weather->setOwner(this);
+	entityManager = em;
 
 	name = nm;
 	size = sz;
@@ -43,6 +44,7 @@ Map::Map(string nm, Vector2i sz, Tileset& tlst, SoundEngine* se) : Map(tlst,se) 
 
 Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity* player, string spName, Playlist* plst) : Map(tlst,se) {
 	Map::weather->setOwner(this);
+	entityManager = em;
 
 	//Handle previous map data
     if (file=="LastMap")
@@ -252,4 +254,194 @@ Map::~Map() {
 
 void Map::setScriptEnvironment(ScriptEnvironment* se) {
 	scriptEnv = se;
+}
+
+string Map::getName() {
+	return name;
+}
+
+Vector2i Map::getSize() {
+	return size;
+}
+
+void Map::addVisitedMap(std::string m) {
+	if (find(visitedMaps.begin(),visitedMaps.end(),m)==visitedMaps.end())
+		visitedMaps.push_back(m);
+}
+
+void Map::saveGame(File* saveTo) {
+	//TODO - save map data to gamesave
+}
+
+void Map::loadGame(File* loadFrom) {
+	//TODO - load map data from gamesave
+}
+
+void Map::save(std::string file) {
+	//TODO - write all data to given file
+}
+
+void Map::setWeather(int t) {
+	Map::weather->init(Weather::Type(t),true);
+}
+
+bool Map::mapVisited(string m) {
+	return find(visitedMaps.begin(),visitedMaps.end(),m)!=visitedMaps.end();
+}
+
+void Map::update() {
+	//TODO - update the map
+}
+
+void Map::calculateLighting() {
+	if (ambientLightOverride!=255)
+        currentLighting = ambientLightOverride;
+    else {
+		//TODO - make some form of clock
+        //ClockTime t = gameClock.getClockTime();
+        const int x = 720; //t.hour*60+t.minute;
+        const double n = 0.7;
+        currentLighting = (70*cos(3.1415926*x/720)+70)*((1-n)*(720-x)*(720-x)/518400+n) + weather->getLightModifier();
+        if (currentLighting<0)
+            currentLighting = 0;
+    }
+}
+
+void Map::draw(sf::RenderTarget& target) {
+	for (int i = 0; i<firstYSortLayer; ++i) {
+        for (int x = camPosTiles.x-10; x<camPosTiles.x+Properties::TilesWide+10; ++x) {
+            if (x>=0 && x<size.x)
+            for (int y = camPosTiles.y-10; y<camPosTiles.y+Properties::TilesTall+10; ++y) {
+                if (y>=0 && y<size.y) {
+                    if (layers[i](x,y).isAnim && layers[i](x,y).nonZero) {
+                        layers[i](x,y).anim->setPosition(Vector2f(x*32-camPos.x,y*32-camPos.y));
+                        layers[i](x,y).anim->draw(target);
+                    }
+                    else if (layers[i](x,y).nonZero) {
+                        layers[i](x,y).spr.setPosition(x*32-camPos.x+32,y*32-camPos.y+32);
+                        target.draw(layers[i](x,y).spr);
+                    }
+                }
+            }
+        }
+    }
+
+    for (int y = camPosTiles.y-10; y<camPosTiles.y+Properties::TilesTall+10; ++y) {
+        if (y>=0 && y<size.y) {
+            for (int i = 0; i<firstTopLayer-firstYSortLayer; ++i) {
+                for (int x = camPosTiles.x-10; x<camPosTiles.x+Properties::TilesWide+10; ++x) {
+                    if (x>=0 && x<size.x && ySortedTiles[i](x,y).second) {
+                        if (ySortedTiles[i](x,y).second->isAnim && layers[i](x,y).nonZero) {
+                            ySortedTiles[i](x,y).second->anim->setPosition(Vector2f(x*32-camPos.x,ySortedTiles[i](x,y).first*32-camPos.y));
+                            ySortedTiles[i](x,y).second->anim->draw(target);
+                        }
+                        else if (ySortedTiles[i](x,y).second->nonZero) {
+                            ySortedTiles[i](x,y).second->spr.setPosition(x*32-camPos.x+32,ySortedTiles[i](x,y).first*32-camPos.y+32);
+                            target.draw(ySortedTiles[i](x,y).second->spr);
+                        }
+                    }
+                }
+            }
+            for (unsigned int i = 0; i<entityManager->getYSorted().at(y+1).size(); ++i) {
+                entityManager->getYSorted().at(y+1).at(i)->render(target,camPos);
+            }
+        }
+    }
+
+    weather->draw(target);
+    if (currentLighting>40) {
+        IntRect t(camPos.x-400, camPos.y-300,1600,1200);
+        lightTxtr.clear(Color(0,0,0,currentLighting));
+        for (unsigned int i = 0; i<lights.size(); ++i) {
+            if (t.contains(Vector2i(lights[i].position))) {
+                light[0].position = lights[i].position - camPos + Vector2f(32,32);
+                light[0].position.y = 600-light[0].position.y;
+                light[0].color = Color::Transparent;
+                for (unsigned int j = 1; j<362; ++j) {
+                    light[j].position = lights[i].position + Vector2f(lights[i].radius*cos(double(j)/180*3.1415926)-camPos.x+32,lights[i].radius*sin(double(j)/180*3.1415926)-camPos.y+32);
+                    light[j].color = Color(0,0,0,currentLighting);
+                    light[j].position.y = 600-light[j].position.y;
+                }
+                lightTxtr.draw(light, BlendNone);
+            }
+        }
+        target.draw(lightSpr);
+    }
+
+    for (unsigned int i = firstTopLayer; i<layers.size(); ++i) {
+        for (int x = camPosTiles.x-10; x<camPosTiles.x+Properties::TilesWide+10; ++x) {
+            if (x>=0 && x<size.x)
+            for (int y = camPosTiles.y-10; y<camPosTiles.y+Properties::TilesTall+10; ++y) {
+                if (y>=0 && y<size.y) {
+                    if (layers[i](x,y).isAnim && layers[i](x,y).nonZero) {
+                        layers[i](x,y).anim->setPosition(Vector2f(x*32-camPos.x,y*32-camPos.y));
+                        layers[i](x,y).anim->draw(target);
+                    }
+                    else if (layers[i](x,y).nonZero) {
+                        layers[i](x,y).spr.setPosition(x*32-camPos.x+32,y*32-camPos.y+32);
+                        target.draw(layers[i](x,y).spr);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Map::setRenderPosition(sf::Vector2f playerPos) {
+	camPos = playerPos - Vector2f(Properties::ScreenWidth/2,Properties::ScreenHeight/2);
+    if (camPos.x<32)
+        camPos.x = 32;
+    else if (camPos.x>size.x*32-Properties::ScreenWidth+32)
+        camPos.x = size.x*32-Properties::ScreenWidth+32;
+    if (camPos.y<32)
+        camPos.y = 32;
+    else if (camPos.y>size.y*32-Properties::ScreenHeight+32)
+        camPos.y = size.y*32-Properties::ScreenHeight+32;
+
+    if (Properties::ScreenWidth>=size.x*32)
+        camPos.x = size.x*16-Properties::ScreenWidth/2+32;
+    if (Properties::ScreenHeight>=size.y*32)
+        camPos.y = size.y*16-Properties::ScreenHeight/2+32;
+
+    camPosTiles.x = camPos.x/32;
+    camPosTiles.y = camPos.y/32;
+}
+
+Vector2f Map::getCamera() {
+	return camPos;
+}
+
+void Map::moveOntoTile(sf::Vector2i playerPos, sf::Vector2i lastPos) {
+	moveOntoTile(playerPos);
+    playerPos.x--;
+    playerPos.y--;
+    lastPos.x--;
+    lastPos.y--;
+
+    for (unsigned int i = 0; i<events.size(); ++i) {
+    	int minX = events[i].position.x/32;
+    	int minY = events[i].position.y/32;
+    	int maxX = minX+events[i].size.x;
+    	int maxY = minY+events[i].size.y;
+        bool inNow = playerPos.x>=minX && playerPos.x<maxX && playerPos.y>=minY && playerPos.y<maxY;
+        bool wasIn = lastPos.x>=minX && lastPos.x<maxX && lastPos.y>=minY && lastPos.y<maxY;
+        if ((events[i].trigger==1 && inNow && !wasIn) || (events[i].trigger==2 && !inNow && wasIn) || (events[i].trigger==3 && inNow!=wasIn) || (events[i].trigger==4 && inNow)) {
+            if (events[i].runs<events[i].maxRuns || events[i].maxRuns==0)
+                Map::scriptEnv->runScript(events[i].script);
+            events[i].runs++;
+        }
+    }
+}
+
+void Map::moveOntoTile(sf::Vector2i pos) {
+	if (pos.x-1<size.x && pos.y-1<size.y && pos.x-1>=0 && pos.y-1>=0) {
+    	for (unsigned int i = 0; i<layers.size(); ++i) {
+			if (layers[i](pos.x-1,pos.y-1).isAnim && layers[i](pos.x-1,pos.y-1).nonZero) {
+				if (layers[i](pos.x-1,pos.y-1).anim) {
+					if (!layers[i](pos.x-1,pos.y-1).anim->isLooping())
+						layers[i](pos.x-1,pos.y-1).anim->play();
+				}
+			}
+		}
+    }
 }

@@ -5,7 +5,7 @@
  * Helper class to create unique ids for each run of the game
  */
 class UUID {
-	static int nextUuid = 0;
+	static int nextUuid;
 
 public:
 	/**
