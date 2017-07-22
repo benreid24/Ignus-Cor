@@ -259,6 +259,26 @@ Map::~Map() {
 	}
 }
 
+void Map::resetYSorted() {
+	ySortedTiles.clear();
+	ySortedTiles.resize(firstTopLayer-firstYSortLayer);
+    for (unsigned int i = 0; i<ySortedTiles.size(); ++i)
+        ySortedTiles[i].setSize(size.x,size.y);
+
+	for (int i = firstYSortLayer; i<firstTopLayer; ++i) {
+		for (int x = 0; x<size.x; ++x) {
+			for (int y = 0; y<size.y; ++y) {
+				if (layers[i](x,y).nonZero) {
+					int eY = y+layers[i](x,y).spr.getGlobalBounds().height/64+1;
+					if (eY>=size.y)
+						eY = size.y-1;
+					ySortedTiles[i-firstYSortLayer](x,eY) = make_pair(y,&layers[i](x,y));
+				}
+			}
+		}
+	}
+}
+
 void Map::setScriptEnvironment(ScriptEnvironment* se) {
 	scriptEnv = se;
 }
@@ -412,6 +432,44 @@ void Map::setRenderPosition(sf::Vector2f playerPos) {
 
     camPosTiles.x = camPos.x/32;
     camPosTiles.y = camPos.y/32;
+}
+
+void Map::addLayer(int i) {
+	Vector2D<Tile> layer;
+	layer.setSize(size.x,size.y);
+	if (i>=0 && i<layers.size())
+        layers.insert(layers.begin()+i,layer);
+	else
+		layers.push_back(layer);
+}
+
+void Map::removeLayer(int i) {
+	if (i>=0 && i<layers.size()) {
+		layers.erase(layers.begin()+i);
+		if (firstTopLayer>=layers.size())
+			firstTopLayer = layers.size()-1;
+		if (firstYSortLayer>=layers.size())
+			firstYSortLayer = layers.size()-1;
+		resetYSorted();
+	}
+}
+
+void Map::setFirstYSortLayer(int i) {
+	if (i>=0 && i<layers.size())
+		firstYSortLayer = i;
+}
+
+int Map::getFirstYSortLayer() {
+	return firstYSortLayer;
+}
+
+void Map::setFirstTopLayer(int i) {
+	if (i>=0 && i<layers.size())
+		firstTopLayer = i;
+}
+
+int Map::getFirstTopLayer() {
+	return firstTopLayer;
 }
 
 Vector2f Map::getCamera() {

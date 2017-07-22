@@ -6,45 +6,13 @@
 using namespace std;
 using namespace sf;
 
+sfg::SFGUI sfgui;
+RenderWindow sfWindow(VideoMode(1600,900,32), "Ignis Cor Editor", Style::Titlebar|Style::Close);
+
 int main() {
-	RenderWindow sfWindow(VideoMode(1600,900,32), "Ignis Cor Editor", Style::Titlebar|Style::Close);
 	sfWindow.resetGLStates();
 
-	RectangleShape rect(Vector2f(200,200));
-	rect.setFillColor(Color::Red);
-
-	sfg::SFGUI sfgui;
 	sfg::Desktop desktop;
-
-	/*sfg::Box::Ptr mapGeneral = sfg::Box::Create();
-	mapGeneral->Pack(sfg::Button::Create("Load"));
-	mapGeneral->Pack(sfg::Button::Create("Save"));
-
-	sfg::Notebook::Ptr mapTabs = sfg::Notebook::Create();
-	mapTabs->AppendPage(mapGeneral,sfg::Label::Create("General"));
-	mapTabs->AppendPage(sfg::Label::Create(),sfg::Label::Create("Tiles"));
-	mapTabs->AppendPage(sfg::Label::Create(),sfg::Label::Create("Animations"));
-	mapTabs->SetRequisition(Vector2f(500,1040));
-
-	sfg::Canvas::Ptr mapArea = sfg::Canvas::Create();
-	mapArea->SetRequisition(Vector2f(1480,1040));
-
-	sfg::Box::Ptr box = sfg::Box::Create();
-	box->Pack(mapTabs);
-	box->Pack(mapArea);
-
-	sfg::Notebook::Ptr tabs = sfg::Notebook::Create();
-	tabs->AppendPage(box, sfg::Label::Create("Map"));
-	tabs->AppendPage(window, sfg::Label::Create("Animations"));
-	tabs->AppendPage(window, sfg::Label::Create("Conversation"));
-	tabs->AppendPage(window, sfg::Label::Create("Items"));
-	tabs->AppendPage(window, sfg::Label::Create("Weapons"));
-	tabs->AppendPage(window, sfg::Label::Create("Spells"));
-	tabs->AppendPage(window, sfg::Label::Create("Creatures"));
-	tabs->AppendPage(window, sfg::Label::Create("Scripts"));
-	tabs->SetAllocation(FloatRect(0,0,1920,1080));
-
-	desktop.Add(tabs); */
 
 	sfg::Notebook::Ptr tabs = sfg::Notebook::Create();
 	MapEditor mapEditor(desktop, tabs);

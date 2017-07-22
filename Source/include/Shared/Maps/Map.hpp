@@ -108,10 +108,10 @@ class Map {
      */
 	Map(Tileset& tlst, SoundEngine* se);
 
-    /**
-     * Deletes the entire map from memory
-     */
-    void clear();
+	/**
+	 * Resets all of the y-sorted tiles
+	 */
+	void resetYSorted();
 
     /**
      * Adds the given map to the list of visited maps
@@ -180,6 +180,36 @@ public:
      * Saves the map to the given file
      */
     void save(std::string file);
+
+    /**
+     * Adds a new layer at the specified position
+     */
+	void addLayer(int i = -1);
+
+	/**
+	 * Deletes the given layer
+	 */
+	void removeLayer(int i);
+
+	/**
+	 * Sets the first y-sort layer
+	 */
+	void setFirstYSortLayer(int i);
+
+	/**
+	 * Returns the first y-sort layer
+	 */
+	int getFirstYSortLayer();
+
+	/**
+	 * Sets the first top layer
+	 */
+	void setFirstTopLayer(int i);
+
+	/**
+	 * Returns the first top layer
+	 */
+	int getFirstTopLayer();
 
     /**
      * Sets the current weather. See Weather::Type for legal values to pass

@@ -3,9 +3,13 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFGUI/Widgets.hpp>
+#include <SFGUI/SFGUI.hpp>
 #include "Shared/Maps/Map.hpp"
 #include "Shared/Maps/Tileset.hpp"
 #include "Shared/GUI/WrappingBox.hpp"
+
+extern sfg::SFGUI sfgui;
+extern sf::RenderWindow sfWindow;
 
 /*
 sfml_canvas->Bind();
@@ -33,6 +37,8 @@ class MapEditor {
 	sfg::Box::Ptr container;
 	sfg::Notebook::Ptr tabs;
 	sfg::Canvas::Ptr mapArea;
+	sf::RenderTexture mapAreaTarget;
+	sf::Sprite mapAreaSprite;
 
 	//General page
 	sfg::Box::Ptr generalPage;
@@ -61,7 +67,12 @@ class MapEditor {
     int selectedAnim;
 
     //Editor data
+    sfg::Desktop& desktop;
+    sfg::Notebook::Ptr owner;
     Map* mapData;
+    SoundEngine soundEngine;
+    EntityManager* entityManager;
+    std::string mapFolder;
     Tileset tileset;
     sf::Vector2i selCorner1, selCorner2;
 

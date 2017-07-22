@@ -9,9 +9,10 @@ using namespace sfg;
 using namespace sf;
 using namespace std;
 
-MapEditor::MapEditor(Desktop& desktop, Notebook::Ptr parent) : tileBox(Box::Orientation::HORIZONTAL,5,6), animBox(Box::Orientation::HORIZONTAL,5,6) {
+MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientation::HORIZONTAL,5,6), animBox(Box::Orientation::HORIZONTAL,5,6), desktop(dk), owner(parent) {
 	MapEditor* me = this;
 	mapData = nullptr;
+	entityManager = nullptr;
 
 	container = Box::Create();
 	tabs = Notebook::Create();
@@ -20,6 +21,8 @@ MapEditor::MapEditor(Desktop& desktop, Notebook::Ptr parent) : tileBox(Box::Orie
 	mapArea->SetRequisition(Vector2f(1300,860));
 	container->Pack(tabs);
 	container->Pack(mapArea);
+	mapAreaTarget.create(Properties::ScreenWidth,Properties::ScreenHeight);
+	mapAreaSprite.setTexture(mapAreaTarget.getTexture());
 
 	generalPage = Box::Create(Box::Orientation::VERTICAL, 5);
 	newBut = Button::Create("New");
@@ -77,9 +80,6 @@ MapEditor::MapEditor(Desktop& desktop, Notebook::Ptr parent) : tileBox(Box::Orie
     generalPage->Pack(Separator::Create(), false, false);
 
     layerBox = Box::Create(Box::Orientation::VERTICAL, 5);
-    layerBox->Pack(RadioButton::Create("Layer 1"));
-    layerBox->Pack(RadioButton::Create("Layer 2"));
-    layerBox->Pack(RadioButton::Create("Layer 3"));
     generalPage->Pack(layerBox, false, false);
     tabs->AppendPage(generalPage, Label::Create("General"));
 
@@ -209,6 +209,6 @@ void MapEditor::removeTile() {
 
 void MapEditor::save() {
 	tileset.save();
-	//if (mapData!=nullptr)
-	//	mapData->save();
+	if (mapData!=nullptr)
+		mapData->save(Properties::MapPath+mapFolder+"/"+mapData->getName()+".map");
 }
