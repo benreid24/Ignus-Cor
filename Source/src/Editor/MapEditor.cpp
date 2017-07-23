@@ -18,7 +18,7 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
 	tabs = Notebook::Create();
 	tabs->SetRequisition(Vector2f(300,860));
 	mapArea = Canvas::Create();
-	mapArea->SetRequisition(Vector2f(1300,860));
+	mapArea->SetRequisition(Vector2f(Properties::ScreenWidth,Properties::ScreenHeight));
 	container->Pack(tabs);
 	container->Pack(mapArea);
 	mapAreaTarget.create(Properties::ScreenWidth,Properties::ScreenHeight);
@@ -211,4 +211,18 @@ void MapEditor::save() {
 	tileset.save();
 	if (mapData!=nullptr)
 		mapData->save(Properties::MapPath+mapFolder+"/"+mapData->getName()+".map");
+}
+
+void MapEditor::update() {
+	//this
+}
+
+void MapEditor::render() {
+	if (mapData) {
+		mapArea->Bind();
+		mapAreaTarget.clear();
+		mapData->draw(mapAreaTarget);
+		mapArea->Draw(mapAreaSprite);
+		mapArea->Unbind();
+	}
 }

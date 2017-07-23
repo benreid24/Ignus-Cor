@@ -26,20 +26,22 @@ Map::Map(Tileset& tlst, SoundEngine* se) : tileset(tlst) {
 	}
 }
 
-Map::Map(string nm, Vector2i sz, Tileset& tlst, SoundEngine* se, EntityManager* em) : Map(tlst,se) {
+Map::Map(string nm, Vector2i sz, Tileset& tlst, SoundEngine* se, EntityManager* em, int nLayers, int firstYSort, int firstTop) : Map(tlst,se) {
 	Map::weather->setOwner(this);
 	entityManager = em;
 
 	name = nm;
 	size = sz;
-	firstYSortLayer = 2;
-	firstTopLayer = 5;
+	firstYSortLayer = firstYSort;
+	firstTopLayer = firstTop;
 
 	//create tiles
-	for (int i = 0; i<5; ++i) {
+	for (int i = 0; i<nLayers; ++i) {
 		layers.push_back(Vector2D<Tile>());
 		layers[layers.size()-1].setSize(size.x,size.y);
 	}
+	resetYSorted();
+	entityManager->setMapHeight(size.y);
 }
 
 Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity* player, string spName, Playlist* plst) : Map(tlst,se) {
@@ -169,6 +171,8 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
 	}
     setRenderPosition(player->getPosition());
 
+    //Load AI
+    entityManager->setMapHeight(size.y);
     tInt = input.get<uint16_t>();
     for (int i = 0; i<tInt; ++i) {
         Vector2f pos;
@@ -345,7 +349,7 @@ void Map::draw(sf::RenderTarget& target) {
                         layers[i](x,y).anim->draw(target);
                     }
                     else if (layers[i](x,y).nonZero) {
-                        layers[i](x,y).spr.setPosition(x*32-camPos.x+32,y*32-camPos.y+32);
+                        layers[i](x,y).spr.setPosition(x*32-camPos.x,y*32-camPos.y);
                         target.draw(layers[i](x,y).spr);
                     }
                 }
@@ -363,13 +367,13 @@ void Map::draw(sf::RenderTarget& target) {
                             ySortedTiles[i](x,y).second->anim->draw(target);
                         }
                         else if (ySortedTiles[i](x,y).second->nonZero) {
-                            ySortedTiles[i](x,y).second->spr.setPosition(x*32-camPos.x+32,ySortedTiles[i](x,y).first*32-camPos.y+32);
+                            ySortedTiles[i](x,y).second->spr.setPosition(x*32-camPos.x,ySortedTiles[i](x,y).first*32-camPos.y);
                             target.draw(ySortedTiles[i](x,y).second->spr);
                         }
                     }
                 }
             }
-            for (unsigned int i = 0; i<entityManager->getYSorted().at(y+1).size(); ++i) {
+            for (unsigned int i = 0; i<entityManager->getYSorted().at(y).size(); ++i) {
                 entityManager->getYSorted().at(y+1).at(i)->render(target,camPos);
             }
         }
@@ -377,17 +381,17 @@ void Map::draw(sf::RenderTarget& target) {
 
     weather->draw(target);
     if (currentLighting>40) {
-        IntRect t(camPos.x-400, camPos.y-300,1600,1200);
+        IntRect t(camPos.x-Properties::ScreenWidth/2, camPos.y-Properties::ScreenHeight/2,Properties::ScreenWidth*2,Properties::ScreenHeight*2);
         lightTxtr.clear(Color(0,0,0,currentLighting));
         for (unsigned int i = 0; i<lights.size(); ++i) {
             if (t.contains(Vector2i(lights[i].position))) {
                 light[0].position = lights[i].position - camPos + Vector2f(32,32);
-                light[0].position.y = 600-light[0].position.y;
+                light[0].position.y = Properties::ScreenHeight-light[0].position.y;
                 light[0].color = Color::Transparent;
                 for (unsigned int j = 1; j<362; ++j) {
-                    light[j].position = lights[i].position + Vector2f(lights[i].radius*cos(double(j)/180*3.1415926)-camPos.x+32,lights[i].radius*sin(double(j)/180*3.1415926)-camPos.y+32);
+                    light[j].position = lights[i].position + Vector2f(lights[i].radius*cos(double(j)/180*3.1415926)-camPos.x,lights[i].radius*sin(double(j)/180*3.1415926)-camPos.y);
                     light[j].color = Color(0,0,0,currentLighting);
-                    light[j].position.y = 600-light[j].position.y;
+                    light[j].position.y = Properties::ScreenHeight-light[j].position.y;
                 }
                 lightTxtr.draw(light, BlendNone);
             }
@@ -405,7 +409,7 @@ void Map::draw(sf::RenderTarget& target) {
                         layers[i](x,y).anim->draw(target);
                     }
                     else if (layers[i](x,y).nonZero) {
-                        layers[i](x,y).spr.setPosition(x*32-camPos.x+32,y*32-camPos.y+32);
+                        layers[i](x,y).spr.setPosition(x*32-camPos.x,y*32-camPos.y);
                         target.draw(layers[i](x,y).spr);
                     }
                 }

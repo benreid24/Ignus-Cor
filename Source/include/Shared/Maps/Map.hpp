@@ -127,7 +127,7 @@ public:
 	/**
 	 * Creates the map with the given name and size
 	 */
-	Map(std::string name, sf::Vector2i size, Tileset& tileset, SoundEngine* se, EntityManager* entityManager);
+	Map(std::string name, sf::Vector2i size, Tileset& tileset, SoundEngine* se, EntityManager* entityManager, int nLayers = 5, int firstYSort = 2, int firstTop = 4);
 
 	/**
      * Loads the map from the given file

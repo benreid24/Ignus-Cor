@@ -29,15 +29,12 @@ int main() {
 		}
 
 		desktop.Update(timer.getElapsedTime().asSeconds());
+		mapEditor.update();
 		timer.restart();
-
-		/*mapArea->Bind();
-		mapArea->Draw(rect);
-		mapArea->Display();
-		mapArea->Unbind();*/
 
 		sfWindow.clear();
 		sfgui.Display(sfWindow);
+		mapEditor.render();
 		sfWindow.display();
 		sleep(milliseconds(20));
 	}

@@ -141,6 +141,16 @@ public:
 	 * \param parent A pointer to the notebook to add the GUI to
 	 */
 	MapEditor(sfg::Desktop& desktop, sfg::Notebook::Ptr parent);
+
+	/**
+	 * Updates the editor. Call this once every update frame
+	 */
+	void update();
+
+	/**
+	 * Renders the SFML components of the map. Call this after drawing the GUI
+	 */
+	void render();
 };
 
 #endif // MAPEDITOR_HPP

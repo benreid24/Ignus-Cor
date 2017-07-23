@@ -46,6 +46,7 @@ void Entity::render(sf::RenderTarget& target, sf::Vector2f camPos) {
 }
 
 void Entity::move(int d, bool fast, float elapsedTime) {
+	//TODO - call update position in EntityManager
 	dir = d;
 	int i = int(fast);
 	elapsedTime = (elapsedTime==0)?(Entity::timer.getElapsedTime().asSeconds()-lTime):(elapsedTime);

@@ -210,18 +210,14 @@ void MapEditor::newMap() {
 				layerBox->RemoveAll();
 
                 entityManager = new EntityManager();
-				mapData = new Map(name,Vector2i(w,h),tileset,&soundEngine,entityManager);
-				mapData->addLayer();
+				mapData = new Map(name,Vector2i(w,h),tileset,&soundEngine,entityManager,nLayers,firstY,firstTop);
 				RadioButton::Ptr but = RadioButton::Create("Layer 0");
 				layerBox->Pack(but,false,false);
 				for (int i = 1; i<nLayers; ++i) {
-					mapData->addLayer();
                     RadioButton::Ptr t = RadioButton::Create("Layer "+intToString(i));
                     t->SetGroup(but->GetGroup());
                     layerBox->Pack(t,false,false);
 				}
-				mapData->setFirstYSortLayer(firstY);
-				mapData->setFirstTopLayer(firstTop);
 				break;
 			}
 			goPressed = false;
