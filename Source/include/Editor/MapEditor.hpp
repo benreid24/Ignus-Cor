@@ -11,18 +11,6 @@
 extern sfg::SFGUI sfgui;
 extern sf::RenderWindow sfWindow;
 
-/*
-sfml_canvas->Bind();
-sfml_canvas->Clear( sf::Color( 0, 0, 0, 0 ) );
-
-// Draw the SFML Sprite.
-sfml_canvas->Draw( sprite );
-
-sfml_canvas->Display();
-sfml_canvas->Unbind();
-
-*/
-
 /**
  * \defgroup Editor Classes and functions contained within the main editor program
  */
@@ -127,6 +115,11 @@ class MapEditor {
 	 * GUI function to remove an animation
 	 */
 	void removeAnim();
+
+	/**
+	 * Updates the clicked tile based on the current tool
+	 */
+	void mapClicked();
 
 	/**
 	 * Updates the currently selected tile or animation

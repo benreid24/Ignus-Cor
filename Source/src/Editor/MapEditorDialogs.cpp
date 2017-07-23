@@ -5,6 +5,7 @@
 #include "Shared/GUI/ResizableImage.hpp"
 #include "Shared/Media/Animation.hpp"
 #include "Shared/Properties.hpp"
+#include "Shared/GUI/Form.hpp"
 using namespace sfg;
 using namespace sf;
 using namespace std;
@@ -114,64 +115,18 @@ void MapEditor::newMap() {
 	sfg::Box::Ptr winHolder = sfg::Box::Create(Box::Orientation::VERTICAL,5);
 	window->SetTitle("New Map");
 
-	Box::Ptr line = Box::Create(Box::Orientation::HORIZONTAL,5);
-	Label::Ptr label = Label::Create("Name:");
-	Entry::Ptr mapName = Entry::Create();
-	mapName->SetRequisition(Vector2f(120,20));
-	line->Pack(label,false,false);
-	line->Pack(mapName,false,false);
-	winHolder->Pack(line,false,false);
-
-	line = Box::Create(Box::Orientation::HORIZONTAL,5);
-	label = Label::Create("Subfolder:");
-    Entry::Ptr subfolderEntry = Entry::Create();
-    subfolderEntry->SetRequisition(Vector2f(120,20));
-    line->Pack(label,false,false);
-    line->Pack(subfolderEntry,false,false);
-    winHolder->Pack(line,false,false);
-
-    line = Box::Create(Box::Orientation::HORIZONTAL,5);
-	label = Label::Create("Width:");
-    Entry::Ptr width = Entry::Create();
-    width->SetRequisition(Vector2f(40,20));
-    line->Pack(label,false,false);
-    line->Pack(width,false,false);
-    winHolder->Pack(line,false,false);
-
-    line = Box::Create(Box::Orientation::HORIZONTAL,5);
-	label = Label::Create("Height:");
-    Entry::Ptr height = Entry::Create();
-    height->SetRequisition(Vector2f(40,20));
-    line->Pack(label,false,false);
-    line->Pack(height,false,false);
-    winHolder->Pack(line,false,false);
-
-    line = Box::Create(Box::Orientation::HORIZONTAL,5);
-	label = Label::Create("Number of Layers:");
-    Entry::Ptr numLayers = Entry::Create("5");
-    numLayers->SetRequisition(Vector2f(40,20));
-    line->Pack(label,false,false);
-    line->Pack(numLayers,false,false);
-    winHolder->Pack(line,false,false);
-
-    line = Box::Create(Box::Orientation::HORIZONTAL,5);
-	label = Label::Create("First y-sort Layer:");
-    Entry::Ptr ySort = Entry::Create("2");
-    ySort->SetRequisition(Vector2f(40,20));
-    line->Pack(label,false,false);
-    line->Pack(ySort,false,false);
-    winHolder->Pack(line,false,false);
-
-    line = Box::Create(Box::Orientation::HORIZONTAL,5);
-	label = Label::Create("First Top Layer:");
-    Entry::Ptr topLayer = Entry::Create("4");
-    topLayer->SetRequisition(Vector2f(40,20));
-    line->Pack(label,false,false);
-    line->Pack(topLayer,false,false);
-    winHolder->Pack(line,false,false);
+    Form form;
+    form.addField("name","Name:");
+    form.addField("folder","Subfolder:");
+    form.addField("width","Width:",40);
+    form.addField("height", "Height:",40);
+    form.addField("nlayers","Number of Layers",40,"5");
+    form.addField("firsty","First y-sort Layer:",40,"2");
+    form.addField("firsttop","First Top Layer:",40,"4");
+    form.addToParent(winHolder);
 
     bool goPressed = false, cancelPressed = false;
-    line = Box::Create(Box::Orientation::HORIZONTAL,5);
+    Box::Ptr line = Box::Create(Box::Orientation::HORIZONTAL,5);
     Button::Ptr goBut = Button::Create("Create");
     goBut->GetSignal(Button::OnLeftClick).Connect( [&goPressed] { goPressed = true; });
     line->Pack(goBut,false,false);
@@ -192,14 +147,15 @@ void MapEditor::newMap() {
 				sfWindow.close();
 		}
         desktop.Update(30/1000);
+        form.update();
         if (goPressed) {
-			string name = mapName->GetText();
-			string subfolder = subfolderEntry->GetText();
-			int w = stringToInt(width->GetText());
-			int h = stringToInt(height->GetText());
-			int nLayers = stringToInt(numLayers->GetText());
-			int firstY = stringToInt(ySort->GetText());
-			int firstTop = stringToInt(topLayer->GetText());
+			string name = form.getField("name");
+			string subfolder = form.getField("folder");
+			int w = form.getFieldAsInt("width");
+			int h = form.getFieldAsInt("height");
+			int nLayers = form.getFieldAsInt("nlayers");
+			int firstY = form.getFieldAsInt("firsty");
+			int firstTop = form.getFieldAsInt("firsttop");
 
 			if (w!=0 && h!=0 && nLayers!=0 && firstY!=0 && firstTop!=0 && name.size()!=0) {
 				save();

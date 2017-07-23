@@ -19,6 +19,7 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
 	tabs->SetRequisition(Vector2f(300,860));
 	mapArea = Canvas::Create();
 	mapArea->SetRequisition(Vector2f(Properties::ScreenWidth,Properties::ScreenHeight));
+	mapArea->GetSignal(Canvas::OnLeftClick).Connect( [me] { me->mapClicked(); });
 	container->Pack(tabs);
 	container->Pack(mapArea);
 	mapAreaTarget.create(Properties::ScreenWidth,Properties::ScreenHeight);
@@ -225,4 +226,8 @@ void MapEditor::render() {
 		mapArea->Draw(mapAreaSprite);
 		mapArea->Unbind();
 	}
+}
+
+void MapEditor::mapClicked() {
+	//do it
 }
