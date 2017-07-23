@@ -7,6 +7,7 @@
 #include "Shared/Maps/Map.hpp"
 #include "Shared/Maps/Tileset.hpp"
 #include "Shared/GUI/WrappingBox.hpp"
+#include "Editor/Helpers/LayerButtons.hpp"
 
 extern sfg::SFGUI sfgui;
 extern sf::RenderWindow sfWindow;
@@ -22,19 +23,18 @@ extern sf::RenderWindow sfWindow;
  */
 class MapEditor {
 	//Editor
-	sfg::Box::Ptr container;
+	sfg::Box::Ptr container, page;
 	sfg::Notebook::Ptr tabs;
 	sfg::Canvas::Ptr mapArea;
 	sf::RenderTexture mapAreaTarget;
 	sf::Sprite mapAreaSprite;
 
-	//General page
-	sfg::Box::Ptr generalPage;
+	//General area
+	sfg::Label::Ptr nameLabel, widthLabel,  heightLabel, firstyLabel, firsttopLabel, musicLabel, posLabel;
     sfg::Button::Ptr newBut, loadBut, saveBut, propsBut, noneBut, allBut;
     sfg::RadioButton::Ptr aiBut, itmBut, spwnBut, lightBut, evtBut, colsBut, setBut, selBut;
     sfg::Button::Ptr addLayerBut, delLayerBut;
-    sfg::Box::Ptr layerBox;
-    std::vector<sfg::Button::Ptr> layerButs;
+    LayerButtons layerButtons;
 
     //Tiles page
     sfg::ScrolledWindow::Ptr tilesPageScroll;
@@ -65,6 +65,11 @@ class MapEditor {
     sf::Vector2i selCorner1, selCorner2;
 
     //Helper functions
+
+    /**
+     * Returns the position of the mouse on the map
+     */
+	sf::Vector2i getMouseTilePos();
 
     /**
      * Applies the current operation to the selection
@@ -120,6 +125,11 @@ class MapEditor {
 	 * Updates the clicked tile based on the current tool
 	 */
 	void mapClicked();
+
+	/**
+	 * Updates the info labels
+	 */
+	void updateInfo();
 
 	/**
 	 * Updates the currently selected tile or animation

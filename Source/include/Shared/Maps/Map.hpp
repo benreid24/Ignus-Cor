@@ -25,6 +25,7 @@ struct Tile {
     Tile() {
         nonZero = false;
         isAnim = false;
+        delA = false;
     }
     bool isAnim, nonZero, delA;
     Animation* anim;
@@ -242,6 +243,14 @@ public:
      * \param target The target to render to
      */
     void draw(sf::RenderTarget& target);
+
+    /**
+     * Renders the world to the given target using a filter for layers
+     *
+     * \param target The target to render to
+     * \param layerList The layers to draw
+     */
+    void draw(sf::RenderTarget& target, std::vector<int> layerList);
 
     /**
      * Sets the camera position based on the players position while making sure that nothing off-map gets rendered

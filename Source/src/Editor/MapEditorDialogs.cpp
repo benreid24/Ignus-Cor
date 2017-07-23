@@ -1,4 +1,5 @@
 #include <iostream>
+#include <direct.h>
 #include "Editor/MapEditor.hpp"
 #include "Shared/Util/Util.hpp"
 #include "Shared/Util/File.hpp"
@@ -148,7 +149,7 @@ void MapEditor::newMap() {
 		}
         desktop.Update(30/1000);
         form.update();
-        if (goPressed) {
+        if (goPressed || Keyboard::isKeyPressed(Keyboard::Return)) {
 			string name = form.getField("name");
 			string subfolder = form.getField("folder");
 			int w = form.getFieldAsInt("width");
@@ -159,21 +160,16 @@ void MapEditor::newMap() {
 
 			if (w!=0 && h!=0 && nLayers!=0 && firstY!=0 && firstTop!=0 && name.size()!=0) {
 				save();
+				mkdir(string(Properties::MapPath+subfolder).c_str());
 				if (mapData!=nullptr)
 					delete mapData;
 				if (entityManager!=nullptr)
 					delete entityManager;
-				layerBox->RemoveAll();
+				layerButtons.clear();
 
                 entityManager = new EntityManager();
 				mapData = new Map(name,Vector2i(w,h),tileset,&soundEngine,entityManager,nLayers,firstY,firstTop);
-				RadioButton::Ptr but = RadioButton::Create("Layer 0");
-				layerBox->Pack(but,false,false);
-				for (int i = 1; i<nLayers; ++i) {
-                    RadioButton::Ptr t = RadioButton::Create("Layer "+intToString(i));
-                    t->SetGroup(but->GetGroup());
-                    layerBox->Pack(t,false,false);
-				}
+				layerButtons.setLayers(nLayers);
 				break;
 			}
 			goPressed = false;

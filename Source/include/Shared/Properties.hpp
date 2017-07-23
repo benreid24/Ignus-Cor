@@ -19,7 +19,7 @@ public:
     const static int TilesWide = 25;
     const static int TilesTall = 19;
     #else
-    const static int ScreenWidth = 1130;
+    const static int ScreenWidth = 1140;
     const static int ScreenHeight = 860;
     const static int TilesWide = 40;
     const static int TilesTall = 27;

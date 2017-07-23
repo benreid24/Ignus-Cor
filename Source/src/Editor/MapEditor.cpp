@@ -16,16 +16,39 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
 
 	container = Box::Create();
 	tabs = Notebook::Create();
-	tabs->SetRequisition(Vector2f(300,860));
+	tabs->SetRequisition(Vector2f(300,560));
 	mapArea = Canvas::Create();
 	mapArea->SetRequisition(Vector2f(Properties::ScreenWidth,Properties::ScreenHeight));
 	mapArea->GetSignal(Canvas::OnLeftClick).Connect( [me] { me->mapClicked(); });
-	container->Pack(tabs);
+	page = Box::Create(Box::Orientation::VERTICAL, 5);
+	container->Pack(page);
+	container->Pack(Separator::Create(Separator::Orientation::VERTICAL),false,false);
 	container->Pack(mapArea);
 	mapAreaTarget.create(Properties::ScreenWidth,Properties::ScreenHeight);
 	mapAreaSprite.setTexture(mapAreaTarget.getTexture());
+	mapAreaSprite.setScale(1,-1);
+	mapAreaSprite.setPosition(0,Properties::ScreenHeight);
 
-	generalPage = Box::Create(Box::Orientation::VERTICAL, 5);
+	Box::Ptr genInfoBox = Box::Create(Box::Orientation::HORIZONTAL,15);
+	nameLabel = Label::Create("Name: ");
+	genInfoBox->Pack(nameLabel,false,false);
+	widthLabel = Label::Create("Width: ");
+	genInfoBox->Pack(widthLabel,false,false);
+	heightLabel = Label::Create("Height: ");
+	genInfoBox->Pack(heightLabel,false,false);
+	firstyLabel = Label::Create("First Y-Sort Layer: ");
+	genInfoBox->Pack(firstyLabel,false,false);
+	page->Pack(genInfoBox,false,false);
+	genInfoBox = Box::Create(Box::Orientation::HORIZONTAL,15);
+	firsttopLabel = Label::Create("First Top Layer: ");
+	genInfoBox->Pack(firsttopLabel,false,false);
+	musicLabel = Label::Create("Playlist: ");
+	genInfoBox->Pack(musicLabel,false,false);
+	posLabel = Label::Create("Position: (0,0)");
+	genInfoBox->Pack(posLabel,false,false);
+	page->Pack(genInfoBox,false,false);
+	page->Pack(Separator::Create(),false,false);
+
 	newBut = Button::Create("New");
 	newBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->newMap(); });
 	loadBut = Button::Create("Load");
@@ -59,8 +82,8 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
     genCtrlBox->Pack(propsBut, false, false);
     genCtrlBox->Pack(noneBut, false, false);
     genCtrlBox->Pack(allBut, false, false);
-    generalPage->Pack(genCtrlBox, false, false);
-    generalPage->Pack(Separator::Create(), false, false);
+    page->Pack(genCtrlBox, false, false);
+    page->Pack(Separator::Create(), false, false);
 
     Box::Ptr toolTypeBox = Box::Create(Box::Orientation::HORIZONTAL, 5);
     toolTypeBox->Pack(Label::Create("Mode:"), false, false);
@@ -71,18 +94,15 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
     toolTypeBox->Pack(lightBut, false, false);
     toolTypeBox->Pack(aiBut, false, false);
     toolTypeBox->Pack(spwnBut, false, false);
-    generalPage->Pack(toolTypeBox, false, false);
-    generalPage->Pack(Separator::Create(), false, false);
+    page->Pack(toolTypeBox, false, false);
+    page->Pack(Separator::Create(), false, false);
 
     Box::Ptr layerButBox = Box::Create(Box::Orientation::HORIZONTAL, 5);
     layerButBox->Pack(addLayerBut, true, true);
     layerButBox->Pack(delLayerBut, true, true);
-    generalPage->Pack(layerButBox, false, false);
-    generalPage->Pack(Separator::Create(), false, false);
-
-    layerBox = Box::Create(Box::Orientation::VERTICAL, 5);
-    generalPage->Pack(layerBox, false, false);
-    tabs->AppendPage(generalPage, Label::Create("General"));
+    page->Pack(layerButBox, false, false);
+    page->Pack(Separator::Create(), false, false);
+	layerButtons.addToParent(page);
 
     tilesPage = Box::Create(Box::Orientation::VERTICAL,5);
     tilesPageScroll = ScrolledWindow::Create();
@@ -131,6 +151,7 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
     tabs->AppendPage(animPage, Label::Create("Animations"));
     selectedAnim = 0;
 
+    page->Pack(tabs);
     syncGuiWithTileset();
 
     parent->AppendPage(container, Label::Create("Map Editor"));
@@ -214,6 +235,14 @@ void MapEditor::save() {
 		mapData->save(Properties::MapPath+mapFolder+"/"+mapData->getName()+".map");
 }
 
+void MapEditor::updateInfo() {
+	if (mapData) {
+        nameLabel->SetText("Name: "+mapData->getName());
+        widthLabel->SetText("Width: "+intToString(mapData->getSize().x));
+        heightLabel->SetText("Height: "+intToString(mapData->getSize().y));
+	}
+}
+
 void MapEditor::update() {
 	//this
 }
@@ -222,12 +251,36 @@ void MapEditor::render() {
 	if (mapData) {
 		mapArea->Bind();
 		mapAreaTarget.clear();
-		mapData->draw(mapAreaTarget);
+		mapData->draw(mapAreaTarget,layerButtons.getVisibleLayers());
 		mapArea->Draw(mapAreaSprite);
 		mapArea->Unbind();
 	}
 }
 
+Vector2i MapEditor::getMouseTilePos() {
+	if (!mapData)
+		return Vector2i(-1,-1);
+
+	Vector2i pos = Mouse::getPosition(sfWindow);
+	pos -= Vector2i(mapArea->GetAbsolutePosition());
+	pos += Vector2i(mapData->getCamera());
+	return pos;
+}
+
 void MapEditor::mapClicked() {
-	//do it
+	if (!mapData)
+		return;
+
+	Vector2i pos = getMouseTilePos();
+	pos.x /= 32;
+	pos.y /= 32;
+	bool isAnim = tabs->GetCurrentPage()==1;
+	int id = (isAnim)?(selectedAnim):(selectedTile);
+	int layer = layerButtons.getCurrentLayer();
+	cout << "current layer " << layer << endl;
+	if (layer==-1)
+		return;
+
+	mapData->editTile(pos.x,pos.y,layer,id,isAnim);
+	cout << "Clicked pos: (" << pos.x << "," << pos.y << ") with selected id: " << id << "\n";
 }
