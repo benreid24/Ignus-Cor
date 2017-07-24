@@ -21,20 +21,21 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-Wno-misleading-indentation" />
 					<Add option="-DEDITOR" />
-					<Add directory="C:/Users/Ben/SFGUI-0.3.2/include" />
-					<Add directory="C:/Users/Ben/SFML-2.3.2/include" />
+					<Add directory="C:/Users/Ben/SFGUI/include" />
+					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
 					<Add directory="../../Source/include" />
 				</Compiler>
 				<Linker>
-					<Add library="C:/Users/Ben/SFGUI-0.3.2/lib/libsfgui.a" />
-					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-audio.a" />
-					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-graphics.a" />
-					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-network.a" />
-					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-window.a" />
-					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-system.a" />
-					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-main.a" />
 					<Add library="comdlg32" />
+					<Add library="C:/Users/Ben/SFGUI/lib/libsfgui.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-audio.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-network.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-graphics.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-window.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-system.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-main.a" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -45,21 +46,22 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-Wno-misleading-indentation" />
 					<Add option="-DEDITOR" />
-					<Add directory="C:/Users/Ben/SFGUI-0.3.2/include" />
-					<Add directory="C:/Users/Ben/SFML-2.3.2/include" />
 					<Add directory="../../Source/include" />
+					<Add directory="C:/Users/Ben/SFGUI/include" />
+					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="C:/Users/Ben/SFGUI-0.3.2/lib/libsfgui.a" />
-					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-audio.a" />
-					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-graphics.a" />
-					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-network.a" />
-					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-window.a" />
-					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-system.a" />
-					<Add library="C:/Users/Ben/SFML-2.3.2/lib/libsfml-main.a" />
 					<Add library="comdlg32" />
+					<Add library="C:/Users/Ben/SFGUI/lib/libsfgui.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-audio.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-network.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-graphics.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-window.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-system.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-main.a" />
 				</Linker>
 			</Target>
 		</Build>

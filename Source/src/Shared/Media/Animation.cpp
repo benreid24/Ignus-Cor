@@ -71,8 +71,9 @@ bool AnimationSource::isLooping()
 
 std::vector<sf::Sprite>& AnimationSource::getFrame(int i, Vector2f pos)
 {
-    if (i<0 || unsigned(i)>=frames.size())
+    if (i<0 || unsigned(i)>=frames.size()) {
         return sprites;
+    }
 
 	sprites.resize(frames[i].size());
 	for (unsigned int j = 0; j<frames[i].size(); ++j)
@@ -92,8 +93,9 @@ std::vector<sf::Sprite>& AnimationSource::getFrame(int i, Vector2f pos)
 
 int AnimationSource::incFrame(int cFrm, int lTime)
 {
-    if (cFrm<0 || unsigned(cFrm)>=frames.size())
+    if (cFrm<0 || unsigned(cFrm)>=frames.size()) {
         return 0;
+    }
 
 	if (frames[cFrm].size()==0) //current frame is empty, go to next
 	{

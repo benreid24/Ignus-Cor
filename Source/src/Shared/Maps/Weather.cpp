@@ -142,10 +142,10 @@ int RainWeather::getLightChange()
     return lChng;
 }
 
-void RainWeather::update()
-{
-    if (isDone)
-        return;
+void RainWeather::update() {
+    if (isDone) {
+		return;
+    }
 
 	double dt = Weather::timer.getElapsedTime().asMilliseconds()-lastTime;
 	Vector3f dif(rainVel.x*dt,rainVel.y*dt,rainVel.z*dt);
@@ -274,8 +274,9 @@ int SnowWeather::getLightChange()
 
 void SnowWeather::update()
 {
-    if (isDone)
+    if (isDone) {
         return;
+    }
 
 	double dif = double(Weather::timer.getElapsedTime().asMilliseconds()-lastTime)*fallSpeed;
 	lastTime = Weather::timer.getElapsedTime().asMilliseconds();

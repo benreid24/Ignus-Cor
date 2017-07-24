@@ -2,6 +2,7 @@
 #include "Shared/Properties.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Media/Playlist.hpp"
+#include <cmath>
 using namespace sf;
 using namespace std;
 
@@ -161,7 +162,7 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
         pos.x = input.get<uint32_t>();
         pos.y = input.get<uint32_t>();
         int d = input.get<uint8_t>();
-        if (spName==nm);
+        if (spName==nm)
             player->setPositionAndDirection(pos,d);
 		playerSpawns[nm] = make_pair(pos,d);
     }
@@ -176,11 +177,10 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
     tInt = input.get<uint16_t>();
     for (int i = 0; i<tInt; ++i) {
         Vector2f pos;
-        int dir;
         file = input.getString();
         pos.x = input.get<uint32_t>();
         pos.y = input.get<uint32_t>();
-        dir = input.get<uint8_t>();
+        int dir = input.get<uint8_t>();
         //TODO - load ai and put into EntityManager
     }
 
@@ -266,8 +266,9 @@ Map::~Map() {
 void Map::resetYSorted() {
 	ySortedTiles.clear();
 	ySortedTiles.resize(firstTopLayer-firstYSortLayer);
-    for (unsigned int i = 0; i<ySortedTiles.size(); ++i)
+    for (unsigned int i = 0; i<ySortedTiles.size(); ++i) {
         ySortedTiles[i].setSize(size.x,size.y);
+    }
 
 	for (int i = firstYSortLayer; i<firstTopLayer; ++i) {
 		for (int x = 0; x<size.x; ++x) {
@@ -331,13 +332,13 @@ void Map::save(std::string file) {
     output.write<uint8_t>(weatherType);
     output.write<uint16_t>(weatherFreq);
     output.write<uint16_t>(ambientLightOverride);
-    cout << "meta\n";
 
 	//Save collisions
-    for (int x = 0; x<size.x; ++x)
-        for (int y = 0; y<size.y; ++y)
+    for (int x = 0; x<size.x; ++x) {
+        for (int y = 0; y<size.y; ++y) {
             output.write<uint8_t>(collisions(x,y));
-	cout <<" cols\n";
+        }
+    }
 
 	//Save tiles
     for (unsigned int i = 0; i<layers.size(); ++i) {
@@ -348,7 +349,6 @@ void Map::save(std::string file) {
             }
         }
     }
-    cout << "tiles\n";
 
     //Save player spawns
     output.write<uint16_t>(playerSpawns.size());
@@ -358,7 +358,6 @@ void Map::save(std::string file) {
         output.write<uint32_t>(i->second.first.y);
         output.write<uint8_t>(i->second.second);
     }
-    cout << "spawns\n";
 
     //Save AI
     output.write<uint16_t>(0);
@@ -407,21 +406,19 @@ void Map::save(std::string file) {
         output.write<uint32_t>(lights[i].position.y);
         output.write<uint16_t>(lights[i].radius);
     }
-    cout << "lights\n";
 
     //Load events
     output.write<uint16_t>(events.size());
-    for (int i = 0; i<events.size(); ++i)
+    for (unsigned int i = 0; i<events.size(); ++i)
     {
         output.writeString(events[i].scriptStr);
-        output.write<uint32_t>(events[i].position.x);
-        output.write<uint32_t>(events[i].position.y);
+        output.write<uint32_t>(unsigned(events[i].position.x));
+        output.write<uint32_t>(unsigned(events[i].position.y));
         output.write<uint16_t>(events[i].size.x);
         output.write<uint16_t>(events[i].size.y);
         output.write<uint8_t>(events[i].maxRuns);
         output.write<uint8_t>(events[i].trigger);
     }
-    cout << "Events\n";
 }
 
 void Map::setWeather(int t) {
@@ -639,20 +636,20 @@ void Map::setRenderPosition(sf::Vector2f playerPos) {
 void Map::addLayer(int i) {
 	Vector2D<Tile> layer;
 	layer.setSize(size.x,size.y);
-	if (i>=0 && i<layers.size())
+	if (i>=0 && unsigned(i)<layers.size())
         layers.insert(layers.begin()+i,layer);
 	else
 		layers.push_back(layer);
 }
 
 void Map::removeLayer(int i) {
-	if (i>=0 && i<layers.size()) {
+	if (i>=0 && unsigned(i)<layers.size()) {
 		layers.erase(layers.begin()+i);
-		if (firstTopLayer>=layers.size())
+		if (unsigned(firstTopLayer)>=layers.size())
 			firstTopLayer = layers.size()-1;
 		if (firstTopLayer<0)
 			firstTopLayer = 0;
-		if (firstYSortLayer>=layers.size())
+		if (unsigned(firstYSortLayer)>=layers.size())
 			firstYSortLayer = layers.size()-1;
 		if (firstYSortLayer<0)
 			firstYSortLayer = 0;
@@ -661,7 +658,7 @@ void Map::removeLayer(int i) {
 }
 
 void Map::setFirstYSortLayer(int i) {
-	if (i>=0 && i<layers.size())
+	if (i>=0 && unsigned(i)<layers.size())
 		firstYSortLayer = i;
 }
 
@@ -670,7 +667,7 @@ int Map::getFirstYSortLayer() {
 }
 
 void Map::setFirstTopLayer(int i) {
-	if (i>=0 && i<layers.size())
+	if (i>=0 && unsigned(i)<layers.size())
 		firstTopLayer = i;
 }
 
@@ -889,7 +886,7 @@ void Map::syncAnimTable() {
 }
 
 void Map::clearBrokenTiles() {
-	for (unsigned int i = 0; i<layers.size(); +i) {
+	for (unsigned int i = 0; i<layers.size(); ++i) {
 		for (int x = 0; x<size.x; ++x) {
 			for (int y = 0; y<size.y; ++y) {
 				if (!tileset.getTile(layers[i](x,y).id) && !layers[i](x,y).isAnim) {

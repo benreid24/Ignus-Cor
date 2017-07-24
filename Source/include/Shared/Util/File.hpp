@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 /**
  * Utility class to load and read binary data files

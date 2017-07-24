@@ -3,10 +3,8 @@
 using namespace std;
 using namespace sf;
 
-namespace
-{
-    void scriptRunner(shared_ptr<ScriptData> d)
-    {
+namespace {
+    void scriptRunner(shared_ptr<ScriptData> d) {
         d->script->run(d->owner);
         d->finished = true;
     }
