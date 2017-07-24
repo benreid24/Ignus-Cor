@@ -235,8 +235,13 @@ void MapEditor::removeTile() {
 
 void MapEditor::save() {
 	tileset.save();
-	if (mapData!=nullptr)
-		mapData->save(Properties::MapPath+mapFolder+"/"+mapData->getName()+".map");
+	if (mapData!=nullptr) {
+		string file = Properties::MapPath;
+		if (mapFolder.size()>0)
+			file += mapFolder+"/";
+		file += mapData->getName()+".map";
+		mapData->save(file);
+	}
 }
 
 void MapEditor::updateInfo() {

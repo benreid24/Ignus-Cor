@@ -38,7 +38,7 @@ int main() {
 		mapEditor.update();
 		timer.restart();
 
-		sfWindow.clear();
+		sfWindow.clear(Color(30,30,30));
 		sfgui.Display(sfWindow);
 		mapEditor.render();
 		sfWindow.display();

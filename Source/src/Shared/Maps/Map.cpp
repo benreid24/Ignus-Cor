@@ -40,6 +40,7 @@ Map::Map(string nm, Vector2i sz, Tileset& tlst, SoundEngine* se, EntityManager* 
 		layers.push_back(Vector2D<Tile>());
 		layers[layers.size()-1].setSize(size.x,size.y);
 	}
+	collisions.setSize(size.x,size.y);
 	resetYSorted();
 	entityManager->setMapHeight(size.y);
 }
@@ -309,7 +310,7 @@ void Map::loadGame(File* loadFrom) {
 
 void Map::save(std::string file) {
 	//Open file
-    File output(file);
+    File output(file,File::Out);
 
     //Write name and music
     output.writeString(name);
@@ -330,11 +331,13 @@ void Map::save(std::string file) {
     output.write<uint8_t>(weatherType);
     output.write<uint16_t>(weatherFreq);
     output.write<uint16_t>(ambientLightOverride);
+    cout << "meta\n";
 
 	//Save collisions
     for (int x = 0; x<size.x; ++x)
         for (int y = 0; y<size.y; ++y)
             output.write<uint8_t>(collisions(x,y));
+	cout <<" cols\n";
 
 	//Save tiles
     for (unsigned int i = 0; i<layers.size(); ++i) {
@@ -345,6 +348,7 @@ void Map::save(std::string file) {
             }
         }
     }
+    cout << "tiles\n";
 
     //Save player spawns
     output.write<uint16_t>(playerSpawns.size());
@@ -354,6 +358,7 @@ void Map::save(std::string file) {
         output.write<uint32_t>(i->second.first.y);
         output.write<uint8_t>(i->second.second);
     }
+    cout << "spawns\n";
 
     //Save AI
     output.write<uint16_t>(0);
@@ -402,6 +407,7 @@ void Map::save(std::string file) {
         output.write<uint32_t>(lights[i].position.y);
         output.write<uint16_t>(lights[i].radius);
     }
+    cout << "lights\n";
 
     //Load events
     output.write<uint16_t>(events.size());
@@ -415,6 +421,7 @@ void Map::save(std::string file) {
         output.write<uint8_t>(events[i].maxRuns);
         output.write<uint8_t>(events[i].trigger);
     }
+    cout << "Events\n";
 }
 
 void Map::setWeather(int t) {
