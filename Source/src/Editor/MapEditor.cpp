@@ -19,7 +19,6 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
 	tabs->SetRequisition(Vector2f(300,560));
 	mapArea = Canvas::Create();
 	mapArea->SetRequisition(Vector2f(Properties::ScreenWidth,Properties::ScreenHeight));
-	mapArea->GetSignal(Canvas::OnLeftClick).Connect( [me] { me->mapClicked(); });
 	page = Box::Create(Box::Orientation::VERTICAL, 5);
 	container->Pack(page);
 	container->Pack(Separator::Create(Separator::Orientation::VERTICAL),false,false);
@@ -44,7 +43,7 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
 	genInfoBox->Pack(firsttopLabel,false,false);
 	musicLabel = Label::Create("Playlist: ");
 	genInfoBox->Pack(musicLabel,false,false);
-	posLabel = Label::Create("Position: (0,0)");
+	posLabel = Label::Create("Position: (-,-)");
 	genInfoBox->Pack(posLabel,false,false);
 	page->Pack(genInfoBox,false,false);
 	page->Pack(Separator::Create(),false,false);
@@ -72,8 +71,12 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
     aiBut->SetGroup(setBut->GetGroup());
     spwnBut = RadioButton::Create("Spawns");
     spwnBut->SetGroup(setBut->GetGroup());
-    addLayerBut = Button::Create("Add Layer");
+    addLayerBeforeBut = Button::Create("Add Layer Before");
+    addLayerBeforeBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->addLayer(0); });
+	addLayerAfterBut = Button::Create("Add Layer After");
+    addLayerAfterBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->addLayer(1); });
     delLayerBut = Button::Create("Delete Layer");
+    delLayerBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->removeLayer(); });
 
     Box::Ptr genCtrlBox = Box::Create(Box::Orientation::HORIZONTAL, 5);
     genCtrlBox->Pack(newBut, false, false);
@@ -98,7 +101,8 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
     page->Pack(Separator::Create(), false, false);
 
     Box::Ptr layerButBox = Box::Create(Box::Orientation::HORIZONTAL, 5);
-    layerButBox->Pack(addLayerBut, true, true);
+    layerButBox->Pack(addLayerBeforeBut, true, true);
+    layerButBox->Pack(addLayerAfterBut, true, true);
     layerButBox->Pack(delLayerBut, true, true);
     page->Pack(layerButBox, false, false);
     page->Pack(Separator::Create(), false, false);
@@ -240,11 +244,40 @@ void MapEditor::updateInfo() {
         nameLabel->SetText("Name: "+mapData->getName());
         widthLabel->SetText("Width: "+intToString(mapData->getSize().x));
         heightLabel->SetText("Height: "+intToString(mapData->getSize().y));
+        firstyLabel->SetText("First Y-Sort Layer: "+intToString(mapData->getFirstYSortLayer()));
+        firsttopLabel->SetText("First Top Layer: "+intToString(mapData->getFirstTopLayer()));
+        musicLabel->SetText("Playlist: "+mapData->getMusic());
+        Vector2i pos = Mouse::getPosition(sfWindow);
+		if (pos.x>=mapArea->GetAbsolutePosition().x && pos.y>=mapArea->GetAbsolutePosition().y && pos.x<mapArea->GetAbsolutePosition().x+Properties::ScreenWidth && pos.y<mapArea->GetAbsolutePosition().y+Properties::ScreenHeight) {
+            pos = getMouseTilePos();
+            posLabel->SetText("Position: ("+intToString(pos.x/32)+","+intToString(pos.y/32)+")");
+		}
+		else
+			posLabel->SetText("Position: (-,-)");
 	}
 }
 
 void MapEditor::update() {
-	//this
+	int moveAmount = Keyboard::isKeyPressed(Keyboard::Space)?(2):(1);
+	if (Keyboard::isKeyPressed(Keyboard::Right)) {
+		//move right
+	}
+	if (Keyboard::isKeyPressed(Keyboard::Left)) {
+		//move left
+	}
+	if (Keyboard::isKeyPressed(Keyboard::Up)) {
+		//move up
+	}
+	if (Keyboard::isKeyPressed(Keyboard::Down)) {
+		//move down
+	}
+
+	if (Mouse::isButtonPressed(Mouse::Left)) {
+		Vector2i pos = Mouse::getPosition(sfWindow);
+		if (pos.x>=mapArea->GetAbsolutePosition().x && pos.y>=mapArea->GetAbsolutePosition().y && pos.x<mapArea->GetAbsolutePosition().x+Properties::ScreenWidth && pos.y<mapArea->GetAbsolutePosition().y+Properties::ScreenHeight)
+			mapClicked();
+	}
+	updateInfo();
 }
 
 void MapEditor::render() {
@@ -277,10 +310,26 @@ void MapEditor::mapClicked() {
 	bool isAnim = tabs->GetCurrentPage()==1;
 	int id = (isAnim)?(selectedAnim):(selectedTile);
 	int layer = layerButtons.getCurrentLayer();
-	cout << "current layer " << layer << endl;
 	if (layer==-1)
 		return;
 
 	mapData->editTile(pos.x,pos.y,layer,id,isAnim);
 	cout << "Clicked pos: (" << pos.x << "," << pos.y << ") with selected id: " << id << "\n";
+}
+
+void MapEditor::addLayer(int o) {
+	if (mapData) {
+		int layer = layerButtons.getCurrentLayer();
+		if (layer!=-1)
+			layer += o;
+		layerButtons.addLayer();
+		mapData->addLayer(layer);
+	}
+}
+
+void MapEditor::removeLayer() {
+	if (mapData && layerButtons.getCurrentLayer()!=-1) {
+		mapData->removeLayer(layerButtons.getCurrentLayer());
+		layerButtons.removeLayer();
+	}
 }

@@ -72,6 +72,7 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
     file = input.getString();
     if (file.size() && plst)
 		plst->load(Properties::PlaylistPath+file);
+	music = file;
     addVisitedMap(name);
 
     //Load scripts
@@ -538,8 +539,12 @@ void Map::removeLayer(int i) {
 		layers.erase(layers.begin()+i);
 		if (firstTopLayer>=layers.size())
 			firstTopLayer = layers.size()-1;
+		if (firstTopLayer<0)
+			firstTopLayer = 0;
 		if (firstYSortLayer>=layers.size())
 			firstYSortLayer = layers.size()-1;
+		if (firstYSortLayer<0)
+			firstYSortLayer = 0;
 		resetYSorted();
 	}
 }
@@ -560,6 +565,10 @@ void Map::setFirstTopLayer(int i) {
 
 int Map::getFirstTopLayer() {
 	return firstTopLayer;
+}
+
+string& Map::getMusic() {
+	return music;
 }
 
 Vector2f Map::getCamera() {

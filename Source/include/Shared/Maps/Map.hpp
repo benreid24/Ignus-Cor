@@ -75,6 +75,7 @@ class Map {
 	sf::Vector2i size;
 	Tileset& tileset;
 	EntityManager* entityManager;
+	std::string music;
 
 	std::map<int,Animation*> animTable;
     std::vector<Vector2D<Tile> > layers;
@@ -211,6 +212,11 @@ public:
 	 * Returns the first top layer
 	 */
 	int getFirstTopLayer();
+
+	/**
+	 * Returns a reference to the filename of the playlist to use
+	 */
+	std::string& getMusic();
 
     /**
      * Sets the current weather. See Weather::Type for legal values to pass

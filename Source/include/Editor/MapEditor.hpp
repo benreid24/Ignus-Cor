@@ -33,7 +33,7 @@ class MapEditor {
 	sfg::Label::Ptr nameLabel, widthLabel,  heightLabel, firstyLabel, firsttopLabel, musicLabel, posLabel;
     sfg::Button::Ptr newBut, loadBut, saveBut, propsBut, noneBut, allBut;
     sfg::RadioButton::Ptr aiBut, itmBut, spwnBut, lightBut, evtBut, colsBut, setBut, selBut;
-    sfg::Button::Ptr addLayerBut, delLayerBut;
+    sfg::Button::Ptr addLayerBeforeBut, addLayerAfterBut, delLayerBut;
     LayerButtons layerButtons;
 
     //Tiles page
@@ -97,6 +97,16 @@ class MapEditor {
 	void save();
 
 	/**
+	 * Adds a layer
+	 */
+	void addLayer(int offset);
+
+	/**
+	 * Removes the selected layer
+	 */
+	void removeLayer();
+
+	/**
 	 * GUI function to add tile
 	 */
 	void addTile();
@@ -132,7 +142,7 @@ class MapEditor {
 	void updateInfo();
 
 	/**
-	 * Updates the currently selected tile or animation
+	 * Updates the selected tile or animation
 	 */
 	void updateSelected(const std::string& type, int id);
 
