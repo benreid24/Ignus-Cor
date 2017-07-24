@@ -87,6 +87,7 @@ class Map {
     sf::Vector2f camPos;
     sf::Vector2i camPosTiles;
 
+    std::map<std::string,std::pair<sf::Vector2f,int> > playerSpawns;
     static std::string lastMap, curMap;
     static sf::Vector2f lastPos;
     static int lastDir;
@@ -98,12 +99,14 @@ class Map {
     static sf::Sprite lightSpr;
     static sf::VertexArray light;
 
-    static ScriptEnvironment* scriptEnv;
+    int weatherType, weatherFreq;
     static Weather* weather;
+
 	static bool staticMemebersCreated;
 
+	static ScriptEnvironment* scriptEnv;
     ScriptReference unloadScript;
-    std::string unloadScriptStr;
+    std::string unloadScriptStr, loadScriptStr;
 
     /**
      * Private constructor containing common init code
@@ -217,6 +220,16 @@ public:
 	 * Returns a reference to the filename of the playlist to use
 	 */
 	std::string& getMusic();
+
+	/**
+	 * Returns a reference to the string for the load script
+	 */
+	std::string& getLoadScript();
+
+	/**
+	 * Returns a reference to the string for the unload script
+	 */
+	std::string& getUnloadScript();
 
     /**
      * Sets the current weather. See Weather::Type for legal values to pass

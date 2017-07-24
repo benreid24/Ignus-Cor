@@ -65,7 +65,6 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
     //Open file
     File input(Properties::MapPath+file+".map");
     int tInt;
-    string loadScript;
 
     //Load name and music
     name = input.getString();
@@ -76,12 +75,12 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
     addVisitedMap(name);
 
     //Load scripts
-    loadScript = input.getString();
-    file = input.getString();
-	if (File::getExtension(file)=="scr")
-		unloadScript.reset(new Script(Properties::ScriptPath+file));
+    loadScriptStr = input.getString();
+    unloadScriptStr = input.getString();
+	if (File::getExtension(unloadScriptStr)=="scr")
+		unloadScript.reset(new Script(Properties::ScriptPath+unloadScriptStr));
 	else
-		unloadScript.reset(new Script(file));
+		unloadScript.reset(new Script(unloadScriptStr));
 
 	//Load meta data
     size.x = input.get<uint32_t>();
@@ -95,10 +94,10 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
 	//More meta data and weather
     firstYSortLayer = input.get<uint16_t>();
     firstTopLayer = input.get<uint16_t>();
-    tInt = input.get<uint8_t>();
+    weatherType = input.get<uint8_t>();
     Map::weather->enterMap(name);
-    Map::weather->init(Weather::Type(tInt),true);
-    tInt = input.get<uint16_t>(); //TODO - pass weather frequency into weather
+    Map::weather->init(Weather::Type(weatherType),true);
+    weatherFreq = input.get<uint16_t>(); //TODO - pass weather frequency into weather
     ambientLightOverride = input.get<uint16_t>();
 
     //Allocate memory for y-sorted tiles
@@ -153,18 +152,17 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
         }
     }
 
-    //Player spawns
+    //Load player spawns
     tInt = input.get<uint16_t>();
     for (int i = 0; i<tInt; ++i) {
-    	string nm;
         Vector2f pos;
-        int d;
-        nm = input.getString();
+        string nm = input.getString();
         pos.x = input.get<uint32_t>();
         pos.y = input.get<uint32_t>();
-        d = input.get<uint8_t>();
+        int d = input.get<uint8_t>();
         if (spName==nm);
             player->setPositionAndDirection(pos,d);
+		playerSpawns[nm] = make_pair(pos,d);
     }
     if (spName=="prev") {
 		player->setPositionAndDirection(Map::lastPos,Map::lastDir);
@@ -310,7 +308,113 @@ void Map::loadGame(File* loadFrom) {
 }
 
 void Map::save(std::string file) {
-	//TODO - write all data to given file
+	//Open file
+    File output(file);
+
+    //Write name and music
+    output.writeString(name);
+    output.writeString(music);
+
+    //Write scripts
+    output.writeString(loadScriptStr);
+    output.writeString(unloadScriptStr);
+
+	//Save meta data
+    output.write<uint32_t>(size.x);
+    output.write<uint32_t>(size.y);
+    output.write<uint16_t>(layers.size());
+
+	//Save meta data and weather
+    output.write<uint16_t>(firstYSortLayer);
+    output.write<uint16_t>(firstTopLayer);
+    output.write<uint8_t>(weatherType);
+    output.write<uint16_t>(weatherFreq);
+    output.write<uint16_t>(ambientLightOverride);
+
+	//Save collisions
+    for (int x = 0; x<size.x; ++x)
+        for (int y = 0; y<size.y; ++y)
+            output.write<uint8_t>(collisions(x,y));
+
+	//Save tiles
+    for (unsigned int i = 0; i<layers.size(); ++i) {
+        for (int x = 0; x<size.x; ++x) {
+            for (int y = 0; y<size.y; ++y) {
+				output.write<uint8_t>(int(layers[i](x,y).isAnim));
+                output.write<uint16_t>(layers[i](x,y).id);
+            }
+        }
+    }
+
+    //Save player spawns
+    output.write<uint16_t>(playerSpawns.size());
+    for (auto i = playerSpawns.begin(); i!=playerSpawns.end(); ++i) {
+        output.writeString(i->first);
+        output.write<uint32_t>(i->second.first.x);
+        output.write<uint32_t>(i->second.first.y);
+        output.write<uint8_t>(i->second.second);
+    }
+
+    //Save AI
+    output.write<uint16_t>(0);
+    /*for (int i = 0; i<tInt; ++i) { //TODO - save ai according to below format
+        Vector2f pos;
+        int dir;
+        file = output.writeString();
+        pos.x = output.write<uint32_t>();
+        pos.y = output.write<uint32_t>();
+        dir = output.write<uint8_t>();
+        //TODO - load ai and put into EntityManager
+    }*/
+
+    //Save spawners
+    output.write<uint16_t>(0);
+    /*for (int i = 0; i<tInt; ++i) { //TODO - save spawners according to below format
+		int x = output.write<uint32_t>();
+		int y = output.write<uint32_t>();
+		int cldwn = output.write<uint16_t>();
+		int chance = output.write<uint8_t>();
+		int mxAlwd = output.write<uint16_t>();
+		string dFile = output.writeString();
+		//TODO - implement spawners
+    }*/
+
+    //Save items
+    output.write<uint16_t>(0);
+    /*for (int i = 0; i<tInt; ++i) { //TODO - save items according to below format
+        int itemId = output.write<uint16_t>();
+        int mapId = output.write<uint16_t>();
+        Vector2f pos;
+        pos.x = output.write<uint32_t>();
+        pos.y = output.write<uint32_t>();
+        for (unsigned int j = 0; j<pickedUpItems[name].size(); ++j) {
+            if (pickedUpItems[name][j]==mapId)
+                itemId = -1;
+        }
+        if (itemId!=-1);
+            //TODO - implement items
+    }*/
+
+    //Save lights
+    output.write<uint16_t>(lights.size());
+    for (unsigned int i = 0; i<lights.size(); ++i) {
+        output.write<uint32_t>(lights[i].position.x);
+        output.write<uint32_t>(lights[i].position.y);
+        output.write<uint16_t>(lights[i].radius);
+    }
+
+    //Load events
+    output.write<uint16_t>(events.size());
+    for (int i = 0; i<events.size(); ++i)
+    {
+        output.writeString(events[i].scriptStr);
+        output.write<uint32_t>(events[i].position.x);
+        output.write<uint32_t>(events[i].position.y);
+        output.write<uint16_t>(events[i].size.x);
+        output.write<uint16_t>(events[i].size.y);
+        output.write<uint8_t>(events[i].maxRuns);
+        output.write<uint8_t>(events[i].trigger);
+    }
 }
 
 void Map::setWeather(int t) {
