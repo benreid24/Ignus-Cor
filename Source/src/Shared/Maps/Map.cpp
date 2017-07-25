@@ -657,6 +657,10 @@ void Map::removeLayer(int i) {
 	}
 }
 
+int Map::getLayerCount() {
+	return layers.size();
+}
+
 void Map::setFirstYSortLayer(int i) {
 	if (i>=0 && unsigned(i)<layers.size())
 		firstYSortLayer = i;

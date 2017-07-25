@@ -197,6 +197,11 @@ public:
 	void removeLayer(int i);
 
 	/**
+	 * Returns the total number of layers
+	 */
+	int getLayerCount();
+
+	/**
 	 * Sets the first y-sort layer
 	 */
 	void setFirstYSortLayer(int i);

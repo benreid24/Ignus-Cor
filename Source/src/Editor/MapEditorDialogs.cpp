@@ -1,6 +1,7 @@
 #include <iostream>
 #include <direct.h>
 #include "Editor/MapEditor.hpp"
+#include "Editor/Helpers/FilePicker.hpp"
 #include "Shared/Util/Util.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/GUI/ResizableImage.hpp"
@@ -189,5 +190,17 @@ void MapEditor::newMap() {
 }
 
 void MapEditor::loadMap() {
-	//
+	owner->Show(false);
+	FilePicker picker(desktop, "Map", Properties::MapPath, "map");
+	bool rv = picker.pickFile();
+	owner->Show(true);
+	if (rv) {
+		if (mapData) {
+			save();
+			delete mapData;
+		}
+		cout << "Chose: " << picker.getChoice() << endl;
+		mapData = new Map(picker.getChoice(),tileset,entityManager,&soundEngine);
+		layerButtons.setLayers(mapData->getLayerCount());
+	}
 }

@@ -93,7 +93,7 @@ std::string File::getPath(std::string file)
 	std::string ret, temp;
 	for (unsigned int i = 0; i<file.size(); ++i)
 	{
-		if (file[i]=='/')
+		if (file[i]=='/' || file[i]=='\\')
 		{
 			ret += temp+"/";
 			temp.clear();
