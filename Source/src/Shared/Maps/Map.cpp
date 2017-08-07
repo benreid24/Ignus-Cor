@@ -55,7 +55,7 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
 		file = Map::lastMap;
 	Map::lastMap = curMap;
     curMap = file;
-    if (spName!="prev") {
+    if (spName!="prev" && player!=nullptr) {
         Map::lastPos = player->getPosition();
         Map::lastDir = player->getDir()+2;
         if (Map::lastDir>3)
@@ -162,18 +162,19 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
         pos.x = input.get<uint32_t>();
         pos.y = input.get<uint32_t>();
         int d = input.get<uint8_t>();
-        if (spName==nm)
+        if (spName==nm && player!=nullptr)
             player->setPositionAndDirection(pos,d);
 		playerSpawns[nm] = make_pair(pos,d);
     }
-    if (spName=="prev") {
+    if (spName=="prev" && player!=nullptr) {
 		player->setPositionAndDirection(Map::lastPos,Map::lastDir);
 		player->shift(Vector2f(0,32)); //to move down past the door. if spawning in walls, check this line
 	}
-    setRenderPosition(player->getPosition());
+	if (player!=nullptr)
+		setRenderPosition(player->getPosition());
 
     //Load AI
-    entityManager->setMapHeight(size.y);
+	entityManager->setMapHeight(size.y);
     tInt = input.get<uint16_t>();
     for (int i = 0; i<tInt; ++i) {
         Vector2f pos;
@@ -181,7 +182,7 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
         pos.x = input.get<uint32_t>();
         pos.y = input.get<uint32_t>();
         int dir = input.get<uint8_t>();
-        //TODO - load ai and put into EntityManager
+		//TODO - load ai and put into EntityManager
     }
 
     //Load spawners
@@ -224,8 +225,7 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
 
     //Load events
     tInt = input.get<uint16_t>();
-    for (int i = 0; i<tInt; ++i)
-    {
+    for (int i = 0; i<tInt; ++i) {
         MapEvent evt;
         file = input.getString();
         evt.position.x = input.get<uint32_t>();

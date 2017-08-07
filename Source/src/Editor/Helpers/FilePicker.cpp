@@ -67,6 +67,8 @@ FilePicker::FilePicker(Desktop& o, string dname, string searchDir, string extens
 	container->Pack(Separator::Create(Separator::Orientation::VERTICAL),false,false);
 	if (fileButtons.find("Base Directory")!=fileButtons.end())
 		container->Pack(fileButtons["Base Directory"]);
+	else if (fileButtons.size()>0)
+		container->Pack(fileButtons.begin()->second);
 
 	Box::Ptr whole = Box::Create(Box::Orientation::VERTICAL,7);
 	Box::Ptr t = Box::Create(Box::Orientation::HORIZONTAL,5);
@@ -87,9 +89,15 @@ void FilePicker::setChoice(string file) {
 
 void FilePicker::setDirectory(string subDir) {
 	container->RemoveAll();
+	cout << "all gone\n";
 	container->Pack(subDirButtons);
+	cout << "added subdir buts\n";
 	container->Pack(Separator::Create(Separator::Orientation::VERTICAL),false,false);
+	cout << "added sep\n";
 	container->Pack(fileButtons[subDir]);
+	if (fileButtons.find(subDir)==fileButtons.end())
+		cout << "not found\n";
+	cout << "added file buts\n";
 }
 
 void FilePicker::setState(State s) {

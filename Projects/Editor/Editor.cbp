@@ -14,7 +14,7 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		</Option>
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/Editor" prefix_auto="1" extension_auto="1" />
+				<Option output="../../EditorDebug" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../../../Development" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />

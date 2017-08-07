@@ -152,7 +152,7 @@ void MapEditor::newMap() {
         form.update();
         if (goPressed || Keyboard::isKeyPressed(Keyboard::Return)) {
 			string name = form.getField("name");
-			string subfolder = form.getField("folder");
+			mapFolder = form.getField("folder");
 			int w = form.getFieldAsInt("width");
 			int h = form.getFieldAsInt("height");
 			int nLayers = form.getFieldAsInt("nlayers");
@@ -161,7 +161,7 @@ void MapEditor::newMap() {
 
 			if (w!=0 && h!=0 && nLayers!=0 && firstY!=0 && firstTop!=0 && name.size()!=0) {
 				save();
-				mkdir(string(Properties::MapPath+subfolder).c_str());
+				mkdir(string(Properties::MapPath+mapFolder).c_str());
 				if (mapData!=nullptr)
 					delete mapData;
 				if (entityManager!=nullptr)
@@ -195,11 +195,14 @@ void MapEditor::loadMap() {
 	bool rv = picker.pickFile();
 	owner->Show(true);
 	if (rv) {
-		if (mapData) {
+		if (mapData!=nullptr) {
 			save();
 			delete mapData;
 		}
-		cout << "Chose: " << picker.getChoice() << endl;
+		if (entityManager!=nullptr)
+			delete entityManager;
+		layerButtons.clear();
+		entityManager = new EntityManager();
 		mapData = new Map(picker.getChoice(),tileset,entityManager,&soundEngine);
 		layerButtons.setLayers(mapData->getLayerCount());
 	}
