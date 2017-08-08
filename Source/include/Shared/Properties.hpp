@@ -23,6 +23,7 @@ public:
     const static int ScreenHeight = 860;
     const static int TilesWide = 40;
     const static int TilesTall = 27;
+    const static std::string EditorResources;
     #endif
 
     const static std::string GameSavePath;

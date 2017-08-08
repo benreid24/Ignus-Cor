@@ -16,3 +16,7 @@ const std::string Properties::NpcPath;
 const std::string Properties::ConversationPath;
 const std::string Properties::MenuImagePath = "Resources/Media/Images/Menu/";
 const std::string Properties::MiscImagePath = "Resources/Media/Images/Misc/";
+
+#ifdef EDITOR
+const std::string Properties::EditorResources = "Editor/";
+#endif // EDITOR

@@ -9,164 +9,6 @@ using namespace sfg;
 using namespace sf;
 using namespace std;
 
-MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientation::HORIZONTAL,5,6), animBox(Box::Orientation::HORIZONTAL,5,6), desktop(dk), owner(parent) {
-	MapEditor* me = this;
-	mapData = nullptr;
-	entityManager = nullptr;
-
-	container = Box::Create();
-	tabs = Notebook::Create();
-	tabs->SetRequisition(Vector2f(300,560));
-	mapArea = Canvas::Create();
-	mapArea->SetRequisition(Vector2f(Properties::ScreenWidth,Properties::ScreenHeight));
-	page = Box::Create(Box::Orientation::VERTICAL, 5);
-	container->Pack(page);
-	container->Pack(Separator::Create(Separator::Orientation::VERTICAL),false,false);
-	container->Pack(mapArea);
-	mapAreaTarget.create(Properties::ScreenWidth,Properties::ScreenHeight);
-	mapAreaSprite.setTexture(mapAreaTarget.getTexture());
-	mapAreaSprite.setScale(1,-1);
-	mapAreaSprite.setPosition(0,Properties::ScreenHeight);
-
-	Box::Ptr genInfoBox = Box::Create(Box::Orientation::HORIZONTAL,15);
-	nameLabel = Label::Create("Name: ");
-	genInfoBox->Pack(nameLabel,false,false);
-	widthLabel = Label::Create("Width: ");
-	genInfoBox->Pack(widthLabel,false,false);
-	heightLabel = Label::Create("Height: ");
-	genInfoBox->Pack(heightLabel,false,false);
-	firstyLabel = Label::Create("First Y-Sort Layer: ");
-	genInfoBox->Pack(firstyLabel,false,false);
-	page->Pack(genInfoBox,false,false);
-	genInfoBox = Box::Create(Box::Orientation::HORIZONTAL,15);
-	firsttopLabel = Label::Create("First Top Layer: ");
-	genInfoBox->Pack(firsttopLabel,false,false);
-	musicLabel = Label::Create("Playlist: ");
-	genInfoBox->Pack(musicLabel,false,false);
-	posLabel = Label::Create("Position: (-,-)");
-	genInfoBox->Pack(posLabel,false,false);
-	page->Pack(genInfoBox,false,false);
-	page->Pack(Separator::Create(),false,false);
-
-	newBut = Button::Create("New");
-	newBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->newMap(); });
-	loadBut = Button::Create("Load");
-	loadBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->loadMap(); });
-	saveBut = Button::Create("Save");
-	saveBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->save(); });
-	propsBut = Button::Create("Properties");
-	allBut = Button::Create("Select All");
-	noneBut = Button::Create("Clear Selection");
-	setBut = RadioButton::Create("Set");
-	setBut->SetActive(true);
-	selBut = RadioButton::Create("Select");
-	selBut->SetGroup(setBut->GetGroup());
-    colsBut = RadioButton::Create("Collisions");
-    colsBut->SetGroup(setBut->GetGroup());
-    itmBut = RadioButton::Create("Items");
-    itmBut->SetGroup(setBut->GetGroup());
-    lightBut = RadioButton::Create("Lights");
-    lightBut->SetGroup(setBut->GetGroup());
-    aiBut = RadioButton::Create("AI");
-    aiBut->SetGroup(setBut->GetGroup());
-    spwnBut = RadioButton::Create("Spawns");
-    spwnBut->SetGroup(setBut->GetGroup());
-    addLayerBeforeBut = Button::Create("Add Layer Before");
-    addLayerBeforeBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->addLayer(0); });
-	addLayerAfterBut = Button::Create("Add Layer After");
-    addLayerAfterBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->addLayer(1); });
-    delLayerBut = Button::Create("Delete Layer");
-    delLayerBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->removeLayer(); });
-
-    Box::Ptr genCtrlBox = Box::Create(Box::Orientation::HORIZONTAL, 5);
-    genCtrlBox->Pack(newBut, false, false);
-    genCtrlBox->Pack(loadBut, false, false);
-    genCtrlBox->Pack(saveBut, false, false);
-    genCtrlBox->Pack(propsBut, false, false);
-    genCtrlBox->Pack(noneBut, false, false);
-    genCtrlBox->Pack(allBut, false, false);
-    page->Pack(genCtrlBox, false, false);
-    page->Pack(Separator::Create(), false, false);
-
-    Box::Ptr toolTypeBox = Box::Create(Box::Orientation::HORIZONTAL, 5);
-    toolTypeBox->Pack(Label::Create("Mode:"), false, false);
-    toolTypeBox->Pack(setBut, false, false);
-    toolTypeBox->Pack(selBut, false, false);
-    toolTypeBox->Pack(colsBut, false, false);
-    toolTypeBox->Pack(itmBut, false, false);
-    toolTypeBox->Pack(lightBut, false, false);
-    toolTypeBox->Pack(aiBut, false, false);
-    toolTypeBox->Pack(spwnBut, false, false);
-    page->Pack(toolTypeBox, false, false);
-    page->Pack(Separator::Create(), false, false);
-
-    Box::Ptr layerButBox = Box::Create(Box::Orientation::HORIZONTAL, 5);
-    layerButBox->Pack(addLayerBeforeBut, true, true);
-    layerButBox->Pack(addLayerAfterBut, true, true);
-    layerButBox->Pack(delLayerBut, true, true);
-    page->Pack(layerButBox, false, false);
-    page->Pack(Separator::Create(), false, false);
-	layerButtons.addToParent(page);
-
-    tilesPage = Box::Create(Box::Orientation::VERTICAL,5);
-    tilesPageScroll = ScrolledWindow::Create();
-    tilesPageScroll->SetScrollbarPolicy( sfg::ScrolledWindow::HORIZONTAL_AUTOMATIC | sfg::ScrolledWindow::VERTICAL_AUTOMATIC );
-    Box::Ptr tilesCtrl = Box::Create(Box::Orientation::HORIZONTAL,5);
-    addTileBut = Button::Create("Add");
-    addTileBut->GetSignal(Widget::OnLeftClick).Connect( [me] { me->addTile(); });
-    tilesCtrl->Pack(addTileBut,false,false);
-    addTileFolderBut = Button::Create("Add Folder");
-    addTileFolderBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->addTileFolder(); });
-    tilesCtrl->Pack(addTileFolderBut,false,false);
-    delTileBut = Button::Create("Delete");
-    delTileBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->removeTile(); });
-    tilesCtrl->Pack(delTileBut,false,false);
-    tilesPage->Pack(tilesCtrl,false,false);
-    tilesPage->Pack(Separator::Create(),false,false);
-    noTileBut = ToggleButton::Create("None");
-    noTileBut->SetActive(true);
-    noTileBut->GetSignal(ToggleButton::OnToggle).Connect( [me] { me->updateSelected("tile", 0); });
-    tileButs[0] = noTileBut;
-    tileBox.addWidget(noTileBut);
-    tileBox.setParent(tilesPageScroll);
-    tilesPage->Pack(tilesPageScroll);
-    tabs->AppendPage(tilesPage, Label::Create("Tiles"));
-    selectedTile = 0;
-
-    animPage = Box::Create(Box::Orientation::VERTICAL,5);
-    animPageScroll = ScrolledWindow::Create();
-    animPageScroll->SetScrollbarPolicy( sfg::ScrolledWindow::HORIZONTAL_AUTOMATIC | sfg::ScrolledWindow::VERTICAL_AUTOMATIC );
-    Box::Ptr animCtrl = Box::Create(Box::Orientation::HORIZONTAL,5);
-    newAnimBut = Button::Create("Create New");
-    newAnimBut->GetSignal(Widget::OnLeftClick).Connect( [me] { me->createAnim(); });
-    animCtrl->Pack(newAnimBut,false,false);
-    addAnimBut = Button::Create("Import From External Source");
-    addAnimBut->GetSignal(Widget::OnLeftClick).Connect( [me] { me->addAnim(); });
-    animCtrl->Pack(addAnimBut,false,false);
-    loadAnimBut = Button::Create("Import From Existing");
-    loadAnimBut->GetSignal(Widget::OnLeftClick).Connect( [me] { me->loadAnim(); });
-    animCtrl->Pack(loadAnimBut,false,false);
-    delAnimBut = Button::Create("Delete");
-    delAnimBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->removeAnim(); });
-    animCtrl->Pack(delAnimBut,false,false);
-    animPage->Pack(animCtrl,false,false);
-    animPage->Pack(Separator::Create(),false,false);
-    noAnimBut = ToggleButton::Create("None");
-    noAnimBut->SetActive(true);
-    noAnimBut->GetSignal(ToggleButton::OnToggle).Connect( [me] { me->updateSelected("anim", 0); });
-    animButs[0] = noAnimBut;
-    animBox.addWidget(noAnimBut);
-    animBox.setParent(animPageScroll);
-    animPage->Pack(animPageScroll);
-    tabs->AppendPage(animPage, Label::Create("Animations"));
-    selectedAnim = 0;
-
-    page->Pack(tabs);
-    syncGuiWithTileset();
-
-    parent->AppendPage(container, Label::Create("Map Editor"));
-}
-
 void MapEditor::syncGuiWithTileset() {
 	MapEditor* me = this;
 	tileButs.clear();
@@ -319,14 +161,25 @@ void MapEditor::mapClicked() {
 	Vector2i pos = getMouseTilePos();
 	pos.x /= 32;
 	pos.y /= 32;
-	bool isAnim = tabs->GetCurrentPage()==1;
-	int id = (isAnim)?(selectedAnim):(selectedTile);
-	int layer = layerButtons.getCurrentLayer();
-	if (layer==-1)
-		return;
 
-	mapData->editTile(pos.x,pos.y,layer,id,isAnim);
-	cout << "Clicked pos: (" << pos.x << "," << pos.y << ") with selected id: " << id << "\n";
+	if (curTool==Set) {
+		enum CurTab{
+			Tiles = 0,
+			Anims = 1,
+			Collisions = 2
+		}curTab = (CurTab)tabs->GetCurrentPage();
+		if (curTab==Collisions) {
+			//set
+		}
+		else {
+			bool isAnim = curTab==Anims;
+			int id = (isAnim)?(selectedAnim):(selectedTile);
+			int layer = layerButtons.getCurrentLayer();
+			if (layer==-1)
+				return;
+			mapData->editTile(pos.x,pos.y,layer,id,isAnim);
+		}
+	}
 }
 
 void MapEditor::addLayer(int o) {

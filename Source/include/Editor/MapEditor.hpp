@@ -28,11 +28,20 @@ class MapEditor {
 	sfg::Canvas::Ptr mapArea;
 	sf::RenderTexture mapAreaTarget;
 	sf::Sprite mapAreaSprite;
+	enum Tool {
+		Set,
+		Select,
+		Events,
+		AI,
+		Spawns,
+        Items,
+        Lights
+	}curTool;
 
 	//General area
 	sfg::Label::Ptr nameLabel, widthLabel,  heightLabel, firstyLabel, firsttopLabel, musicLabel, posLabel;
     sfg::Button::Ptr newBut, loadBut, saveBut, propsBut, noneBut, allBut;
-    sfg::RadioButton::Ptr aiBut, itmBut, spwnBut, lightBut, evtBut, colsBut, setBut, selBut;
+    sfg::RadioButton::Ptr aiBut, itmBut, spwnBut, lightBut, evtBut, setBut, selBut;
     sfg::Button::Ptr addLayerBeforeBut, addLayerAfterBut, delLayerBut;
     LayerButtons layerButtons;
 
@@ -53,6 +62,12 @@ class MapEditor {
     std::map<int, sfg::ToggleButton::Ptr> animButs;
     WrappingBox animBox;
     int selectedAnim;
+
+    //Collisions page
+    sfg::Box::Ptr collisionPage;
+    std::vector<sfg::ToggleButton::Ptr> collisionButs;
+    WrappingBox collisionBox;
+    int selectedCollision;
 
     //Editor data
     sfg::Desktop& desktop;
@@ -152,9 +167,14 @@ class MapEditor {
 	void updateInfo();
 
 	/**
-	 * Updates the selected tile or animation
+	 * Updates the currently selected tile or animation (GUI button)
 	 */
 	void updateSelected(const std::string& type, int id);
+
+	/**
+	 * Updates the currently active tool
+	 */
+	void updateTool();
 
 public:
 	/**
