@@ -201,6 +201,7 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
 		img.loadFromFile(collisionFiles[i]);
 		ResizableImage::Ptr rImg = ResizableImage::Create(img);
 		collisionButs[i]->SetImage(rImg);
+		collisionButs[i]->GetSignal(ToggleButton::OnToggle).Connect( [me,i] { me->updateSelected("col",i); });
 		collisionBox.addWidget(collisionButs[i]);
     }
     collisionBox.setParent(collisionPage);
@@ -315,7 +316,7 @@ void MapEditor::updateSelected(const string& type, int id) {
 		else if (id==selectedTile && !tileButs[id]->IsActive())
 			tileButs[id]->SetActive(true);
 	}
-	else {
+	else if (type=="anim") {
 		if (id!=selectedAnim && animButs[id]->IsActive()) {
 			int t = selectedAnim;
 			selectedAnim = id;
@@ -323,6 +324,15 @@ void MapEditor::updateSelected(const string& type, int id) {
 		}
 		else if (id==selectedAnim && !animButs[id]->IsActive())
 			animButs[id]->SetActive(true);
+	}
+	else {
+		if (id!=selectedCollision && collisionButs[id]->IsActive()) {
+			int t = selectedCollision;
+			selectedCollision = id;
+			collisionButs[t]->SetActive(false);
+		}
+		else if (id==selectedCollision && !collisionButs[id]->IsActive())
+			collisionButs[id]->SetActive(true);
 	}
 }
 

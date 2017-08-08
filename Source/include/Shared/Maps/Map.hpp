@@ -80,7 +80,10 @@ class Map {
 	std::map<int,Animation*> animTable;
     std::vector<Vector2D<Tile> > layers;
     std::vector<Vector2D<std::pair<int,Tile*> > > ySortedTiles; //here for actual image size
+
     Vector2D<int> collisions;
+	static std::vector<TextureReference> collisionTextures;
+	static sf::Sprite collisionSprite;
 
     std::vector<Light> lights;
     std::vector<MapEvent> events;

@@ -138,7 +138,10 @@ void MapEditor::render() {
 	if (mapData) {
 		mapArea->Bind();
 		mapAreaTarget.clear();
-		mapData->draw(mapAreaTarget,layerButtons.getVisibleLayers());
+		vector<int> layers = layerButtons.getVisibleLayers();
+		if (tabs->GetCurrentPage()==2)
+			layers.push_back(-1);
+		mapData->draw(mapAreaTarget,layers);
 		mapArea->Draw(mapAreaSprite);
 		mapArea->Unbind();
 	}
@@ -169,7 +172,7 @@ void MapEditor::mapClicked() {
 			Collisions = 2
 		}curTab = (CurTab)tabs->GetCurrentPage();
 		if (curTab==Collisions) {
-			//set
+			mapData->setCollision(pos.x,pos.y,selectedCollision);
 		}
 		else {
 			bool isAnim = curTab==Anims;

@@ -6,6 +6,25 @@
 using namespace sf;
 using namespace std;
 
+namespace {
+	const string collisionFiles[16] = {Properties::EditorResources+"none.png",
+									   Properties::EditorResources+"all.png",
+									   Properties::EditorResources+"top.png",
+  									   Properties::EditorResources+"right.png",
+	  								   Properties::EditorResources+"bottom.png",
+		  							   Properties::EditorResources+"left.png",
+									   Properties::EditorResources+"topRight.png",
+									   Properties::EditorResources+"bottomRight.png",
+									   Properties::EditorResources+"bottomLeft.png",
+									   Properties::EditorResources+"topLeft.png",
+									   Properties::EditorResources+"topBottom.png",
+									   Properties::EditorResources+"leftRight.png",
+									   Properties::EditorResources+"noTop.png",
+									   Properties::EditorResources+"noRight.png",
+									   Properties::EditorResources+"noBottom.png",
+									   Properties::EditorResources+"noLeft.png"};
+}
+
 ScriptEnvironment* Map::scriptEnv = nullptr;
 std::vector<std::string> Map::visitedMaps;
 std::map<std::string, std::vector<int> > Map::pickedUpItems;
@@ -17,6 +36,8 @@ sf::Sprite Map::lightSpr;
 sf::VertexArray Map::light(TrianglesFan, 362);
 bool Map::staticMemebersCreated = false;
 int Map::lastDir = 2;
+vector<TextureReference> Map::collisionTextures;
+Sprite Map::collisionSprite;
 
 Map::Map(Tileset& tlst, SoundEngine* se) : tileset(tlst) {
 	if (!Map::staticMemebersCreated) {
@@ -24,6 +45,11 @@ Map::Map(Tileset& tlst, SoundEngine* se) : tileset(tlst) {
 		Map::lightTxtr.create(Properties::ScreenWidth,Properties::ScreenHeight);
 		Map::lightSpr.setTexture(lightTxtr.getTexture());
 		Map::weather = new Weather(nullptr,se);
+		#ifdef EDITOR
+		for (int i = 0; i<16; ++i) {
+            Map::collisionTextures.push_back(imagePool.loadResource(collisionFiles[i]));
+		}
+		#endif
 	}
 }
 
@@ -614,23 +640,43 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter) {
             }
         }
     }
+
+    if (find(filter.begin(),filter.end(),-1)!=filter.end()) {
+		for (int x = camPosTiles.x-10; x<camPosTiles.x+Properties::TilesWide+10; ++x) {
+			if (x>=0 && x<size.x)
+			for (int y = camPosTiles.y-10; y<camPosTiles.y+Properties::TilesTall+10; ++y) {
+				if (y>=0 && y<size.y) {
+					Map::collisionSprite.setTexture(*Map::collisionTextures[collisions(x,y)]);
+					Map::collisionSprite.setPosition(x*32-camPos.x,y*32-camPos.y);
+					target.draw(Map::collisionSprite);
+				}
+			}
+		}
+    }
 }
 
 void Map::setRenderPosition(sf::Vector2f playerPos) {
+	FloatRect bounds(0,0,size.x*32-Properties::ScreenWidth,size.y*32-Properties::ScreenHeight);
+	#ifdef EDITOR
+	bounds.left = bounds.top = -32;
+	bounds.width = size.x*32-Properties::ScreenWidth+32;
+	bounds.height = size.y*32-Properties::ScreenHeight+32;
+	#endif // EDITOR
+
 	camPos = playerPos - Vector2f(Properties::ScreenWidth/2,Properties::ScreenHeight/2);
-    if (camPos.x<32)
-        camPos.x = 32;
-    else if (camPos.x>size.x*32-Properties::ScreenWidth+32)
-        camPos.x = size.x*32-Properties::ScreenWidth+32;
-    if (camPos.y<32)
-        camPos.y = 32;
-    else if (camPos.y>size.y*32-Properties::ScreenHeight+32)
-        camPos.y = size.y*32-Properties::ScreenHeight+32;
+    if (camPos.x<bounds.left)
+        camPos.x = bounds.left;
+    else if (camPos.x>bounds.width)
+        camPos.x = bounds.width;
+    if (camPos.y<bounds.top)
+        camPos.y = bounds.top;
+    else if (camPos.y>bounds.height)
+        camPos.y = bounds.height;
 
     if (Properties::ScreenWidth>=size.x*32)
-        camPos.x = size.x*16-Properties::ScreenWidth/2+32;
+        camPos.x = size.x*16-Properties::ScreenWidth/2;
     if (Properties::ScreenHeight>=size.y*32)
-        camPos.y = size.y*16-Properties::ScreenHeight/2+32;
+        camPos.y = size.y*16-Properties::ScreenHeight/2;
 
     camPosTiles.x = camPos.x/32;
     camPosTiles.y = camPos.y/32;
