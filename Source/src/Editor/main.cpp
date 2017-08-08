@@ -3,11 +3,12 @@
 #include <SFGUI/SFGUI.hpp>
 #include <SFGUI/Widgets.hpp>
 #include "Editor/MapEditor.hpp"
+#include "Editor/version.h"
 using namespace std;
 using namespace sf;
 
 sfg::SFGUI sfgui;
-RenderWindow sfWindow(VideoMode(1600,900,32), "Ignis Cor Editor", Style::Titlebar|Style::Close);
+RenderWindow sfWindow(VideoMode(1600,900,32), string("Ignis Cor Editor ")+AutoVersion::FULLVERSION_STRING, Style::Titlebar|Style::Close);
 
 int main() {
 	sfWindow.resetGLStates();
