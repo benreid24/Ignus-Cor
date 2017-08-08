@@ -48,7 +48,7 @@ class MapEditor {
     //Animations page
     sfg::ScrolledWindow::Ptr animPageScroll;
     sfg::Box::Ptr animPage;
-    sfg::Button::Ptr addAnimBut, delAnimBut;
+    sfg::Button::Ptr newAnimBut, addAnimBut, loadAnimBut, delAnimBut;
     sfg::ToggleButton::Ptr noAnimBut;
     std::map<int, sfg::ToggleButton::Ptr> animButs;
     WrappingBox animBox;
@@ -122,9 +122,19 @@ class MapEditor {
 	void removeTile();
 
 	/**
+	 * GUI function to invoke animation editor to create map anim
+	 */
+	void createAnim();
+
+	/**
 	 * GUI function to add animation
 	 */
 	void addAnim();
+
+	/**
+     * GUI function to import existing animation from global repo of anims
+     */
+	void loadAnim();
 
 	/**
 	 * GUI function to remove an animation

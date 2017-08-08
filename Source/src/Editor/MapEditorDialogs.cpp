@@ -52,6 +52,10 @@ void MapEditor::addTileFolder() {
 	}
 }
 
+void MapEditor::createAnim() {
+	//TODO - create animation editor
+}
+
 void MapEditor::addAnim() {
 	MapEditor* me = this;
 	string f = getFilename("Animation (*.anim)\0 *.anim\0\0",false,false);
@@ -86,6 +90,17 @@ void MapEditor::addAnim() {
 
 	animButs[id] = but;
 	animBox.addWidget(but);
+}
+
+void MapEditor::loadAnim() {
+	owner->Show(false);
+	FilePicker picker(desktop, "Animation", Properties::AnimationPath, "anim");
+
+	if (picker.pickFile()) {
+		string file = picker.getChoice();
+		cout << "Chose " << file << endl;
+	}
+	owner->Show(true);
 }
 
 void MapEditor::updateSelected(const string& type, int id) {
@@ -192,9 +207,8 @@ void MapEditor::newMap() {
 void MapEditor::loadMap() {
 	owner->Show(false);
 	FilePicker picker(desktop, "Map", Properties::MapPath, "map");
-	bool rv = picker.pickFile();
-	owner->Show(true);
-	if (rv) {
+
+	if (picker.pickFile()) {
 		if (mapData!=nullptr) {
 			save();
 			delete mapData;
@@ -206,4 +220,5 @@ void MapEditor::loadMap() {
 		mapData = new Map(picker.getChoice(),tileset,entityManager,&soundEngine);
 		layerButtons.setLayers(mapData->getLayerCount());
 	}
+	owner->Show(true);
 }

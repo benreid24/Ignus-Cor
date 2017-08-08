@@ -137,9 +137,15 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
     animPageScroll = ScrolledWindow::Create();
     animPageScroll->SetScrollbarPolicy( sfg::ScrolledWindow::HORIZONTAL_AUTOMATIC | sfg::ScrolledWindow::VERTICAL_AUTOMATIC );
     Box::Ptr animCtrl = Box::Create(Box::Orientation::HORIZONTAL,5);
-    addAnimBut = Button::Create("Add");
+    newAnimBut = Button::Create("Create New");
+    newAnimBut->GetSignal(Widget::OnLeftClick).Connect( [me] { me->createAnim(); });
+    animCtrl->Pack(newAnimBut,false,false);
+    addAnimBut = Button::Create("Import From External Source");
     addAnimBut->GetSignal(Widget::OnLeftClick).Connect( [me] { me->addAnim(); });
     animCtrl->Pack(addAnimBut,false,false);
+    loadAnimBut = Button::Create("Import From Existing");
+    loadAnimBut->GetSignal(Widget::OnLeftClick).Connect( [me] { me->loadAnim(); });
+    animCtrl->Pack(loadAnimBut,false,false);
     delAnimBut = Button::Create("Delete");
     delAnimBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->removeAnim(); });
     animCtrl->Pack(delAnimBut,false,false);
@@ -263,26 +269,27 @@ void MapEditor::updateInfo() {
 }
 
 void MapEditor::update() {
-	int moveAmount = Keyboard::isKeyPressed(Keyboard::Space)?(2):(1);
-	if (Keyboard::isKeyPressed(Keyboard::Right)) {
-		//move right
-	}
-	if (Keyboard::isKeyPressed(Keyboard::Left)) {
-		//move left
-	}
-	if (Keyboard::isKeyPressed(Keyboard::Up)) {
-		//move up
-	}
-	if (Keyboard::isKeyPressed(Keyboard::Down)) {
-		//move down
-	}
+	if (mapData!=nullptr) {
+		int moveAmount = Keyboard::isKeyPressed(Keyboard::Space)?(2):(1);
+		Vector2f camPos = mapData->getCamera();
+		if (Keyboard::isKeyPressed(Keyboard::Right))
+			camPos.x += 32*moveAmount;
+		if (Keyboard::isKeyPressed(Keyboard::Left))
+			camPos.x -= 32*moveAmount;
+		if (Keyboard::isKeyPressed(Keyboard::Up))
+			camPos.y -= 32*moveAmount;
+		if (Keyboard::isKeyPressed(Keyboard::Down))
+			camPos.y += 32*moveAmount;
+		mapData->setRenderPosition(camPos+Vector2f(Properties::ScreenWidth/2,Properties::ScreenHeight/2));
+		mapData->update();
 
-	if (Mouse::isButtonPressed(Mouse::Left)) {
-		Vector2i pos = Mouse::getPosition(sfWindow);
-		if (pos.x>=mapArea->GetAbsolutePosition().x && pos.y>=mapArea->GetAbsolutePosition().y && pos.x<mapArea->GetAbsolutePosition().x+Properties::ScreenWidth && pos.y<mapArea->GetAbsolutePosition().y+Properties::ScreenHeight)
-			mapClicked();
+		if (Mouse::isButtonPressed(Mouse::Left)) {
+			Vector2i pos = Mouse::getPosition(sfWindow);
+			if (pos.x>=mapArea->GetAbsolutePosition().x && pos.y>=mapArea->GetAbsolutePosition().y && pos.x<mapArea->GetAbsolutePosition().x+Properties::ScreenWidth && pos.y<mapArea->GetAbsolutePosition().y+Properties::ScreenHeight)
+				mapClicked();
+		}
+		updateInfo();
 	}
-	updateInfo();
 }
 
 void MapEditor::render() {

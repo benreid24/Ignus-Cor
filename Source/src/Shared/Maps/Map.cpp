@@ -431,6 +431,9 @@ bool Map::mapVisited(string m) {
 
 void Map::update() {
 	//TODO - update the map
+	for (map<int,Animation*>::iterator i = animTable.begin(); i!=animTable.end(); ++i) {
+		i->second->update();
+	}
 }
 
 void Map::calculateLighting() {
@@ -855,7 +858,7 @@ void Map::editTile(int x, int y, int layer, int nId, bool isAnim) {
 	if (tileset.getTile(nId) && !isAnim)
 		layers[layer](x,y).spr.setTexture(*tileset.getTile(nId));
 	else if (tileset.getAnimation(nId) && isAnim) {
-		layers[layer](x,y).delA = tileset.getAnimation(nId)->isLooping();
+		layers[layer](x,y).delA = !tileset.getAnimation(nId)->isLooping();
 		if (layers[layer](x,y).delA)
 			layers[layer](x,y).anim = new Animation(tileset.getAnimation(nId));
 		else
