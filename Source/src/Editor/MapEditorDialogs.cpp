@@ -295,15 +295,41 @@ void MapEditor::addAnim() {
 }
 
 void MapEditor::loadAnim() {
-	owner->Show(false);
-	FilePicker picker(desktop, "Animation", Properties::AnimationPath, "anim");
+	MapEditor* me = this;
+	FilePicker picker(desktop, owner, "Animation", Properties::AnimationPath, "anim");
 
 	if (picker.pickFile()) {
-		string file = picker.getChoice();
-		cout << "Chose " << file << endl;
-		//TODO - import anim
+		string file = picker.getChoice()+".anim";
+
+		//Determine if we need the spritesheet
+		AnimationSource anim(Properties::AnimationPath+file);
+		string baseName = anim.getSpritesheetFilename();
+		if (!FileExists(Properties::SpriteSheetPath+baseName)) {
+			baseName = getFilename(string(baseName+" (*.png)\0 *.png\0\0").c_str(),false,false);
+			if (baseName.size()==0)
+				return;
+		}
+		else
+			baseName = "NONE";
+
+		int id = tileset.addAnim(Properties::AnimationPath+file,baseName);
+		AnimationReference animSrc = tileset.getAnimation(id);
+		Sprite spr = animSrc->getFrame(0,Vector2f(0,0))[0];
+		RenderTexture render;
+		render.create(spr.getGlobalBounds().width,spr.getGlobalBounds().height);
+		render.draw(spr);
+		render.display();
+		sf::Image img = render.getTexture().copyToImage();
+
+		ToggleButton::Ptr but = ToggleButton::Create(intToString(id));
+		but->GetSignal(ToggleButton::OnToggle).Connect( [me, id] { me->updateSelected("anim", id); });
+		ResizableImage::Ptr sfgImg = ResizableImage::Create(img);
+		sfgImg->Resize(40,40);
+		but->SetImage(sfgImg);
+
+		animButs[id] = but;
+		animBox.addWidget(but);
 	}
-	owner->Show(true);
 }
 
 void MapEditor::updateSelected(const string& type, int id) {
@@ -354,7 +380,7 @@ void MapEditor::updateTool() {
 }
 
 void MapEditor::newMap() {
-	owner->Show(false);
+	owner->SetState(Widget::State::INSENSITIVE);
 
 	sfg::Window::Ptr window = sfg::Window::Create();
 	window->SetRequisition(Vector2f(220,240));
@@ -421,6 +447,7 @@ void MapEditor::newMap() {
         }
         if (cancelPressed)
 			break;
+		desktop.BringToFront(window);
 
         sfWindow.clear();
 		sfgui.Display(sfWindow);
@@ -430,12 +457,11 @@ void MapEditor::newMap() {
 	}
 
     desktop.Remove(window);
-    owner->Show(true);
+    owner->SetState(Widget::State::NORMAL);
 }
 
 void MapEditor::loadMap() {
-	owner->Show(false);
-	FilePicker picker(desktop, "Map", Properties::MapPath, "map");
+	FilePicker picker(desktop, owner, "Map", Properties::MapPath, "map");
 
 	if (picker.pickFile()) {
 		if (mapData!=nullptr) {
@@ -449,5 +475,4 @@ void MapEditor::loadMap() {
 		mapData = new Map(picker.getChoice(),tileset,entityManager,&soundEngine);
 		layerButtons.setLayers(mapData->getLayerCount());
 	}
-	owner->Show(true);
 }

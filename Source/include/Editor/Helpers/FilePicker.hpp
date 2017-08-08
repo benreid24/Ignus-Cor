@@ -22,6 +22,7 @@ class FilePicker {
 	}state;
 
 	sfg::Desktop& owner;
+	sfg::Widget::Ptr parent;
 	sfg::Window::Ptr window;
 	sfg::Box::Ptr container;
 	sfg::Label::Ptr curFile;
@@ -48,7 +49,7 @@ public:
     /**
      * Creates the FilePicker to search the given directory and subdirectories for files with the given extension
      */
-	FilePicker(sfg::Desktop& desktop, std::string dispName, std::string searchDir, std::string extension);
+	FilePicker(sfg::Desktop& desktop, sfg::Widget::Ptr parent, std::string dispName, std::string searchDir, std::string extension);
 
 	/**
 	 * Does the actual GUI stuff

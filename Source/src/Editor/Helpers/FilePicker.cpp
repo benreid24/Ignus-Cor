@@ -9,7 +9,7 @@ using namespace sfg;
 extern sfg::SFGUI sfgui;
 extern sf::RenderWindow sfWindow;
 
-FilePicker::FilePicker(Desktop& o, string dname, string searchDir, string extension) : owner(o) {
+FilePicker::FilePicker(Desktop& o, Widget::Ptr p, string dname, string searchDir, string extension) : owner(o), parent(p) {
 	FilePicker* me = this;
 
 	dispName = dname;
@@ -89,15 +89,9 @@ void FilePicker::setChoice(string file) {
 
 void FilePicker::setDirectory(string subDir) {
 	container->RemoveAll();
-	cout << "all gone\n";
 	container->Pack(subDirButtons);
-	cout << "added subdir buts\n";
 	container->Pack(Separator::Create(Separator::Orientation::VERTICAL),false,false);
-	cout << "added sep\n";
 	container->Pack(fileButtons[subDir]);
-	if (fileButtons.find(subDir)==fileButtons.end())
-		cout << "not found\n";
-	cout << "added file buts\n";
 }
 
 void FilePicker::setState(State s) {
@@ -112,6 +106,8 @@ string FilePicker::getChoice() {
 }
 
 bool FilePicker::pickFile() {
+	parent->SetState(Widget::State::INSENSITIVE);
+
 	while (sfWindow.isOpen() && state==Picking) {
 		sf::Event evt;
 		while (sfWindow.pollEvent(evt)) {
@@ -120,6 +116,7 @@ bool FilePicker::pickFile() {
 			if (evt.type==sf::Event::Closed)
 				sfWindow.close();
 		}
+		owner.BringToFront(window);
         owner.Update(30/1000);
 
         sfWindow.clear();
@@ -128,6 +125,7 @@ bool FilePicker::pickFile() {
 
 		sf::sleep(sf::milliseconds(30));
 	}
+	parent->SetState(Widget::State::NORMAL);
     owner.Remove(window);
     return state==Chosen;
 }
