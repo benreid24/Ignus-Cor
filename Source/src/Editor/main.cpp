@@ -36,12 +36,15 @@ int main() {
 		}
 
 		desktop.Update(timer.getElapsedTime().asSeconds());
-		mapEditor.update();
 		timer.restart();
+
+		if (tabs->GetCurrentPage()==0 && sfWindow.hasFocus()) {
+			mapEditor.update();
+			mapEditor.render();
+		}
 
 		sfWindow.clear(Color(50,50,50));
 		sfgui.Display(sfWindow);
-		mapEditor.render();
 		sfWindow.display();
 		sleep(milliseconds(20));
 	}
