@@ -2,6 +2,7 @@
 #include "Shared/Util/File.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFGUI/SFGUI.hpp>
+#include <SFGUI/RadioButtonGroup.hpp>
 #include <algorithm>
 using namespace std;
 using namespace sfg;
@@ -44,6 +45,8 @@ FilePicker::FilePicker(Desktop& o, Widget::Ptr p, string dname, string searchDir
 	subDirButtons->SetRequisition(sf::Vector2f(200,450));
 	Box::Ptr dirBox = Box::Create(Box::Orientation::VERTICAL,2);
 	subDirButtons->AddWithViewport(dirBox);
+
+	RadioButtonGroup::Ptr butGroup(nullptr);
 	for (map<string,vector<string> >::iterator i = files.begin(); i!=files.end(); ++i) {
 		string d = i->first;
 		Button::Ptr dirBut = Button::Create(d);
@@ -56,7 +59,11 @@ FilePicker::FilePicker(Desktop& o, Widget::Ptr p, string dname, string searchDir
 		fileButtons[i->first]->AddWithViewport(tBox);
 		fileButtons[i->first]->SetRequisition(sf::Vector2f(200,450));
 		for (unsigned int j = 0; j<i->second.size(); ++j) {
-			Button::Ptr but = Button::Create(File::getBaseName(i->second[j]));
+			RadioButton::Ptr but = RadioButton::Create(File::getBaseName(i->second[j]));
+			if (butGroup.get()==nullptr)
+                butGroup = but->GetGroup();
+			else
+				but->SetGroup(butGroup);
 			string f = i->second[j];
 			but->GetSignal(Button::OnLeftClick).Connect( [me,f] { me->setChoice(f); });
 			tBox->Pack(but,false,false);
