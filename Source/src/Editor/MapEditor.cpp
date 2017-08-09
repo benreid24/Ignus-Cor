@@ -175,7 +175,15 @@ void MapEditor::mapClicked() {
 			Collisions = 2
 		}curTab = (CurTab)tabs->GetCurrentPage();
 		if (curTab==Collisions) {
-			mapData->setCollision(pos.x,pos.y,selectedCollision);
+			if (selCorner1.x<0 || selCorner2.x<0)
+				mapData->setCollision(pos.x,pos.y,selectedCollision);
+			else {
+				for (int x = selCorner1.x; x<selCorner2.x; ++x) {
+					for (int y = selCorner1.y; y<selCorner2.y; ++y) {
+						mapData->setCollision(x,y,selectedCollision);
+					}
+				}
+			}
 		}
 		else {
 			bool isAnim = curTab==Anims;
@@ -183,15 +191,23 @@ void MapEditor::mapClicked() {
 			int layer = layerButtons.getCurrentLayer();
 			if (layer==-1)
 				return;
-			mapData->editTile(pos.x,pos.y,layer,id,isAnim);
+			if (selCorner1.x<0 || selCorner2.x<0)
+				mapData->editTile(pos.x,pos.y,layer,id,isAnim);
+			else {
+				for (int x = selCorner1.x; x<selCorner2.x; ++x) {
+					for (int y = selCorner1.y; y<selCorner2.y; ++y) {
+						mapData->editTile(x,y,layer,id,isAnim);
+					}
+				}
+			}
 		}
 	}
 	else if (curTool==Select) {
 		if (selCorner1.x<0)
 			selCorner1 = pos;
 		else if (selCorner2.x<0) {
-			selCorner2.x = max(selCorner1.x,pos.x);
-			selCorner2.y = max(selCorner1.y,pos.y);
+			selCorner2.x = max(selCorner1.x,pos.x)+1; //we add 1 to be inclusive
+			selCorner2.y = max(selCorner1.y,pos.y)+1;
 			selCorner1.x = min(selCorner1.x,pos.x);
             selCorner1.y = min(selCorner1.y,pos.y);
 		}
