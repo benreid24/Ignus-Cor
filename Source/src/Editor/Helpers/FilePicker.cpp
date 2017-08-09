@@ -18,6 +18,7 @@ FilePicker::FilePicker(Desktop& o, Widget::Ptr p, string dname, string searchDir
 	vector<string> rawFiles = listDirectory(searchDir,extension,true);
 	for (unsigned int i = 0; i<rawFiles.size(); ++i) {
 		string dir = File::getPath(rawFiles[i]);
+		string f = File::getBaseName(rawFiles[i]);
 		dir.erase(0,searchDir.size());
 		if (dir[0]=='/')
 			dir.erase(dir.begin());
@@ -25,10 +26,12 @@ FilePicker::FilePicker(Desktop& o, Widget::Ptr p, string dname, string searchDir
 			dir.erase(dir.begin()+dir.size()-1);
 		if (dir.size()==0)
 			dir = "Base Directory";
+		else
+			f = dir+"/"+f;
 
 		if (files.find(dir)==files.end())
 			files[dir] = vector<string>();
-		files[dir].push_back(File::getBaseName(rawFiles[i]));
+		files[dir].push_back(f);
 	}
 
 	window = Window::Create();

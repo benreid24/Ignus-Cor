@@ -277,8 +277,9 @@ public:
      * \param target The target to render to
      * \param layerList The layers to draw
      * \param selection The selection. Set x = -1 for no selection
+     * \param showEvents Whether or not to show events
      */
-    void draw(sf::RenderTarget& target, std::vector<int> layerList, sf::IntRect selection);
+    void draw(sf::RenderTarget& target, std::vector<int> layerList, sf::IntRect selection, bool showEvents);
 
     /**
      * Sets the camera position based on the players position while making sure that nothing off-map gets rendered

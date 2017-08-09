@@ -44,6 +44,10 @@ int Form::getFieldAsInt(string name) {
 	return stringToInt(getField(name));
 }
 
+void Form::setField(string name, string val) {
+	fields[name].second->SetText(val);
+}
+
 void Form::addToParent(Box::Ptr parent) {
 	parent->Pack(container,false,false);
 }

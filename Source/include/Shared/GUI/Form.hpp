@@ -44,6 +44,11 @@ public:
 	int getFieldAsInt(std::string name);
 
 	/**
+	 * Sets the value of the given field
+	 */
+	void setField(std::string name, std::string val);
+
+	/**
 	 * Adds the form GUI elements to the given parent
 	 */
 	void addToParent(sfg::Box::Ptr parent);

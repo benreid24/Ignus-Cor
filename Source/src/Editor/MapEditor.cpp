@@ -144,7 +144,7 @@ void MapEditor::render() {
 		IntRect selection(selCorner1.x,selCorner1.y,selCorner2.x-selCorner1.x,selCorner2.y-selCorner1.y);
 		if (selCorner1.x<0 || selCorner2.x<0)
 			selection.width = selection.height = 0;
-		mapData->draw(mapAreaTarget,layers, selection);
+		mapData->draw(mapAreaTarget,layers, selection, evtBut->IsActive());
 		mapArea->Draw(mapAreaSprite);
 		mapArea->Unbind();
 	}
@@ -217,6 +217,8 @@ void MapEditor::mapClicked() {
 		}
 		sleep(milliseconds(120));
 	}
+	else if (curTool==Events)
+		mapEventHandler(pos);
 }
 
 void MapEditor::addLayer(int o) {

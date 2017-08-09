@@ -21,7 +21,6 @@ int main() {
 	tabs->AppendPage(sfg::Label::Create("make this"),sfg::Label::Create("Animation Editor"));
 	tabs->AppendPage(sfg::Label::Create("make this"),sfg::Label::Create("NPC Editor"));
 	tabs->AppendPage(sfg::Label::Create("make this"),sfg::Label::Create("Conversation Editor"));
-	tabs->AppendPage(sfg::Label::Create("make this"),sfg::Label::Create("Script Editor"));
 
 	desktop.Add(tabs);
 

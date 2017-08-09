@@ -253,7 +253,7 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
     tInt = input.get<uint16_t>();
     for (int i = 0; i<tInt; ++i) {
         MapEvent evt;
-        file = input.getString();
+        evt.scriptStr = input.getString();
         evt.position.x = input.get<uint32_t>();
         evt.position.y = input.get<uint32_t>();
         evt.size.x = input.get<uint16_t>();
@@ -262,10 +262,10 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
         evt.trigger = input.get<uint8_t>();
         evt.runs = 0;
         evt.script.reset(new Script());
-        if (File::getExtension(file)=="scr")
-            evt.script->load(Properties::ScriptPath+file);
+        if (File::getExtension(evt.scriptStr)=="scr")
+            evt.script->load(Properties::ScriptPath+evt.scriptStr);
         else
-            evt.script->load(file);
+            evt.script->load(evt.scriptStr);
 
         if (evt.trigger==0 && Map::scriptEnv)
             Map::scriptEnv->runScript(evt.script);
@@ -433,7 +433,7 @@ void Map::save(std::string file) {
         output.write<uint16_t>(lights[i].radius);
     }
 
-    //Load events
+    //Save events
     output.write<uint16_t>(events.size());
     for (unsigned int i = 0; i<events.size(); ++i)
     {
@@ -556,7 +556,7 @@ void Map::draw(sf::RenderTarget& target) {
     }
 }
 
-void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection) {
+void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection, bool showEvents) {
 	for (int i = 0; i<firstYSortLayer; ++i) {
 		if (find(filter.begin(),filter.end(),i)==filter.end())
 			continue;
@@ -659,6 +659,17 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection) 
 		rect.setFillColor(Color(170,170,20,70));
 		rect.setPosition(selection.left*32-camPos.x,selection.top*32-camPos.y);
 		target.draw(rect);
+    }
+
+    if (showEvents) {
+		RectangleShape rect(Vector2f(32,32));
+		rect.setFillColor(Color(0,0,0,130));
+
+		for (unsigned int i = 0; i<events.size(); ++i) {
+			rect.setPosition(events[i].position.x*32-camPos.x, events[i].position.y*32-camPos.y);
+			rect.setSize(Vector2f(events[i].size.x*32,events[i].size.y*32));
+			target.draw(rect);
+		}
     }
 }
 

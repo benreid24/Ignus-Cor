@@ -177,6 +177,11 @@ class MapEditor {
 	void mapClicked();
 
 	/**
+	 * Handles MapEvent related clicking
+	 */
+	void mapEventHandler(sf::Vector2i clickPos);
+
+	/**
 	 * Updates the info labels
 	 */
 	void updateInfo();
