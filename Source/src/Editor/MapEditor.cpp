@@ -141,7 +141,10 @@ void MapEditor::render() {
 		vector<int> layers = layerButtons.getVisibleLayers();
 		if (tabs->GetCurrentPage()==2)
 			layers.push_back(-1);
-		mapData->draw(mapAreaTarget,layers);
+		IntRect selection(selCorner1.x,selCorner1.y,selCorner2.x-selCorner1.x,selCorner2.y-selCorner1.y);
+		if (selCorner1.x<0 || selCorner2.x<0)
+			selection.width = selection.height = 0;
+		mapData->draw(mapAreaTarget,layers, selection);
 		mapArea->Draw(mapAreaSprite);
 		mapArea->Unbind();
 	}
@@ -154,16 +157,16 @@ Vector2i MapEditor::getMouseTilePos() {
 	Vector2i pos = Mouse::getPosition(sfWindow);
 	pos -= Vector2i(mapArea->GetAbsolutePosition());
 	pos += Vector2i(mapData->getCamera());
+	pos.x /= 32;
+	pos.y /= 32;
+
 	return pos;
 }
 
 void MapEditor::mapClicked() {
 	if (!mapData)
 		return;
-
 	Vector2i pos = getMouseTilePos();
-	pos.x /= 32;
-	pos.y /= 32;
 
 	if (curTool==Set) {
 		enum CurTab{
@@ -183,6 +186,21 @@ void MapEditor::mapClicked() {
 			mapData->editTile(pos.x,pos.y,layer,id,isAnim);
 		}
 	}
+	else if (curTool==Select) {
+		if (selCorner1.x<0)
+			selCorner1 = pos;
+		else if (selCorner2.x<0) {
+			selCorner2.x = max(selCorner1.x,pos.x);
+			selCorner2.y = max(selCorner1.y,pos.y);
+			selCorner1.x = min(selCorner1.x,pos.x);
+            selCorner1.y = min(selCorner1.y,pos.y);
+		}
+		else {
+			selCorner1.x = -1;
+			selCorner2.x = -1;
+		}
+		sleep(milliseconds(120));
+	}
 }
 
 void MapEditor::addLayer(int o) {
@@ -199,5 +217,17 @@ void MapEditor::removeLayer() {
 	if (mapData && layerButtons.getCurrentLayer()!=-1) {
 		mapData->removeLayer(layerButtons.getCurrentLayer());
 		layerButtons.removeLayer();
+	}
+}
+
+void MapEditor::clearSelection() {
+    selCorner1.x = selCorner2.x = -1;
+}
+
+void MapEditor::selectAll() {
+	if (mapData!=nullptr) {
+		selCorner1.x = selCorner1.y = 0;
+		selCorner2.x = mapData->getSize().x;
+		selCorner2.y = mapData->getSize().y;
 	}
 }

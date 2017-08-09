@@ -38,6 +38,7 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
 	mapData = nullptr;
 	entityManager = nullptr;
 	curTool = Set;
+	selCorner1.x = selCorner2.x = -1;
 
 	container = Box::Create();
 	tabs = Notebook::Create();
@@ -80,8 +81,11 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
 	saveBut = Button::Create("Save");
 	saveBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->save(); });
 	propsBut = Button::Create("Properties");
+	propsBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->editProperties(); });
 	allBut = Button::Create("Select All");
+	allBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->selectAll(); });
 	noneBut = Button::Create("Clear Selection");
+	noneBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->clearSelection(); });
 	setBut = RadioButton::Create("Set");
 	setBut->SetActive(true);
 	setBut->GetSignal(RadioButton::OnToggle).Connect( [me] { me->updateTool(); });
@@ -475,4 +479,9 @@ void MapEditor::loadMap() {
 		mapData = new Map(picker.getChoice(),tileset,entityManager,&soundEngine);
 		layerButtons.setLayers(mapData->getLayerCount());
 	}
+}
+
+
+void MapEditor::editProperties() {
+	//TODO - edit properties menu
 }

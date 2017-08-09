@@ -556,7 +556,7 @@ void Map::draw(sf::RenderTarget& target) {
     }
 }
 
-void Map::draw(sf::RenderTarget& target, vector<int> filter) {
+void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection) {
 	for (int i = 0; i<firstYSortLayer; ++i) {
 		if (find(filter.begin(),filter.end(),i)==filter.end())
 			continue;
@@ -652,6 +652,13 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter) {
 				}
 			}
 		}
+    }
+
+    if (selection.left>=0) {
+		RectangleShape rect(Vector2f(selection.width*32,selection.height*32));
+		rect.setFillColor(Color(170,170,20,70));
+		rect.setPosition(selection.left*32-camPos.x,selection.top*32-camPos.y);
+		target.draw(rect);
     }
 }
 

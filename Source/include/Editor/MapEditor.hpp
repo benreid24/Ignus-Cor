@@ -112,6 +112,21 @@ class MapEditor {
 	void save();
 
 	/**
+	 * Opens a window to set map properties
+	 */
+	void editProperties();
+
+	/**
+	 * Sets the selection to be the entire map
+	 */
+	void selectAll();
+
+	/**
+	 * Clears the selection
+	 */
+	void clearSelection();
+
+	/**
 	 * Adds a layer
 	 */
 	void addLayer(int offset);
