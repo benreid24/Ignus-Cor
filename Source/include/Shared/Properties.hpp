@@ -27,21 +27,34 @@ public:
     #endif
 
     const static std::string GameSavePath;
+
     const static std::string MapPath;
     const static std::string TilesetFile;
     const static std::string MapTilePath;
     const static std::string MapAnimPath;
+
+    const static std::string ItemMapImagePath;
+    const static std::string ItemMenuImagePath;
+
     const static std::string AnimationPath;
     const static std::string SpriteSheetPath;
+
     const static std::string ScriptPath;
     const static std::string FontPath;
+
     const static std::string PlaylistPath;
     const static std::string MusicPath;
     const static std::string AudioPath;
+
     const static std::string NpcPath;
     const static std::string ConversationPath;
+
     const static std::string MenuImagePath;
     const static std::string MiscImagePath;
+
+    const static std::string ItemDbFile;
+    const static std::string WeaponDbFile;
+    const static std::string SpellDbFile;
 
     static sf::Font PrimaryMenuFont;
     static sf::Font SecondaryMenuFont;
