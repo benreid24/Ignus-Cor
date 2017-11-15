@@ -103,7 +103,7 @@ void MapEditor::updateInfo() {
         Vector2i pos = Mouse::getPosition(sfWindow);
 		if (pos.x>=mapArea->GetAbsolutePosition().x && pos.y>=mapArea->GetAbsolutePosition().y && pos.x<mapArea->GetAbsolutePosition().x+Properties::ScreenWidth && pos.y<mapArea->GetAbsolutePosition().y+Properties::ScreenHeight) {
             pos = getMouseTilePos();
-            posLabel->SetText("Position: ("+intToString(pos.x/32)+","+intToString(pos.y/32)+")");
+            posLabel->SetText("Position: ("+intToString(pos.x)+","+intToString(pos.y)+")");
 		}
 		else
 			posLabel->SetText("Position: (-,-)");
