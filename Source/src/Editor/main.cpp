@@ -3,6 +3,7 @@
 #include <SFGUI/SFGUI.hpp>
 #include <SFGUI/Widgets.hpp>
 #include "Editor/MapEditor.hpp"
+#include "Editor/ItemDbEditor.hpp"
 #include "Editor/version.h"
 using namespace std;
 using namespace sf;
@@ -17,6 +18,7 @@ int main() {
 
 	sfg::Notebook::Ptr tabs = sfg::Notebook::Create();
 	MapEditor mapEditor(desktop, tabs);
+	ItemDbEditor itemEditor(desktop,tabs);
 
 	tabs->AppendPage(sfg::Label::Create("make this"),sfg::Label::Create("Animation Editor"));
 	tabs->AppendPage(sfg::Label::Create("make this"),sfg::Label::Create("NPC Editor"));

@@ -14,17 +14,19 @@ class CellTable {
 	 * Wrapper struct for row data
      */
 	struct Row {
-		std::vector<sfg::Entry::Ptr> columns;
+		std::vector<sfg::Widget::Ptr> columns;
 		sfg::Button::Ptr delButton;
+		sfg::Box::Ptr container;
 
-		Row(int nCols, sfg::Box::Ptr parent, CellTable* owner);
+		Row(int id, std::vector<std::vector<std::string> > colVals, sfg::Box::Ptr parent, CellTable* owner);
+		Row() = default;
 	};
 
 	std::map<std::string,int> columns; //name -> index
+	std::map<std::string,std::vector<std::string> > columnValues; //name -> list of values. Empty means Entry, otherwise ComboBox
 	std::map<int,Row> rows; //uuid -> row
-	bool dirty; //if data changed since last check
 
-	sfg::Box::Ptr container, titleBox;
+	sfg::Box::Ptr container, titleBox, rowBox;
 	sfg::ScrolledWindow::Ptr cellArea;
 	sfg::Button::Ptr appendBut;
 
@@ -33,21 +35,16 @@ class CellTable {
 	 */
 	void removeRow(int uuid);
 
-	/**
-	 * Called when data is changed
-	 */
-	void dataChanged();
-
 public:
 	/**
 	 * Initializes GUI elements
 	 */
-	CellTable(sfg::Box::Ptr parent);
+	CellTable(sfg::Box::Ptr parent, const std::string& title);
 
 	/**
 	 * Adds a named column to the table
 	 */
-	void appendColumn(const std::string& name);
+	void appendColumn(const std::string& name, std::vector<std::string> values = std::vector<std::string>());
 
 	/**
 	 * Returns the amount of rows in the table
@@ -63,11 +60,6 @@ public:
 	 * Returns the value of the given cell as an int
 	 */
 	int getCellValueAsInt(int index, const std::string& colName);
-
-	/**
-	 * Returns true if data has been modified since this was last called
-	 */
-	bool isDirty();
 
 	/**
 	 * Adds a new row
