@@ -40,7 +40,7 @@ struct Tile {
  */
 struct Light {
     sf::Vector2f position;
-    int radius;
+    int radius, threshold;
 };
 
 /**

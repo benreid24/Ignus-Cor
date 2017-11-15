@@ -491,11 +491,13 @@ void MapEditor::mapEventHandler(Vector2i pos) {
 	defaultEvent.size = Vector2i(1,1);
 	defaultEvent.maxRuns = 0;
 	defaultEvent.trigger = 1; //step in
+	bool newEvt = false;
 
 	MapEvent* evt = mapData->getEvent(pos.x,pos.y);
 	if (evt==nullptr) {
 		mapData->addEvent(defaultEvent);
 		evt = mapData->getEvent(pos.x,pos.y);
+		newEvt = true;
 	}
 
 	owner->SetState(Widget::State::INSENSITIVE);
@@ -565,8 +567,11 @@ void MapEditor::mapEventHandler(Vector2i pos) {
 			mapData->removeEvent(pos.x,pos.y);
 			break;
         }
-        if (cancelPressed)
+        if (cancelPressed) {
+			if (newEvt)
+				mapData->removeEvent(pos.x,pos.y);
 			break;
+        }
 		if (pickPressed) {
 			pickPressed = false;
 			FilePicker picker(desktop, owner, "Script", Properties::ScriptPath, "scr");
