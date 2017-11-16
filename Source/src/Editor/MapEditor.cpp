@@ -167,6 +167,9 @@ void MapEditor::mapClicked() {
 	if (!mapData)
 		return;
 	Vector2i pos = getMouseTilePos();
+	Vector2i pixelPos = Mouse::getPosition(sfWindow);
+	pixelPos -= Vector2i(mapArea->GetAbsolutePosition());
+	pixelPos += Vector2i(mapData->getCamera());
 
 	if (curTool==Set) {
 		enum CurTab{
@@ -219,6 +222,8 @@ void MapEditor::mapClicked() {
 	}
 	else if (curTool==Events)
 		mapEventHandler(pos);
+	else if (curTool==Lights)
+		lightHandler(pixelPos);
 }
 
 void MapEditor::addLayer(int o) {

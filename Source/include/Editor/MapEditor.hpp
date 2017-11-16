@@ -182,6 +182,11 @@ class MapEditor {
 	void mapEventHandler(sf::Vector2i clickPos);
 
 	/**
+	 * Handles Light related clicking. Note: position is in pixels
+	 */
+	void lightHandler(sf::Vector2i pos);
+
+	/**
 	 * Updates the info labels
 	 */
 	void updateInfo();

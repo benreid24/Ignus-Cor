@@ -590,3 +590,83 @@ void MapEditor::mapEventHandler(Vector2i pos) {
     desktop.Remove(window);
     owner->SetState(Widget::State::NORMAL);
 }
+
+void MapEditor::lightHandler(Vector2i pos) {
+	Light defaultLight;
+	defaultLight.position = Vector2f(pos);
+	defaultLight.radius = 75;
+	defaultLight.threshold = 40;
+	bool newLight = false;
+
+	Light* light = mapData->getLight(pos.x,pos.y);
+	if (light==nullptr) {
+		mapData->addLight(defaultLight);
+		light = mapData->getLight(pos.x,pos.y);
+		newLight = true;
+	}
+
+	owner->SetState(Widget::State::INSENSITIVE);
+    sfg::Window::Ptr window = sfg::Window::Create();
+    window->SetTitle("Map Light");
+    Box::Ptr winBox = Box::Create(Box::Orientation::VERTICAL,5);
+	window->Add(winBox);
+	desktop.Add(window);
+
+    Form form;
+    Button::Ptr saveButton(Button::Create("Save")), cancelButton(Button::Create("Cancel")), delButton(Button::Create("Delete"));
+	bool cancelPressed(false), savePressed(false), delPressed(false);
+	delButton->GetSignal(Button::OnLeftClick).Connect( [&delPressed] { delPressed= true; });
+	cancelButton->GetSignal(Button::OnLeftClick).Connect( [&cancelPressed] { cancelPressed = true; });
+	saveButton->GetSignal(Button::OnLeftClick).Connect( [&savePressed] { savePressed = true; });
+
+    form.addField("x","X: ",80,intToString(light->position.x));
+    form.addField("y","Y: ",80,intToString(light->position.y));
+    form.addField("r","Radius: ",80,intToString(light->radius));
+    form.addField("t","Threshold: ",80,intToString(light->threshold));
+    form.addToParent(winBox);
+
+    Box::Ptr butBox = Box::Create(Box::Orientation::HORIZONTAL,5);
+    butBox->Pack(saveButton,false,false);
+    butBox->Pack(delButton,false,false);
+    butBox->Pack(cancelButton,false,false);
+    winBox->Pack(butBox,false,false);
+
+    while (sfWindow.isOpen()) {
+		Event wv;
+		while (sfWindow.pollEvent(wv)) {
+			desktop.HandleEvent(wv);
+
+			if (wv.type==Event::Closed)
+				sfWindow.close();
+		}
+        desktop.Update(30/1000);
+        form.update();
+
+        if (savePressed) {
+			light->position.x = form.getFieldAsInt("x");
+			light->position.y = form.getFieldAsInt("y");
+			light->radius = form.getFieldAsInt("r");
+			light->threshold = form.getFieldAsInt("t");
+			break;
+        }
+        if (delPressed) {
+			mapData->removeLight(pos.x,pos.y);
+			break;
+        }
+        if (cancelPressed) {
+			if (newLight)
+				mapData->removeLight(pos.x,pos.y);
+			break;
+        }
+
+        desktop.BringToFront(window);
+
+        sfWindow.clear();
+		sfgui.Display(sfWindow);
+		sfWindow.display();
+		sleep(milliseconds(30));
+    }
+
+    desktop.Remove(window);
+    owner->SetState(Widget::State::NORMAL);
+}

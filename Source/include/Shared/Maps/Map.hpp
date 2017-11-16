@@ -364,11 +364,14 @@ public:
     /**
      * Adds a light to the world
      *
-     * \param x The x position of the light in world pixels
-     * \param y The y position of the light in world pixels
-     * \param r The radius of the light in pixels
+     * \param l The Light to add
      */
-    void addLight(int x, int y, int r);
+    void addLight(Light l);
+
+    /**
+     * Returns a pointer to the light at the given location
+     */
+	Light* getLight(int x, int y);
 
     /**
      * Removes the light at the given position from the world

@@ -246,6 +246,7 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
         temp.position.x = input.get<uint32_t>();
         temp.position.y = input.get<uint32_t>();
         temp.radius = input.get<uint16_t>();
+        temp.threshold = input.get<uint8_t>();
         lights.push_back(temp);
     }
 
@@ -431,6 +432,7 @@ void Map::save(std::string file) {
         output.write<uint32_t>(lights[i].position.x);
         output.write<uint32_t>(lights[i].position.y);
         output.write<uint16_t>(lights[i].radius);
+        output.write<uint8_t>(lights[i].threshold);
     }
 
     //Save events
@@ -869,12 +871,18 @@ void Map::stopAnimations() {
 	//TODO - stop all animations
 }
 
-void Map::addLight(int x, int y, int r) {
-	Light l;
-	l.position.x = x;
-	l.position.y = y;
-	l.radius = r;
+void Map::addLight(Light l) {
 	lights.push_back(l);
+}
+
+Light* Map::getLight(int x, int y) {
+	for (unsigned int i = 0; i<lights.size(); ++i) {
+		int d = (lights[i].position.x-x)*(lights[i].position.x-x)+(lights[i].position.y-y)*(lights[i].position.y-y);
+		if (d<lights[i].radius*lights[i].radius) {
+			return &lights[i];
+		}
+    }
+    return nullptr;
 }
 
 void Map::removeLight(int x, int y) {
