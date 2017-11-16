@@ -394,6 +394,11 @@ public:
     void setLightingOverride(int o);
 
     /**
+     * Returns the current light override
+     */
+	int getLightOverride();
+
+    /**
      * Edits the tile at the given position to the new id
      *
      * \param x The x position of the tile

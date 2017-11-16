@@ -903,6 +903,10 @@ void Map::setLightingOverride(int o) {
 	ambientLightOverride = o;
 }
 
+int Map::getLightOverride() {
+	return ambientLightOverride;
+}
+
 void Map::editTile(int x, int y, int layer, int nId, bool isAnim) {
 	if (layer>=firstYSortLayer && layer<firstTopLayer) {
 		if (layers[layer](x,y).nonZero) {

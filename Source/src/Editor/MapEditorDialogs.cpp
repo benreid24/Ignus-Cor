@@ -482,7 +482,75 @@ void MapEditor::loadMap() {
 }
 
 void MapEditor::editProperties() {
-	//TODO - edit properties menu
+	if (!mapData)
+		return;
+
+	owner->SetState(Widget::State::INSENSITIVE);
+    sfg::Window::Ptr window = sfg::Window::Create();
+    window->SetTitle("Map Properties");
+    Box::Ptr winBox = Box::Create(Box::Orientation::VERTICAL,5);
+	window->Add(winBox);
+	desktop.Add(window);
+
+	Form form;
+	Button::Ptr pickButton(Button::Create("Pick File")), saveButton(Button::Create("Save")), cancelButton(Button::Create("Cancel"));
+	bool cancelPressed(false), savePressed(false), pickPressed(false);
+	cancelButton->GetSignal(Button::OnLeftClick).Connect( [&cancelPressed] { cancelPressed = true; });
+	saveButton->GetSignal(Button::OnLeftClick).Connect( [&savePressed] { savePressed = true; });
+	pickButton->GetSignal(Button::OnLeftClick).Connect( [&pickPressed] { pickPressed = true; });
+
+	form.addField("w", "Width: ", 80, intToString(mapData->getSize().x));
+	form.addField("h", "Height: ", 80, intToString(mapData->getSize().y));
+	form.addField("fy", "First y-sort: ", 80, intToString(mapData->getFirstYSortLayer()));
+	form.addField("ft", "First Top: ", 80, intToString(mapData->getFirstTopLayer()));
+	form.addField("p", "Playlist: ", 160, mapData->getMusic());
+	form.addField("o", "Light Override: ", 80, intToString(mapData->getLightOverride()));
+	//TODO - weather, load script, unload script
+	form.addToParent(winBox);
+
+	Box::Ptr butBox = Box::Create(Box::Orientation::HORIZONTAL,5);
+	butBox->Pack(pickButton,false,false);
+	butBox->Pack(saveButton,false,false);
+	butBox->Pack(cancelButton,false,false);
+	winBox->Pack(butBox,false,false);
+
+	while (sfWindow.isOpen()) {
+		Event wv;
+		while (sfWindow.pollEvent(wv)) {
+			desktop.HandleEvent(wv);
+
+			if (wv.type==Event::Closed)
+				sfWindow.close();
+		}
+        desktop.Update(30/1000);
+        form.update();
+
+        if (pickPressed) {
+			pickPressed = false;
+			FilePicker picker(desktop, owner, "Playlist", Properties::PlaylistPath, "plst");
+			if (picker.pickFile())
+                form.setField("p",picker.getChoice()+".plst");
+        }
+        if (savePressed) {
+			mapData->getMusic() = form.getField("p");
+			mapData->setFirstTopLayer(form.getFieldAsInt("ft"));
+			mapData->setFirstYSortLayer(form.getFieldAsInt("fy"));
+			mapData->setLightingOverride(form.getFieldAsInt("o"));
+			//TODO - resize
+			break;
+        }
+        if (cancelPressed)
+			break;
+
+        desktop.BringToFront(window);
+        sfWindow.clear();
+		sfgui.Display(sfWindow);
+		sfWindow.display();
+		sleep(milliseconds(30));
+    }
+
+    desktop.Remove(window);
+    owner->SetState(Widget::State::NORMAL);
 }
 
 void MapEditor::mapEventHandler(Vector2i pos) {
@@ -580,7 +648,6 @@ void MapEditor::mapEventHandler(Vector2i pos) {
 		}
 
         desktop.BringToFront(window);
-
         sfWindow.clear();
 		sfgui.Display(sfWindow);
 		sfWindow.display();
@@ -660,7 +727,6 @@ void MapEditor::lightHandler(Vector2i pos) {
         }
 
         desktop.BringToFront(window);
-
         sfWindow.clear();
 		sfgui.Display(sfWindow);
 		sfWindow.display();
