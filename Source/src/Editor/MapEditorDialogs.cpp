@@ -493,23 +493,54 @@ void MapEditor::editProperties() {
 	desktop.Add(window);
 
 	Form form;
-	Button::Ptr pickButton(Button::Create("Pick File")), saveButton(Button::Create("Save")), cancelButton(Button::Create("Cancel"));
-	bool cancelPressed(false), savePressed(false), pickPressed(false);
+	Button::Ptr loadButton(Button::Create("Pick Onload")), unloadButton(Button::Create("Pick Unload"));
+	Button::Ptr plstButton(Button::Create("Pick Playlist")), saveButton(Button::Create("Save")), cancelButton(Button::Create("Cancel"));
+	bool cancelPressed(false), savePressed(false), plstPressed(false), loadPressed(false), unloadPressed(false);
 	cancelButton->GetSignal(Button::OnLeftClick).Connect( [&cancelPressed] { cancelPressed = true; });
 	saveButton->GetSignal(Button::OnLeftClick).Connect( [&savePressed] { savePressed = true; });
-	pickButton->GetSignal(Button::OnLeftClick).Connect( [&pickPressed] { pickPressed = true; });
+	plstButton->GetSignal(Button::OnLeftClick).Connect( [&plstPressed] { plstPressed = true; });
+	loadButton->GetSignal(Button::OnLeftClick).Connect( [&loadPressed] { loadPressed = true; });
+	unloadButton->GetSignal(Button::OnLeftClick).Connect( [&unloadPressed] { unloadPressed = true; });
 
 	form.addField("w", "Width: ", 80, intToString(mapData->getSize().x));
 	form.addField("h", "Height: ", 80, intToString(mapData->getSize().y));
+	form.addField("ol", "Onload Script: ", 160, mapData->getLoadScript());
+	form.addField("ul", "Unload Script: ", 160, mapData->getUnloadScript());
 	form.addField("fy", "First y-sort: ", 80, intToString(mapData->getFirstYSortLayer()));
 	form.addField("ft", "First Top: ", 80, intToString(mapData->getFirstTopLayer()));
 	form.addField("p", "Playlist: ", 160, mapData->getMusic());
 	form.addField("o", "Light Override: ", 80, intToString(mapData->getLightOverride()));
-	//TODO - weather, load script, unload script
+	form.addField("wf", "Weather Freq (0-100): ", 80, intToString(mapData->getWeatherFrequency()));
 	form.addToParent(winBox);
 
+	Box::Ptr box = Box::Create(Box::Orientation::HORIZONTAL,5);
+    ComboBox::Ptr weatherEntry = ComboBox::Create();
+    weatherEntry->AppendItem("None"); //0. Order matters! See Weather::Type
+    weatherEntry->AppendItem("Random");
+    weatherEntry->AppendItem("Light Rain");
+    weatherEntry->AppendItem("Light Rain Thunder");
+    weatherEntry->AppendItem("Hard Rain");
+    weatherEntry->AppendItem("Hard Rain Thunder");
+    weatherEntry->AppendItem("Light Snow");
+    weatherEntry->AppendItem("Light Snow Thunder");
+    weatherEntry->AppendItem("Hard Snow");
+    weatherEntry->AppendItem("Hard Snow Thunder");
+    weatherEntry->AppendItem("Light Fog");
+    weatherEntry->AppendItem("Thick Fog");
+    weatherEntry->AppendItem("Sunny");
+    weatherEntry->AppendItem("Sandstorm");
+    weatherEntry->AppendItem("Random Rain");
+    weatherEntry->AppendItem("Random Snow");
+    weatherEntry->AppendItem("Random Desert");
+    weatherEntry->SelectItem(mapData->getWeatherType());
+    box->Pack(Label::Create("Weather: "),false,false);
+    box->Pack(weatherEntry,false,false);
+    winBox->Pack(box,false,false);
+
 	Box::Ptr butBox = Box::Create(Box::Orientation::HORIZONTAL,5);
-	butBox->Pack(pickButton,false,false);
+	butBox->Pack(plstButton,false,false);
+	butBox->Pack(loadButton,false,false);
+	butBox->Pack(unloadButton,false,false);
 	butBox->Pack(saveButton,false,false);
 	butBox->Pack(cancelButton,false,false);
 	winBox->Pack(butBox,false,false);
@@ -525,8 +556,8 @@ void MapEditor::editProperties() {
         desktop.Update(30/1000);
         form.update();
 
-        if (pickPressed) {
-			pickPressed = false;
+        if (plstPressed) {
+			plstPressed = false;
 			FilePicker picker(desktop, owner, "Playlist", Properties::PlaylistPath, "plst");
 			if (picker.pickFile())
                 form.setField("p",picker.getChoice()+".plst");
@@ -536,8 +567,22 @@ void MapEditor::editProperties() {
 			mapData->setFirstTopLayer(form.getFieldAsInt("ft"));
 			mapData->setFirstYSortLayer(form.getFieldAsInt("fy"));
 			mapData->setLightingOverride(form.getFieldAsInt("o"));
+			mapData->getLoadScript() = form.getField("ol");
+			mapData->getUnloadScript() = form.getField("ul");
+			mapData->getWeatherFrequency() = form.getFieldAsInt("wf");
+			mapData->setWeather(weatherEntry->GetSelectedItem());
 			//TODO - resize
 			break;
+        }
+        if (loadPressed || unloadPressed) {
+			FilePicker picker(desktop, owner, "Script", Properties::ScriptPath, "scr");
+			if (picker.pickFile()) {
+				if (loadPressed)
+					form.setField("ol", picker.getChoice()+".scr");
+				else
+					form.setField("ul", picker.getChoice()+".scr");
+			}
+			loadPressed = unloadPressed = false;
         }
         if (cancelPressed)
 			break;

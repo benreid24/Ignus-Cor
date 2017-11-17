@@ -450,7 +450,24 @@ void Map::save(std::string file) {
 }
 
 void Map::setWeather(int t) {
+	weatherType = t;
 	Map::weather->init(Weather::Type(t),true);
+}
+
+int Map::getWeatherType() {
+	return weatherType;
+}
+
+int& Map::getWeatherFrequency() {
+	return weatherFreq;
+}
+
+string& Map::getLoadScript() {
+	return loadScriptStr;
+}
+
+string& Map::getUnloadScript() {
+	return unloadScriptStr;
 }
 
 bool Map::mapVisited(string m) {
@@ -459,6 +476,8 @@ bool Map::mapVisited(string m) {
 
 void Map::update() {
 	//TODO - update the map
+	Map::weather->update();
+	calculateLighting();
 	for (map<int,Animation*>::iterator i = animTable.begin(); i!=animTable.end(); ++i) {
 		i->second->update();
 	}
@@ -602,24 +621,22 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection, 
     }
 
     weather->draw(target);
-    if (currentLighting>40) {
-        IntRect t(camPos.x-Properties::ScreenWidth/2, camPos.y-Properties::ScreenHeight/2,Properties::ScreenWidth*2,Properties::ScreenHeight*2);
-        lightTxtr.clear(Color(0,0,0,currentLighting));
-        for (unsigned int i = 0; i<lights.size(); ++i) {
-            if (t.contains(Vector2i(lights[i].position))) {
-                light[0].position = lights[i].position - camPos + Vector2f(32,32);
-                light[0].position.y = Properties::ScreenHeight-light[0].position.y;
-                light[0].color = Color::Transparent;
-                for (unsigned int j = 1; j<362; ++j) {
-                    light[j].position = lights[i].position + Vector2f(lights[i].radius*cos(double(j)/180*3.1415926)-camPos.x,lights[i].radius*sin(double(j)/180*3.1415926)-camPos.y);
-                    light[j].color = Color(0,0,0,currentLighting);
-                    light[j].position.y = Properties::ScreenHeight-light[j].position.y;
-                }
-                lightTxtr.draw(light, BlendNone);
-            }
-        }
-        target.draw(lightSpr);
-    }
+	IntRect t(camPos.x-Properties::ScreenWidth/2, camPos.y-Properties::ScreenHeight/2,Properties::ScreenWidth*2,Properties::ScreenHeight*2);
+	lightTxtr.clear(Color(0,0,0,currentLighting));
+	for (unsigned int i = 0; i<lights.size(); ++i) {
+		if (t.contains(Vector2i(lights[i].position)) && currentLighting>=lights[i].threshold) {
+			light[0].position = lights[i].position - camPos + Vector2f(32,32);
+			light[0].position.y = Properties::ScreenHeight-light[0].position.y;
+			light[0].color = Color::Transparent;
+			for (unsigned int j = 1; j<362; ++j) {
+				light[j].position = lights[i].position + Vector2f(lights[i].radius*cos(double(j)/180*3.1415926)-camPos.x,lights[i].radius*sin(double(j)/180*3.1415926)-camPos.y);
+				light[j].color = Color(0,0,0,currentLighting);
+				light[j].position.y = Properties::ScreenHeight-light[j].position.y;
+			}
+			lightTxtr.draw(light, BlendNone);
+		}
+	}
+	target.draw(lightSpr);
 
     for (unsigned int i = firstTopLayer; i<layers.size(); ++i) {
 		if (find(filter.begin(),filter.end(),i)==filter.end())

@@ -208,7 +208,7 @@ void RainWeather::draw(RenderTarget& window)
     {
         if (rainDrops[i].z>0)
         {
-            airSpr.setPosition(rainDrops[i].toScreen(owner->getCamera()));
+            airSpr.setPosition(rainDrops[i].toScreen(owner->getCamera()+Vector2f(Properties::ScreenWidth,Properties::ScreenHeight)));
             window.draw(airSpr);
         }
         else
@@ -216,7 +216,7 @@ void RainWeather::draw(RenderTarget& window)
             int x = (Weather::timer.getElapsedTime().asMilliseconds()-rainDrops[i].time)/60;
             if (x>1)
                 x = 1;
-            splashSpr[x].setPosition(rainDrops[i].toScreen(owner->getCamera()));
+            splashSpr[x].setPosition(rainDrops[i].toScreen(owner->getCamera()+Vector2f(Properties::ScreenWidth,Properties::ScreenHeight)));
             window.draw(splashSpr[x]);
         }
     }
@@ -352,7 +352,7 @@ void SnowWeather::draw(RenderTarget& window)
 {
     for (unsigned int i = 0; i<flakes.size(); ++i)
     {
-        spr.setPosition(flakes[i].toScreen(owner->getCamera()));
+        spr.setPosition(flakes[i].toScreen(owner->getCamera()+Vector2f(Properties::ScreenWidth,Properties::ScreenHeight)));
         if (flakes[i].time!=0)
             spr.setColor(Color(255,255,255,255-255*(double(Weather::timer.getElapsedTime().asMilliseconds()-flakes[i].time)/double(lifeTime))));
         else

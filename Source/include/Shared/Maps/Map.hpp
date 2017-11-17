@@ -247,6 +247,16 @@ public:
     void setWeather(int t);
 
     /**
+     * Returns the current weather type
+     */
+	int getWeatherType();
+
+	/**
+	 * Returns a reference to the frequency of the weather
+	 */
+	int& getWeatherFrequency();
+
+    /**
      * Tells whether or not the given map has been visited
      *
      * \param m The name of the map to check
