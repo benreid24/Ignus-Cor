@@ -537,6 +537,22 @@ void MapEditor::editProperties() {
     box->Pack(weatherEntry,false,false);
     winBox->Pack(box,false,false);
 
+    box = Box::Create(Box::Orientation::HORIZONTAL,5);
+    RadioButton::Ptr topBut = RadioButton::Create("Top");
+	topBut->SetActive(true);
+	RadioButton::Ptr botBut = RadioButton::Create("Bottom");
+	botBut->SetGroup(topBut->GetGroup());
+    RadioButton::Ptr leftBut = RadioButton::Create("Left");
+    leftBut->SetActive(true);
+    RadioButton::Ptr rightBut = RadioButton::Create("Right");
+    rightBut->SetGroup(leftBut->GetGroup());
+    box->Pack(Label::Create("Add/Remove To/From: "));
+    box->Pack(topBut,false,false);
+    box->Pack(botBut,false,false);
+    box->Pack(leftBut,false,false);
+    box->Pack(rightBut,false,false);
+    winBox->Pack(box,false,false);
+
 	Box::Ptr butBox = Box::Create(Box::Orientation::HORIZONTAL,5);
 	butBox->Pack(plstButton,false,false);
 	butBox->Pack(loadButton,false,false);
@@ -571,7 +587,7 @@ void MapEditor::editProperties() {
 			mapData->getUnloadScript() = form.getField("ul");
 			mapData->getWeatherFrequency() = form.getFieldAsInt("wf");
 			mapData->setWeather(weatherEntry->GetSelectedItem());
-			//TODO - resize
+			mapData->resize(Vector2i(form.getFieldAsInt("w"),form.getFieldAsInt("h")),topBut->IsActive(),leftBut->IsActive());
 			break;
         }
         if (loadPressed || unloadPressed) {

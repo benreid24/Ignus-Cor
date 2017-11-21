@@ -20,7 +20,7 @@ Tileset::Tileset() {
 		f = loader.getString();
 		tileFiles.insert(make_pair(i,f));
 		tiles.insert(make_pair(i,imagePool.loadResource(Properties::MapTilePath+f)));
-		if (i>nextTileId)
+		if (i>=nextTileId)
 			nextTileId = i+1;
     }
 
@@ -29,7 +29,7 @@ Tileset::Tileset() {
         f = loader.getString();
         animFiles.insert(make_pair(i,f));
         anims.insert(make_pair(i,animPool.loadResource(Properties::MapAnimPath+f)));
-        if (i>nextAnimId)
+        if (i>=nextAnimId)
 			nextAnimId = i+1;
     }
 }

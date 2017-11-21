@@ -299,6 +299,15 @@ public:
     void setRenderPosition(sf::Vector2f playerPos); //called by player class each time it moves
 
     /**
+     * Resizes the map
+     *
+     * \param sz The new size
+     * \param useTop True to crop/add to/from the top when resizing the y dimension
+     * \param useLeft True to crop/add to/from the left when resizing the x dimension
+     */
+	void resize(sf::Vector2i sz, bool useTop, bool useLeft);
+
+    /**
      * This function is used by the player when they move onto a tile. It calls the other moveOnToTile function, while also checking scripts to run and deciding whether or not the player should be attacked
      *
      * \param playerPos The current tile position of the player

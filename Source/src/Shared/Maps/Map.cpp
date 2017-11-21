@@ -717,6 +717,39 @@ void Map::setRenderPosition(sf::Vector2f playerPos) {
     camPosTiles.y = camPos.y/32;
 }
 
+void Map::resize(Vector2i sz, bool useTop, bool useLeft) {
+	//Determine mapping from old tiles to new tiles
+	int dx = size.x-sz.x;
+	int dy = size.y-sz.y;
+	int xOffset = useLeft?(dx):(0);
+	int yOffset = useTop?(dy):(0);
+
+	//Allocate new map
+	vector<Vector2D<Tile> > tiles;
+	Vector2D<Tile> layer(sz.x,sz.y);
+	for (unsigned int i = 0; i<layers.size(); ++i)
+		tiles.push_back(layer);
+
+	//Swap new tiles for old
+	swap(layers,tiles);
+
+	//Copy over tiles based on crop pattern
+	for (int x = 0; x<max(size.x,sz.x); ++x) {
+		for (int y = 0; y<max(size.y,sz.y); ++y) {
+			for (unsigned int i = 0; i<layers.size(); ++i) {
+				if (x+xOffset<sz.x && x<size.x && y+yOffset<sz.y && y<size.y)
+					editTile(x+xOffset,y+yOffset,i,tiles[i](x,y).id,tiles[i](x,y).isAnim);
+				else if (x+xOffset<sz.x && y+yOffset<sz.y)
+					editTile(x+xOffset,y+yOffset,i,0,false);
+			}
+		}
+	}
+
+	//Update size and reset y-sort
+	size = sz;
+	resetYSorted();
+}
+
 void Map::addLayer(int i) {
 	Vector2D<Tile> layer;
 	layer.setSize(size.x,size.y);
@@ -949,11 +982,14 @@ void Map::editTile(int x, int y, int layer, int nId, bool isAnim) {
 	if (tileset.getTile(nId) && !isAnim)
 		layers[layer](x,y).spr.setTexture(*tileset.getTile(nId));
 	else if (tileset.getAnimation(nId) && isAnim) {
+		syncAnimTable();
 		layers[layer](x,y).delA = !tileset.getAnimation(nId)->isLooping();
+		cout << layers[layer](x,y).delA << endl;
 		if (layers[layer](x,y).delA)
 			layers[layer](x,y).anim = new Animation(tileset.getAnimation(nId));
 		else
 			layers[layer](x,y).anim = animTable[nId];
+		cout << layers[layer](x,y).anim << endl;
 	}
 
 	if (layer>=firstYSortLayer && layer<firstTopLayer) {

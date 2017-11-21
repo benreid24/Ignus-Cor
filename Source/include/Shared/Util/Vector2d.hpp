@@ -29,6 +29,13 @@ class Vector2D
     }
 
     /**
+     * Creates a vector with the given size
+     */
+	Vector2D(int w, int h) {
+		setSize(w,h);
+	}
+
+    /**
      * Frees all used memory
      */
     ~Vector2D()
