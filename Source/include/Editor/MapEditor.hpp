@@ -34,6 +34,7 @@ class MapEditor {
 		Events,
 		AI,
 		Spawns,
+		Spawners,
         Items,
         Lights
 	}curTool;
@@ -41,7 +42,7 @@ class MapEditor {
 	//General area
 	sfg::Label::Ptr nameLabel, widthLabel,  heightLabel, firstyLabel, firsttopLabel, musicLabel, posLabel;
     sfg::Button::Ptr newBut, loadBut, saveBut, propsBut, noneBut, allBut;
-    sfg::RadioButton::Ptr aiBut, itmBut, spwnBut, lightBut, evtBut, setBut, selBut;
+    sfg::RadioButton::Ptr aiBut, itmBut, spwnBut, spwnrBut, lightBut, evtBut, setBut, selBut;
     sfg::Button::Ptr addLayerBeforeBut, addLayerAfterBut, delLayerBut;
     LayerButtons layerButtons;
 

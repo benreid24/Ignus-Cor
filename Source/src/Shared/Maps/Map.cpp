@@ -995,12 +995,10 @@ void Map::editTile(int x, int y, int layer, int nId, bool isAnim) {
 	else if (tileset.getAnimation(nId) && isAnim) {
 		syncAnimTable();
 		layers[layer](x,y).delA = !tileset.getAnimation(nId)->isLooping();
-		cout << layers[layer](x,y).delA << endl;
 		if (layers[layer](x,y).delA)
 			layers[layer](x,y).anim = new Animation(tileset.getAnimation(nId));
 		else
 			layers[layer](x,y).anim = animTable[nId];
-		cout << layers[layer](x,y).anim << endl;
 	}
 
 	if (layer>=firstYSortLayer && layer<firstTopLayer) {

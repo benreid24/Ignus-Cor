@@ -107,6 +107,9 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
     spwnBut = RadioButton::Create("Spawns");
     spwnBut->SetGroup(setBut->GetGroup());
     spwnBut->GetSignal(RadioButton::OnToggle).Connect( [me] { me->updateTool(); });
+    spwnrBut = RadioButton::Create("Spawners");
+    spwnrBut->SetGroup(setBut->GetGroup());
+    spwnrBut->GetSignal(RadioButton::OnToggle).Connect( [me] { me->updateTool(); });
     addLayerBeforeBut = Button::Create("Add Layer Before");
     addLayerBeforeBut->GetSignal(Button::OnLeftClick).Connect( [me] { me->addLayer(0); });
 	addLayerAfterBut = Button::Create("Add Layer After");
@@ -133,6 +136,7 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
     toolTypeBox->Pack(lightBut, false, false);
     toolTypeBox->Pack(aiBut, false, false);
     toolTypeBox->Pack(spwnBut, false, false);
+    toolTypeBox->Pack(spwnrBut, false, false);
     page->Pack(toolTypeBox, false, false);
     page->Pack(Separator::Create(), false, false);
 
@@ -364,23 +368,6 @@ void MapEditor::updateSelected(const string& type, int id) {
 		else if (id==selectedCollision && !collisionButs[id]->IsActive())
 			collisionButs[id]->SetActive(true);
 	}
-}
-
-void MapEditor::updateTool() {
-	if (setBut->IsActive())
-		curTool = Set;
-	else if (selBut->IsActive())
-		curTool = Select;
-	else if (evtBut->IsActive())
-		curTool = Events;
-	else if (itmBut->IsActive())
-		curTool = Items;
-	else if (lightBut->IsActive())
-		curTool = Lights;
-	else if (spwnBut->IsActive())
-		curTool = Spawns;
-	else if (aiBut->IsActive())
-		curTool = AI;
 }
 
 void MapEditor::newMap() {

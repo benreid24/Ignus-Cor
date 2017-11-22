@@ -134,6 +134,25 @@ void MapEditor::update() {
 	}
 }
 
+void MapEditor::updateTool() {
+	if (setBut->IsActive())
+		curTool = Set;
+	else if (selBut->IsActive())
+		curTool = Select;
+	else if (evtBut->IsActive())
+		curTool = Events;
+	else if (itmBut->IsActive())
+		curTool = Items;
+	else if (lightBut->IsActive())
+		curTool = Lights;
+	else if (spwnBut->IsActive())
+		curTool = Spawns;
+	else if (aiBut->IsActive())
+		curTool = AI;
+	else if (spwnrBut->IsActive())
+		curTool = Spawners;
+}
+
 void MapEditor::render() {
 	if (mapData) {
 		mapArea->Bind();
