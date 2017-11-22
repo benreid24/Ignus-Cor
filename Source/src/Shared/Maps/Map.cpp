@@ -717,7 +717,8 @@ void Map::setRenderPosition(sf::Vector2f playerPos) {
     camPosTiles.y = camPos.y/32;
 }
 
-void Map::resize(Vector2i sz, bool useTop, bool useLeft) {
+void Map::
+	(Vector2i sz, bool useTop, bool useLeft) {
 	//Determine mapping from old tiles to new tiles
 	int dx = size.x-sz.x;
 	int dy = size.y-sz.y;
