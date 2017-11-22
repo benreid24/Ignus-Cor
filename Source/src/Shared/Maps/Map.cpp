@@ -47,6 +47,8 @@ Map::Map(Tileset& tlst, SoundEngine* se) : tileset(tlst) {
 	utilText.setFillColor(Color::Black);
 	utilText.setCharacterSize(13);
 	utilText.setFont(Properties::PrimaryMenuFont);
+	spawnerTexture = imagePool.loadResource(Properties::EditorResources+"spawner.png");
+	spawnerSprite.setTexture(*spawnerTexture);
 	#endif
 
 	if (!Map::staticMemebersCreated) {
@@ -227,13 +229,15 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
     //Load spawners
     tInt = input.get<uint16_t>();
     for (int i = 0; i<tInt; ++i) {
-		int x = input.get<uint32_t>();
-		int y = input.get<uint32_t>();
-		int cldwn = input.get<uint16_t>();
-		int chance = input.get<uint8_t>();
-		int mxAlwd = input.get<uint16_t>();
-		string dFile = input.getString();
-		//TODO - implement spawners
+		MapSpawner sp;
+		sp.position.x = input.get<uint32_t>();
+		sp.position.y = input.get<uint32_t>();
+		sp.coolDown = input.get<uint16_t>();
+		sp.frequency = input.get<uint8_t>();
+		sp.spawnLimit = input.get<uint16_t>();
+		sp.numActiveLimit = input.get<uint16_t>();
+		sp.templateFile = input.getString();
+		spawners.push_back(sp);
     }
 
     //Load items
@@ -412,16 +416,16 @@ void Map::save(std::string file) {
     }*/
 
     //Save spawners
-    output.write<uint16_t>(0);
-    /*for (int i = 0; i<tInt; ++i) { //TODO - save spawners according to below format
-		int x = output.write<uint32_t>();
-		int y = output.write<uint32_t>();
-		int cldwn = output.write<uint16_t>();
-		int chance = output.write<uint8_t>();
-		int mxAlwd = output.write<uint16_t>();
-		string dFile = output.writeString();
-		//TODO - implement spawners
-    }*/
+    output.write<uint16_t>(spawners.size());
+    for (int i = 0; i<spawners.size(); ++i) {
+		output.write<uint32_t>(spawners[i].position.x);
+		output.write<uint32_t>(spawners[i].position.y);
+		output.write<uint16_t>(spawners[i].coolDown);
+		output.write<uint8_t>(spawners[i].frequency);
+		output.write<uint16_t>(spawners[i].spawnLimit);
+		output.write<uint16_t>(spawners[i].numActiveLimit);
+		output.writeString(spawners[i].templateFile);
+    }
 
     //Save items
     output.write<uint16_t>(0);
@@ -710,6 +714,14 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection, 
         utilText.setPosition(playerSpawns[i].position.x*32-camPos.x+16-utilText.getCharacterSize()*playerSpawns[i].name.size()/4,playerSpawns[i].position.y*32-camPos.y+10);
         target.draw(utilText);
     }
+
+    for (unsigned int i = 0; i<spawners.size(); ++i) {
+		spawnerSprite.setPosition(spawners[i].position.x*32-camPos.x,spawners[i].position.y*32-camPos.y);
+		utilText.setString(spawners[i].templateFile);
+		utilText.setPosition(spawners[i].position.x*32-camPos.x+16-utilText.getCharacterSize()*spawners[i].templateFile.size()/4,spawners[i].position.y*32-camPos.y+10);
+        target.draw(spawnerSprite);
+        target.draw(utilText);
+    }
 }
 
 void Map::setRenderPosition(sf::Vector2f playerPos) {
@@ -990,6 +1002,27 @@ void Map::removePlayerSpawn(int x, int y) {
 	for (unsigned int i = 0; i<playerSpawns.size(); ++i) {
 		if (playerSpawns[i].position.x==x && playerSpawns[i].position.y==y) {
 			playerSpawns.erase(playerSpawns.begin()+i);
+			--i;
+		}
+	}
+}
+
+void Map::addMapSpawner(MapSpawner sp) {
+    spawners.push_back(sp);
+}
+
+MapSpawner* Map::getMapSpawner(int x, int y) {
+	for (unsigned int i = 0; i<spawners.size(); ++i) {
+		if (spawners[i].position.x==x && spawners[i].position.y==y)
+			return &spawners[i];
+	}
+	return nullptr;
+}
+
+void Map::removeMapSpawner(int x, int y) {
+	for (unsigned int i = 0; i<spawners.size(); ++i) {
+		if (spawners[i].position.x==x && spawners[i].position.y==y) {
+			spawners.erase(spawners.begin()+i);
 			--i;
 		}
 	}

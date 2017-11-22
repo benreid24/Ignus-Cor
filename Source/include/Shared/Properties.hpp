@@ -32,6 +32,7 @@ public:
     const static std::string TilesetFile;
     const static std::string MapTilePath;
     const static std::string MapAnimPath;
+    const static std::string SpawnerPath;
 
     const static std::string ItemMapImagePath;
     const static std::string ItemMenuImagePath;

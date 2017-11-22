@@ -72,7 +72,7 @@ struct PlayerSpawn {
  * \ingroup Map
  */
 struct MapSpawner {
-	sf::Vector2f position;
+	sf::Vector2i position;
 	int coolDown, frequency;
 	int numActiveLimit, spawnLimit;
 	std::string templateFile;
@@ -93,10 +93,11 @@ class Map {
     Vector2D<int> collisions;
 	static std::vector<TextureReference> collisionTextures;
 	static sf::Sprite collisionSprite;
-	TextureReference arrowTexture;
-	sf::Sprite arrowSprite;
+	TextureReference arrowTexture, spawnerTexture;
+	sf::Sprite arrowSprite, spawnerSprite;
 	sf::Text utilText;
 
+	std::vector<MapSpawner> spawners;
     std::vector<Light> lights;
     std::vector<MapEvent> events;
     sf::Vector2f camPos;
@@ -413,6 +414,11 @@ public:
     void removeLight(int x, int y);
 
     /**
+     * Removes all lights from the world
+     */
+    void removeAllLights();
+
+    /**
      * Adds the given PlayerSpawn
      */
 	void addPlayerSpawn(PlayerSpawn ps);
@@ -427,10 +433,20 @@ public:
 	 */
 	void removePlayerSpawn(int x, int y);
 
-    /**
-     * Removes all lights from the world
-     */
-    void removeAllLights();
+	/**
+	 * Adds the given MapSpawner to the map
+	 */
+	void addMapSpawner(MapSpawner sp);
+
+	/**
+	 * Returns a pointer to the MapSpawner at the given position, nullptr if none present
+	 */
+	MapSpawner* getMapSpawner(int x, int y);
+
+	/**
+	 * Removes the MapSpawner at the given position
+	 */
+	void removeMapSpawner(int x, int y);
 
     /**
      * Sets the ambient lighting to the given value, rather than letting it be determined by the time of day. Use when inside

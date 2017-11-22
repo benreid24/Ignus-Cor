@@ -848,5 +848,97 @@ void MapEditor::spawnHandler(Vector2i pos) {
 }
 
 void MapEditor::spawnerHandler(sf::Vector2i pos) {
-	//
+	MapSpawner defaultSpawn;
+	defaultSpawn.position = pos;
+	defaultSpawn.coolDown = 10;
+	defaultSpawn.frequency = 60;
+	defaultSpawn.numActiveLimit = 15;
+	defaultSpawn.spawnLimit = 100;
+	bool newSpawn = false;
+
+	MapSpawner* spawn = mapData->getMapSpawner(pos.x,pos.y);
+	if (spawn==nullptr) {
+		mapData->addMapSpawner(defaultSpawn);
+		spawn = mapData->getMapSpawner(pos.x,pos.y);
+		newSpawn = true;
+	}
+
+	owner->SetState(Widget::State::INSENSITIVE);
+    sfg::Window::Ptr window = sfg::Window::Create();
+    window->SetTitle("Spawner");
+    Box::Ptr winBox = Box::Create(Box::Orientation::VERTICAL,5);
+	window->Add(winBox);
+	desktop.Add(window);
+
+    Form form;
+    Button::Ptr saveButton(Button::Create("Save")), cancelButton(Button::Create("Cancel")), delButton(Button::Create("Delete")), pickButton(Button::Create("Pick File"));
+	bool cancelPressed(false), savePressed(false), delPressed(false), pickPressed(false);
+	delButton->GetSignal(Button::OnLeftClick).Connect( [&delPressed] { delPressed= true; });
+	cancelButton->GetSignal(Button::OnLeftClick).Connect( [&cancelPressed] { cancelPressed = true; });
+	saveButton->GetSignal(Button::OnLeftClick).Connect( [&savePressed] { savePressed = true; });
+	pickButton->GetSignal(Button::OnLeftClick).Connect( [&pickPressed] { pickPressed = true; });
+
+	form.addField("f", "File: ",160,spawn->templateFile);
+    form.addField("x","X: ",80,intToString(spawn->position.x));
+    form.addField("y","Y: ",80,intToString(spawn->position.y));
+    form.addField("al","Max Active: ",80,intToString(spawn->numActiveLimit));
+    form.addField("ml","Max to Spawn: ",80,intToString(spawn->spawnLimit));
+    form.addField("fr","Frequency (0-100): ",80,intToString(spawn->frequency));
+    form.addField("c","Cooldown (s): ",80,intToString(spawn->coolDown));
+    form.addToParent(winBox);
+
+    Box::Ptr butBox = Box::Create(Box::Orientation::HORIZONTAL,5);
+    butBox->Pack(pickButton,false,false);
+    butBox->Pack(saveButton,false,false);
+    butBox->Pack(delButton,false,false);
+    butBox->Pack(cancelButton,false,false);
+    winBox->Pack(butBox,false,false);
+
+    while (sfWindow.isOpen()) {
+		Event wv;
+		while (sfWindow.pollEvent(wv)) {
+			desktop.HandleEvent(wv);
+
+			if (wv.type==Event::Closed)
+				sfWindow.close();
+		}
+        desktop.Update(30/1000);
+        form.update();
+
+        if (savePressed) {
+			savePressed = false;
+			spawn->templateFile = form.getField("f");
+			spawn->position.x = form.getFieldAsInt("x");
+			spawn->position.y = form.getFieldAsInt("y");
+			spawn->numActiveLimit = form.getFieldAsInt("al");
+			spawn->spawnLimit = form.getFieldAsInt("ml");
+			spawn->frequency = form.getFieldAsInt("fr");
+			spawn->coolDown = form.getFieldAsInt("c");
+			break;
+        }
+        if (delPressed) {
+			mapData->removeMapSpawner(pos.x,pos.y);
+			break;
+        }
+        if (cancelPressed) {
+			if (newSpawn)
+				mapData->removeMapSpawner(pos.x,pos.y);
+			break;
+        }
+        if (pickPressed) {
+			pickPressed = false;
+			FilePicker picker(desktop, owner, "Spawner", Properties::SpawnerPath, "spnr");
+			if (picker.pickFile())
+				form.setField("f", picker.getChoice());
+        }
+
+        desktop.BringToFront(window);
+        sfWindow.clear();
+		sfgui.Display(sfWindow);
+		sfWindow.display();
+		sleep(milliseconds(30));
+    }
+
+    desktop.Remove(window);
+    owner->SetState(Widget::State::NORMAL);
 }

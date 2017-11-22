@@ -5,6 +5,7 @@ const std::string Properties::MapPath = "Resources/Data/Maps/";
 const std::string Properties::TilesetFile = "Resources/Data/tileset.tlst";
 const std::string Properties::MapTilePath = "Resources/Media/Map/Tiles/";
 const std::string Properties::MapAnimPath = "Resources/Media/Map/Animations/";
+const std::string Properties::SpawnerPath = "Resources/Data/Spawners/";
 const std::string Properties::ItemMapImagePath = "Resources/Media/Items/Map/";
 const std::string Properties::ItemMenuImagePath = "Resources/Media/Items/Map/";
 const std::string Properties::AnimationPath = "Resources/Media/Animations/";
