@@ -24,6 +24,10 @@ void Entity::setPositionAndDirection(sf::Vector2f pos, int d) {
 	dir = d;
 }
 
+void Entity::setPositionAndDirection(sf::Vector2i pos, int d) {
+	setPositionAndDirection(Vector2f(pos.x*32,pos.y*32),d);
+}
+
 void Entity::shift(sf::Vector2f amount, bool truncate) {
 	position += amount;
 	if (truncate) {

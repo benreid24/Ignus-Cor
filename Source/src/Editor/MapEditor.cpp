@@ -243,6 +243,10 @@ void MapEditor::mapClicked() {
 		mapEventHandler(pos);
 	else if (curTool==Lights)
 		lightHandler(pixelPos);
+	else if (curTool==Spawns)
+		spawnHandler(pos);
+	else if (curTool==Spawners)
+		spawnerHandler(pos);
 }
 
 void MapEditor::addLayer(int o) {
@@ -271,5 +275,36 @@ void MapEditor::selectAll() {
 		selCorner1.x = selCorner1.y = 0;
 		selCorner2.x = mapData->getSize().x;
 		selCorner2.y = mapData->getSize().y;
+	}
+}
+
+
+void MapEditor::updateSelected(const string& type, int id) {
+	if (type=="tile") {
+		if (id!=selectedTile && tileButs[id]->IsActive()) {
+			int t = selectedTile;
+			selectedTile = id;
+			tileButs[t]->SetActive(false);
+		}
+		else if (id==selectedTile && !tileButs[id]->IsActive())
+			tileButs[id]->SetActive(true);
+	}
+	else if (type=="anim") {
+		if (id!=selectedAnim && animButs[id]->IsActive()) {
+			int t = selectedAnim;
+			selectedAnim = id;
+			animButs[t]->SetActive(false);
+		}
+		else if (id==selectedAnim && !animButs[id]->IsActive())
+			animButs[id]->SetActive(true);
+	}
+	else {
+		if (id!=selectedCollision && collisionButs[id]->IsActive()) {
+			int t = selectedCollision;
+			selectedCollision = id;
+			collisionButs[t]->SetActive(false);
+		}
+		else if (id==selectedCollision && !collisionButs[id]->IsActive())
+			collisionButs[id]->SetActive(true);
 	}
 }

@@ -5,6 +5,7 @@
 #include "Editor/MapEditor.hpp"
 #include "Editor/ItemDbEditor.hpp"
 #include "Editor/version.h"
+#include "Shared/Properties.hpp"
 using namespace std;
 using namespace sf;
 
@@ -13,6 +14,7 @@ RenderWindow sfWindow(VideoMode(1600,900,32), string("Ignis Cor Editor ")+AutoVe
 
 int main() {
 	sfWindow.resetGLStates();
+	Properties::PrimaryMenuFont.loadFromFile(Properties::FontPath+"Abea.ttf");
 
 	sfg::Desktop desktop;
 

@@ -58,6 +58,15 @@ struct MapEvent {
 };
 
 /**
+ * Struct to store player spawn data
+ */
+struct PlayerSpawn {
+	std::string name;
+	sf::Vector2i position;
+	int direction;
+};
+
+/**
  * Structure to store details of a spawner that is in a map
  *
  * \ingroup Map
@@ -84,13 +93,16 @@ class Map {
     Vector2D<int> collisions;
 	static std::vector<TextureReference> collisionTextures;
 	static sf::Sprite collisionSprite;
+	TextureReference arrowTexture;
+	sf::Sprite arrowSprite;
+	sf::Text utilText;
 
     std::vector<Light> lights;
     std::vector<MapEvent> events;
     sf::Vector2f camPos;
     sf::Vector2i camPosTiles;
 
-    std::map<std::string,std::pair<sf::Vector2f,int> > playerSpawns;
+    std::vector<PlayerSpawn> playerSpawns;
     static std::string lastMap, curMap;
     static sf::Vector2f lastPos;
     static int lastDir;
@@ -399,6 +411,21 @@ public:
      * \param y The y position of the light to remove
      */
     void removeLight(int x, int y);
+
+    /**
+     * Adds the given PlayerSpawn
+     */
+	void addPlayerSpawn(PlayerSpawn ps);
+
+    /**
+     * Returns a pointer to the PlayerSpawn at the given position, nullptr if none
+     */
+	PlayerSpawn* getPlayerSpawn(int x, int y);
+
+	/**
+	 * Removes the PlayerSpawn at the given position
+	 */
+	void removePlayerSpawn(int x, int y);
 
     /**
      * Removes all lights from the world

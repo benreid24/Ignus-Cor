@@ -188,6 +188,16 @@ class MapEditor {
 	void lightHandler(sf::Vector2i pos);
 
 	/**
+	 * Handles Spawn related clicking
+	 */
+	void spawnHandler(sf::Vector2i pos);
+
+	/**
+	 * Handles Spawner related clicking
+	 */
+	void spawnerHandler(sf::Vector2i pos);
+
+	/**
 	 * Updates the info labels
 	 */
 	void updateInfo();

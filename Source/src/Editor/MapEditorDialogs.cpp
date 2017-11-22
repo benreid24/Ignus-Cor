@@ -340,36 +340,6 @@ void MapEditor::loadAnim() {
 	}
 }
 
-void MapEditor::updateSelected(const string& type, int id) {
-	if (type=="tile") {
-		if (id!=selectedTile && tileButs[id]->IsActive()) {
-			int t = selectedTile;
-			selectedTile = id;
-			tileButs[t]->SetActive(false);
-		}
-		else if (id==selectedTile && !tileButs[id]->IsActive())
-			tileButs[id]->SetActive(true);
-	}
-	else if (type=="anim") {
-		if (id!=selectedAnim && animButs[id]->IsActive()) {
-			int t = selectedAnim;
-			selectedAnim = id;
-			animButs[t]->SetActive(false);
-		}
-		else if (id==selectedAnim && !animButs[id]->IsActive())
-			animButs[id]->SetActive(true);
-	}
-	else {
-		if (id!=selectedCollision && collisionButs[id]->IsActive()) {
-			int t = selectedCollision;
-			selectedCollision = id;
-			collisionButs[t]->SetActive(false);
-		}
-		else if (id==selectedCollision && !collisionButs[id]->IsActive())
-			collisionButs[id]->SetActive(true);
-	}
-}
-
 void MapEditor::newMap() {
 	owner->SetState(Widget::State::INSENSITIVE);
 
@@ -783,4 +753,100 @@ void MapEditor::lightHandler(Vector2i pos) {
 
     desktop.Remove(window);
     owner->SetState(Widget::State::NORMAL);
+}
+
+void MapEditor::spawnHandler(Vector2i pos) {
+	PlayerSpawn defaultSpawn;
+	defaultSpawn.name = "main";
+	defaultSpawn.direction = 0;
+	defaultSpawn.position = pos;
+	bool newSpawn = false;
+
+	PlayerSpawn* spawn = mapData->getPlayerSpawn(pos.x,pos.y);
+	if (spawn==nullptr) {
+		mapData->addPlayerSpawn(defaultSpawn);
+		spawn = mapData->getPlayerSpawn(pos.x,pos.y);
+		newSpawn = true;
+	}
+
+	owner->SetState(Widget::State::INSENSITIVE);
+    sfg::Window::Ptr window = sfg::Window::Create();
+    window->SetTitle("Player Spawn");
+    Box::Ptr winBox = Box::Create(Box::Orientation::VERTICAL,5);
+	window->Add(winBox);
+	desktop.Add(window);
+
+    Form form;
+    Button::Ptr saveButton(Button::Create("Save")), cancelButton(Button::Create("Cancel")), delButton(Button::Create("Delete"));
+	bool cancelPressed(false), savePressed(false), delPressed(false);
+	delButton->GetSignal(Button::OnLeftClick).Connect( [&delPressed] { delPressed= true; });
+	cancelButton->GetSignal(Button::OnLeftClick).Connect( [&cancelPressed] { cancelPressed = true; });
+	saveButton->GetSignal(Button::OnLeftClick).Connect( [&savePressed] { savePressed = true; });
+
+	form.addField("n", "Name: ",160,spawn->name);
+    form.addField("x","X: ",80,intToString(spawn->position.x));
+    form.addField("y","Y: ",80,intToString(spawn->position.y));
+    form.addToParent(winBox);
+
+    Box::Ptr box = Box::Create(Box::Orientation::HORIZONTAL,5);
+    ComboBox::Ptr dirEntry = ComboBox::Create();
+    dirEntry->AppendItem("Up");
+    dirEntry->AppendItem("Right");
+    dirEntry->AppendItem("Down");
+    dirEntry->AppendItem("Left");
+    dirEntry->SelectItem(spawn->direction);
+    box->Pack(Label::Create("Direction: "),false,false);
+    box->Pack(dirEntry,false,false);
+    winBox->Pack(box,false,false);
+
+    Box::Ptr butBox = Box::Create(Box::Orientation::HORIZONTAL,5);
+    butBox->Pack(saveButton,false,false);
+    butBox->Pack(delButton,false,false);
+    butBox->Pack(cancelButton,false,false);
+    winBox->Pack(butBox,false,false);
+
+    while (sfWindow.isOpen()) {
+		Event wv;
+		while (sfWindow.pollEvent(wv)) {
+			desktop.HandleEvent(wv);
+
+			if (wv.type==Event::Closed)
+				sfWindow.close();
+		}
+        desktop.Update(30/1000);
+        form.update();
+
+        if (savePressed) {
+			savePressed = false;
+			if (form.getField("n")!="prev" && form.getField("n").size()>0) {
+				spawn->name = form.getField("n");
+				spawn->position.x = form.getFieldAsInt("x");
+				spawn->position.y = form.getFieldAsInt("y");
+				spawn->direction = dirEntry->GetSelectedItem();
+			}
+			break;
+        }
+        if (delPressed) {
+			mapData->removePlayerSpawn(pos.x,pos.y);
+			break;
+        }
+        if (cancelPressed) {
+			if (newSpawn)
+				mapData->removePlayerSpawn(pos.x,pos.y);
+			break;
+        }
+
+        desktop.BringToFront(window);
+        sfWindow.clear();
+		sfgui.Display(sfWindow);
+		sfWindow.display();
+		sleep(milliseconds(30));
+    }
+
+    desktop.Remove(window);
+    owner->SetState(Widget::State::NORMAL);
+}
+
+void MapEditor::spawnerHandler(sf::Vector2i pos) {
+	//
 }

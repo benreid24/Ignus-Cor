@@ -49,9 +49,15 @@ public:
 	sf::Vector2f getPosition();
 
 	/**
-	 * Sets the position and direction of the Entity. Leave direction empty to maintain it
+	 * Sets the position and direction of the Entity. Leave direction empty to maintain it. Position is in pixels
 	 */
 	void setPositionAndDirection(sf::Vector2f pos, int d = -1);
+
+	/**
+	 * Sets the position and direction of the Entity. Leave direction empty to maintain it. Position is in tiles,
+	 * use for spawning
+	 */
+	void setPositionAndDirection(sf::Vector2i pos, int d = -1);
 
 	/**
 	 * Shifts the Entity by the given amount of pixels. Set truncate to true to force the Entity onto a tile border

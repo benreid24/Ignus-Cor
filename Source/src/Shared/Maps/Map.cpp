@@ -40,6 +40,15 @@ vector<TextureReference> Map::collisionTextures;
 Sprite Map::collisionSprite;
 
 Map::Map(Tileset& tlst, SoundEngine* se) : tileset(tlst) {
+	#ifdef EDITOR
+	arrowTexture = imagePool.loadResource(Properties::EditorResources+"arrow.png");
+	arrowSprite.setTexture(*arrowTexture);
+	arrowSprite.setOrigin(arrowTexture->getSize().x/2,arrowTexture->getSize().y/2);
+	utilText.setFillColor(Color::Black);
+	utilText.setCharacterSize(13);
+	utilText.setFont(Properties::PrimaryMenuFont);
+	#endif
+
 	if (!Map::staticMemebersCreated) {
 		Map::staticMemebersCreated = true;
 		Map::lightTxtr.create(Properties::ScreenWidth,Properties::ScreenHeight);
@@ -187,14 +196,14 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
     //Load player spawns
     tInt = input.get<uint16_t>();
     for (int i = 0; i<tInt; ++i) {
-        Vector2f pos;
-        string nm = input.getString();
-        pos.x = input.get<uint32_t>();
-        pos.y = input.get<uint32_t>();
-        int d = input.get<uint8_t>();
-        if (spName==nm && player!=nullptr)
-            player->setPositionAndDirection(pos,d);
-		playerSpawns[nm] = make_pair(pos,d);
+        PlayerSpawn tmp;
+        tmp.name = input.getString();
+        tmp.position.x = input.get<uint32_t>();
+        tmp.position.y = input.get<uint32_t>();
+        tmp.direction = input.get<uint8_t>();
+        if (spName==tmp.name && player!=nullptr)
+            player->setPositionAndDirection(tmp.position,tmp.direction);
+		playerSpawns.push_back(tmp);
     }
     if (spName=="prev" && player!=nullptr) {
 		player->setPositionAndDirection(Map::lastPos,Map::lastDir);
@@ -383,11 +392,11 @@ void Map::save(std::string file) {
 
     //Save player spawns
     output.write<uint16_t>(playerSpawns.size());
-    for (auto i = playerSpawns.begin(); i!=playerSpawns.end(); ++i) {
-        output.writeString(i->first);
-        output.write<uint32_t>(i->second.first.x);
-        output.write<uint32_t>(i->second.first.y);
-        output.write<uint8_t>(i->second.second);
+    for (unsigned int i = 0; i<playerSpawns.size(); ++i) {
+        output.writeString(playerSpawns[i].name);
+        output.write<uint32_t>(playerSpawns[i].position.x);
+        output.write<uint32_t>(playerSpawns[i].position.y);
+        output.write<uint8_t>(playerSpawns[i].direction);
     }
 
     //Save AI
@@ -692,6 +701,15 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection, 
 			target.draw(rect);
 		}
     }
+
+    for (unsigned int i = 0; i<playerSpawns.size(); ++i) {
+        arrowSprite.setPosition(playerSpawns[i].position.x*32-camPos.x+arrowTexture->getSize().x/2,playerSpawns[i].position.y*32-camPos.y+arrowTexture->getSize().y/2);
+        arrowSprite.setRotation(playerSpawns[i].direction*90);
+        target.draw(arrowSprite);
+        utilText.setString(playerSpawns[i].name);
+        utilText.setPosition(playerSpawns[i].position.x*32-camPos.x+16-utilText.getCharacterSize()*playerSpawns[i].name.size()/4,playerSpawns[i].position.y*32-camPos.y+10);
+        target.draw(utilText);
+    }
 }
 
 void Map::setRenderPosition(sf::Vector2f playerPos) {
@@ -954,6 +972,27 @@ void Map::removeLight(int x, int y) {
 			i--;
 		}
     }
+}
+
+void Map::addPlayerSpawn(PlayerSpawn ps) {
+	playerSpawns.push_back(ps);
+}
+
+PlayerSpawn* Map::getPlayerSpawn(int x, int y) {
+	for (unsigned int i = 0; i<playerSpawns.size(); ++i) {
+		if (playerSpawns[i].position.x==x && playerSpawns[i].position.y==y)
+			return &playerSpawns[i];
+	}
+	return nullptr;
+}
+
+void Map::removePlayerSpawn(int x, int y) {
+	for (unsigned int i = 0; i<playerSpawns.size(); ++i) {
+		if (playerSpawns[i].position.x==x && playerSpawns[i].position.y==y) {
+			playerSpawns.erase(playerSpawns.begin()+i);
+			--i;
+		}
+	}
 }
 
 void Map::removeAllLights() {

@@ -20,6 +20,8 @@ const std::string Properties::MenuImagePath = "Resources/Media/Images/Menu/";
 const std::string Properties::MiscImagePath = "Resources/Media/Images/Misc/";
 const std::string Properties::ItemDbFile = "Resources/Data/Objects/items.db";
 
+sf::Font Properties::PrimaryMenuFont;
+
 #ifdef EDITOR
 const std::string Properties::EditorResources = "Editor/";
 #endif // EDITOR
