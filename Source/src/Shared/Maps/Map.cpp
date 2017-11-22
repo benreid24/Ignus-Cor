@@ -62,6 +62,10 @@ Map::Map(string nm, Vector2i sz, Tileset& tlst, SoundEngine* se, EntityManager* 
 	firstYSortLayer = firstYSort;
 	firstTopLayer = firstTop;
 
+	ambientLightOverride = 0;
+	weatherFreq = 0;
+	weatherType = 0;
+
 	//create tiles
 	for (int i = 0; i<nLayers; ++i) {
 		layers.push_back(Vector2D<Tile>());
@@ -717,13 +721,12 @@ void Map::setRenderPosition(sf::Vector2f playerPos) {
     camPosTiles.y = camPos.y/32;
 }
 
-void Map::
-	(Vector2i sz, bool useTop, bool useLeft) {
+void Map::resize(Vector2i sz, bool useTop, bool useLeft) {
 	//Determine mapping from old tiles to new tiles
 	int dx = size.x-sz.x;
 	int dy = size.y-sz.y;
-	int xOffset = useLeft?(dx):(0);
-	int yOffset = useTop?(dy):(0);
+	int xOffset = useLeft?(-dx):(0);
+	int yOffset = useTop?(-dy):(0);
 
 	//Allocate new map
 	vector<Vector2D<Tile> > tiles;
@@ -734,14 +737,21 @@ void Map::
 	//Swap new tiles for old
 	swap(layers,tiles);
 
+	//Initialize new tiles to all empty
+	for (unsigned int i = 0; i<layers.size(); ++i) {
+		for (int x = 0; x<sz.x; ++x) {
+			for (int y = 0; y<sz.y; ++y) {
+                editTile(x, y, i, 0, false);
+			}
+		}
+	}
+
 	//Copy over tiles based on crop pattern
-	for (int x = 0; x<max(size.x,sz.x); ++x) {
-		for (int y = 0; y<max(size.y,sz.y); ++y) {
+	for (int x = 0; x<size.x; ++x) {
+		for (int y = 0; y<size.y; ++y) {
 			for (unsigned int i = 0; i<layers.size(); ++i) {
-				if (x+xOffset<sz.x && x<size.x && y+yOffset<sz.y && y<size.y)
+				if (x+xOffset<sz.x && y+yOffset<sz.y && x+xOffset>=0 && y+yOffset>=0)
 					editTile(x+xOffset,y+yOffset,i,tiles[i](x,y).id,tiles[i](x,y).isAnim);
-				else if (x+xOffset<sz.x && y+yOffset<sz.y)
-					editTile(x+xOffset,y+yOffset,i,0,false);
 			}
 		}
 	}
