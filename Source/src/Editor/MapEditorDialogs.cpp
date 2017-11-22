@@ -906,7 +906,6 @@ void MapEditor::spawnerHandler(sf::Vector2i pos) {
         form.update();
 
         if (savePressed) {
-			savePressed = false;
 			spawn->templateFile = form.getField("f");
 			spawn->position.x = form.getFieldAsInt("x");
 			spawn->position.y = form.getFieldAsInt("y");

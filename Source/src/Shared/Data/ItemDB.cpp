@@ -32,12 +32,39 @@ ItemDB::ItemDB() {
 	ItemDB::loaded = true;
 }
 
-const Item& ItemDB::getItem(int id) {
+Item& ItemDB::getItem(int id) {
 	if (!itemExists(id))
 		return errItem;
 	return *items[id];
 }
 
+map<int,Item*>& ItemDB::getItems() {
+    return items;
+}
+
+void ItemDB::removeItem(int id) {
+	if (items.find(id)!=items.end()) {
+		delete items[id];
+		items.erase(id);
+	}
+}
+
 bool ItemDB::itemExists(int id) {
 	return items.find(id)!=items.end();
+}
+
+void ItemDB::save() {
+	File file(Properties::ItemDbFile,File::Out);
+
+	file.write<uint16_t>(items.size());
+	for (map<int,Item*>::iterator i = items.begin(); i!=items.end(); ++i) {
+        file.write<uint16_t>(i->second->getId());
+        file.writeString(i->second->getName());
+        file.write<uint32_t>(i->second->getEffect());
+        file.write<uint32_t>(i->second->getIntensity());
+        file.write<uint32_t>(i->second->getValue());
+        file.writeString(i->second->getDescription());
+        file.writeString(i->second->getMapImageFile());
+        file.writeString(i->second->getMenuImageFile());
+	}
 }

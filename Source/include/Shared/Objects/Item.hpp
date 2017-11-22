@@ -5,6 +5,10 @@
 #include "Shared/Objects/Effect.hpp"
 #include <string>
 
+#ifdef EDITOR
+class ItemDbEditor;
+#endif
+
 /**
  * Class to represent static data regarding items. This is used primarily for the global data store of item information
  * Item instances will just be id's
@@ -13,6 +17,10 @@ class Item {
 	int id, value, intensity;
 	std::string name, description, mapImg, menuImg;
 	Effects::Effect effect;
+
+	#ifdef EDITOR
+	friend class ItemDbEditor;
+	#endif
 
 public:
     /**

@@ -23,12 +23,27 @@ public:
 	/**
 	 * Returns item information for the given id
 	 */
-	static const Item& getItem(int id);
+	static Item& getItem(int id);
 
 	/**
 	 * Tells whether or not the given item exists
 	 */
 	static bool itemExists(int id);
+
+	/**
+	 * Removes the item with the given id
+	 */
+	static void removeItem(int id);
+
+	/**
+	 * Returns a reference to the internal map of items
+	 */
+	std::map<int,Item*>& getItems();
+
+	/**
+	 * Saves the item database to the file
+	 */
+	static void save();
 };
 
 #endif // ITEMDB_HPP

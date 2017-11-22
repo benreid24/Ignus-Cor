@@ -34,6 +34,11 @@ public:
 	void addField(std::string name, std::string text, int width = 120, std::string value = "");
 
 	/**
+	 * Adds the field with the given name and width to the form
+	 */
+	void addField(std::string name, std::string text, int width, int value);
+
+	/**
 	 * Returns the value entered into the given field
 	 */
 	std::string getField(std::string name);

@@ -15,8 +15,31 @@ class ItemDbEditor {
 
 	CellTable* data;
 
+	/**
+	 * Opens a window to make a new item or edit an existing item
+	 */
+	void doItem(int id = -1);
+
+	/**
+	 * Saves the item db
+	 */
+	void save();
+
+	/**
+	 * Updates the GUI based on the items in the ItemDB
+	 */
+	void updateGui();
+
 public:
+	/**
+	 * Constructs the GUI elements from the editor
+	 */
 	ItemDbEditor(sfg::Desktop& dk, sfg::Notebook::Ptr parent);
+
+	/**
+	 * Updates components of the editor
+	 */
+	void update();
 };
 
 #endif // ITEMDBEDITOR_HPP

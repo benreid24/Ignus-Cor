@@ -32,6 +32,10 @@ void Form::addField(string name, string text, int width, string value) {
 	}
 }
 
+void Form::addField(std::string name, std::string text, int width, int value) {
+	addField(name, text, width, intToString(value));
+}
+
 void Form::updateActive(string caller) {
 	curActive = caller;
 }
