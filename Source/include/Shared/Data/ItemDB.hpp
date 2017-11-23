@@ -38,7 +38,7 @@ public:
 	/**
 	 * Returns a reference to the internal map of items
 	 */
-	std::map<int,Item*>& getItems();
+	static std::map<int,Item*>& getItems();
 
 	/**
 	 * Saves the item database to the file

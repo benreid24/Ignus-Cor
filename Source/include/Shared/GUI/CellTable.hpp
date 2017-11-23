@@ -7,12 +7,18 @@
 #include <string>
 
 /**
+ * Helper function to pack a list of strings into a row with separators
+ */
+sfg::Box::Ptr packRow(std::vector<std::string> cells);
+
+/**
  * Helper class to create a table of cells that can be added to, edited (separately), and deleted
  */
 class CellTable {
 	std::map<int,sfg::Box::Ptr> rows; //uuid -> row
 	int editId; //id of cell to edit
 
+	sfg::Box::Ptr parent;
 	sfg::ScrolledWindow::Ptr cellArea;
 	sfg::Box::Ptr cellBox;
 

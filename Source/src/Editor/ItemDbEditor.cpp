@@ -4,6 +4,7 @@
 #include "Shared/Data/ItemDB.hpp"
 #include "Shared/GUI/Form.hpp"
 #include "Editor/Helpers/FilePicker.hpp"
+#include "Shared/Util/Util.hpp"
 using namespace sfg;
 using namespace sf;
 using namespace std;
@@ -23,9 +24,14 @@ ItemDbEditor::ItemDbEditor(Desktop& dk, Notebook::Ptr parent) : desktop(dk), own
     Box::Ptr butBox = Box::Create(Box::Orientation::HORIZONTAL, 5);
     butBox->Pack(saveBut,false,false);
     butBox->Pack(appBut,false,false);
+    container->Pack(butBox,false,false);
 
-	data = new CellTable(container);
+    Box::Ptr cellBox = Box::Create();
+	data = new CellTable(cellBox);
+	cellBox->Pack(Separator::Create(Separator::Orientation::VERTICAL),false,false);
+    container->Pack(cellBox,false,false);
 	owner->AppendPage(container,Label::Create("Items"));
+	updateGui();
 }
 
 void ItemDbEditor::save() {
@@ -59,10 +65,8 @@ void ItemDbEditor::doItem(int id) {
 
     Box::Ptr box = Box::Create(Box::Orientation::HORIZONTAL,5);
     ComboBox::Ptr effectEntry = ComboBox::Create();
-    effectEntry->AppendItem("Earth");
-    effectEntry->AppendItem("Water");
-    effectEntry->AppendItem("Fire");
-    effectEntry->AppendItem("Air");
+    for (unsigned int i = 0; i<Effects::effectStrings.size(); ++i)
+		effectEntry->AppendItem(Effects::effectStrings[i]);
     effectEntry->SelectItem((item!=nullptr)?(item->effect):(0));
     box->Pack(Label::Create("Effect: "),false,false);
     box->Pack(effectEntry,false,false);
@@ -96,7 +100,7 @@ void ItemDbEditor::doItem(int id) {
 			int intense = form.getFieldAsInt("int");
 			string mapImg = form.getField("mp");
 			string menuImg = form.getField("mn");
-			Effects::Effect effect = Effects::Effect(effectEntry->GetSelectedItem());
+			Effects::Effect effect = Effects::Effect(Effects::effectMap[effectEntry->GetSelectedItem()]);
 			ItemDB::getItems()[id] = new Item(id,name,desc,effect,intense,val,mapImg,menuImg);
 			updateGui();
 			break;
@@ -122,11 +126,28 @@ void ItemDbEditor::doItem(int id) {
     owner->SetState(Widget::State::NORMAL);
 }
 
+void ItemDbEditor::update() {
+	int editCell = data->getEditCell();
+	if (editCell!=-1)
+		doItem(editCell);
+}
+
 void ItemDbEditor::updateGui() {
     vector<int> ids = data->getIds();
     for (unsigned int i = 0; i<ids.size(); ++i)
 		data->removeRow(ids[i]);
 	for (map<int,Item*>::iterator i = ItemDB::getItems().begin(); i!=ItemDB::getItems().end(); ++i) {
-		//Make Box and add
+		string desc = i->second->getDescription();
+		desc = (desc.size()<60)?(desc):(desc.substr(0,57)+"...");
+		vector<string> cols = {
+			"Id: "+intToString(i->second->getId()),
+			"Name: "+i->second->getName(),
+			"Description: "+desc,
+			"Value: "+intToString(i->second->getValue()),
+			"Effect: "+Effects::getEffectString(i->second->getEffect()),
+			"Effect Intensity: "+intToString(i->second->getIntensity())
+		};
+		Box::Ptr row = packRow(cols);
+		data->appendRow(i->first,row);
 	}
 }

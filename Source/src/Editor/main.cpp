@@ -45,6 +45,8 @@ int main() {
 			mapEditor.update();
 			mapEditor.render();
 		}
+		else if (tabs->GetCurrentPage()==1 && sfWindow.hasFocus())
+			itemEditor.update();
 
 		sfWindow.clear(Color(50,50,50));
 		sfgui.Display(sfWindow);

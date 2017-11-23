@@ -2,6 +2,8 @@
 #define EFFECT_HPP
 
 #include <cstdint>
+#include <vector>
+#include <string>
 
 /**
  * \defgroup Objects
@@ -17,6 +19,7 @@ namespace Effects {
  * \ingroup Objects
  */
 enum Effect: std::uint32_t {
+	None = 0,
 	DamageHealth = 1,
 	RestoreHealth = 2,
     RestoreMagic = 4,
@@ -31,6 +34,14 @@ enum Effect: std::uint32_t {
  * \return True if test is contained in value, false otherwise
  */
 bool isEffect(Effect value, Effect test);
+
+extern std::vector<std::string> effectStrings;
+extern int effectMap[];
+
+/**
+ * Takes the given effect and returns the string that represents it
+ */
+std::string getEffectString(Effect eff, std::string sep = ", ");
 
 //TODO - function to apply effects to people?
 

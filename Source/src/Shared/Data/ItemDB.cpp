@@ -3,13 +3,13 @@
 #include "Shared/Properties.hpp"
 using namespace std;
 
+map<int,Item*> ItemDB::items;
+Item ItemDB::errItem(-1,"ERROR","item id not found", Effects::Effect(0), 0, 0, "", "");
+bool ItemDB::loaded = false;
+
 namespace {
 ItemDB itemDbLoader;
 }
-
-Item ItemDB::errItem(-1,"ERROR","item id not found", Effects::Effect(0), 0, 0, "", "");
-bool ItemDB::loaded = false;
-map<int,Item*> ItemDB::items;
 
 ItemDB::ItemDB() {
 	if (ItemDB::loaded)
