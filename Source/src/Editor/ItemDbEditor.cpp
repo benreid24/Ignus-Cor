@@ -89,6 +89,7 @@ void ItemDbEditor::doItem(int id) {
         form.update();
 
         if (savePressed) {
+			savePressed = false;
 			if (item!=nullptr)
 				ItemDB::removeItem(item->id);
 			int id = form.getFieldAsInt("i");
@@ -98,10 +99,12 @@ void ItemDbEditor::doItem(int id) {
 			int intense = form.getFieldAsInt("int");
 			string mapImg = form.getField("mp");
 			string menuImg = form.getField("mn");
-			Effects::Effect effect = Effects::Effect(Effects::effectMap[effectEntry->GetSelectedItem()]);
-			ItemDB::getItems()[id] = new Item(id,name,desc,effect,intense,val,mapImg,menuImg);
-			updateGui();
-			break;
+			Effects::Effect effect = Effects::Effect(Effects::effectMap[effectEntry->GetSelectedItem()]); //TODO - multiple effects?
+			if (id>0 && name.size()>0 && desc.size()>0 && val>=0 && mapImg.size()>0 && menuImg.size()>0) {
+				ItemDB::getItems()[id] = new Item(id,name,desc,effect,intense,val,mapImg,menuImg);
+				updateGui();
+				break;
+			}
         }
         if (cancelPressed) {
 			break;

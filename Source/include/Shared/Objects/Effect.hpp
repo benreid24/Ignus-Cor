@@ -36,7 +36,7 @@ enum Effect: std::uint32_t {
 bool isEffect(Effect value, Effect test);
 
 extern std::vector<std::string> effectStrings;
-extern int effectMap[];
+extern int effectMap[]; //index -> Effect
 
 /**
  * Takes the given effect and returns the string that represents it
