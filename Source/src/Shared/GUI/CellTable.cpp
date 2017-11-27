@@ -23,26 +23,25 @@ void CellTable::editRow(int id) {
 }
 
 void CellTable::appendRow(int uuid, Box::Ptr row) {
-	parent->Remove(cellArea);
 	CellTable* me = this;
-	if (rows.find(uuid)!=rows.end())
-		cellBox->Remove(rows[uuid]);
 	Button::Ptr editBut = Button::Create("Edit");
 	editBut->GetSignal(Button::OnLeftClick).Connect( [me,uuid] { me->editRow(uuid); });
 	row->Pack(editBut,false,false);
 	Button::Ptr delBut = Button::Create("Delete");
-	delBut->GetSignal(Button::OnLeftClick).Connect( [me,uuid] { me->removeRow(uuid); });
+	delBut->GetSignal(Button::OnLeftClick).Connect( [me,uuid] { me->removeRow(uuid,false); });
 	row->Pack(delBut,false,false);
 	rows[uuid] = row;
-	cellBox->Pack(row,false,false);
-	cellBox->Pack(Separator::Create());
-	parent->Pack(cellArea,false,true);
+	reorder();
 }
 
-void CellTable::removeRow(int uuid) {
+void CellTable::removeRow(int uuid, bool imm) {
 	if (rows.find(uuid)!=rows.end()) {
-		cellBox->Remove(rows[uuid]);
-		rows.erase(uuid);
+		if (imm) {
+			cellBox->Remove(rows[uuid]);
+			rows.erase(uuid);
+		}
+        else
+			toRemove.push_back(uuid);
 	}
 }
 
@@ -52,7 +51,13 @@ int CellTable::getEditCell() {
 	return r;
 }
 
+bool CellTable::needsReorder() {
+	return toRemove.size()>0;
+}
+
 void CellTable::reorder() {
+	for (unsigned int i = 0; i<toRemove.size(); ++i)
+		rows.erase(toRemove[i]);
 	parent->Remove(cellArea);
 	cellBox->RemoveAll();
 	for (map<int,Box::Ptr>::iterator i = rows.begin(); i!=rows.end(); ++i) {

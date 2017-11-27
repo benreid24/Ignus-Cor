@@ -89,10 +89,8 @@ void ItemDbEditor::doItem(int id) {
         form.update();
 
         if (savePressed) {
-			if (item!=nullptr) {
+			if (item!=nullptr)
 				ItemDB::removeItem(item->id);
-                data->removeRow(item->id);
-			}
 			int id = form.getFieldAsInt("i");
 			string name = form.getField("n");
 			string desc = form.getField("d");
@@ -130,6 +128,8 @@ void ItemDbEditor::update() {
 	int editCell = data->getEditCell();
 	if (editCell!=-1)
 		doItem(editCell);
+	if (data->needsReorder())
+		data->reorder();
 }
 
 void ItemDbEditor::updateGui() {

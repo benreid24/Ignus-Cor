@@ -22,15 +22,12 @@ class CellTable {
 	sfg::ScrolledWindow::Ptr cellArea;
 	sfg::Box::Ptr cellBox;
 
+	std::vector<int> toRemove;
+
 	/**
 	 * Marks the given row to be edited
 	 */
 	void editRow(int uuid);
-
-	/**
-	 * Sorts the rows based on id
-	 */
-	void reorder();
 
 public:
 	/**
@@ -51,12 +48,22 @@ public:
 	/**
 	 * Deletes the given row
 	 */
-	void removeRow(int uuid);
+	void removeRow(int uuid, bool immediate = true);
 
 	/**
 	 * Returns the id of the last cell to have "Edit" clicked, -1 if none
 	 */
 	int getEditCell();
+
+	/**
+	 * Returns true if reorder needs to be called. Check once per frame
+	 */
+	bool needsReorder();
+
+	/**
+	 * Sorts the rows based on id
+	 */
+	void reorder();
 };
 
 #endif // CELLTABLE_HPP
