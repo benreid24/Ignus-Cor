@@ -23,6 +23,7 @@ class CellTable {
 	sfg::Box::Ptr cellBox;
 
 	std::vector<int> toRemove;
+	std::vector<int> removed;
 
 	/**
 	 * Marks the given row to be edited
@@ -41,6 +42,11 @@ public:
 	std::vector<int> getIds();
 
 	/**
+	 * Returns the set of ids deleted since this was last checked
+	 */
+	std::vector<int> getDeletedIds();
+
+	/**
 	 * Adds a new row with the given Box. Adds an edit and delete button to the end
 	 */
 	void appendRow(int id, sfg::Box::Ptr row);
@@ -49,6 +55,11 @@ public:
 	 * Deletes the given row
 	 */
 	void removeRow(int uuid, bool immediate = true);
+
+	/**
+	 * Deletes all rows
+	 */
+	void removeAll();
 
 	/**
 	 * Returns the id of the last cell to have "Edit" clicked, -1 if none

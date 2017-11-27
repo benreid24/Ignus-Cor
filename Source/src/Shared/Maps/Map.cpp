@@ -2,6 +2,7 @@
 #include "Shared/Properties.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Media/Playlist.hpp"
+#include "Shared/Data/ItemDB.hpp"
 #include <cmath>
 using namespace sf;
 using namespace std;
@@ -40,6 +41,8 @@ vector<TextureReference> Map::collisionTextures;
 Sprite Map::collisionSprite;
 
 Map::Map(Tileset& tlst, SoundEngine* se) : tileset(tlst) {
+	maxMapItemId = 1;
+
 	#ifdef EDITOR
 	arrowTexture = imagePool.loadResource(Properties::EditorResources+"arrow.png");
 	arrowSprite.setTexture(*arrowTexture);
@@ -243,17 +246,26 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
     //Load items
     tInt = input.get<uint16_t>();
     for (int i = 0; i<tInt; ++i) {
-        int itemId = input.get<uint16_t>();
-        int mapId = input.get<uint16_t>();
-        Vector2f pos;
-        pos.x = input.get<uint32_t>();
-        pos.y = input.get<uint32_t>();
-        for (unsigned int j = 0; j<pickedUpItems[name].size(); ++j) {
-            if (pickedUpItems[name][j]==mapId)
-                itemId = -1;
+		MapItem item;
+        item.itemId = input.get<uint16_t>();
+        item.mapId = input.get<uint16_t>();
+        item.position.x = input.get<uint32_t>();
+        item.position.y = input.get<uint32_t>();
+        if (!ItemDB::itemExists(item.itemId)) {
+			cout << "Error: Item [" << item.itemId << "] does not exist, removing from map" << endl;
+			continue;
         }
-        if (itemId!=-1);
-            //TODO - implement items
+        for (unsigned int j = 0; j<pickedUpItems[name].size(); ++j) {
+            if (pickedUpItems[name][j]==item.mapId)
+                item.itemId = -1;
+        }
+        if (item.itemId!=-1) {
+			item.ie = new ItemEntity(item.itemId,Vector2f(item.position));
+            items.push_back(item);
+            entityManager->add(item.ie);
+        }
+		if (item.mapId>maxMapItemId)
+			maxMapItemId = item.mapId+1;
     }
 
     //Load lights
@@ -290,6 +302,8 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
 
         events.push_back(evt);
     }
+
+    entityManager->setMapHeight(size.y);
 }
 
 Map::~Map() {
@@ -417,7 +431,7 @@ void Map::save(std::string file) {
 
     //Save spawners
     output.write<uint16_t>(spawners.size());
-    for (int i = 0; i<spawners.size(); ++i) {
+    for (unsigned int i = 0; i<spawners.size(); ++i) {
 		output.write<uint32_t>(spawners[i].position.x);
 		output.write<uint32_t>(spawners[i].position.y);
 		output.write<uint16_t>(spawners[i].coolDown);
@@ -428,20 +442,13 @@ void Map::save(std::string file) {
     }
 
     //Save items
-    output.write<uint16_t>(0);
-    /*for (int i = 0; i<tInt; ++i) { //TODO - save items according to below format
-        int itemId = output.write<uint16_t>();
-        int mapId = output.write<uint16_t>();
-        Vector2f pos;
-        pos.x = output.write<uint32_t>();
-        pos.y = output.write<uint32_t>();
-        for (unsigned int j = 0; j<pickedUpItems[name].size(); ++j) {
-            if (pickedUpItems[name][j]==mapId)
-                itemId = -1;
-        }
-        if (itemId!=-1);
-            //TODO - implement items
-    }*/
+    output.write<uint16_t>(items.size());
+    for (unsigned int i = 0; i<items.size(); ++i) {
+        output.write<uint16_t>(items[i].itemId);
+        output.write<uint16_t>(items[i].mapId);
+        output.write<uint32_t>(items[i].position.x);
+        output.write<uint32_t>(items[i].position.y);
+    }
 
     //Save lights
     output.write<uint16_t>(lights.size());
@@ -550,7 +557,7 @@ void Map::draw(sf::RenderTarget& target) {
                 }
             }
             for (unsigned int i = 0; i<entityManager->getYSorted().at(y).size(); ++i) {
-                entityManager->getYSorted().at(y+1).at(i)->render(target,camPos);
+                entityManager->getYSorted().at(y).at(i)->render(target,camPos);
             }
         }
     }
@@ -632,7 +639,7 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection, 
                 }
             }
             for (unsigned int i = 0; i<entityManager->getYSorted().at(y).size(); ++i) {
-                entityManager->getYSorted().at(y+1).at(i)->render(target,camPos);
+                entityManager->getYSorted().at(y).at(i)->render(target,camPos);
             }
         }
     }
@@ -891,6 +898,8 @@ int Map::getCollision(int x, int y) {
 bool Map::spaceFree(Vector2i pos, Vector2i oldPos) {
 	if (pos.x<=0 || pos.x>size.x || pos.y<=0 || pos.y>size.y)
 		return false;
+	if (pos==oldPos) //Entities will pass rounded down positions, so if they are equal they have not crossed a tile border
+		return true;
 
 	int dir = 0;
 	if (oldPos.x>pos.x)
@@ -1002,6 +1011,41 @@ void Map::removePlayerSpawn(int x, int y) {
 	for (unsigned int i = 0; i<playerSpawns.size(); ++i) {
 		if (playerSpawns[i].position.x==x && playerSpawns[i].position.y==y) {
 			playerSpawns.erase(playerSpawns.begin()+i);
+			--i;
+		}
+	}
+}
+
+void Map::addItem(int itemId, Vector2i position) {
+	MapItem item;
+	item.itemId = itemId;
+	item.mapId = maxMapItemId;
+	item.position = position;
+	maxMapItemId++;
+	ItemEntity* ie = new ItemEntity(item.itemId,Vector2f(item.position));
+	entityManager->add(ie);
+	items.push_back(item);
+}
+
+MapItem* Map::getItem(Vector2i position) {
+	for (unsigned int i = 0; i<items.size(); ++i) {
+		if (abs(items[i].position.x-position.x)<=32 && abs(items[i].position.y-position.y)<=32)
+			return &items[i];
+	}
+	return nullptr;
+}
+
+void Map::updateItem(MapItem* orig) {
+	entityManager->remove(orig->ie);
+	orig->ie = new ItemEntity(orig->itemId,Vector2f(orig->position));
+	entityManager->add(orig->ie);
+}
+
+void Map::removeItem(Vector2i position) {
+	for (unsigned int i = 0; i<items.size(); ++i) {
+		if (abs(items[i].position.x-position.x)<=32 && abs(items[i].position.y-position.y)<=32) {
+			entityManager->remove(items[i].ie);
+			items.erase(items.begin()+i);
 			--i;
 		}
 	}

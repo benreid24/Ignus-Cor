@@ -247,6 +247,8 @@ void MapEditor::mapClicked() {
 		spawnHandler(pos);
 	else if (curTool==Spawners)
 		spawnerHandler(pos);
+	else if (curTool==Items)
+		itemHandler(pixelPos);
 }
 
 void MapEditor::addLayer(int o) {

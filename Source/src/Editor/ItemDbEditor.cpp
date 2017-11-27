@@ -50,9 +50,12 @@ void ItemDbEditor::doItem(int id) {
 
     Form form;
     Button::Ptr saveButton(Button::Create("Save")), cancelButton(Button::Create("Cancel"));
-	bool cancelPressed(false), savePressed(false), pickPressed(false);
+    Button::Ptr mapPathBut(Button::Create("Pick Map Image")), menuPathBut(Button::Create("Pick Menu Image"));
+	bool cancelPressed(false), savePressed(false), pickMapImage(false), pickMenuImage(false);
 	cancelButton->GetSignal(Button::OnLeftClick).Connect( [&cancelPressed] { cancelPressed = true; });
 	saveButton->GetSignal(Button::OnLeftClick).Connect( [&savePressed] { savePressed = true; });
+	mapPathBut->GetSignal(Button::OnLeftClick).Connect( [&pickMapImage] { pickMapImage = true; });
+	menuPathBut->GetSignal(Button::OnLeftClick).Connect( [&pickMenuImage] { pickMenuImage = true; });
 
 	form.addField("i", "Id: ",160,(item!=nullptr)?(item->id):(-1));
 	form.addField("n", "Name: ",160,(item!=nullptr)?(item->name):(""));
@@ -73,6 +76,8 @@ void ItemDbEditor::doItem(int id) {
     winBox->Pack(box,false,false);
 
     Box::Ptr butBox = Box::Create(Box::Orientation::HORIZONTAL,5);
+    butBox->Pack(mapPathBut,false,false);
+    butBox->Pack(menuPathBut,false,false);
     butBox->Pack(saveButton,false,false);
     butBox->Pack(cancelButton,false,false);
     winBox->Pack(butBox,false,false);
@@ -109,11 +114,17 @@ void ItemDbEditor::doItem(int id) {
         if (cancelPressed) {
 			break;
         }
-        if (pickPressed) {
-			pickPressed = false;
-			FilePicker picker(desktop, owner, "Spawner", Properties::SpawnerPath, "spnr");
+        if (pickMapImage) {
+			pickMapImage = false;
+			FilePicker picker(desktop, owner, "Map Image", Properties::ItemMapImagePath, "png");
 			if (picker.pickFile())
-				form.setField("f", picker.getChoice());
+				form.setField("mp", picker.getChoice()+".png");
+        }
+        if (pickMenuImage) {
+			pickMenuImage = false;
+			FilePicker picker(desktop, owner, "Menu Image", Properties::ItemMapImagePath, "png");
+			if (picker.pickFile())
+				form.setField("mn", picker.getChoice()+".png");
         }
 
         desktop.BringToFront(window);
@@ -133,12 +144,13 @@ void ItemDbEditor::update() {
 		doItem(editCell);
 	if (data->needsReorder())
 		data->reorder();
+	vector<int> delIds = data->getDeletedIds();
+	for (unsigned int i = 0; i<delIds.size(); ++i)
+		ItemDB::removeItem(delIds[i]);
 }
 
 void ItemDbEditor::updateGui() {
-    vector<int> ids = data->getIds();
-    for (unsigned int i = 0; i<ids.size(); ++i)
-		data->removeRow(ids[i]);
+	data->removeAll();
 	for (map<int,Item*>::iterator i = ItemDB::getItems().begin(); i!=ItemDB::getItems().end(); ++i) {
 		string desc = i->second->getDescription();
 		desc = (desc.size()<60)?(desc):(desc.substr(0,57)+"...");

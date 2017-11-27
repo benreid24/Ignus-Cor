@@ -198,6 +198,11 @@ class MapEditor {
 	void spawnerHandler(sf::Vector2i pos);
 
 	/**
+	 * Handles Item related clicking. Note: position is in pixels
+	 */
+	void itemHandler(sf::Vector2i pos);
+
+	/**
 	 * Updates the info labels
 	 */
 	void updateInfo();

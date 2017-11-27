@@ -36,6 +36,7 @@ void CellTable::appendRow(int uuid, Box::Ptr row) {
 
 void CellTable::removeRow(int uuid, bool imm) {
 	if (rows.find(uuid)!=rows.end()) {
+		removed.push_back(uuid);
 		if (imm) {
 			cellBox->Remove(rows[uuid]);
 			rows.erase(uuid);
@@ -43,6 +44,13 @@ void CellTable::removeRow(int uuid, bool imm) {
         else
 			toRemove.push_back(uuid);
 	}
+}
+
+void CellTable::removeAll() {
+	parent->Remove(cellArea);
+	cellBox->RemoveAll();
+	rows.clear();
+	parent->Pack(cellArea,false,true);
 }
 
 int CellTable::getEditCell() {
@@ -72,6 +80,12 @@ vector<int> CellTable::getIds() {
 	for (map<int,Box::Ptr>::iterator i = rows.begin(); i!=rows.end(); ++i)
 		ids.push_back(i->first);
 	return ids;
+}
+
+vector<int> CellTable::getDeletedIds() {
+	vector<int> ret = removed;
+	removed.clear();
+	return ret;
 }
 
 Box::Ptr packRow(vector<string> cells) {

@@ -941,3 +941,99 @@ void MapEditor::spawnerHandler(sf::Vector2i pos) {
     desktop.Remove(window);
     owner->SetState(Widget::State::NORMAL);
 }
+
+void MapEditor::itemHandler(sf::Vector2i pos) {
+	bool newItem = false;
+	if (ItemDB::getItems().size()==0) {
+		cout << "No items!" << endl;
+		return;
+	}
+
+	MapItem* item = mapData->getItem(pos);
+	if (item==nullptr)
+		newItem = true;
+
+	owner->SetState(Widget::State::INSENSITIVE);
+    sfg::Window::Ptr window = sfg::Window::Create();
+    window->SetTitle("Map Item");
+    Box::Ptr winBox = Box::Create(Box::Orientation::VERTICAL,5);
+	window->Add(winBox);
+	desktop.Add(window);
+
+    Form form;
+    Button::Ptr saveButton(Button::Create("Save")), cancelButton(Button::Create("Cancel")), delButton(Button::Create("Delete"));
+	bool cancelPressed(false), savePressed(false), delPressed(false);
+	delButton->GetSignal(Button::OnLeftClick).Connect( [&delPressed] { delPressed= true; });
+	cancelButton->GetSignal(Button::OnLeftClick).Connect( [&cancelPressed] { cancelPressed = true; });
+	saveButton->GetSignal(Button::OnLeftClick).Connect( [&savePressed] { savePressed = true; });
+
+    form.addField("x","X: ",80,newItem?(intToString(pos.x)):(intToString(item->position.x)));
+    form.addField("y","Y: ",80,newItem?(intToString(pos.y)):(intToString(item->position.y)));
+    form.addToParent(winBox);
+
+    Box::Ptr box = Box::Create(Box::Orientation::HORIZONTAL,5);
+    ComboBox::Ptr idEntry = ComboBox::Create();
+    map<int,int> comboIdMap, idComboMap;
+    int j = 0;
+    for (map<int,Item*>::iterator i = ItemDB::getItems().begin(); i!=ItemDB::getItems().end(); ++i) {
+		idEntry->AppendItem(intToString(i->second->getId())+": "+i->second->getName());
+		comboIdMap[j] = i->second->getId();
+		idComboMap[i->second->getId()] = j;
+		++j;
+    }
+    if (!newItem)
+		idEntry->SelectItem(idComboMap[item->itemId]);
+	else
+		idEntry->SelectItem(0);
+    box->Pack(Label::Create("Trigger: "),false,false);
+    box->Pack(idEntry,false,false);
+    winBox->Pack(box,false,false);
+
+    Box::Ptr butBox = Box::Create(Box::Orientation::HORIZONTAL,5);
+    butBox->Pack(saveButton,false,false);
+    butBox->Pack(delButton,false,false);
+    butBox->Pack(cancelButton,false,false);
+    winBox->Pack(butBox,false,false);
+
+    while (sfWindow.isOpen()) {
+		Event wv;
+		while (sfWindow.pollEvent(wv)) {
+			desktop.HandleEvent(wv);
+
+			if (wv.type==Event::Closed)
+				sfWindow.close();
+		}
+        desktop.Update(30/1000);
+        form.update();
+
+        if (savePressed) {
+			if (!newItem) {
+				item->position.x = form.getFieldAsInt("x");
+				item->position.y = form.getFieldAsInt("y");
+				item->itemId = comboIdMap[idEntry->GetSelectedItem()];
+				mapData->updateItem(item);
+			}
+			else
+				mapData->addItem(comboIdMap[idEntry->GetSelectedItem()], Vector2i(form.getFieldAsInt("x"),form.getFieldAsInt("y")));
+			break;
+        }
+        if (delPressed) {
+			mapData->removeItem(pos);
+			break;
+        }
+        if (cancelPressed) {
+			if (newItem)
+				mapData->removeItem(pos);
+			break;
+        }
+
+        desktop.BringToFront(window);
+        sfWindow.clear();
+		sfgui.Display(sfWindow);
+		sfWindow.display();
+		sleep(milliseconds(30));
+    }
+
+    desktop.Remove(window);
+    owner->SetState(Widget::State::NORMAL);
+}

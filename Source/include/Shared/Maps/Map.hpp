@@ -10,8 +10,10 @@
 #include "Shared/Maps/Tileset.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Maps/Weather.hpp"
+#include "Shared/Entities/Instances/ItemEntity.hpp"
 
 class Playlist;
+class Map;
 
 /**
  * Structure to store a tile in the map
@@ -79,6 +81,20 @@ struct MapSpawner {
 	//TODO - add actual spawner data or make a separate class
 };
 
+/**
+ * Structure to store details of items in the map
+ *
+ * \ingroup Map
+ */
+struct MapItem {
+	int itemId, mapId;
+	sf::Vector2i position;
+
+private:
+	ItemEntity* ie;
+	friend class Map;
+};
+
 class Map {
 	std::string name;
 	sf::Vector2i size;
@@ -102,6 +118,9 @@ class Map {
     std::vector<MapEvent> events;
     sf::Vector2f camPos;
     sf::Vector2i camPosTiles;
+
+    std::vector<MapItem> items;
+    int maxMapItemId;
 
     std::vector<PlayerSpawn> playerSpawns;
     static std::string lastMap, curMap;
@@ -447,6 +466,26 @@ public:
 	 * Removes the MapSpawner at the given position
 	 */
 	void removeMapSpawner(int x, int y);
+
+	/**
+	 * Adds the given item to the map
+	 */
+	void addItem(int itemId, sf::Vector2i position);
+
+	/**
+	 * Returns a pointer to the item at the given position, nullptr if none
+	 */
+	MapItem* getItem(sf::Vector2i position);
+
+	/**
+	 * Updates the given MapItem
+	 */
+	void updateItem(MapItem* orig);
+
+	/**
+	 * Removes the item at the given position
+	 */
+	void removeItem(sf::Vector2i position);
 
     /**
      * Sets the ambient lighting to the given value, rather than letting it be determined by the time of day. Use when inside

@@ -80,6 +80,7 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/include/Shared/Entities/EntityBubble.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityManager.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityVisual.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/ItemEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/CellTable.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/Form.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/ResizableImage.hpp" />
