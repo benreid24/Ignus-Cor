@@ -758,8 +758,8 @@ void MapEditor::lightHandler(Vector2i pos) {
 void MapEditor::spawnHandler(Vector2i pos) {
 	PlayerSpawn defaultSpawn;
 	defaultSpawn.name = "main";
-	defaultSpawn.direction = 0;
-	defaultSpawn.position = pos;
+	defaultSpawn.position.dir = 0;
+	defaultSpawn.position.coords = Vector2f(pos);
 	bool newSpawn = false;
 
 	PlayerSpawn* spawn = mapData->getPlayerSpawn(pos.x,pos.y);
@@ -784,8 +784,8 @@ void MapEditor::spawnHandler(Vector2i pos) {
 	saveButton->GetSignal(Button::OnLeftClick).Connect( [&savePressed] { savePressed = true; });
 
 	form.addField("n", "Name: ",160,spawn->name);
-    form.addField("x","X: ",80,intToString(spawn->position.x));
-    form.addField("y","Y: ",80,intToString(spawn->position.y));
+    form.addField("x","X: ",80,intToString(spawn->position.coords.x));
+    form.addField("y","Y: ",80,intToString(spawn->position.coords.y));
     form.addToParent(winBox);
 
     Box::Ptr box = Box::Create(Box::Orientation::HORIZONTAL,5);
@@ -794,7 +794,7 @@ void MapEditor::spawnHandler(Vector2i pos) {
     dirEntry->AppendItem("Right");
     dirEntry->AppendItem("Down");
     dirEntry->AppendItem("Left");
-    dirEntry->SelectItem(spawn->direction);
+    dirEntry->SelectItem(spawn->position.dir);
     box->Pack(Label::Create("Direction: "),false,false);
     box->Pack(dirEntry,false,false);
     winBox->Pack(box,false,false);
@@ -820,9 +820,9 @@ void MapEditor::spawnHandler(Vector2i pos) {
 			savePressed = false;
 			if (form.getField("n")!="prev" && form.getField("n").size()>0) {
 				spawn->name = form.getField("n");
-				spawn->position.x = form.getFieldAsInt("x");
-				spawn->position.y = form.getFieldAsInt("y");
-				spawn->direction = dirEntry->GetSelectedItem();
+				spawn->position.coords.x = form.getFieldAsInt("x");
+				spawn->position.coords.y = form.getFieldAsInt("y");
+				spawn->position.dir = dirEntry->GetSelectedItem();
 			}
 			break;
         }
