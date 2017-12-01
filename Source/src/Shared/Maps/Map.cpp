@@ -7,6 +7,7 @@
 using namespace sf;
 using namespace std;
 
+#ifdef EDITOR
 namespace {
 	const string collisionFiles[16] = {Properties::EditorResources+"none.png",
 									   Properties::EditorResources+"all.png",
@@ -25,6 +26,7 @@ namespace {
 									   Properties::EditorResources+"noBottom.png",
 									   Properties::EditorResources+"noLeft.png"};
 }
+#endif
 
 ScriptEnvironment* Map::scriptEnv = nullptr;
 std::vector<std::string> Map::visitedMaps;
