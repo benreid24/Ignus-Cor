@@ -11,11 +11,16 @@
  * \ingroup Entity
  */
 class ItemEntity : public Entity {
+	/**
+	 * Constructs the ItemEntity from the given item id and position
+	 */
+	ItemEntity(int itemId, EntityPosition position) : Entity(ItemDB::getItem(itemId).getName(), position, Properties::ItemMapImagePath+ItemDB::getItem(itemId).getMapImageFile()) { }
+
 public:
 	/**
 	 * Constructs the ItemEntity from the given item id and position
 	 */
-	ItemEntity(int itemId, sf::Vector2f position) : Entity(ItemDB::getItem(itemId).getName(), position, Properties::ItemMapImagePath+ItemDB::getItem(itemId).getMapImageFile()) { }
+	static Entity::Ptr create(int itemId, EntityPosition position) { return Entity::Ptr(new ItemEntity(itemId, position)); }
 
     const std::string getType() { return "Item"; }
 };

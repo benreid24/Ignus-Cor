@@ -2,6 +2,7 @@
 #define ENTITY_HPP
 
 #include <string>
+#include <memory>
 #include "Shared/Entities/EntityVisual.hpp"
 #include "Shared/Entities/EntityBubble.hpp"
 
@@ -11,17 +12,29 @@
  */
 
 /**
+ * Stores the position of an Entity. Position consists of coordinates and map
+ */
+struct EntityPosition {
+	sf::Vector2f coords;
+	std::string mapName;
+	int dir;
+};
+
+/**
  * Base class for all "physical" objects in the game. Provides an interface for the game to manage it
  *
  * \ingroup Entity
  */
 class Entity {
+public:
+	typedef std::shared_ptr<Entity> Ptr;
+
+private:
 	int uuid;
 	std::string name;
-	sf::Vector2f position;
+	EntityPosition position;
 	EntityVisual graphics;
 	EntityBubble bubble;
-	int dir;
 	double lTime;
 	float speed[2]; //speed in pixels/second for [slow,fast]. Will be set by child classes
 
@@ -31,7 +44,7 @@ public:
 	/**
 	 * Creates the Entity with the given name, position, and graphics
 	 */
-	Entity(std::string nm, sf::Vector2f pos, std::string gfx1, std::string gfx2 = "");
+	Entity(std::string nm, EntityPosition pos, std::string gfx1, std::string gfx2 = "");
 
 	/**
 	 * Virtual destructor for magic
@@ -46,28 +59,17 @@ public:
 	/**
 	 * Returns the position of the Entity
 	 */
-	sf::Vector2f getPosition();
+	EntityPosition getPosition();
 
 	/**
 	 * Sets the position and direction of the Entity. Leave direction empty to maintain it. Position is in pixels
 	 */
-	void setPositionAndDirection(sf::Vector2f pos, int d = -1);
-
-	/**
-	 * Sets the position and direction of the Entity. Leave direction empty to maintain it. Position is in tiles,
-	 * use for spawning
-	 */
-	void setPositionAndDirection(sf::Vector2i pos, int d = -1);
+	void setPositionAndDirection(EntityPosition pos);
 
 	/**
 	 * Shifts the Entity by the given amount of pixels. Set truncate to true to force the Entity onto a tile border
 	 */
 	void shift(sf::Vector2f amount, bool truncate = false);
-
-	/**
-	 * Returns the direction the Entity is facing
-	 */
-    int getDir();
 
 	/**
 	 * Returns the name of the Entity

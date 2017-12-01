@@ -64,8 +64,7 @@ struct MapEvent {
  */
 struct PlayerSpawn {
 	std::string name;
-	sf::Vector2i position;
-	int direction;
+	EntityPosition position;
 };
 
 /**
@@ -91,7 +90,7 @@ struct MapItem {
 	sf::Vector2i position;
 
 private:
-	ItemEntity* ie;
+	Entity::Ptr ie;
 	friend class Map;
 };
 
@@ -124,8 +123,7 @@ class Map {
 
     std::vector<PlayerSpawn> playerSpawns;
     static std::string lastMap, curMap;
-    static sf::Vector2f lastPos;
-    static int lastDir;
+    static EntityPosition lastPos; //TODO - With many maps implementation, does this have to be static? Each map could store it's own and it would persist
 
     int firstYSortLayer, firstTopLayer;
     int ambientLightOverride, currentLighting;

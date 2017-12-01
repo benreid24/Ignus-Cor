@@ -10,7 +10,7 @@ EntityManager::~EntityManager() {
 	clear();
 }
 
-void EntityManager::updatePosition(Entity* e, float lastY, float curY) {
+void EntityManager::updatePosition(Entity::Ptr e, float lastY, float curY) {
 	int ly = lastY/32;
 	int cy = curY/32;
 
@@ -33,15 +33,11 @@ void EntityManager::updatePosition(Entity* e, float lastY, float curY) {
 }
 
 void EntityManager::clear() {
-	for (unsigned int i = 0; i<entities.size(); ++i) {
-		if (entities[i]!=player)
-			delete entities[i];
-	}
 	ySortedEntities.clear();
 	entities.clear();
 }
 
-vector<vector<Entity*> >& EntityManager::getYSorted() {
+vector<vector<Entity::Ptr> >& EntityManager::getYSorted() {
 	return ySortedEntities;
 }
 
@@ -49,21 +45,21 @@ void EntityManager::setMapHeight(int height) {
 	ySortedEntities.clear();
 	ySortedEntities.resize(height);
 	for (unsigned int i = 0; i<entities.size(); ++i) {
-		int y = entities[i]->getPosition().y/32;
+		int y = entities[i]->getPosition().coords.y/32;
 		if (y>=0 && y<height)
 			ySortedEntities[y].push_back(entities[i]);
 	}
 }
 
-void EntityManager::add(Entity* e) {
+void EntityManager::add(Entity::Ptr e) {
 	entities.push_back(e);
-	int y = e->getPosition().y/32;
+	int y = e->getPosition().coords.y/32;
 	if (y>=0 && y<signed(ySortedEntities.size()))
 		ySortedEntities[y].push_back(e);
 }
 
-void EntityManager::remove(Entity* e) {
-	int y = e->getPosition().y/32;
+void EntityManager::remove(Entity::Ptr e) {
+	int y = e->getPosition().coords.y/32;
 	for (unsigned int i = 0; i<entities.size(); ++i) {
 		if (entities[i]==e) {
 			entities.erase(entities.begin()+i);
@@ -78,8 +74,6 @@ void EntityManager::remove(Entity* e) {
 			}
 		}
     }
-    if (e!=player)
-		delete e;
 }
 
 void EntityManager::remove(string name, string type) {

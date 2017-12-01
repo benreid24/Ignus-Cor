@@ -4,14 +4,14 @@
 #include "Shared/Entities/Entity.hpp"
 
 class EntityManager {
-	std::vector<Entity*> entities;
-    std::vector<std::vector<Entity*> > ySortedEntities;
+	std::vector<Entity::Ptr> entities;
+    std::vector<std::vector<Entity::Ptr> > ySortedEntities;
 	Entity* player;
 
 	/**
 	 * Internal function for Entities to update their y-sort if they move
 	 */
-	void updatePosition(Entity* e, float lastY, float curY);
+	void updatePosition(Entity::Ptr e, float lastY, float curY);
 
 	friend class Entity;
 
@@ -39,7 +39,7 @@ public:
 	/**
 	 * Adds the given Entity
 	 */
-	void add(Entity* e);
+	void add(Entity::Ptr e);
 
 	/**
 	 * Removes the given Entity by name, and optionally by type
@@ -49,12 +49,12 @@ public:
 	/**
 	 * Removes the given Entity based on memory address
 	 */
-	void remove(Entity* e);
+	void remove(Entity::Ptr e);
 
 	/**
 	 * Returns a reference to the y-sorted list of Entities for the map to render
 	 */
-	std::vector<std::vector<Entity*> >& getYSorted();
+	std::vector<std::vector<Entity::Ptr> >& getYSorted();
 };
 
 #endif // ENTITYMANAGER_HPP

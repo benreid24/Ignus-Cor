@@ -33,12 +33,11 @@ std::vector<std::string> Map::visitedMaps;
 std::map<std::string, std::vector<int> > Map::pickedUpItems;
 string Map::lastMap, Map::curMap;
 Weather* Map::weather = nullptr;
-Vector2f Map::lastPos;
+EntityPosition Map::lastPos;
 sf::RenderTexture Map::lightTxtr;
 sf::Sprite Map::lightSpr;
 sf::VertexArray Map::light(TrianglesFan, 362);
 bool Map::staticMemebersCreated = false;
-int Map::lastDir = 2;
 vector<TextureReference> Map::collisionTextures;
 Sprite Map::collisionSprite;
 
@@ -103,9 +102,9 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
     curMap = file;
     if (spName!="prev" && player!=nullptr) {
         Map::lastPos = player->getPosition();
-        Map::lastDir = player->getDir()+2;
-        if (Map::lastDir>3)
-            Map::lastDir -= 4;
+        Map::lastPos.dir += 2;
+        if (Map::lastPos.dir>3)
+            Map::lastPos.dir -= 4;
     }
 
     cout << "Loading map: " << file << "(" << spName << ")\n";
@@ -205,19 +204,20 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
     for (int i = 0; i<tInt; ++i) {
         PlayerSpawn tmp;
         tmp.name = input.getString();
-        tmp.position.x = input.get<uint32_t>();
-        tmp.position.y = input.get<uint32_t>();
-        tmp.direction = input.get<uint8_t>();
+        tmp.position.coords.x = input.get<uint32_t>();
+        tmp.position.coords.y = input.get<uint32_t>();
+        tmp.position.dir = input.get<uint8_t>();
+        tmp.position.mapName = name;
         if (spName==tmp.name && player!=nullptr)
-            player->setPositionAndDirection(tmp.position,tmp.direction);
+            player->setPositionAndDirection(tmp.position);
 		playerSpawns.push_back(tmp);
     }
     if (spName=="prev" && player!=nullptr) {
-		player->setPositionAndDirection(Map::lastPos,Map::lastDir);
+		player->setPositionAndDirection(Map::lastPos);
 		player->shift(Vector2f(0,32)); //to move down past the door. if spawning in walls, check this line
 	}
 	if (player!=nullptr)
-		setRenderPosition(player->getPosition());
+		setRenderPosition(player->getPosition().coords);
 
     //Load AI
 	entityManager->setMapHeight(size.y);
@@ -262,7 +262,10 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
                 item.itemId = -1;
         }
         if (item.itemId!=-1) {
-			item.ie = new ItemEntity(item.itemId,Vector2f(item.position));
+			EntityPosition pos;
+			pos.coords = Vector2f(item.position);
+			pos.mapName = name;
+			item.ie = ItemEntity::create(item.itemId,pos);
             items.push_back(item);
             entityManager->add(item.ie);
         }
@@ -414,9 +417,9 @@ void Map::save(std::string file) {
     output.write<uint16_t>(playerSpawns.size());
     for (unsigned int i = 0; i<playerSpawns.size(); ++i) {
         output.writeString(playerSpawns[i].name);
-        output.write<uint32_t>(playerSpawns[i].position.x);
-        output.write<uint32_t>(playerSpawns[i].position.y);
-        output.write<uint8_t>(playerSpawns[i].direction);
+        output.write<uint32_t>(playerSpawns[i].position.coords.x);
+        output.write<uint32_t>(playerSpawns[i].position.coords.y);
+        output.write<uint8_t>(playerSpawns[i].position.dir);
     }
 
     //Save AI
@@ -716,11 +719,11 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection, 
     }
 
     for (unsigned int i = 0; i<playerSpawns.size(); ++i) {
-        arrowSprite.setPosition(playerSpawns[i].position.x*32-camPos.x+arrowTexture->getSize().x/2,playerSpawns[i].position.y*32-camPos.y+arrowTexture->getSize().y/2);
-        arrowSprite.setRotation(playerSpawns[i].direction*90);
+        arrowSprite.setPosition(playerSpawns[i].position.coords.x*32-camPos.x+arrowTexture->getSize().x/2,playerSpawns[i].position.coords.y*32-camPos.y+arrowTexture->getSize().y/2);
+        arrowSprite.setRotation(playerSpawns[i].position.dir*90);
         target.draw(arrowSprite);
         utilText.setString(playerSpawns[i].name);
-        utilText.setPosition(playerSpawns[i].position.x*32-camPos.x+16-utilText.getCharacterSize()*playerSpawns[i].name.size()/4,playerSpawns[i].position.y*32-camPos.y+10);
+        utilText.setPosition(playerSpawns[i].position.coords.x*32-camPos.x+16-utilText.getCharacterSize()*playerSpawns[i].name.size()/4,playerSpawns[i].position.coords.y*32-camPos.y+10);
         target.draw(utilText);
     }
 
@@ -1003,7 +1006,7 @@ void Map::addPlayerSpawn(PlayerSpawn ps) {
 
 PlayerSpawn* Map::getPlayerSpawn(int x, int y) {
 	for (unsigned int i = 0; i<playerSpawns.size(); ++i) {
-		if (playerSpawns[i].position.x==x && playerSpawns[i].position.y==y)
+		if (playerSpawns[i].position.coords.x==x && playerSpawns[i].position.coords.y==y)
 			return &playerSpawns[i];
 	}
 	return nullptr;
@@ -1011,7 +1014,7 @@ PlayerSpawn* Map::getPlayerSpawn(int x, int y) {
 
 void Map::removePlayerSpawn(int x, int y) {
 	for (unsigned int i = 0; i<playerSpawns.size(); ++i) {
-		if (playerSpawns[i].position.x==x && playerSpawns[i].position.y==y) {
+		if (playerSpawns[i].position.coords.x==x && playerSpawns[i].position.coords.y==y) {
 			playerSpawns.erase(playerSpawns.begin()+i);
 			--i;
 		}
@@ -1024,7 +1027,10 @@ void Map::addItem(int itemId, Vector2i position) {
 	item.mapId = maxMapItemId;
 	item.position = position;
 	maxMapItemId++;
-	ItemEntity* ie = new ItemEntity(item.itemId,Vector2f(item.position));
+	EntityPosition pos;
+	pos.coords = Vector2f(position);
+	pos.mapName = name;
+	Entity::Ptr ie = ItemEntity::create(item.itemId, pos);
 	entityManager->add(ie);
 	items.push_back(item);
 }
@@ -1038,8 +1044,9 @@ MapItem* Map::getItem(Vector2i position) {
 }
 
 void Map::updateItem(MapItem* orig) {
+	EntityPosition pos = orig->ie->getPosition();
 	entityManager->remove(orig->ie);
-	orig->ie = new ItemEntity(orig->itemId,Vector2f(orig->position));
+	orig->ie = ItemEntity::create(orig->itemId, pos);
 	entityManager->add(orig->ie);
 }
 
