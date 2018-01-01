@@ -2,6 +2,7 @@
 #define GAME_HPP
 
 #include <stack>
+#include <SFML/Window.hpp>
 #include "Shared/Entities/EntityManager.hpp"
 #include "BaseState.hpp"
 
@@ -32,6 +33,8 @@ public:
 	  */
 	 void run();
 
+	 sf::RenderWindow window;
+	 bool inFocus;
 	 std::stack<BaseState*> states;
 	 EntityManager entityManager;
 };

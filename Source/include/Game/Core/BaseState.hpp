@@ -2,6 +2,7 @@
 #define BASESTATE_HPP
 
 #include <memory>
+#include <SFML/System.hpp>
 
 class Game;
 
@@ -14,7 +15,7 @@ class BaseState {
 public:
 	typedef std::shared_ptr<BaseState> Ptr;
 
-private:
+protected:
 	Game* game;
 	BaseState::Ptr nextState;
 	BaseState::Ptr immediateState;
@@ -35,6 +36,20 @@ private:
 	 * Constructs the state and optionally sets the state to run after this state finishes
 	 */
 	BaseState(Game* g, BaseState::Ptr next);
+
+	/**
+	 * Handles window events
+	 */
+    bool handleWindow();
+
+    /**
+     * Ensures that the game runs at exactly 60 fps, no more (but maybe less)
+     */
+    static void ensureFps();
+
+    static const float fpsLimit, frameLength;
+    static sf::Clock timer;
+    static float lastUpdateTime;
 
 public:
 	/**

@@ -10,7 +10,7 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	graphics.load(gfx1,gfx2);
 	position = pos;
 	name = nm;
-	position.dir = 0;
+	position.dir = 0; //TODO - why is this here?
 	uuid = UUID::create();
 	lTime = Entity::timer.getElapsedTime().asSeconds();
 }
