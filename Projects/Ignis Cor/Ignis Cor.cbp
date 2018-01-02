@@ -5,6 +5,21 @@
 		<Option title="Ignis Cor" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option show_notes="0">
+			<notes>
+				<![CDATA[std::map<Map> in Game for multiple maps. Keep many loaded, load new ones as needed. Cleanup?
+
+New Event type, or something else completely new, for moving between maps (no longer script based, engine will do it). Needs new map and spawn name
+
+Update all loaded maps, but only render current map
+
+Modify EntityManager to handle mulitple maps? Or have multiple EntityManagers?
+
+Playlist manages music based on game state. Fall back to current map music if nothing else
+
+Use scripts for ai (movement and everything). Scripts can also access speech bubble. Have multiple behavior scripts. Default, combat, time based etc. Power of time based is going home at night, etc]]>
+			</notes>
+		</Option>
 		<Build>
 			<Target title="Debug">
 				<Option output="../../Ignis Cor Debug" prefix_auto="1" extension_auto="1" />
@@ -59,6 +74,7 @@
 		</Compiler>
 		<Unit filename="../../Source/include/Game/Core/BaseState.hpp" />
 		<Unit filename="../../Source/include/Game/Core/Game.hpp" />
+		<Unit filename="../../Source/include/Game/Core/States/MainState.hpp" />
 		<Unit filename="../../Source/include/Shared/Data/ItemDB.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Entity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityBubble.hpp" />
@@ -70,6 +86,8 @@
 		<Unit filename="../../Source/include/Shared/GUI/ResizableImage.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/WrappingBox.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/Map.hpp" />
+		<Unit filename="../../Source/include/Shared/Maps/MapManager.hpp" />
+		<Unit filename="../../Source/include/Shared/Maps/Map_priv.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/Tileset.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/Weather.hpp" />
 		<Unit filename="../../Source/include/Shared/Media/Animation.hpp" />
@@ -95,6 +113,7 @@
 		<Unit filename="../../Source/include/Shared/Util/Vector2d.hpp" />
 		<Unit filename="../../Source/src/Game/Core/BaseState.cpp" />
 		<Unit filename="../../Source/src/Game/Core/Game.cpp" />
+		<Unit filename="../../Source/src/Game/Core/States/MainState.cpp" />
 		<Unit filename="../../Source/src/Game/main.cpp" />
 		<Unit filename="../../Source/src/Shared/Data/ItemDB.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Entity.cpp" />
@@ -105,6 +124,7 @@
 		<Unit filename="../../Source/src/Shared/GUI/Form.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/WrappingBox.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/Map.cpp" />
+		<Unit filename="../../Source/src/Shared/Maps/MapManager.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/Tileset.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/Weather.cpp" />
 		<Unit filename="../../Source/src/Shared/Media/Animation.cpp" />
