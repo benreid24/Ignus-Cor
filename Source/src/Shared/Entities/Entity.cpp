@@ -43,9 +43,12 @@ void Entity::render(sf::RenderTarget& target, sf::Vector2f camPos) {
 void Entity::move(int d, bool fast, float elapsedTime) {
 	//TODO - call update position in EntityManager
 	position.dir = d;
-	int i = int(fast);
+	graphics.setMoving(position.dir, fast);
+
 	elapsedTime = (elapsedTime==0)?(Entity::timer.getElapsedTime().asSeconds()-lTime):(elapsedTime);
+	int i = int(fast);
 	float dist = speed[i]*elapsedTime;
+
 	switch (position.dir) {
 	case 0:
         position.coords.y -= dist;

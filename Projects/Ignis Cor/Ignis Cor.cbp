@@ -85,6 +85,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/include/Shared/Entities/EntityManager.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityVisual.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/ItemEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/Player.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/CellTable.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/Form.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/ResizableImage.hpp" />
@@ -124,6 +125,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/src/Shared/Entities/EntityBubble.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityManager.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityVisual.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Instances/Player.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/CellTable.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/Form.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/WrappingBox.cpp" />

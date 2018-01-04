@@ -18,6 +18,20 @@ struct EntityPosition {
 	sf::Vector2f coords;
 	std::string mapName;
 	int dir;
+
+	/**
+	 * Zeros the position
+	 */
+	EntityPosition() : coords(0,0) { dir = 0; }
+
+	/**
+	 * Assigns the given values to the position
+	 */
+	EntityPosition(sf::Vector2f pos, std::string map, int d) {
+		coords = pos;
+		mapName = map;
+		dir = d;
+	}
 };
 
 /**
@@ -29,7 +43,7 @@ class Entity {
 public:
 	typedef std::shared_ptr<Entity> Ptr;
 
-private:
+protected:
 	int uuid;
 	std::string name;
 	EntityPosition position;

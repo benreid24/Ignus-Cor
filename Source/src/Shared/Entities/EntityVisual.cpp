@@ -67,6 +67,10 @@ void EntityVisual::render(sf::RenderTarget& target, sf::Vector2f position) {
 			slow[i].setFrame(0);
 			fast[i].setFrame(0);
 		}
+		else {
+			slow[i].update();
+			fast[i].update();
+		}
     }
     image.setPosition(position);
 
