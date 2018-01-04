@@ -23,6 +23,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Build>
 			<Target title="Debug">
 				<Option output="../../Ignis Cor Debug" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../Development" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -30,6 +31,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 					<Add option="-Wall" />
 					<Add option="-std=c++11" />
 					<Add option="-g" />
+					<Add option="-Wno-misleading-indentation" />
 					<Add option="-DGAME" />
 					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
 					<Add directory="../../Source/include" />
@@ -47,11 +49,13 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 			</Target>
 			<Target title="Release">
 				<Option output="../../Ignis Cor" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../Development" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-Wno-misleading-indentation" />
 					<Add option="-DGAME" />
 					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
 					<Add directory="../../Source/include" />

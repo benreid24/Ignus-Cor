@@ -14,6 +14,7 @@ Game::~Game() {
 }
 
 void Game::run() {
+	mapManager.setPointers(this, player, &entityManager, &soundEngine, &playlist);
     MainState::Ptr state = MainState::create(this);
     state->start();
 }

@@ -31,7 +31,7 @@ class MapManager {
     sf::Clock timer;
 
     Game* game;
-    Entity* player;
+    Entity::Ptr player;
     EntityManager* entityManager;
     Playlist* playlist;
     SoundEngine* soundEngine;
@@ -45,7 +45,12 @@ public:
     /**
      * Sets the internal pointers to other game classes
      */
-    void setPointers(Game* g, Entity* player, EntityManager* em, SoundEngine* se, Playlist* plst);
+    void setPointers(Game* g, Entity::Ptr player, EntityManager* em, SoundEngine* se, Playlist* plst);
+
+    /**
+     * Loads the requested map if it is not already available
+     */
+	void loadMap(std::string mapFile);
 
     /**
      * Moves the given Entity to the requested map

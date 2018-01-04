@@ -52,6 +52,11 @@ public:
 	void remove(Entity::Ptr e);
 
 	/**
+	 * Updates all Entities
+	 */
+	void update();
+
+	/**
 	 * Returns a reference to the y-sorted list of Entities for the map to render
 	 */
 	std::vector<std::vector<Entity::Ptr> >& getYSorted();

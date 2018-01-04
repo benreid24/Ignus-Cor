@@ -18,7 +18,7 @@ MapManager::MapManager() {
     soundEngine = nullptr;
 }
 
-void MapManager::setPointers(Game* g, Entity* p, EntityManager* em, SoundEngine* se, Playlist* plst) {
+void MapManager::setPointers(Game* g, Entity::Ptr p, EntityManager* em, SoundEngine* se, Playlist* plst) {
     game = g;
     player = p;
     entityManager = em;
@@ -26,16 +26,23 @@ void MapManager::setPointers(Game* g, Entity* p, EntityManager* em, SoundEngine*
     playlist = plst;
 }
 
-void MapManager::mapChange(Entity* e, string mapfile, string spawn) {
-    map<string,MapHolder>::iterator i = maps.find(mapfile);
-    if (i==maps.end()) {
+void MapManager::loadMap(string mapfile) {
+    if (maps.find(mapfile)==maps.end()) {
         MapHolder temp;
         temp.lastActiveTime = timer.getElapsedTime().asMilliseconds();
-        temp.mapdata = shared_ptr<Map>(new Map(mapfile, tileset, entityManager, soundEngine, player, playlist));
-        i = maps.insert(make_pair(mapfile, temp)).first;
+        temp.mapdata = shared_ptr<Map>(new Map(mapfile, tileset, entityManager, soundEngine, player.get(), playlist));
+        maps.insert(make_pair(mapfile, temp)).first;
+        if (maps.size()==1)
+			activeMap = mapfile;
     }
-    if (e==player)
+}
+
+void MapManager::mapChange(Entity* e, string mapfile, string spawn) {
+    loadMap(mapfile);
+    map<string,MapHolder>::iterator i = maps.find(mapfile);
+    if (e==player.get())
         activeMap = mapfile;
+	i->second.mapdata->spawnEntity(e, spawn);
 }
 
 void MapManager::update() {

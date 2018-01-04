@@ -3,7 +3,10 @@
 
 #include <stack>
 #include <SFML/Window.hpp>
+#include "Shared/Media/Playlist.hpp"
+#include "Shared/Media/SoundEngine.hpp"
 #include "Shared/Entities/EntityManager.hpp"
+#include "Shared/Maps/MapManager.hpp"
 #include "BaseState.hpp"
 
 /**
@@ -35,8 +38,15 @@ public:
 
 	 sf::RenderWindow window;
 	 bool inFocus;
+
 	 std::stack<BaseState*> states;
+	 Entity::Ptr player;
+
+	 MapManager mapManager;
 	 EntityManager entityManager;
+
+	 SoundEngine soundEngine;
+	 Playlist playlist;
 };
 
 #endif // GAME_HPP

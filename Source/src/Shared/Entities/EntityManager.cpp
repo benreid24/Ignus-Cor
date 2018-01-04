@@ -84,3 +84,9 @@ void EntityManager::remove(string name, string type) {
 		}
 	}
 }
+
+void EntityManager::update() {
+	for (unsigned int i = 0; i<entities.size(); ++i) {
+		entities[i]->update();
+	}
+}
