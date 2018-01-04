@@ -88,12 +88,13 @@ Map::Map(string nm, Vector2i sz, Tileset& tlst, SoundEngine* se, EntityManager* 
 	}
 	collisions.setSize(size.x,size.y);
 	resetYSorted();
-	entityManager->setMapHeight(size.y);
+	entityManager->registerMap(nm, size.y);
 }
 
 Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity* player, Playlist* plst) : Map(tlst,se) {
 	Map::weather->setOwner(this);
 	entityManager = em;
+	uniqueName = file;
 
 	//Handle previous map data
     if (file=="LastMap")
@@ -109,10 +110,10 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
 
     //Load name and music
     name = input.getString();
-    file = input.getString();
-    if (file.size() && plst)
-		plst->load(Properties::PlaylistPath+file);
-	music = file;
+    string temp = input.getString();
+    if (temp.size() && plst)
+		plst->load(Properties::PlaylistPath+temp);
+	music = temp;
     addVisitedMap(name);
 
     //Load scripts
@@ -208,7 +209,7 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
 		setRenderPosition(player->getPosition().coords);
 
     //Load AI
-	entityManager->setMapHeight(size.y);
+	entityManager->registerMap(file, size.y);
     tInt = input.get<uint16_t>();
     for (int i = 0; i<tInt; ++i) {
         Vector2f pos;
@@ -295,8 +296,6 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
 
         events.push_back(evt);
     }
-
-    entityManager->setMapHeight(size.y);
 }
 
 Map::~Map() {
@@ -563,8 +562,8 @@ void Map::draw(sf::RenderTarget& target) {
                     }
                 }
             }
-            for (unsigned int i = 0; i<entityManager->getYSorted().at(y).size(); ++i) {
-                entityManager->getYSorted().at(y).at(i)->render(target,camPos);
+            for (unsigned int i = 0; i<entityManager->getYSorted(uniqueName).at(y).size(); ++i) {
+                entityManager->getYSorted(uniqueName).at(y).at(i)->render(target,camPos);
             }
         }
     }
@@ -645,8 +644,8 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection, 
                     }
                 }
             }
-            for (unsigned int i = 0; i<entityManager->getYSorted().at(y).size(); ++i) {
-                entityManager->getYSorted().at(y).at(i)->render(target,camPos);
+            for (unsigned int i = 0; i<entityManager->getYSorted(uniqueName).at(y).size(); ++i) {
+                entityManager->getYSorted(uniqueName).at(y).at(i)->render(target,camPos);
             }
         }
     }

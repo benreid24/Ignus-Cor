@@ -1,4 +1,5 @@
 #include "Shared/Entities/Instances/Player.hpp"
+#include "Shared/Entities/EntityManager.hpp"
 #include "Shared/Properties.hpp"
 using namespace std;
 using namespace sf;
@@ -18,6 +19,7 @@ Player::Ptr Player::create() {
 
 void Player::update() {
 	bool running = Keyboard::isKeyPressed(Keyboard::Space);
+    bool moved = true;
 
 	if (Keyboard::isKeyPressed(Keyboard::W))
 		move(0, running);
@@ -27,6 +29,9 @@ void Player::update() {
 		move(2, running);
 	else if (Keyboard::isKeyPressed(Keyboard::D))
 		move(1, running);
+	else
+		moved = false;
+	Entity::entityManager->updateRenderPosition(position.coords);
 
 	Entity::update();
 }

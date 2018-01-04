@@ -1,16 +1,18 @@
 #include "Shared/Entities/Entity.hpp"
+#include "Shared/Entities/EntityManager.hpp"
 #include "Shared/Util/UUID.hpp"
 using namespace std;
 using namespace sf;
 
 Clock Entity::timer;
+EntityManager* Entity::entityManager = nullptr;
 int UUID::nextUuid = 1;
 
 Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	graphics.load(gfx1,gfx2);
 	position = pos;
 	name = nm;
-	position.dir = 0; //TODO - why is this here?
+	position.dir = 0;
 	uuid = UUID::create();
 	lTime = Entity::timer.getElapsedTime().asSeconds();
 }
@@ -41,7 +43,8 @@ void Entity::render(sf::RenderTarget& target, sf::Vector2f camPos) {
 }
 
 void Entity::move(int d, bool fast, float elapsedTime) {
-	//TODO - call update position in EntityManager
+	//TODO - honor collisions (through EntityManager)
+	EntityPosition oldPos = position;
 	position.dir = d;
 	graphics.setMoving(position.dir, fast);
 
@@ -52,21 +55,29 @@ void Entity::move(int d, bool fast, float elapsedTime) {
 	switch (position.dir) {
 	case 0:
         position.coords.y -= dist;
+        Entity::entityManager->updatePosition(this, oldPos);
         break;
 	case 1:
 		position.coords.x += dist;
+		Entity::entityManager->updatePosition(this, oldPos);
 		break;
 	case 2:
 		position.coords.y += dist;
+		Entity::entityManager->updatePosition(this, oldPos);
 		break;
 	case 3:
 		position.coords.x -= dist;
+		Entity::entityManager->updatePosition(this, oldPos);
 		break;
 	default:
-		cout << "Invalid direction!\n";
+		cout << "Warning: Entity::move received an invalid direction!\n";
 	}
 }
 
 void Entity::update() {
 	lTime = Entity::timer.getElapsedTime().asSeconds();
+}
+
+void Entity::setEntityManager(EntityManager* em) {
+	entityManager = em;
 }

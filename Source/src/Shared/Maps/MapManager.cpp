@@ -63,3 +63,7 @@ void MapManager::update() {
 void MapManager::render() {
     maps[activeMap].mapdata->draw(game->window);
 }
+
+void MapManager::updateRenderPosition(Vector2f playerCoords) {
+	maps[activeMap].mapdata->setRenderPosition(playerCoords);
+}

@@ -1,34 +1,44 @@
 #include "Shared/Entities/EntityManager.hpp"
+#include "Game/Core/Game.hpp"
 using namespace sf;
 using namespace std;
 
-EntityManager::EntityManager() {
-	//default
+EntityManager::EntityManager(Game* g) {
+	game = g;
 }
 
 EntityManager::~EntityManager() {
 	clear();
 }
 
-void EntityManager::updatePosition(Entity::Ptr e, float lastY, float curY) {
-	int ly = lastY/32;
-	int cy = curY/32;
+void EntityManager::updatePosition(Entity* e, EntityPosition oldPos) {
+	int ly = oldPos.coords.y/32;
+	int cy = e->getPosition().coords.y/32;
+	string lmap = oldPos.mapName;
+	string cmap = e->getPosition().mapName;
 
-	if (ly<0 || ly>=signed(ySortedEntities.size()) || cy<0 || cy>=signed(ySortedEntities.size())) {
+	if (ySortedEntities.find(lmap)==ySortedEntities.end() || ySortedEntities.find(cmap)==ySortedEntities.end()) {
+		cout << "Warning: Entity position in invalid map: " << lmap << " -> " << cmap << endl;
+		return;
+	}
+	if (ly<0 || ly>=signed(ySortedEntities[lmap].size()) || cy<0 || cy>=signed(ySortedEntities[cmap].size())) {
 		cout << "Warning: Entity y-position update " << ly << " to " << cy << " is out of range\n";
 		return;
 	}
 
-	if (ly!=cy) {
+	if (ly!=cy || lmap!=cmap) {
 		//Remove from old row
-		for (unsigned int i = 0; i<ySortedEntities[ly].size(); ++i) {
-			if (ySortedEntities[ly][i]==e) {
-				ySortedEntities[ly].erase(ySortedEntities[ly].begin()+i);
+		Entity::Ptr fe;
+		vector<Entity::Ptr>* ymap = &(ySortedEntities[lmap][ly]);
+		for (unsigned int i = 0; i<ymap->size(); ++i) {
+			if (ymap->at(i).get()==e) {
+				fe = ymap->at(i);
+				ymap->erase(ymap->begin()+i);
 				break;
 			}
 		}
 		//Add to new row
-		ySortedEntities[cy].push_back(e);
+		ySortedEntities[cmap][cy].push_back(fe);
 	}
 }
 
@@ -37,25 +47,38 @@ void EntityManager::clear() {
 	entities.clear();
 }
 
-vector<vector<Entity::Ptr> >& EntityManager::getYSorted() {
-	return ySortedEntities;
+vector<vector<Entity::Ptr> >& EntityManager::getYSorted(string mapname) {
+	auto i = ySortedEntities.find(mapname);
+	if (i==ySortedEntities.end()) {
+		cout << "CRITICAL: Map requesting non-existent ysorted array by name: " << mapname << endl;
+		return ySortedEntities.begin()->second;
+	}
+	return i->second;
 }
 
-void EntityManager::setMapHeight(int height) {
-	ySortedEntities.clear();
-	ySortedEntities.resize(height);
+void EntityManager::registerMap(string mapname, int height) {
+	ySortedEntities.erase(mapname);
+	ySortedEntities[mapname] = vector<vector<Entity::Ptr> >(height);
+	vector<vector<Entity::Ptr> >* ymap = &ySortedEntities[mapname];
 	for (unsigned int i = 0; i<entities.size(); ++i) {
 		int y = entities[i]->getPosition().coords.y/32;
-		if (y>=0 && y<height)
-			ySortedEntities[y].push_back(entities[i]);
+		if (y>=0 && y<height && entities[i]->getPosition().mapName==mapname)
+			ymap->at(i).push_back(entities[i]);
 	}
 }
 
 void EntityManager::add(Entity::Ptr e) {
+	if (ySortedEntities.find(e->getPosition().mapName)==ySortedEntities.end()) {
+		cout << "CRITICAL: Tried to insert an Entity into non-existent map: " << e->getPosition().mapName << endl;
+		return;
+	}
+
 	entities.push_back(e);
 	int y = e->getPosition().coords.y/32;
-	if (y>=0 && y<signed(ySortedEntities.size()))
-		ySortedEntities[y].push_back(e);
+	if (y>=0 && y<signed(ySortedEntities[e->getPosition().mapName].size()))
+		ySortedEntities[e->getPosition().mapName][y].push_back(e);
+	else
+		cout << "ERROR: Tried to add entity to map " << e->getPosition().mapName << " but position was out of range" << endl;
 }
 
 void EntityManager::remove(Entity::Ptr e) {
@@ -66,14 +89,17 @@ void EntityManager::remove(Entity::Ptr e) {
             --i;
 		}
 	}
-    if (y>=0 && y<signed(ySortedEntities.size())) {
-		for (unsigned int i = 0; i<ySortedEntities[y].size(); ++i) {
-			if (ySortedEntities[y][i]==e) {
-				ySortedEntities[y].erase(ySortedEntities[y].begin()+i);
-				--i;
+	auto pos = ySortedEntities.find(e->getPosition().mapName);
+	if (pos!=ySortedEntities.end()) {
+		if (y>=0 && y<signed(pos->second.size())) {
+			for (unsigned int i = 0; i<pos->second[y].size(); ++i) {
+				if (pos->second[y][i]==e) {
+					pos->second[y].erase(pos->second[y].begin()+i);
+					--i;
+				}
 			}
 		}
-    }
+	}
 }
 
 void EntityManager::remove(string name, string type) {
@@ -89,4 +115,8 @@ void EntityManager::update() {
 	for (unsigned int i = 0; i<entities.size(); ++i) {
 		entities[i]->update();
 	}
+}
+
+void EntityManager::updateRenderPosition(sf::Vector2f playerCoords) {
+	game->mapManager.updateRenderPosition(playerCoords);
 }

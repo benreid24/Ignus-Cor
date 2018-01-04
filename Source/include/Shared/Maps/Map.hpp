@@ -95,7 +95,7 @@ private:
 };
 
 class Map {
-	std::string name;
+	std::string name, uniqueName;
 	sf::Vector2i size;
 	Tileset& tileset;
 	EntityManager* entityManager;

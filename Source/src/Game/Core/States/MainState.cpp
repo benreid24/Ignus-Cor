@@ -20,6 +20,7 @@ bool MainState::doState() {
 
 MainState::MainState(Game* g) : BaseState(g, nullptr) {
     g->mapManager.loadMap("test");
+    game->entityManager.add(game->player);
 }
 
 MainState::Ptr MainState::create(Game* g) {

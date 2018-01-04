@@ -58,6 +58,11 @@ public:
     void mapChange(Entity* ent, std::string mapFile, std::string spawnName);
 
     /**
+     * Updates the camera position in the active map
+     */
+	void updateRenderPosition(sf::Vector2f playerCoords);
+
+    /**
      * Updates all internal maps and removes stale maps from memory
      */
     void update();

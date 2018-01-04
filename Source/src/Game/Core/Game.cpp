@@ -5,13 +5,13 @@
 using namespace std;
 using namespace sf;
 
-Game::Game() {
+Game::Game() : entityManager(this) {
     inFocus = true;
 	window.create(VideoMode(Properties::ScreenWidth, Properties::ScreenHeight, 32), "Ignis Cor", Style::Close|Style::Resize|Style::Titlebar);
 
 	mapManager.setPointers(this, player, &entityManager, &soundEngine, &playlist);
 	player = Player::create();
-	entityManager.add(player);
+	Entity::setEntityManager(&entityManager);
 }
 
 Game::~Game() {

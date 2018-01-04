@@ -11,6 +11,8 @@
  * \brief All of the "physical" objects in the game and classes to manage them
  */
 
+class EntityManager;
+
 /**
  * Stores the position of an Entity. Position consists of coordinates and map
  */
@@ -53,6 +55,8 @@ protected:
 	float speed[2]; //speed in pixels/second for [slow,fast]. Will be set by child classes
 
 	static sf::Clock timer; //for doing movement based on time
+
+	static EntityManager* entityManager;
 
 public:
 	/**
@@ -109,6 +113,11 @@ public:
 	 * Child overloads should call this when finished
 	 */
 	virtual void update();
+
+	/**
+	 * Sets the static internal pointer to the Game EntityManager
+	 */
+	static void setEntityManager(EntityManager* em);
 };
 
 #endif // ENTITY_HPP
