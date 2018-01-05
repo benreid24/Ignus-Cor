@@ -40,12 +40,12 @@ public:
     /**
      * Defaults internal data and loads tileset
      */
-    MapManager();
+    MapManager(Game* g, EntityManager* em, SoundEngine* se, Playlist* plst);
 
     /**
-     * Sets the internal pointers to other game classes
+     * Sets the internal reference to the player
      */
-    void setPointers(Game* g, Entity::Ptr player, EntityManager* em, SoundEngine* se, Playlist* plst);
+	void setPlayer(Entity::Ptr player);
 
     /**
      * Loads the requested map if it is not already available

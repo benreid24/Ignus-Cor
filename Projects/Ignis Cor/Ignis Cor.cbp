@@ -32,6 +32,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add option="-Wno-misleading-indentation" />
+					<Add option="-Wno-reorder" />
 					<Add option="-DGAME" />
 					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
 					<Add directory="../../Source/include" />
@@ -56,6 +57,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-Wno-misleading-indentation" />
+					<Add option="-Wno-reorder" />
 					<Add option="-DGAME" />
 					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
 					<Add directory="../../Source/include" />

@@ -10,20 +10,15 @@ namespace {
     const int mapTimeout = 10 * 60*1000;
 }
 
-MapManager::MapManager() {
-    game = nullptr;
-    player = nullptr;
-    entityManager = nullptr;
-    playlist = nullptr;
-    soundEngine = nullptr;
-}
-
-void MapManager::setPointers(Game* g, Entity::Ptr p, EntityManager* em, SoundEngine* se, Playlist* plst) {
+MapManager::MapManager(Game* g, EntityManager* em, SoundEngine* se, Playlist* plst) {
     game = g;
-    player = p;
     entityManager = em;
     soundEngine = se;
     playlist = plst;
+}
+
+void MapManager::setPlayer(Entity::Ptr p) {
+	player = p;
 }
 
 void MapManager::loadMap(string mapfile) {
