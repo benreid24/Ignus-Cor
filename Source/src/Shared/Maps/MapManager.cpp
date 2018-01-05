@@ -21,6 +21,25 @@ void MapManager::setPlayer(Entity::Ptr p) {
 	player = p;
 }
 
+bool MapManager::movementValid(EntityPosition oldPos, EntityPosition newPos, Vector2f size) {
+	FloatRect oldBox(oldPos.coords, size);
+	FloatRect newBox(newPos.coords, size);
+
+	if (oldPos.mapName!=newPos.mapName)
+		return spaceFree(newPos, size);
+	auto i = maps.find(oldPos.mapName);
+	if (i!=maps.end())
+		return i->second.mapdata->spaceFree(oldBox, newBox);
+	return false;
+}
+
+bool MapManager::spaceFree(EntityPosition space, Vector2f size) {
+	auto i = maps.find(space.mapName);
+	if (i!=maps.end())
+		return i->second.mapdata->spaceFree(FloatRect(space.coords, size));
+	return false;
+}
+
 void MapManager::loadMap(string mapfile) {
     if (maps.find(mapfile)==maps.end()) {
         MapHolder temp;

@@ -173,6 +173,11 @@ public:
     void setPosition(sf::Vector2f pos);
 
     /**
+     * Returns the size of the first frame
+     */
+	sf::Vector2f getSize();
+
+    /**
      * Renders the animation to the given window
      *
      * \param window A pointer to the window to render to

@@ -62,6 +62,16 @@ public:
      */
 	void updateRenderPosition(sf::Vector2f playerCoords);
 
+	/**
+	 * Checks if a given movement is valid for the given map
+	 */
+	bool movementValid(EntityPosition oldPos, EntityPosition newPos, sf::Vector2f size);
+
+	/**
+	 * Checks if the given space is free
+	 */
+	bool spaceFree(EntityPosition space, sf::Vector2f size);
+
     /**
      * Updates all internal maps and removes stale maps from memory
      */

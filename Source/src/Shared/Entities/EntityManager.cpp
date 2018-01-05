@@ -42,6 +42,32 @@ void EntityManager::updatePosition(Entity* e, EntityPosition oldPos) {
 	}
 }
 
+bool EntityManager::spaceFree(Entity* e, EntityPosition space, Vector2f size) {
+	auto i = ySortedEntities.find(space.mapName);
+	int spaceY = space.coords.y/32;
+	FloatRect box(space.coords, size);
+
+	if (i!=ySortedEntities.end()) {
+		for (int y = spaceY - 2; y <= spaceY + 2; ++y) {
+			if (y>=0 && y<signed(i->second.size())) {
+                for (unsigned int j = 0; j<i->second[y].size(); ++j) {
+					if (box.intersects(i->second[y][j]->getBoundingBox()) && i->second[y][j].get()!=e)
+						return false;
+                }
+			}
+		}
+		return true;
+	}
+	else
+		return false;
+}
+
+bool EntityManager::canMove(Entity* e, EntityPosition oldPos, EntityPosition newPos, Vector2f size) {
+    if (oldPos.mapName==newPos.mapName)
+		return game->mapManager.movementValid(oldPos, newPos, size) && spaceFree(e, newPos, size);
+    return game->mapManager.spaceFree(newPos, size) && spaceFree(e, newPos, size);
+}
+
 void EntityManager::clear() {
 	ySortedEntities.clear();
 	entities.clear();

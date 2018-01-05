@@ -182,6 +182,16 @@ bool Animation::finished()
     return (!animSrc->isLooping() && curFrm==animSrc->numFrames()-1) || animSrc->numFrames()==1;
 }
 
+Vector2f Animation::getSize() {
+	Vector2f zero(0,0);
+	if (!animSrc)
+        return zero;
+	vector<Sprite> frames = animSrc->getFrame(0, zero);
+	if (frames.size()==0)
+		return zero;
+	return Vector2f(frames[0].getGlobalBounds().width, frames[0].getGlobalBounds().height);
+}
+
 bool Animation::isLooping()
 {
     if (!animSrc)

@@ -901,64 +901,142 @@ int Map::getCollision(int x, int y) {
 	return collisions(x,y);
 }
 
-bool Map::spaceFree(Vector2i pos, Vector2i oldPos) {
-	if (pos.x<=0 || pos.x>size.x || pos.y<=0 || pos.y>size.y)
-		return false;
-	if (pos==oldPos) //Entities will pass rounded down positions, so if they are equal they have not crossed a tile border
-		return true;
-
-	int dir = 0;
-	if (oldPos.x>pos.x)
-		dir = 3;
-	else if (oldPos.x<pos.x)
-		dir = 1;
-	else if (oldPos.y<pos.y)
-		dir = 2;
-
-    switch (collisions(pos.x,pos.y))
-    {
-	case 0: //none
-		return false;
-	case 1: //all
-		return true;
-	case 2: //top
-		return dir==2;
-	case 3: //right
-		return dir==3;
-	case 4: //bottom
-		return dir==0;
-	case 5: //left
-		return dir==1;
-	case 6: //topRight
-		return dir==2 || dir==3;
-	case 7: //bottomRight
-		return dir==0 || dir==3;
-	case 8: //bottomLeft
-		return dir==0 || dir==1;
-	case 9: //topLeft
-		return dir==1 || dir==2;
-	case 10: //topBottom
-		return dir==0 || dir==2;
-	case 11: //leftRight
-		return dir==1 || dir==3;
-	case 12: //noTop
-		return dir!=2;
-	case 13: //noRight
-		return dir!=3;
-	case 14: //noBottom
-		return dir!=0;
-	case 15: //noLeft
-		return dir!=1;
-	default:
-		return false;
-    }
+vector<Vector2i> Map::getCoveredTiles(FloatRect box) {
+	vector<Vector2i> ret;
+	int bx = box.left/32;
+	int by = box.top/32;
+	int w = (box.width+15)/32;
+	int h = (box.height+5)/32;
+	if (box.width-w*32>0)
+		w++;
+	if (box.height-h*32>0)
+		h++;
+	int tx = (box.left+box.width)/32;
+	int ty = (box.top+box.height)/32;
+	for (int x = bx; x<=tx; ++x) {
+		for (int y = by; y<=ty; ++y)
+			ret.push_back(Vector2i(x,y));
+	}
+	return ret;
 }
 
-bool Map::spaceFree(Vector2i pos) {
-	if (pos.x<=0 || pos.x>size.x || pos.y<=0 || pos.y>size.y)
+bool Map::spaceFree(FloatRect oldBox, FloatRect newBox) {
+	if (newBox.left<0 || newBox.top<0 || newBox.left+newBox.width>=size.x*32 || newBox.top+newBox.height>=size.y*32)
 		return false;
 
-    return collisions(pos.x,pos.y)==1;
+	int dir = 0;
+	if (newBox.left>oldBox.left)
+		dir = 1;
+	else if (newBox.left<oldBox.left)
+		dir = 3;
+	else if (newBox.top>oldBox.top)
+		dir = 2;
+
+	vector<Vector2i> tiles = Map::getCoveredTiles(newBox);
+	vector<Vector2i> oldTiles = Map::getCoveredTiles(oldBox);
+
+	for (unsigned int i = 0; i<tiles.size(); ++i) {
+		if (find(oldTiles.begin(), oldTiles.end(), tiles[i])!=oldTiles.end())
+			continue;
+
+		if (tiles[i].x<0 || tiles[i].x>=size.x || tiles[i].y<0 || tiles[i].y>=size.y)
+			return false;
+
+		switch (collisions(tiles[i].x,tiles[i].y))
+		{
+		case 0: //none
+			return false;
+
+		case 1: //all
+			continue;
+
+		case 2: //top
+			if (dir!=2)
+				return false;
+			break;
+
+		case 3: //right
+			if (dir!=3)
+				return false;
+			break;
+
+		case 4: //bottom
+			if (dir!=0)
+				return false;
+			break;
+
+		case 5: //left
+			if (dir!=1)
+				return false;
+			break;
+
+		case 6: //topRight
+			if (dir!=2 && dir!=3)
+				return false;
+			break;
+
+		case 7: //bottomRight
+			if (dir!=0 && dir!=3)
+				return false;
+			break;
+
+		case 8: //bottomLeft
+			if (dir!=0 && dir!=1)
+				return false;
+			break;
+
+		case 9: //topLeft
+			if (dir!=1 && dir!=2)
+				return false;
+			break;
+
+		case 10: //topBottom
+			if (dir!=0 && dir!=2)
+				return false;
+
+		case 11: //leftRight
+			if (dir!=1 && dir!=3)
+				return false;
+
+		case 12: //noTop
+			if (dir==2)
+				return false;
+			break;
+
+		case 13: //noRight
+			if (dir==3)
+				return false;
+			break;
+
+		case 14: //noBottom
+			if (dir==0)
+				return false;
+			break;
+
+		case 15: //noLeft
+			if (dir==1)
+				return false;
+			break;
+
+		default:
+			cout << "Warning: Collision of unknown type encountered in map: " << uniqueName << endl;
+		}
+	}
+	return true;
+}
+
+bool Map::spaceFree(FloatRect box) {
+    if (box.left<0 || box.top<0 || box.left+box.width>=size.x*32 || box.top+box.height>=size.y*32)
+		return false;
+
+    vector<Vector2i> tiles = Map::getCoveredTiles(box);
+    for (unsigned int i = 0; i<tiles.size(); ++i) {
+		if (tiles[i].x<0 || tiles[i].y<0 || tiles[i].x>=size.x || tiles[i].y>=size.y)
+			return false;
+		if (collisions(tiles[i].x,tiles[i].y)!=1)
+			return false;
+    }
+    return true;
 }
 
 void Map::setItemPickedUp(int id) {

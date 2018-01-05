@@ -21,6 +21,16 @@ class EntityManager {
 	 */
 	void updatePosition(Entity* e, EntityPosition oldPos);
 
+	/**
+	 * Helper function to determine if an Entity is occupying a space
+	 */
+	bool spaceFree(Entity* e, EntityPosition space, sf::Vector2f size);
+
+	/**
+	 * Internal function for Entities to check if movement is valid
+	 */
+	bool canMove(Entity* e, EntityPosition oldPos, EntityPosition newPos, sf::Vector2f size);
+
 	friend class Entity;
 
 public:

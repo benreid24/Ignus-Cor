@@ -61,6 +61,11 @@ public:
 	void setDirection(int dir);
 
 	/**
+	 * Returns the size of the visual. Used for bounding box calculation
+	 */
+	sf::Vector2f getSize();
+
+	/**
 	 * Renders the appropriate image/animation
 	 *
 	 * \param target The target to render to

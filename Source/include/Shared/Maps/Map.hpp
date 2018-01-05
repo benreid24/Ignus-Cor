@@ -301,19 +301,20 @@ public:
     /**
      * Returns whether or not the given space can be moved into
      *
-     * \param position The space to check
-     * \param oldPos The old (current) position of the entity trying to move
+     * \param oldBox The old (current) bounding box of the entity trying to move
+     * \param newBox The bounding box to check in
      * \return Whether or not the space can be moved into
      */
-    bool spaceFree(sf::Vector2i position, sf::Vector2i oldPos);
+    bool spaceFree(sf::FloatRect oldBox, sf::FloatRect newBox);
 
     /**
      * Special version of spaceFree for PathFinder. Only returns true for spaces that can be moved onto from all edges
      *
      * \param position The space to check
+     * \param box the bounding box to check in
      * \return Whether or not the space can be moved into
      */
-    bool spaceFree(sf::Vector2i position);
+    bool spaceFree(sf::FloatRect box);
 
     /**
      * Sets the given item to a status where it won't be loaded again when the map is loaded
@@ -336,6 +337,11 @@ public:
      * Stops all movement animations in Character's
      */
 	void stopAnimations();
+
+	/**
+	 * Returns all tiles occupied by a bounding box
+	 */
+	static std::vector<sf::Vector2i> getCoveredTiles(sf::FloatRect box);
 
 	#include "Map_priv.hpp"
 

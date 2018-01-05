@@ -15,10 +15,17 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	position.dir = 0;
 	uuid = UUID::create();
 	lTime = Entity::timer.getElapsedTime().asSeconds();
+	speed[0] = 64;
+	speed[1] = 128;
+	boxTopOffset = 12;
 }
 
 EntityPosition Entity::getPosition() {
 	return position;
+}
+
+FloatRect Entity::getBoundingBox() {
+	return FloatRect(position.coords.x, position.coords.y+boxTopOffset, graphics.getSize().x, graphics.getSize().y-boxTopOffset);
 }
 
 void Entity::setPositionAndDirection(EntityPosition pos) {
@@ -43,10 +50,8 @@ void Entity::render(sf::RenderTarget& target, sf::Vector2f camPos) {
 }
 
 void Entity::move(int d, bool fast, float elapsedTime) {
-	//TODO - honor collisions (through EntityManager)
-	EntityPosition oldPos = position;
+	EntityPosition newPos = position;
 	position.dir = d;
-	graphics.setMoving(position.dir, fast);
 
 	elapsedTime = (elapsedTime==0)?(Entity::timer.getElapsedTime().asSeconds()-lTime):(elapsedTime);
 	int i = int(fast);
@@ -54,23 +59,32 @@ void Entity::move(int d, bool fast, float elapsedTime) {
 
 	switch (position.dir) {
 	case 0:
-        position.coords.y -= dist;
-        Entity::entityManager->updatePosition(this, oldPos);
+        newPos.coords.y -= dist;
         break;
 	case 1:
-		position.coords.x += dist;
-		Entity::entityManager->updatePosition(this, oldPos);
+		newPos.coords.x += dist;
 		break;
 	case 2:
-		position.coords.y += dist;
-		Entity::entityManager->updatePosition(this, oldPos);
+		newPos.coords.y += dist;
 		break;
 	case 3:
-		position.coords.x -= dist;
-		Entity::entityManager->updatePosition(this, oldPos);
+		newPos.coords.x -= dist;
 		break;
 	default:
 		cout << "Warning: Entity::move received an invalid direction!\n";
+	}
+
+	if (newPos.coords != position.coords) {
+		EntityPosition oldPosOffset = position;
+		EntityPosition newPosOffset = newPos;
+		oldPosOffset.coords.y += boxTopOffset;
+		newPosOffset.coords.y += boxTopOffset;
+		Vector2f size = Vector2f(graphics.getSize().x, graphics.getSize().y-boxTopOffset);
+		if (Entity::entityManager->canMove(this, oldPosOffset, newPosOffset, size)) {
+			graphics.setMoving(position.dir, fast);
+			swap(position, newPos); //newPos is now old pos
+			Entity::entityManager->updatePosition(this, newPos);
+		}
 	}
 }
 

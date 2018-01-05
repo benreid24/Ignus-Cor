@@ -59,6 +59,19 @@ void EntityVisual::setMoving(int d, bool f) {
 	fast[dir].play();
 }
 
+Vector2f EntityVisual::getSize() {
+	switch (type) {
+	case StaticImage:
+		return Vector2f(image.getGlobalBounds().width, image.getGlobalBounds().height);
+	case MoveAnim:
+	case SpeedAnim:
+		return slow[0].getSize();
+	default:
+		cout << "Warning: EntityVisual getSize() called but type is invalid\n";
+		return Vector2f(0,0);
+	}
+}
+
 void EntityVisual::render(sf::RenderTarget& target, sf::Vector2f position) {
     for (int i = 0; i<4; ++i) {
 		slow[i].setPosition(position);

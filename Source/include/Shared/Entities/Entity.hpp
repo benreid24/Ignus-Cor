@@ -53,6 +53,7 @@ protected:
 	EntityBubble bubble;
 	double lTime;
 	float speed[2]; //speed in pixels/second for [slow,fast]. Will be set by child classes
+	float boxTopOffset; //offset for the top of the bounding box
 
 	static sf::Clock timer; //for doing movement based on time
 
@@ -78,6 +79,11 @@ public:
 	 * Returns the position of the Entity
 	 */
 	EntityPosition getPosition();
+
+	/**
+	 * Returns the bounding box for the Entity
+	 */
+	virtual sf::FloatRect getBoundingBox();
 
 	/**
 	 * Sets the position and direction of the Entity. Leave direction empty to maintain it. Position is in pixels
