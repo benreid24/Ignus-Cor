@@ -74,7 +74,9 @@ void MapManager::update() {
 }
 
 void MapManager::render() {
+    #ifdef GAME
     maps[activeMap].mapdata->draw(Game::get()->window);
+    #endif
 }
 
 void MapManager::updateRenderPosition(Vector2f playerCoords) {

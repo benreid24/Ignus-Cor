@@ -756,22 +756,22 @@ void MapEditor::lightHandler(Vector2i pos) {
 }
 
 void MapEditor::spawnHandler(Vector2i pos) {
-	PlayerSpawn defaultSpawn;
+	EntitySpawn defaultSpawn;
 	defaultSpawn.name = "main";
 	defaultSpawn.position.dir = 0;
 	defaultSpawn.position.coords = Vector2f(pos);
 	bool newSpawn = false;
 
-	PlayerSpawn* spawn = mapData->getPlayerSpawn(pos.x,pos.y);
+	EntitySpawn* spawn = mapData->getEntitySpawn(pos.x,pos.y);
 	if (spawn==nullptr) {
-		mapData->addPlayerSpawn(defaultSpawn);
-		spawn = mapData->getPlayerSpawn(pos.x,pos.y);
+		mapData->addEntitySpawn(defaultSpawn);
+		spawn = mapData->getEntitySpawn(pos.x,pos.y);
 		newSpawn = true;
 	}
 
 	owner->SetState(Widget::State::INSENSITIVE);
     sfg::Window::Ptr window = sfg::Window::Create();
-    window->SetTitle("Player Spawn");
+    window->SetTitle("Entity Spawn");
     Box::Ptr winBox = Box::Create(Box::Orientation::VERTICAL,5);
 	window->Add(winBox);
 	desktop.Add(window);
@@ -827,12 +827,12 @@ void MapEditor::spawnHandler(Vector2i pos) {
 			break;
         }
         if (delPressed) {
-			mapData->removePlayerSpawn(pos.x,pos.y);
+			mapData->removeEntitySpawn(pos.x,pos.y);
 			break;
         }
         if (cancelPressed) {
 			if (newSpawn)
-				mapData->removePlayerSpawn(pos.x,pos.y);
+				mapData->removeEntitySpawn(pos.x,pos.y);
 			break;
         }
 
