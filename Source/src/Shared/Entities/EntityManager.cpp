@@ -3,8 +3,8 @@
 using namespace sf;
 using namespace std;
 
-EntityManager::EntityManager(Game* g) {
-	game = g;
+EntityManager::EntityManager() {
+    //ctor
 }
 
 EntityManager::~EntityManager() {
@@ -64,8 +64,8 @@ bool EntityManager::spaceFree(Entity* e, EntityPosition space, Vector2f size) {
 
 bool EntityManager::canMove(Entity* e, EntityPosition oldPos, EntityPosition newPos, Vector2f size) {
     if (oldPos.mapName==newPos.mapName)
-		return game->mapManager.movementValid(oldPos, newPos, size) && spaceFree(e, newPos, size);
-    return game->mapManager.spaceFree(newPos, size) && spaceFree(e, newPos, size);
+		return Game::get()->mapManager.movementValid(oldPos, newPos, size) && spaceFree(e, newPos, size);
+    return Game::get()->mapManager.spaceFree(newPos, size) && spaceFree(e, newPos, size);
 }
 
 void EntityManager::clear() {
@@ -144,5 +144,5 @@ void EntityManager::update() {
 }
 
 void EntityManager::updateRenderPosition(sf::Vector2f playerCoords) {
-	game->mapManager.updateRenderPosition(playerCoords);
+	Game::get()->mapManager.updateRenderPosition(playerCoords);
 }

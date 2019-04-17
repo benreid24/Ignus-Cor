@@ -7,22 +7,22 @@ bool MainState::doState() {
         if (handleWindow())
             return true;
 
-		game->mapManager.update();
-		game->entityManager.update();
+		Game::get()->mapManager.update();
+		Game::get()->entityManager.update();
 
-        game->window.clear();
-        game->mapManager.render();
-        game->window.display();
+        Game::get()->window.clear();
+        Game::get()->mapManager.render();
+        Game::get()->window.display();
 
         ensureFps();
     }
 }
 
-MainState::MainState(Game* g) : BaseState(g, nullptr) {
-    g->mapManager.loadMap("test");
-    game->entityManager.add(game->player);
+MainState::MainState() : BaseState(nullptr) {
+    Game::get()->mapManager.loadMap("test");
+    Game::get()->entityManager.add(Game::get()->player);
 }
 
-MainState::Ptr MainState::create(Game* g) {
-    return Ptr(new MainState(g));
+MainState::Ptr MainState::create() {
+    return Ptr(new MainState());
 }

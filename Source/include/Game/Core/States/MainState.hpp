@@ -23,13 +23,13 @@ private:
     /**
      * Creates the state and all necessary data
      */
-    MainState(Game* g);
+    MainState();
 
 public:
     /**
      * Creates and returns a pointer to a new MainState
      */
-    static Ptr create(Game* g);
+    static Ptr create();
 };
 
 #endif // MAINSTATE_HPP

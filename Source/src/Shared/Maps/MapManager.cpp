@@ -10,8 +10,7 @@ namespace {
     const int mapTimeout = 10 * 60*1000;
 }
 
-MapManager::MapManager(Game* g, EntityManager* em, SoundEngine* se, Playlist* plst) {
-    game = g;
+MapManager::MapManager(EntityManager* em, SoundEngine* se, Playlist* plst) {
     entityManager = em;
     soundEngine = se;
     playlist = plst;
@@ -75,7 +74,7 @@ void MapManager::update() {
 }
 
 void MapManager::render() {
-    maps[activeMap].mapdata->draw(game->window);
+    maps[activeMap].mapdata->draw(Game::get()->window);
 }
 
 void MapManager::updateRenderPosition(Vector2f playerCoords) {

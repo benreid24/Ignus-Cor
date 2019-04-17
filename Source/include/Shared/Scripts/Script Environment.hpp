@@ -32,7 +32,6 @@ struct ScriptData
  */
 class ScriptEnvironment
 {
-    //Game* game;
     std::list<std::shared_ptr<ScriptData> > runningScripts;
 
     sf::Thread thread;
@@ -74,11 +73,6 @@ public:
      * Stops all of the currently running threads
      */
     void stopAll();
-
-    /**
-     * Returns a pointer to the main Game object
-     */
-    //Game* getGame();
 
     /**
      * Saves the environment variables to the given file

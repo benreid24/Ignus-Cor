@@ -38,8 +38,7 @@ namespace {
     }
 }
 
-BaseState::BaseState(Game* g, BaseState::Ptr next) {
-	game = g;
+BaseState::BaseState(BaseState::Ptr next) {
 	nextState = next;
 }
 
@@ -48,9 +47,9 @@ void BaseState::setNextState(BaseState::Ptr next) {
 }
 
 bool BaseState::start() {
-	game->states.push(this);
+	Game::get()->states.push(this);
 	bool r = doState();
-	game->states.pop();
+	Game::get()->states.pop();
 	if (!r && nextState)
 		nextState->start();
 	return r;
@@ -77,18 +76,18 @@ void BaseState::ensureFps() {
 
 bool BaseState::handleWindow() {
     Event event;
-    while (game->window.pollEvent(event)) {
+    while (Game::get()->window.pollEvent(event)) {
         if (event.type==Event::Closed) {
             return true;
         }
         if (event.type==Event::Resized) {
 			View view = getView(event.size.width,event.size.height);
-			game->window.setView(view);
+			Game::get()->window.setView(view);
 		}
 		if (event.type==Event::GainedFocus)
-			game->inFocus = true;
+			Game::get()->inFocus = true;
 		if (event.type==Event::LostFocus)
-			game->inFocus = false;
+			Game::get()->inFocus = false;
     }
     return false;
 }

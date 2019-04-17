@@ -19,17 +19,21 @@
   * \ingroup Core
   */
 class Game {
-
-public:
-	/**
+    /**
 	 * Initializes core game data structures
 	 */
 	Game();
 
+public:
 	/**
 	 * Frees all memory
 	 */
 	 ~Game();
+
+	 /**
+	  * Returns a pointer to the instance of the Game
+	  */
+     static Game* get();
 
 	 /**
 	  * Runs the game

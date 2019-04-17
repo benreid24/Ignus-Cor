@@ -30,7 +30,6 @@ class MapManager {
     std::string activeMap;
     sf::Clock timer;
 
-    Game* game;
     Entity::Ptr player;
     EntityManager* entityManager;
     Playlist* playlist;
@@ -40,7 +39,7 @@ public:
     /**
      * Defaults internal data and loads tileset
      */
-    MapManager(Game* g, EntityManager* em, SoundEngine* se, Playlist* plst);
+    MapManager(EntityManager* em, SoundEngine* se, Playlist* plst);
 
     /**
      * Sets the internal reference to the player

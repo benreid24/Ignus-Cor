@@ -18,7 +18,6 @@ namespace {
 
 Playlist::Playlist() : updater(&playlistUpdater,this)
 {
-//	game = g;
     curSong = 0;
     started = false;
     //wasMutedLast = game->data.gameMuted;

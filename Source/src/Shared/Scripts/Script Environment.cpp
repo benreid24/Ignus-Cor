@@ -77,11 +77,6 @@ void ScriptEnvironment::update()
     }
     stopped = true;
 }
-/*
-Game* ScriptEnvironment::getGame()
-{
-    return game;
-}*/
 
 void ScriptEnvironment::save(File* file)
 {

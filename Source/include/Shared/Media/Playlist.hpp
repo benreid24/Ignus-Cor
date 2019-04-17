@@ -14,7 +14,6 @@ class Game;
  */
 class Playlist
 {
-	Game* game;
     sf::Music audio;
     std::vector<std::string> songs;
     std::vector<int> order;

@@ -16,7 +16,6 @@ public:
 	typedef std::shared_ptr<BaseState> Ptr;
 
 protected:
-	Game* game;
 	BaseState::Ptr nextState;
 	BaseState::Ptr immediateState;
 
@@ -35,7 +34,7 @@ protected:
 	/**
 	 * Constructs the state and optionally sets the state to run after this state finishes
 	 */
-	BaseState(Game* g, BaseState::Ptr next);
+	BaseState(BaseState::Ptr next);
 
 	/**
 	 * Handles window events
@@ -55,7 +54,7 @@ public:
 	/**
 	 * Constructs the state and optionally sets the state to run after this state finishes
 	 */
-	static Ptr create(Game* g, BaseState::Ptr next = nullptr);
+	static Ptr create(BaseState::Ptr next = nullptr);
 
 	/**
 	 * Sets the state to run upon completion of the current state

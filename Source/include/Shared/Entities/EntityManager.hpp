@@ -13,7 +13,6 @@ class Game;
 class EntityManager {
 	std::vector<Entity::Ptr> entities;
     std::map<std::string, std::vector<std::vector<Entity::Ptr> > > ySortedEntities;
-    Game* game;
 	Entity* player;
 
 	/**
@@ -37,7 +36,7 @@ public:
 	/**
 	 * Creates an EntityManager
 	 */
-	EntityManager(Game* g);
+	EntityManager();
 
 	/**
 	 * Deletes all Entities excluding the player
