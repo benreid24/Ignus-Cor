@@ -10,11 +10,20 @@
 using namespace std;
 using namespace sf;
 
+namespace {
 string intToString(double i)
 {
-	stringstream ss;
-	ss << i;
-	return ss.str();
+       stringstream ss;
+       ss << i;
+       return ss.str();
+}
+
+double stringToInt(string s) {
+    stringstream ss(s);
+    double d;
+    ss >> d;
+    return d;
+}
 }
 
 Script::Script()
@@ -36,10 +45,8 @@ void Script::reset()
 {
 	stopping = false;
 	stopped = true;
-	functions.clear();
 	globalFrame.locals.clear();
-	while (!stackFrames.empty())
-		stackFrames.pop();
+	stackFrames.clear();
 }
 
 void Script::locateFunctions()
@@ -86,7 +93,6 @@ void Script::locateFunctions()
 			break;
 
 		case ScanningArgType:
-			cout << "Checking for paren, found: " << tokens[i].data << endl;
             if (tokens.at(i).type==Token::DataType)
 			{
 				state = ScanningArgName;
@@ -117,9 +123,8 @@ void Script::locateFunctions()
 				addFunc:
 				state = Reading;
 				func.address = i+2; //i+1 is the {, so i+2 is the first token in the function
-				functions[name] = func;
+				functions.insert(make_pair(name,func));
 				func.arguments.clear();
-				cout << "Located function " << name << " at index " << func.address << endl;
 			}
 			else
 				throw runtime_error("Was expecting ',' or ')' on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file);
@@ -131,6 +136,7 @@ void Script::load(string str)
 {
 	Parser parser(str);
 	tokens = parser.getTokens();
+	original = parser.getScript();
 	reset();
 	locateFunctions();
 	for (unsigned int i = 0; i<tokens.size(); ++i)
@@ -174,7 +180,7 @@ Value Script::combine(Token left, Token op, Token right)
 		if (right.type==Token::StrVal && left.type==Token::StrVal)
         ret.iValue = int(left.data!=right.data);
         else if (left.type==Token::IntVal && right.type==Token::StrVal)
-            ret.iValue = int(left.value!=atoi(right.data.c_str()));
+            ret.iValue = int(left.value!=stringToInt(right.data));
 		else if (left.type==Token::StrVal && right.type==Token::IntVal)
 			ret.iValue = int(left.data!=intToString(right.value));
 		return ret;
@@ -335,13 +341,8 @@ Value Script::evaluate(vector<Token> tkns)
 	{
 		if (tkns.at(i).type==Token::Identifier)
 		{
-			if (globalFrame.locals.find(tkns.at(i).data)!=globalFrame.locals.end())
-				tkns.at(i) = globalFrame.locals[tkns.at(i).data];
-			else if (!stackFrames.empty())
-			{
-				if (stackFrames.top().locals.find(tkns.at(i).data)!=stackFrames.top().locals.end())
-					tkns.at(i) = stackFrames.top().locals[tkns.at(i).data];
-			}
+			if (isVariable(tkns.at(i).data))
+                tkns.at(i) = getIdentifier(tkns.at(i).data);
 			else if (!isFunction(tkns.at(i).data))
 				throw  runtime_error("Unknown identifier '"+tkns.at(i).data+"' encountered on line "+intToString(tkns.at(i).line)+" in file "+tkns.at(i).file);
 		}
@@ -369,7 +370,7 @@ Value Script::evaluate(vector<Token> tkns)
 				state = ReadingArgEq;
 				parenCount = 1;
 				start = i;
-				i++;
+				i++; //just assume that next token is '('
 				argEq.clear();
 				args.clear();
 			}
@@ -386,7 +387,8 @@ Value Script::evaluate(vector<Token> tkns)
 				parenCount--;
 				if (parenCount==0)
 				{
-					args.push_back(evaluate(argEq));
+					if (argEq.size()>0)
+						args.push_back(evaluate(argEq));
 					if (isLibraryFunction(name))
 						tkns[start] = executeLibraryFunction(name,args);
 					else
@@ -401,20 +403,25 @@ Value Script::evaluate(vector<Token> tkns)
 								throw runtime_error("Type mismatch in call to '"+name+"' on line "+intToString(tkns[start].line)+" in file "+tkns[start].file);
 							f.locals[functions[name].arguments[j].name] = args[j];
 						}
-						stackFrames.push(f);
+						stackFrames.push_back(f);
 						tkns[start] = runTokens(pc);
-						stackFrames.pop();
+						stackFrames.pop_back();
 					}
 					tkns.erase(tkns.begin()+start+1,tkns.begin()+i+1);
 					state = Searching;
+					i -= 2;
 				}
 				else
 					argEq.push_back(tkns.at(i));
 			}
 			else if (tkns.at(i).type==Token::ArgDelim)
 			{
-				args.push_back(evaluate(argEq));
-				argEq.clear();
+			    if (parenCount == 1) {
+                    args.push_back(evaluate(argEq));
+                    argEq.clear();
+			    }
+			    else
+                    argEq.push_back(tkns.at(i));
 			}
 			else
 				argEq.push_back(tkns.at(i));
@@ -430,6 +437,34 @@ bool Script::isFunction(string name)
 	return (isLibraryFunction(name) || functions.find(name)!=functions.end());
 }
 
+bool Script::isVariable(string id) {
+    for (auto j = stackFrames.rbegin(); j!=stackFrames.rend(); ++j) {
+        if (j->locals.find(id)!=j->locals.end())
+            return true;
+    }
+    if (globalFrame.locals.find(id)!=globalFrame.locals.end())
+        return true;
+    return false;
+}
+
+Value& Script::getIdentifier(string id) {
+    for (auto j = stackFrames.rbegin(); j!=stackFrames.rend(); ++j) {
+        if (j->locals.find(id)!=j->locals.end())
+            return j->locals[id];
+    }
+    if (globalFrame.locals.find(id)!=globalFrame.locals.end())
+        return globalFrame.locals[id];
+    if (stackFrames.size()>0) {
+        stackFrames.back().locals[id] = Value();
+        return stackFrames.back().locals[id];
+    }
+    else {
+        globalFrame.locals[id] = Value();
+        return globalFrame.locals[id];
+    }
+
+}
+
 Value Script::runTokens(int pos)
 {
 	vector<Token> tkns;
@@ -438,12 +473,13 @@ Value Script::runTokens(int pos)
 	int parenCount = 0;
 	int blockCount = 0; //terminate if blockcount gets to -1 (for loops)
 	ConditionalState conditionalState = NoConditional;
+	int tokensTillResetCond = 0;
 	bool execCond = false, resetCondState = true;
 
 	for (unsigned int i = pos; i<tokens.size(); ++i)
 	{
 		if (stopping)
-			break;
+			throw runtime_error("Script killed");
 
 		switch (tokens.at(i).type)
 		{
@@ -464,10 +500,10 @@ Value Script::runTokens(int pos)
 				}
 				else
 				{
-					if (stackFrames.top().locals.find(name)!=stackFrames.top().locals.end())
-						throw runtime_error("Identifier on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file+" already exists!");
-					stackFrames.top().locals[name] = Value();
-					stackFrames.top().locals[name].type = Value::Integer;
+                    if (stackFrames.back().locals.find(name)!=stackFrames.back().locals.end())
+                        throw runtime_error("Identifier on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file+" already exists!");
+					stackFrames.back().locals[name] = Value();
+					stackFrames.back().locals[name].type = Value::Integer;
 				}
 
 				if (tokens.at(i).type==Token::Assignment)
@@ -482,7 +518,7 @@ Value Script::runTokens(int pos)
 					if (stackFrames.empty())
 						globalFrame.locals[name] = evaluate(tkns);
 					else
-						stackFrames.top().locals[name] = evaluate(tkns);
+						stackFrames.back().locals[name] = evaluate(tkns);
 				}
 			}
 			else //function definition, skip
@@ -499,7 +535,8 @@ Value Script::runTokens(int pos)
                         parenCount--;
 				}
 			}
-			conditionalState = NoConditional;
+			if (tokensTillResetCond == 0)
+                conditionalState = NoConditional;
 			break;
 
 		case Token::Branch:
@@ -508,7 +545,9 @@ Value Script::runTokens(int pos)
 			if (branchTable.find(tokens.at(i+1).data)==branchTable.end())
 				throw runtime_error("Branch to unknown identifier encountered on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file);
 			i = branchTable[tokens.at(i+1).data];
-			conditionalState = NoConditional;
+
+			if (tokensTillResetCond == 0)
+                conditionalState = NoConditional;
 			break;
 
 		case Token::Elif:
@@ -554,7 +593,11 @@ Value Script::runTokens(int pos)
 				conditionalState = LastConditionalExecuted;
 				if (tokens.at(i+1).type==Token::BlockOpen)
 				{
-					runTokens(i+2);
+				    stackFrames.push_back(Frame());
+					Value ret = runTokens(i+2);
+					if (!(ret.type==Value::Void && ret.iValue==0 && ret.sValue=="noret"))
+                        return ret;
+					stackFrames.pop_back();
 					parenCount = 1;
 					i++;
 					while (parenCount>0)
@@ -566,6 +609,8 @@ Value Script::runTokens(int pos)
 							parenCount--;
 					}
 				}
+				else
+                    tokensTillResetCond = 2;
 			}
 			else
 			{
@@ -585,6 +630,7 @@ Value Script::runTokens(int pos)
 				}
 				else
 				{
+				    tokensTillResetCond = 2;
 					while (tokens.at(i).type!=Token::LineDelim)
 						i++;
 				}
@@ -618,9 +664,13 @@ Value Script::runTokens(int pos)
 			while ((test.type==Value::Integer && int(test.iValue+0.01)!=0) || (test.type==Value::String && test.sValue.size()>0))
 			{
 				if (stopping)
-					break;
+                    throw runtime_error("Script killed");
 
-				runTokens(i);
+                stackFrames.push_back(Frame());
+				Value ret = runTokens(i);
+				if (!(ret.type==Value::Void && ret.iValue==0 && ret.sValue=="noret"))
+                    return ret;
+				stackFrames.pop_back();
 				test = evaluate(tkns);
 			}
 
@@ -634,7 +684,8 @@ Value Script::runTokens(int pos)
 				i++;
 			}
 			i--;
-			conditionalState = NoConditional;
+			if (tokensTillResetCond == 0)
+                conditionalState = NoConditional;
 			break;
 
 		case Token::Return:
@@ -646,7 +697,6 @@ Value Script::runTokens(int pos)
                 i++;
 			}
 			return evaluate(tkns);
-			break;
 
 		case Token::BlockOpen:
             blockCount++;
@@ -661,7 +711,8 @@ Value Script::runTokens(int pos)
 			break;
 
 		case Token::LineDelim:
-			conditionalState = NoConditional;
+		    if (tokensTillResetCond == 0)
+                conditionalState = NoConditional;
 			break;
 
 		case Token::Label:
@@ -673,8 +724,6 @@ Value Script::runTokens(int pos)
 			if (tokens.at(i+1).type==Token::Assignment)
 			{
 				name = tokens.at(i).data;
-				if (tokens.at(i).type!=Token::Identifier || (globalFrame.locals.find(name)==globalFrame.locals.end() || stackFrames.top().locals.find(name)==stackFrames.top().locals.end()))
-					throw runtime_error("Assignment to non-variable on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file);
 				i = i+2;
 			}
 			tkns.clear();
@@ -684,22 +733,21 @@ Value Script::runTokens(int pos)
 				i++;
 			}
 			test = evaluate(tkns);
-			if (name.size()>0)
-			{
-				if (globalFrame.locals.find(name)!=globalFrame.locals.end())
-					globalFrame.locals[name] = test;
-				else
-					stackFrames.top().locals[name] = test;
-			}
-			conditionalState = NoConditional;
+			getIdentifier(name) = test;
+			if (tokensTillResetCond == 0)
+                conditionalState = NoConditional;
 			break;
 		}
+
+		if (tokensTillResetCond > 0)
+            tokensTillResetCond -= 1;
 	}
 
 	voidRet:
 	Value v;
 	v.type = Value::Void;
 	v.iValue = 0;
+	v.sValue = "noret";
 	return v;
 }
 
@@ -709,6 +757,7 @@ void Script::run(ScriptEnvironment* env)
 		return;
 
 	reset();
+	srand(time(NULL));
 	environment = env;
 	stopped = false;
 	stopping = false;
@@ -723,6 +772,7 @@ void Script::run(ScriptEnvironment* env)
 	catch (const runtime_error& e)
 	{
 		cout << e.what() << endl;
+		cout << original << endl;
 	}
 	stopped = true;
 }
@@ -730,6 +780,7 @@ void Script::run(ScriptEnvironment* env)
 void Script::stop()
 {
 	stopping = true;
+	//int stopTime = gameClock.getTimeStamp(); //TODO - timeout script stopping
 	while (!stopped)
 		sleep(milliseconds(30));
 }
@@ -737,4 +788,8 @@ void Script::stop()
 bool Script::isRunning()
 {
 	return !stopped;
+}
+
+bool Script::isStopping() {
+    return stopping;
 }

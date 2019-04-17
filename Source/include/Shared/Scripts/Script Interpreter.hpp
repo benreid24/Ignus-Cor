@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <map>
-#include <stack>
+#include <deque>
 #include "Frame.hpp"
 #include "Token.hpp"
 #include "Function Entry.hpp"
@@ -17,9 +17,10 @@ class ScriptEnvironment;
  */
 class Script
 {
+	std::string original;
 	ScriptEnvironment* environment;
 	bool stopping, stopped;
-	std::stack<Frame> stackFrames;
+	std::deque<Frame> stackFrames;
 	Frame globalFrame;
 	std::map<std::string,FunctionEntry> functions; //index to jump to for functions
 	std::map<std::string,int> branchTable;
@@ -40,6 +41,10 @@ class Script
     Value evalEq(std::vector<Token> tkns); //Condenses values and operators into a single value
 
     Value combine(Token left, Token op, Token right);
+
+    Value& getIdentifier(std::string id);
+
+    bool isVariable(std::string id);
 
     bool isFunction(std::string name);
 
@@ -83,6 +88,11 @@ public:
 	 * Stops the script and returns when the script has finished
 	 */
 	void stop();
+
+	/**
+	 * Returns whether or not the script is actively stopping
+	 */
+    bool isStopping();
 
 	/**
 	 * Tells whether or not the script is currently running
