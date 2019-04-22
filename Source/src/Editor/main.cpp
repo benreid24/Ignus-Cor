@@ -4,6 +4,7 @@
 #include <SFGUI/Widgets.hpp>
 #include "Editor/MapEditor.hpp"
 #include "Editor/ItemDbEditor.hpp"
+#include "Editor/AnimationEditor.hpp"
 #include "Editor/version.h"
 #include "Shared/Properties.hpp"
 using namespace std;
@@ -21,8 +22,8 @@ int main() {
 	sfg::Notebook::Ptr tabs = sfg::Notebook::Create();
 	MapEditor mapEditor(desktop, tabs);
 	ItemDbEditor itemEditor(desktop,tabs);
+	AnimationEditor animEditor(desktop,tabs);
 
-	tabs->AppendPage(sfg::Label::Create("make this"),sfg::Label::Create("Animation Editor"));
 	tabs->AppendPage(sfg::Label::Create("make this"),sfg::Label::Create("NPC Editor"));
 	tabs->AppendPage(sfg::Label::Create("make this"),sfg::Label::Create("Conversation Editor"));
 
@@ -47,6 +48,8 @@ int main() {
 		}
 		else if (tabs->GetCurrentPage()==1 && sfWindow.hasFocus())
 			itemEditor.update();
+        else if (tabs->GetCurrentPage()==2 && sfWindow.hasFocus())
+            animEditor.update();
 
 		sfWindow.clear(Color(50,50,50));
 		sfgui.Display(sfWindow);

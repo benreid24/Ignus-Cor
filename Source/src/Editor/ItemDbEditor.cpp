@@ -114,7 +114,7 @@ void ItemDbEditor::doItem(int id) {
         if (cancelPressed) {
 			break;
         }
-        if (pickMapImage) {
+        if (pickMapImage) { //TODO - use Windows file picker w/ default dir in correct folder? copy image if external
 			pickMapImage = false;
 			FilePicker picker(desktop, owner, "Map Image", Properties::ItemMapImagePath, "png");
 			if (picker.pickFile())
