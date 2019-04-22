@@ -6,7 +6,7 @@ using namespace sf;
 
 Player::Player() :
 	Entity("player name",
-		   EntityPosition(Vector2f(5,5), "test", 0),
+		   EntityPosition(Vector2f(5,5), "test.map", 0),
 		   Properties::AnimationPath+"Entities/BoyPlayer/Walk",
 		   Properties::AnimationPath+"Entities/BoyPlayer/Run") {
 	speed[0] = 64;
@@ -14,7 +14,8 @@ Player::Player() :
 }
 
 Player::Ptr Player::create() {
-	return Ptr(new Player());
+	static Ptr player(new Player());
+	return player;
 }
 
 void Player::update() {

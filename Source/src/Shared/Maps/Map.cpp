@@ -202,14 +202,14 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
         tmp.position.coords.x = input.get<uint32_t>();
         tmp.position.coords.y = input.get<uint32_t>();
         tmp.position.dir = input.get<uint8_t>();
-        tmp.position.mapName = name;
+        tmp.position.mapName = uniqueName;
 		entitySpawns.push_back(tmp);
     }
 	if (player!=nullptr)
 		setRenderPosition(player->getPosition().coords);
 
     //Load AI
-	entityManager->registerMap(file, size.y);
+	entityManager->registerMap(uniqueName, size.y);
     tInt = input.get<uint16_t>();
     for (int i = 0; i<tInt; ++i) {
         Vector2f pos;
@@ -246,14 +246,14 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
 			cout << "Error: Item [" << item.itemId << "] does not exist, removing from map" << endl;
 			continue;
         }
-        for (unsigned int j = 0; j<pickedUpItems[name].size(); ++j) {
-            if (pickedUpItems[name][j]==item.mapId)
+        for (unsigned int j = 0; j<pickedUpItems[uniqueName].size(); ++j) {
+            if (pickedUpItems[uniqueName][j]==item.mapId)
                 item.itemId = -1;
         }
         if (item.itemId!=-1) {
 			EntityPosition pos;
 			pos.coords = Vector2f(item.position);
-			pos.mapName = name;
+			pos.mapName = uniqueName;
 			item.ie = ItemEntity::create(item.itemId,pos);
             items.push_back(item);
             entityManager->add(item.ie);

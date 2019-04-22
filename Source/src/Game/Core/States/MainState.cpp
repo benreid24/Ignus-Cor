@@ -19,7 +19,7 @@ bool MainState::doState() {
 }
 
 MainState::MainState() : BaseState(nullptr) {
-    Game::get()->mapManager.loadMap("test");
+    Game::get()->mapManager.loadMap("test.map");
     Game::get()->entityManager.add(Game::get()->player);
 }
 

@@ -19,7 +19,7 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	lTime = Entity::timer.getElapsedTime().asSeconds();
 	speed[0] = 64;
 	speed[1] = 128;
-	boundingBox = FloatRect(Vector2f(0, 12), graphics.getSize());
+	boundingBox = FloatRect(0, 12, graphics.getSize().x, graphics.getSize().y-12);
 	behavior = nullptr;
 }
 
@@ -113,6 +113,7 @@ void Entity::move(int d, bool fast, float elapsedTime) {
 		EntityPosition oldPosOffset = position;
 		EntityPosition newPosOffset = newPos;
 		oldPosOffset.coords += Vector2f(boundingBox.left, boundingBox.top);
+		newPosOffset.coords += Vector2f(boundingBox.left, boundingBox.top);
 		Vector2f size = Vector2f(boundingBox.width, boundingBox.height);
 		if (Entity::entityManager->canMove(this, oldPosOffset, newPosOffset, size)) {
 			graphics.setMoving(position.dir, fast);
