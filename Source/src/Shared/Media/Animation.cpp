@@ -82,10 +82,10 @@ std::vector<sf::Sprite>& AnimationSource::getFrame(int i, Vector2f pos)
     	sp.setTexture(*sheet,true);
     	sp.setTextureRect(IntRect(frames[i][j].sourcePos.x, frames[i][j].sourcePos.y, frames[i][j].size.x, frames[i][j].size.y));
 		sp.setOrigin(frames[i][j].size.x/2,frames[i][j].size.y/2);
-		sp.setRotation(frames[i][j].rotation);
 		sp.setColor(Color(255,255,255,frames[i][j].alpha));
 		sp.setScale(frames[i][j].scaleX,frames[i][j].scaleY);
-		sf::Vector2f offset = Vector2f(sp.getGlobalBounds().width/2-frames[i][j].size.x/2,sp.getGlobalBounds().height/2-frames[i][j].size.y/2);
+		sf::Vector2f offset = Vector2f(sp.getGlobalBounds().width/2,sp.getGlobalBounds().height/2) - sp.getOrigin();
+		sp.setRotation(frames[i][j].rotation);
 		sp.setPosition(pos+frames[i][j].renderOffset-offset);
 		sprites[j] = sp;
     }
