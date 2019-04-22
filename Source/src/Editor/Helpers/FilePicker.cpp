@@ -25,17 +25,20 @@ FilePicker::FilePicker(Desktop& o, Widget::Ptr p, string dname, string dir, stri
 
 	container = Box::Create(Box::Orientation::HORIZONTAL,5);
 	curFile = Label::Create("Selected "+dispName+":");
+	curPath = Label::Create("");
 	pickButton = Button::Create("Select");
 	pickButton->GetSignal(Button::OnLeftClick).Connect( [me] { me->setState(Chosen); });
 	cancelButton = Button::Create("Cancel");
 	cancelButton->GetSignal(Button::OnLeftClick).Connect( [me] { me->setState(Canceled); });
 
 	whole = Box::Create(Box::Orientation::VERTICAL,7);
-	whole->Pack(curFile,false,false);
+	Box::Ptr textBox = Box::Create(Box::Orientation::HORIZONTAL,7);
+	textBox->Pack(curPath);
+	textBox->Pack(curFile);
+	whole->Pack(textBox);
 	whole->Pack(container,false,false);
 
 	folder = Directory::get(dir, ext);
-	root = folder;
 	refreshFiles();
 	needsUpdate = false;
 
@@ -103,8 +106,8 @@ void FilePicker::refreshFiles() {
 }
 
 void FilePicker::setChoice(string file) {
-	chosenFile = file;
-	curFile->SetText("Selected "+dispName+": "+file);
+	chosenFile = Directory::buildPath(folder, file);
+	curFile->SetText("Selected "+dispName+": "+chosenFile);
 }
 
 void FilePicker::setDirectory(string subDir) {
@@ -121,6 +124,7 @@ void FilePicker::setDirectory(string subDir) {
             }
         }
 	}
+	curPath->SetText("Directory: "+Directory::buildPath(folder, ""));
 	needsUpdate = true;
 }
 
@@ -148,6 +152,7 @@ bool FilePicker::pickFile() {
 		}
 		owner.BringToFront(window);
         owner.Update(30/1000);
+        update();
 
         sfWindow.clear();
 		sfgui.Display(sfWindow);
@@ -160,8 +165,10 @@ bool FilePicker::pickFile() {
     return state==Chosen;
 }
 
-void FilePicker::update() {
-    if (needsUpdate) {
+void FilePicker::update(bool refr) {
+    if (refr)
+        folder = Directory::get(searchDir, extension);
+    if (needsUpdate || refr) {
         needsUpdate = false;
         container->RemoveAll();
         refreshFiles();

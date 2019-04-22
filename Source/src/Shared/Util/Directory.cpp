@@ -44,7 +44,6 @@ string Directory::buildPath(Directory::Ptr dir, string name) {
         name.insert(0, dir->getName()+"/");
         dir = dir->getParent();
     }
-    name.insert(0, dir->getName()+"/");
     return name;
 }
 

@@ -14,17 +14,21 @@ class AnimationEditor {
 	sfg::Notebook::Ptr owner;
 	sfg::Box::Ptr container;
 	FilePicker* fileList;
+	bool refreshOnUpdate;
 
-    /**
-     * Opens the animation editor
-     */
     void openEditor();
+    void refresh();
 
 public:
     /**
      * Constructs GUI elements for the editor
      */
     AnimationEditor(sfg::Desktop& dk, sfg::Notebook::Ptr parent);
+
+    /**
+     * Frees memory
+     */
+    ~AnimationEditor();
 
     /**
      * Updates the GUI

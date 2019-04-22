@@ -14,7 +14,7 @@
  */
 class FilePicker {
 	std::string dispName;
-	Directory::Ptr folder, root;
+	Directory::Ptr folder;
 	std::string searchDir, extension;
 	std::string chosenFile;
 	enum State {
@@ -28,7 +28,7 @@ class FilePicker {
 	sfg::Widget::Ptr parent;
 	sfg::Window::Ptr window;
 	sfg::Box::Ptr container, whole;
-	sfg::Label::Ptr curFile;
+	sfg::Label::Ptr curFile, curPath;
 	sfg::Button::Ptr pickButton, cancelButton;
 	bool needsUpdate;
 
@@ -73,7 +73,7 @@ public:
 	/**
 	 * Updates the GUI. Used for embedded mode
 	 */
-    void update();
+    void update(bool refreshFiles = false);
 };
 
 #endif // FILEPICKER_HPP
