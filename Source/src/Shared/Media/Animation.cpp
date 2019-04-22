@@ -69,7 +69,7 @@ bool AnimationSource::isLooping()
     return loop;
 }
 
-std::vector<sf::Sprite>& AnimationSource::getFrame(int i, Vector2f pos)
+std::vector<sf::Sprite>& AnimationSource::getFrame(int i, Vector2f pos, bool centerOrigin)
 {
     if (i<0 || unsigned(i)>=frames.size()) {
         return sprites;
@@ -85,6 +85,8 @@ std::vector<sf::Sprite>& AnimationSource::getFrame(int i, Vector2f pos)
 		sp.setColor(Color(255,255,255,frames[i][j].alpha));
 		sp.setScale(frames[i][j].scaleX,frames[i][j].scaleY);
 		sf::Vector2f offset = Vector2f(sp.getGlobalBounds().width/2,sp.getGlobalBounds().height/2) - sp.getOrigin();
+		if (!centerOrigin)
+            offset = -sp.getOrigin();
 		sp.setRotation(frames[i][j].rotation);
 		sp.setPosition(pos+frames[i][j].renderOffset-offset);
 		sprites[j] = sp;
@@ -131,10 +133,12 @@ Animation::Animation()
 {
     curFrm = lastFrmChangeTime = 0;
     playing = false;
+    isCenterOrigin = false;
 }
 
-Animation::Animation(AnimationReference ref) : Animation()
+Animation::Animation(AnimationReference ref, bool centerOrigin) : Animation()
 {
+    isCenterOrigin = centerOrigin;
     animSrc = ref;
 }
 
@@ -187,7 +191,7 @@ Vector2f Animation::getSize() {
 	Vector2f zero(0,0);
 	if (!animSrc)
         return zero;
-	vector<Sprite> frames = animSrc->getFrame(0, zero);
+	vector<Sprite> frames = animSrc->getFrame(0, zero, isCenterOrigin);
 	if (frames.size()==0)
 		return zero;
 	return Vector2f(frames[0].getGlobalBounds().width, frames[0].getGlobalBounds().height);
@@ -223,7 +227,7 @@ void Animation::draw(sf::RenderTarget& window)
     if (!animSrc)
         return;
 
-    std::vector<Sprite>& t = animSrc->getFrame(curFrm, position);
+    std::vector<Sprite>& t = animSrc->getFrame(curFrm, position, isCenterOrigin);
     for (unsigned int i = 0; i<t.size(); ++i)
 		window.draw(t[i]);
 }

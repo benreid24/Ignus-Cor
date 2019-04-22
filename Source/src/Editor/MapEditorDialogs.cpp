@@ -285,7 +285,7 @@ void MapEditor::addAnim() {
 
 	int id = tileset.addAnim(f,baseName);
 	AnimationReference animSrc = tileset.getAnimation(id);
-	Sprite spr = animSrc->getFrame(0,Vector2f(0,0))[0];
+	Sprite spr = animSrc->getFrame(0,Vector2f(0,0), false)[0];
 	RenderTexture render;
 	render.create(spr.getGlobalBounds().width,spr.getGlobalBounds().height);
 	render.draw(spr);
@@ -322,7 +322,7 @@ void MapEditor::loadAnim() {
 
 		int id = tileset.addAnim(Properties::AnimationPath+file,baseName);
 		AnimationReference animSrc = tileset.getAnimation(id);
-		Sprite spr = animSrc->getFrame(0,Vector2f(0,0))[0];
+		Sprite spr = animSrc->getFrame(0,Vector2f(0,0), false)[0];
 		RenderTexture render;
 		render.create(spr.getGlobalBounds().width,spr.getGlobalBounds().height);
 		render.draw(spr);

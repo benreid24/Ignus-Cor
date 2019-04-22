@@ -71,9 +71,10 @@ public:
      *
      * \param i The index of the frame to return
      * \param pos The desired on screen position of the animation
+     * \param centerOrigin Whether or not to center the origin when offsetting
      * \return A vector of Sprite objects that are ready to be rendered
      */
-    std::vector<sf::Sprite>& getFrame(int i, sf::Vector2f pos);
+    std::vector<sf::Sprite>& getFrame(int i, sf::Vector2f pos, bool centerOrigin);
 
     /**
      * Given the current frame and elapsed time, combined with internal animation data, returns the new frame
@@ -104,7 +105,7 @@ class Animation
     AnimationReference animSrc;
     sf::Vector2f position;
     int curFrm, lastFrmChangeTime;
-    bool playing;
+    bool playing, isCenterOrigin;
 
 public:
     /**
@@ -116,8 +117,9 @@ public:
      * Sets the source data to the given AnimationSource
      *
      * \param src The AnimationSource to use
+     * \param isMapAnim Whether or not this is a map animation. Determines origin
      */
-    Animation(AnimationReference src);
+    Animation(AnimationReference src, bool centerOrigin = false);
 
     /**
      * Frees allotted resources

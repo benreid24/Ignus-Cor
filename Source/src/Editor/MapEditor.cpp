@@ -43,7 +43,7 @@ void MapEditor::syncGuiWithTileset() {
 		if (id==0)
 			continue;
 		AnimationReference animSrc = tileset.getAnimation(id);
-		Sprite spr = animSrc->getFrame(0,Vector2f(0,0))[0];
+		Sprite spr = animSrc->getFrame(0,Vector2f(0,0), false)[0];
 		RenderTexture render;
 		render.create(spr.getGlobalBounds().width,spr.getGlobalBounds().height);
 		render.draw(spr);
