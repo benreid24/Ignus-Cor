@@ -307,7 +307,7 @@ void MapEditor::loadAnim() {
 	FilePicker picker(desktop, owner, "Animation", Properties::AnimationPath, "anim");
 
 	if (picker.pickFile()) {
-		string file = picker.getChoice()+".anim";
+		string file = picker.getChoice();
 
 		//Determine if we need the spritesheet
 		AnimationSource anim(Properties::AnimationPath+file);
@@ -533,7 +533,7 @@ void MapEditor::editProperties() {
 			plstPressed = false;
 			FilePicker picker(desktop, owner, "Playlist", Properties::PlaylistPath, "plst");
 			if (picker.pickFile())
-                form.setField("p",picker.getChoice()+".plst");
+                form.setField("p",picker.getChoice());
         }
         if (savePressed) {
 			mapData->getMusic() = form.getField("p");
@@ -551,9 +551,9 @@ void MapEditor::editProperties() {
 			FilePicker picker(desktop, owner, "Script", Properties::ScriptPath, "scr");
 			if (picker.pickFile()) {
 				if (loadPressed)
-					form.setField("ol", picker.getChoice()+".scr");
+					form.setField("ol", picker.getChoice());
 				else
-					form.setField("ul", picker.getChoice()+".scr");
+					form.setField("ul", picker.getChoice());
 			}
 			loadPressed = unloadPressed = false;
         }
@@ -662,7 +662,7 @@ void MapEditor::mapEventHandler(Vector2i pos) {
 			pickPressed = false;
 			FilePicker picker(desktop, owner, "Script", Properties::ScriptPath, "scr");
 			if (picker.pickFile())
-                form.setField("s",picker.getChoice()+".scr");
+                form.setField("s",picker.getChoice());
 		}
 
         desktop.BringToFront(window);

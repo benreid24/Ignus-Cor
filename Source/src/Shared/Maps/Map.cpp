@@ -105,7 +105,7 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
     cout << "Loading map: " << file << "\n";
 
     //Open file
-    File input(Properties::MapPath+file+".map");
+    File input(Properties::MapPath+file);
     int tInt;
 
     //Load name and music

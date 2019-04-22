@@ -3,6 +3,7 @@
 
 #include <string>
 #include <memory>
+#include <list>
 #include "Shared/Entities/EntityVisual.hpp"
 #include "Shared/Entities/EntityBubble.hpp"
 
@@ -11,6 +12,7 @@
  * \brief All of the "physical" objects in the game and classes to manage them
  */
 
+class EntityBehavior;
 class EntityManager;
 
 /**
@@ -44,6 +46,8 @@ struct EntityPosition {
 class Entity {
 public:
 	typedef std::shared_ptr<Entity> Ptr;
+	typedef std::weak_ptr<Entity> WeakPtr;
+	typedef std::list<Ptr> List;
 
 protected:
 	int uuid;
@@ -51,9 +55,10 @@ protected:
 	EntityPosition position;
 	EntityVisual graphics;
 	EntityBubble bubble;
+	EntityBehavior* behavior;
 	double lTime;
 	float speed[2]; //speed in pixels/second for [slow,fast]. Will be set by child classes
-	float boxTopOffset; //offset for the top of the bounding box
+	sf::FloatRect boundingBox; //relative to upper left corner (position and gfx origin)
 
 	static sf::Clock timer; //for doing movement based on time
 
@@ -68,7 +73,7 @@ public:
 	/**
 	 * Virtual destructor for magic
 	 */
-	virtual ~Entity() = default;
+	virtual ~Entity();
 
 	/**
 	 * Returns the type of the Entity. To be defined by children
@@ -76,14 +81,30 @@ public:
 	virtual const std::string getType() = 0;
 
 	/**
-	 * Returns the position of the Entity
-	 */
-	EntityPosition getPosition();
-
-	/**
 	 * Returns the bounding box for the Entity
 	 */
 	virtual sf::FloatRect getBoundingBox();
+
+	/**
+	 * Updates the Entity. Base function just updates last update time
+	 * Child overloads should call this when finished
+	 */
+	virtual void update();
+
+	/**
+	 * Notifies the Entity that they were attacked by another Entity
+	 */
+    virtual void notifyAttacked(Ptr attacker); //TODO - attack type?
+
+    /**
+     * Notifies the Entity of nearby combat
+     */
+    virtual void notifyCombatNearby(List combatants);
+
+    /**
+     * Notifies the Entity that they were interacted with
+     */
+    virtual void notifyInteracted(Ptr user);
 
 	/**
 	 * Sets the position and direction of the Entity. Leave direction empty to maintain it. Position is in pixels
@@ -101,6 +122,16 @@ public:
 	std::string getName();
 
 	/**
+	 * Generates a string to represent the Entity
+	 */
+    std::string getIdString();
+
+	/**
+	 * Returns the position of the Entity
+	 */
+	EntityPosition getPosition();
+
+	/**
 	 * Renders the Entity to the given target
 	 */
 	void render(sf::RenderTarget& target, sf::Vector2f camPos);
@@ -113,12 +144,6 @@ public:
 	 * \param elapsedTime Elapsed time to use, leave blank for the function to figure it out. Used for diagonal motion
 	 */
 	void move(int dir, bool fast = false, float elapsedTime = 0);
-
-	/**
-	 * Updates the Entity. Base function just updates last update time
-	 * Child overloads should call this when finished
-	 */
-	virtual void update();
 
 	/**
 	 * Sets the static internal pointer to the Game EntityManager

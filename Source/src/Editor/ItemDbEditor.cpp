@@ -118,13 +118,13 @@ void ItemDbEditor::doItem(int id) {
 			pickMapImage = false;
 			FilePicker picker(desktop, owner, "Map Image", Properties::ItemMapImagePath, "png");
 			if (picker.pickFile())
-				form.setField("mp", picker.getChoice()+".png");
+				form.setField("mp", picker.getChoice());
         }
         if (pickMenuImage) {
 			pickMenuImage = false;
 			FilePicker picker(desktop, owner, "Menu Image", Properties::ItemMapImagePath, "png");
 			if (picker.pickFile())
-				form.setField("mn", picker.getChoice()+".png");
+				form.setField("mn", picker.getChoice());
         }
 
         desktop.BringToFront(window);

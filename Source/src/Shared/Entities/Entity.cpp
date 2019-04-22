@@ -1,6 +1,8 @@
 #include "Shared/Entities/Entity.hpp"
 #include "Shared/Entities/EntityManager.hpp"
+#include "Shared/Entities/EntityBehavior.hpp"
 #include "Shared/Util/UUID.hpp"
+#include <sstream>
 using namespace std;
 using namespace sf;
 
@@ -17,7 +19,13 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	lTime = Entity::timer.getElapsedTime().asSeconds();
 	speed[0] = 64;
 	speed[1] = 128;
-	boxTopOffset = 12;
+	boundingBox = FloatRect(Vector2f(0, 12), graphics.getSize());
+	behavior = nullptr;
+}
+
+Entity::~Entity() {
+    if (behavior != nullptr)
+        delete behavior;
 }
 
 EntityPosition Entity::getPosition() {
@@ -25,7 +33,11 @@ EntityPosition Entity::getPosition() {
 }
 
 FloatRect Entity::getBoundingBox() {
-	return FloatRect(position.coords.x, position.coords.y+boxTopOffset, graphics.getSize().x, graphics.getSize().y-boxTopOffset);
+	return FloatRect(
+                  position.coords.x+boundingBox.left,
+                  position.coords.y+boundingBox.top,
+                  boundingBox.width,
+                  boundingBox.height);
 }
 
 void Entity::setPositionAndDirection(EntityPosition pos) {
@@ -42,6 +54,29 @@ void Entity::shift(sf::Vector2f amount, bool truncate) {
 
 string Entity::getName() {
 	return name;
+}
+
+void Entity::notifyAttacked(Ptr attacker) {
+    cout << getIdString() << " ATTACKED BY " << attacker->getIdString() << endl;
+    if (behavior != nullptr)
+        behavior->notifyAttacked(attacker);
+}
+
+void Entity::notifyInteracted(Ptr user) {
+    cout << getIdString() << " INTERACTED BY " << user->getIdString() << endl;
+    if (behavior != nullptr)
+        behavior->notifyInteracted(user);
+}
+
+void Entity::notifyCombatNearby(List combatants) {
+    if (behavior != nullptr)
+        behavior->notifyCombatNearby(combatants);
+}
+
+string Entity::getIdString() {
+    stringstream ss;
+    ss << "<" << getType() << ":" << getName() << "(uuid: " << uuid << ")>";
+    return ss.str();
 }
 
 void Entity::render(sf::RenderTarget& target, sf::Vector2f camPos) {
@@ -77,9 +112,8 @@ void Entity::move(int d, bool fast, float elapsedTime) {
 	if (newPos.coords != position.coords) {
 		EntityPosition oldPosOffset = position;
 		EntityPosition newPosOffset = newPos;
-		oldPosOffset.coords.y += boxTopOffset;
-		newPosOffset.coords.y += boxTopOffset;
-		Vector2f size = Vector2f(graphics.getSize().x, graphics.getSize().y-boxTopOffset);
+		oldPosOffset.coords += Vector2f(boundingBox.left, boundingBox.top);
+		Vector2f size = Vector2f(boundingBox.width, boundingBox.height);
 		if (Entity::entityManager->canMove(this, oldPosOffset, newPosOffset, size)) {
 			graphics.setMoving(position.dir, fast);
 			swap(position, newPos); //newPos is now old pos
