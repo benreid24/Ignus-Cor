@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include <SFGUI/Widgets.hpp>
+#include "Shared/Util/Directory.hpp"
 
 /**
  * Helper GUI class to provide a window for searching for files
@@ -13,22 +14,28 @@
  */
 class FilePicker {
 	std::string dispName;
-	std::map<std::string,std::vector<std::string> > files; // [subdir] -> [full filename]
+	Directory::Ptr folder, root;
+	std::string searchDir, extension;
 	std::string chosenFile;
 	enum State {
 		Picking,
 		Chosen,
-		Canceled
+		Canceled,
+		Embedded
 	}state;
 
 	sfg::Desktop& owner;
 	sfg::Widget::Ptr parent;
 	sfg::Window::Ptr window;
-	sfg::Box::Ptr container;
+	sfg::Box::Ptr container, whole;
 	sfg::Label::Ptr curFile;
 	sfg::Button::Ptr pickButton, cancelButton;
-	sfg::ScrolledWindow::Ptr subDirButtons;
-	std::map<std::string,sfg::ScrolledWindow::Ptr> fileButtons;
+	bool needsUpdate;
+
+	/**
+	 * Helper function to rescan files
+	 */
+    void refreshFiles();
 
 	/**
 	 * Call back for buttons to set the current file
@@ -49,7 +56,7 @@ public:
     /**
      * Creates the FilePicker to search the given directory and subdirectories for files with the given extension
      */
-	FilePicker(sfg::Desktop& desktop, sfg::Widget::Ptr parent, std::string dispName, std::string searchDir, std::string extension);
+	FilePicker(sfg::Desktop& desktop, sfg::Widget::Ptr parent, std::string dispName, std::string searchDir, std::string extension, bool embed = false);
 
 	/**
 	 * Does the actual GUI stuff
@@ -62,6 +69,11 @@ public:
 	 * Returns the full path to the chosen file, or empty if none
 	 */
 	std::string getChoice();
+
+	/**
+	 * Updates the GUI. Used for embedded mode
+	 */
+    void update();
 };
 
 #endif // FILEPICKER_HPP

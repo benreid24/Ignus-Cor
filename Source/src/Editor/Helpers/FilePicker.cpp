@@ -10,86 +10,96 @@ using namespace sfg;
 extern sfg::SFGUI sfgui;
 extern sf::RenderWindow sfWindow;
 
-FilePicker::FilePicker(Desktop& o, Widget::Ptr p, string dname, string searchDir, string extension) : owner(o), parent(p) {
+FilePicker::FilePicker(Desktop& o, Widget::Ptr p, string dname, string dir, string ext, bool embed)
+: owner(o), parent(p), searchDir(dir), extension(ext) {
 	FilePicker* me = this;
 
 	dispName = dname;
-	state = Picking;
-	vector<string> rawFiles = listDirectory(searchDir,extension,true);
-	for (unsigned int i = 0; i<rawFiles.size(); ++i) {
-		string dir = File::getPath(rawFiles[i]);
-		string f = File::getBaseName(rawFiles[i]);
-		dir.erase(0,searchDir.size());
-		if (dir[0]=='/')
-			dir.erase(dir.begin());
-		if (dir[dir.size()-1]=='/')
-			dir.erase(dir.begin()+dir.size()-1);
-		if (dir.size()==0)
-			dir = "Base Directory";
-		else
-			f = dir+"/"+f;
+	state = embed ? Embedded : Picking;
 
-		if (files.find(dir)==files.end())
-			files[dir] = vector<string>();
-		files[dir].push_back(f);
+	if (!embed) {
+        window = Window::Create();
+        window->SetTitle("Pick "+dispName);
+        window->SetRequisition(sf::Vector2f(450,550));
 	}
 
-	window = Window::Create();
-	window->SetTitle("Pick "+dispName);
-	window->SetRequisition(sf::Vector2f(450,550));
 	container = Box::Create(Box::Orientation::HORIZONTAL,5);
 	curFile = Label::Create("Selected "+dispName+":");
 	pickButton = Button::Create("Select");
 	pickButton->GetSignal(Button::OnLeftClick).Connect( [me] { me->setState(Chosen); });
 	cancelButton = Button::Create("Cancel");
 	cancelButton->GetSignal(Button::OnLeftClick).Connect( [me] { me->setState(Canceled); });
-	subDirButtons = ScrolledWindow::Create();
-	subDirButtons->SetScrollbarPolicy( sfg::ScrolledWindow::HORIZONTAL_AUTOMATIC | sfg::ScrolledWindow::VERTICAL_AUTOMATIC );
-	subDirButtons->SetRequisition(sf::Vector2f(200,450));
-	Box::Ptr dirBox = Box::Create(Box::Orientation::VERTICAL,2);
-	subDirButtons->AddWithViewport(dirBox);
 
-	RadioButtonGroup::Ptr butGroup(nullptr);
-	for (map<string,vector<string> >::iterator i = files.begin(); i!=files.end(); ++i) {
-		string d = i->first;
-		Button::Ptr dirBut = Button::Create(d);
-		dirBut->GetSignal(Button::OnLeftClick).Connect( [me,d] { me->setDirectory(d); });
-		dirBox->Pack(dirBut,false,false);
-
-		Box::Ptr tBox = Box::Create(Box::Orientation::VERTICAL,2);
-		fileButtons[i->first] = ScrolledWindow::Create();
-		fileButtons[i->first]->SetScrollbarPolicy( sfg::ScrolledWindow::HORIZONTAL_AUTOMATIC | sfg::ScrolledWindow::VERTICAL_AUTOMATIC );
-		fileButtons[i->first]->AddWithViewport(tBox);
-		fileButtons[i->first]->SetRequisition(sf::Vector2f(200,450));
-		for (unsigned int j = 0; j<i->second.size(); ++j) {
-			RadioButton::Ptr but = RadioButton::Create(File::getBaseName(i->second[j]));
-			if (butGroup.get()==nullptr)
-                butGroup = but->GetGroup();
-			else
-				but->SetGroup(butGroup);
-			string f = i->second[j];
-			but->GetSignal(Button::OnLeftClick).Connect( [me,f] { me->setChoice(f); });
-			tBox->Pack(but,false,false);
-		}
-	}
-
-	container->Pack(subDirButtons);
-	container->Pack(Separator::Create(Separator::Orientation::VERTICAL),false,false);
-	if (fileButtons.find("Base Directory")!=fileButtons.end())
-		container->Pack(fileButtons["Base Directory"]);
-	else if (fileButtons.size()>0)
-		container->Pack(fileButtons.begin()->second);
-
-	Box::Ptr whole = Box::Create(Box::Orientation::VERTICAL,7);
-	Box::Ptr t = Box::Create(Box::Orientation::HORIZONTAL,5);
-	t->Pack(pickButton);
-	t->Pack(cancelButton);
-
+	whole = Box::Create(Box::Orientation::VERTICAL,7);
 	whole->Pack(curFile,false,false);
 	whole->Pack(container,false,false);
-	whole->Pack(t,false,false);
-	window->Add(whole);
-	owner.Add(window);
+
+	folder = Directory::get(dir, ext);
+	root = folder;
+	refreshFiles();
+	needsUpdate = false;
+
+	if (embed) {
+        Box* cont = static_cast<Box*>(parent.get());
+        cont->Pack(whole, true, true);
+	}
+    else {
+        Box::Ptr t = Box::Create(Box::Orientation::HORIZONTAL,5);
+        whole->Pack(t,false,false);
+        t->Pack(pickButton);
+        t->Pack(cancelButton);
+        window->Add(whole);
+        owner.Add(window);
+    }
+}
+
+void FilePicker::refreshFiles() {
+    FilePicker* me = this;
+
+	//Populate folders
+	ScrolledWindow::Ptr subDirButtons = ScrolledWindow::Create();
+	subDirButtons->SetScrollbarPolicy( sfg::ScrolledWindow::HORIZONTAL_AUTOMATIC | sfg::ScrolledWindow::VERTICAL_AUTOMATIC );
+	subDirButtons->SetRequisition(sf::Vector2f(200,500));
+	Box::Ptr dirBox = Box::Create(Box::Orientation::VERTICAL,2);
+	subDirButtons->AddWithViewport(dirBox);
+	vector<Directory::Ptr> dirs = folder->getSubDirectories();
+
+	if (folder->hasParent()) {
+        string nm = "~Up~";
+		Button::Ptr dirBut = Button::Create(nm);
+		dirBut->GetSignal(Button::OnLeftClick).Connect( [me,nm] { me->setDirectory(nm); });
+		dirBox->Pack(dirBut,false,false);
+	}
+	for (unsigned int i = 0; i<dirs.size(); ++i) {
+        string nm = dirs[i]->getName();
+		Button::Ptr dirBut = Button::Create(nm);
+		dirBut->GetSignal(Button::OnLeftClick).Connect( [me,nm] { me->setDirectory(nm); });
+		dirBox->Pack(dirBut,false,false);
+	}
+
+	//Populate files
+	RadioButtonGroup::Ptr butGroup(nullptr);
+	vector<string> files = folder->getFiles();
+	Box::Ptr tBox = Box::Create(Box::Orientation::VERTICAL,2);
+    ScrolledWindow::Ptr fileBox = ScrolledWindow::Create();
+    fileBox->SetScrollbarPolicy( sfg::ScrolledWindow::HORIZONTAL_AUTOMATIC | sfg::ScrolledWindow::VERTICAL_AUTOMATIC );
+    fileBox->AddWithViewport(tBox);
+    fileBox->SetRequisition(sf::Vector2f(200,500));
+	for (unsigned int i = 0; i<files.size(); ++i) {
+        string f = files[i];
+        RadioButton::Ptr but = RadioButton::Create(f);
+        if (butGroup.get()==nullptr)
+            butGroup = but->GetGroup();
+        else
+            but->SetGroup(butGroup);
+        but->GetSignal(Button::OnLeftClick).Connect( [me,f] { me->setChoice(f); });
+        tBox->Pack(but,false,false);
+	}
+
+	//Pack windows
+	container->Pack(subDirButtons);
+	container->Pack(Separator::Create(Separator::Orientation::VERTICAL),false,false);
+	container->Pack(fileBox);
 }
 
 void FilePicker::setChoice(string file) {
@@ -98,16 +108,26 @@ void FilePicker::setChoice(string file) {
 }
 
 void FilePicker::setDirectory(string subDir) {
-	container->RemoveAll();
-	container->Pack(subDirButtons);
-	container->Pack(Separator::Create(Separator::Orientation::VERTICAL),false,false);
-	container->Pack(fileButtons[subDir]);
+	if (subDir == "~Up~") {
+        if (folder->hasParent())
+            folder = folder->getParent();
+	}
+	else {
+        vector<Directory::Ptr> dirs = folder->getSubDirectories();
+        for (unsigned int i = 0; i<dirs.size(); ++i) {
+            if (dirs[i]->getName() == subDir) {
+                folder = dirs[i];
+                break;
+            }
+        }
+	}
+	needsUpdate = true;
 }
 
 void FilePicker::setState(State s) {
 	if (s==Chosen && chosenFile.size()>0)
 		state = Chosen;
-	else if (s==Canceled)
+	else if (s==Canceled && state!=Embedded)
 		state = Canceled;
 }
 
@@ -138,4 +158,12 @@ bool FilePicker::pickFile() {
 	parent->SetState(Widget::State::NORMAL);
     owner.Remove(window);
     return state==Chosen;
+}
+
+void FilePicker::update() {
+    if (needsUpdate) {
+        needsUpdate = false;
+        container->RemoveAll();
+        refreshFiles();
+    }
 }

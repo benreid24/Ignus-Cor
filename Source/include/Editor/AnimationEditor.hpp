@@ -2,6 +2,7 @@
 #define ANIMATION_EDITOR_HPP
 
 #include <SFGUI/Widgets.hpp>
+#include "Editor/Helpers/FilePicker.hpp"
 
 /**
  * Tab for the animation editor. Invokes separate Python program that is full editor
@@ -12,11 +13,7 @@ class AnimationEditor {
     sfg::Desktop& desktop;
 	sfg::Notebook::Ptr owner;
 	sfg::Box::Ptr container;
-
-	/**
-	 * Shows the files present in the animations folder
-	 */
-    void showFiles();
+	FilePicker* fileList;
 
     /**
      * Opens the animation editor

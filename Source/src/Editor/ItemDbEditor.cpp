@@ -48,7 +48,6 @@ void ItemDbEditor::doItem(int id) {
 	window->Add(winBox);
 	desktop.Add(window);
 
-    Form form;
     Button::Ptr saveButton(Button::Create("Save")), cancelButton(Button::Create("Cancel"));
     Button::Ptr mapPathBut(Button::Create("Pick Map Image")), menuPathBut(Button::Create("Pick Menu Image"));
 	bool cancelPressed(false), savePressed(false), pickMapImage(false), pickMenuImage(false);
@@ -57,6 +56,7 @@ void ItemDbEditor::doItem(int id) {
 	mapPathBut->GetSignal(Button::OnLeftClick).Connect( [&pickMapImage] { pickMapImage = true; });
 	menuPathBut->GetSignal(Button::OnLeftClick).Connect( [&pickMenuImage] { pickMenuImage = true; });
 
+	Form form;
 	form.addField("i", "Id: ",160,(item!=nullptr)?(item->id):(-1));
 	form.addField("n", "Name: ",160,(item!=nullptr)?(item->name):(""));
 	form.addField("d", "Description: ",220,(item!=nullptr)?(item->description):(""));
