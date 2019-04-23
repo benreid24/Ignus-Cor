@@ -1,5 +1,5 @@
-#include "Shared/Scripts/Script Interpreter.hpp"
-#include "Shared/Scripts/Script Manager.hpp"
+#include "Shared/Scripts/Script.hpp"
+#include "Shared/Scripts/ScriptManager.hpp"
 #include "Shared/Scripts/Parser.hpp"
 #include <SFML/System.hpp>
 #include <sstream>

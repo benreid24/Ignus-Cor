@@ -1,4 +1,4 @@
-#include "Shared/Scripts/Script Manager.hpp"
+#include "Shared/Scripts/ScriptManager.hpp"
 #include "Shared/Util/File.hpp"
 using namespace std;
 using namespace sf;

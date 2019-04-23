@@ -3,7 +3,7 @@
 #include "Shared/Util/File.hpp"
 #include "Shared/Media/Playlist.hpp"
 #include "Shared/Data/ItemDB.hpp"
-#include "Shared/Scripts/Script Manager.hpp"
+#include "Shared/Scripts/ScriptManager.hpp"
 #include <cmath>
 using namespace sf;
 using namespace std;

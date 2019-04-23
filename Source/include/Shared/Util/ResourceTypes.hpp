@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "Shared/Media/Animation.hpp"
-#include "Shared/Scripts/Script Interpreter.hpp"
+#include "Shared/Scripts/Script.hpp"
 
 typedef std::shared_ptr<sf::Texture> TextureReference;
 typedef std::shared_ptr<sf::SoundBuffer> SoundReference;

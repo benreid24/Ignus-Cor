@@ -3,8 +3,8 @@
 
 #include <string>
 #include <vector>
-#include "Util/Token.hpp"
-#include "Util/Traverser.hpp"
+#include "Token.hpp"
+#include "Traverser.hpp"
 
 /**
  * This class is responsible for resolving file references and tokenizing scripts so that they can be executed

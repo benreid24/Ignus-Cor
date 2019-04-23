@@ -6,7 +6,7 @@
 #include "Shared/Entities/EntityManager.hpp"
 #include "Shared/Util/ResourcePool.hpp"
 #include "Shared/Util/Vector2d.hpp"
-#include "Shared/Scripts/Script Manager.hpp"
+#include "Shared/Scripts/ScriptManager.hpp"
 #include "Shared/Maps/Tileset.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Maps/Weather.hpp"

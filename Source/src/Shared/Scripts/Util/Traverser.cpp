@@ -1,5 +1,5 @@
-#include "Shared/Scripts/Traverser.hpp"
-#include "Shared/Scripts/Parser.hpp"
+#include "Shared/Scripts/Util/Traverser.hpp"
+#include "Shared/Scripts/Util/Parser.hpp"
 using namespace std;
 
 Traverser::Traverser()

@@ -4,9 +4,9 @@
 #include <vector>
 #include <map>
 #include <deque>
-#include "Frame.hpp"
-#include "Token.hpp"
-#include "Function Entry.hpp"
+#include "Util/Frame.hpp"
+#include "Util/Token.hpp"
+#include "Util/FunctionEntry.hpp"
 
 /**
  * This class loads and runs scripts

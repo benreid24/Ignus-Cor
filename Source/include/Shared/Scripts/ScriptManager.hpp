@@ -5,7 +5,7 @@
 #include <list>
 #include <map>
 #include <memory>
-#include "Shared/Scripts/Script Interpreter.hpp"
+#include "Shared/Scripts/Script.hpp"
 #include "Shared/Util/ResourceTypes.hpp"
 
 class Game;
