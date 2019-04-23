@@ -1,28 +1,33 @@
-#include "Shared/Scripts/Script Environment.hpp"
+#include "Shared/Scripts/Script Manager.hpp"
 #include "Shared/Util/File.hpp"
 using namespace std;
 using namespace sf;
 
 namespace {
-    void scriptRunner(shared_ptr<ScriptData> d) {
-        d->script->run(d->owner);
+    void scriptRunner(shared_ptr<ScriptManager::ScriptData> d) {
+        d->script->run();
         d->finished = true;
     }
 }
 
-ScriptEnvironment::ScriptEnvironment() : thread(&ScriptEnvironment::update,this)
+ScriptManager::ScriptManager() : thread(&ScriptManager::update,this)
 {
     stopped = stopping = false;
     thread.launch();
 }
 
-ScriptEnvironment::~ScriptEnvironment()
+ScriptManager::~ScriptManager()
 {
     stopAll();
     stop();
 }
 
-void ScriptEnvironment::runScript(ScriptReference scr, bool concurrent)
+ScriptManager* ScriptManager::get() {
+    static ScriptManager manager;
+    return &manager;
+}
+
+void ScriptManager::runScript(ScriptReference scr, bool concurrent)
 {
 	#ifdef GAME
 	if (scr->isRunning())
@@ -31,7 +36,6 @@ void ScriptEnvironment::runScript(ScriptReference scr, bool concurrent)
 	if (concurrent)
     {
     	shared_ptr<ScriptData> temp(new ScriptData());
-		temp->owner = this;
 		temp->script = scr;
 		temp->thread.reset(new Thread(&scriptRunner,temp));
 		temp->thread->launch();
@@ -40,11 +44,11 @@ void ScriptEnvironment::runScript(ScriptReference scr, bool concurrent)
 		lock.unlock();
     }
     else
-		scr->run(this);
+		scr->run();
 	#endif
 }
 
-void ScriptEnvironment::stopAll()
+void ScriptManager::stopAll()
 {
     stop();
     lock.lock();
@@ -59,7 +63,7 @@ void ScriptEnvironment::stopAll()
     lock.unlock();
 }
 
-void ScriptEnvironment::update()
+void ScriptManager::update()
 {
     while (!stopping)
     {
@@ -78,7 +82,7 @@ void ScriptEnvironment::update()
     stopped = true;
 }
 
-void ScriptEnvironment::save(File* file)
+void ScriptManager::save(File* file)
 {
     file->write<uint16_t>(intSaveEntries.size());
     for (auto i = intSaveEntries.begin(); i!=intSaveEntries.end(); ++i)
@@ -94,7 +98,7 @@ void ScriptEnvironment::save(File* file)
     }
 }
 
-void ScriptEnvironment::load(File* file)
+void ScriptManager::load(File* file)
 {
     intSaveEntries.clear();
     stringSaveEntries.clear();
@@ -113,7 +117,7 @@ void ScriptEnvironment::load(File* file)
     }
 }
 
-void ScriptEnvironment::stop()
+void ScriptManager::stop()
 {
 	stopping = true;
 	while (!stopped)

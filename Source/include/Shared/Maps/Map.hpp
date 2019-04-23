@@ -6,7 +6,7 @@
 #include "Shared/Entities/EntityManager.hpp"
 #include "Shared/Util/ResourcePool.hpp"
 #include "Shared/Util/Vector2d.hpp"
-#include "Shared/Scripts/Script Environment.hpp"
+#include "Shared/Scripts/Script Manager.hpp"
 #include "Shared/Maps/Tileset.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Maps/Weather.hpp"
@@ -133,11 +133,10 @@ class Map {
     static sf::VertexArray light;
 
     int weatherType, weatherFreq;
-    static Weather* weather;
+    static Weather* weather; //TODO - singleton
 
 	static bool staticMemebersCreated;
 
-	static ScriptEnvironment* scriptEnv;
     ScriptReference unloadScript;
     std::string unloadScriptStr, loadScriptStr;
 
@@ -189,11 +188,6 @@ public:
      * Spawns the given Entity into the map using the given spawn
      */
     void spawnEntity(Entity* e, std::string spawn);
-
-    /**
-     * Sets the environment for map scripts to run in
-     */
-    static void setScriptEnvironment(ScriptEnvironment* se);
 
 	/**
      * Returns the name of the currently loaded map

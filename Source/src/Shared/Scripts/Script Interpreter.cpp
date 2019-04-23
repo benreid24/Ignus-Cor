@@ -1,5 +1,5 @@
 #include "Shared/Scripts/Script Interpreter.hpp"
-#include "Shared/Scripts/Script Environment.hpp"
+#include "Shared/Scripts/Script Manager.hpp"
 #include "Shared/Scripts/Parser.hpp"
 #include <SFML/System.hpp>
 #include <sstream>
@@ -29,6 +29,7 @@ double stringToInt(string s) {
 Script::Script()
 {
 	reset();
+	initBuiltins();
 }
 
 Script::Script(string scr) : Script()
@@ -751,14 +752,13 @@ Value Script::runTokens(int pos)
 	return v;
 }
 
-void Script::run(ScriptEnvironment* env)
+void Script::run()
 {
 	if (tokens.size()==0)
 		return;
 
 	reset();
 	srand(time(NULL));
-	environment = env;
 	stopped = false;
 	stopping = false;
 	try
@@ -780,8 +780,8 @@ void Script::run(ScriptEnvironment* env)
 void Script::stop()
 {
 	stopping = true;
-	//int stopTime = gameClock.getTimeStamp(); //TODO - timeout script stopping
-	while (!stopped)
+	Clock timer;
+	while (!stopped && timer.getElapsedTime().asMilliseconds()<300)
 		sleep(milliseconds(30));
 }
 

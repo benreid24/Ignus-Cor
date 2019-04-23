@@ -25,6 +25,8 @@ struct Value
 			return int(iValue+0.01)!=0;
 		return sValue.size()!=0;
     }
+
+    Value() : type(Void) {}
 };
 
 #endif // VALUE_HPP

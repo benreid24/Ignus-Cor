@@ -8,8 +8,6 @@
 #include "Token.hpp"
 #include "Function Entry.hpp"
 
-class ScriptEnvironment;
-
 /**
  * This class loads and runs scripts
  *
@@ -17,11 +15,15 @@ class ScriptEnvironment;
  */
 class Script
 {
+public:
+    typedef Value (*LibraryFunction)(std::vector<Value>);
+
+private:
 	std::string original;
-	ScriptEnvironment* environment;
 	bool stopping, stopped;
 	std::deque<Frame> stackFrames;
 	Frame globalFrame;
+	std::map<std::string,LibraryFunction> libraryFunctions;
 	std::map<std::string,FunctionEntry> functions; //index to jump to for functions
 	std::map<std::string,int> branchTable;
     std::vector<Token> tokens;
@@ -31,6 +33,8 @@ class Script
     	LastConditionalFailed,
     	NoConditional
     };
+
+    void initBuiltins();
 
     void reset();
 
@@ -82,7 +86,7 @@ public:
 	/**
 	 * Runs the script
 	 */
-	void run(ScriptEnvironment* env);
+	void run();
 
 	/**
 	 * Stops the script and returns when the script has finished

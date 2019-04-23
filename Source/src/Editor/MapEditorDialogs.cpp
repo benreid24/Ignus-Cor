@@ -758,7 +758,7 @@ void MapEditor::lightHandler(Vector2i pos) {
 void MapEditor::spawnHandler(Vector2i pos) {
 	EntitySpawn defaultSpawn;
 	defaultSpawn.name = "main";
-	defaultSpawn.position.dir = 0;
+	defaultSpawn.position.dir = EntityPosition::Direction::Up;
 	defaultSpawn.position.coords = Vector2f(pos);
 	bool newSpawn = false;
 
@@ -822,7 +822,7 @@ void MapEditor::spawnHandler(Vector2i pos) {
 				spawn->name = form.getField("n");
 				spawn->position.coords.x = form.getFieldAsInt("x");
 				spawn->position.coords.y = form.getFieldAsInt("y");
-				spawn->position.dir = dirEntry->GetSelectedItem();
+				spawn->position.dir = EntityPosition::Direction(dirEntry->GetSelectedItem());
 			}
 			break;
         }

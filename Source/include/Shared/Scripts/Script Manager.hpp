@@ -10,28 +10,29 @@
 
 class Game;
 class File;
-class ScriptEnvironment;
-
-/**
- * Structure to store all data needed to run a script from the map
- *
- * \ingroup Scripting
- */
-struct ScriptData
-{
-    ScriptEnvironment* owner;
-    std::shared_ptr<sf::Thread> thread;
-    ScriptReference script;
-    bool finished;
-};
 
 /**
  * This class is responsible for running and updating all of the scripts ran from the math
  *
  * \ingroup Scripting
  */
-class ScriptEnvironment
+class ScriptManager
 {
+public:
+    /**
+     * Structure to store all data needed to run a script from the map
+     *
+     * \ingroup Scripting
+     */
+    struct ScriptData
+    {
+        std::shared_ptr<sf::Thread> thread;
+        ScriptReference script;
+        bool finished;
+        //TODO - delayed start
+    };
+
+private:
     std::list<std::shared_ptr<ScriptData> > runningScripts;
 
     sf::Thread thread;
@@ -48,18 +49,20 @@ class ScriptEnvironment
      */
 	void stop();
 
-public:
-    /**
-     * Initializes the ScriptEnvironment and starts the updater thread
+	/**
+     * Initializes the ScriptManager and starts the updater thread
      *
      * \param g A pointer to the main Game object
      */
-    ScriptEnvironment();
+    ScriptManager();
 
     /**
      * Terminates the updater thread and all running scripts
      */
-    ~ScriptEnvironment();
+    ~ScriptManager();
+
+public:
+    static ScriptManager* get();
 
     /**
      * Runs a script from the map. Will not run the script if it is already running in parallel

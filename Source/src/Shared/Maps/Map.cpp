@@ -3,6 +3,7 @@
 #include "Shared/Util/File.hpp"
 #include "Shared/Media/Playlist.hpp"
 #include "Shared/Data/ItemDB.hpp"
+#include "Shared/Scripts/Script Manager.hpp"
 #include <cmath>
 using namespace sf;
 using namespace std;
@@ -28,7 +29,6 @@ namespace {
 }
 #endif
 
-ScriptEnvironment* Map::scriptEnv = nullptr;
 std::vector<std::string> Map::visitedMaps;
 std::map<std::string, std::vector<int> > Map::pickedUpItems;
 string Map::lastMap, Map::curMap;
@@ -291,16 +291,21 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
         else
             evt.script->load(evt.scriptStr);
 
-        if (evt.trigger==0 && Map::scriptEnv)
-            Map::scriptEnv->runScript(evt.script);
+        //if (evt.trigger==0 && Map::scriptEnv)
+        //    Map::scriptEnv->runScript(evt.script);
+        //TODO - SCRIPT MANAGER
 
         events.push_back(evt);
     }
+
+    //Run on-load script
+    Script loadScript(loadScriptStr);
+    loadScript.run();
 }
 
 Map::~Map() {
-	if (name.size()>0 && unloadScript && Map::scriptEnv)
-		unloadScript->run(Map::scriptEnv);
+	if (name.size()>0 && unloadScript)
+		unloadScript->run();
 	for (auto i = animTable.begin(); i!=animTable.end(); ++i)
 		delete i->second;
 	for (unsigned int i = 0; i<layers.size(); ++i) {
@@ -346,10 +351,6 @@ void Map::resetYSorted() {
 			}
 		}
 	}
-}
-
-void Map::setScriptEnvironment(ScriptEnvironment* se) {
-	scriptEnv = se;
 }
 
 string Map::getName() {
@@ -874,7 +875,7 @@ void Map::moveOntoTile(sf::Vector2i playerPos, sf::Vector2i lastPos) {
         bool wasIn = lastPos.x>=minX && lastPos.x<maxX && lastPos.y>=minY && lastPos.y<maxY;
         if ((events[i].trigger==1 && inNow && !wasIn) || (events[i].trigger==2 && !inNow && wasIn) || (events[i].trigger==3 && inNow!=wasIn) || (events[i].trigger==4 && inNow)) {
             if (events[i].runs<events[i].maxRuns || events[i].maxRuns==0)
-                Map::scriptEnv->runScript(events[i].script);
+                ScriptManager::get()->runScript(events[i].script);
             events[i].runs++;
         }
     }
