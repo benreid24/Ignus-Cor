@@ -14,12 +14,13 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	graphics.load(gfx1,gfx2);
 	position = pos;
 	name = nm;
-	position.dir = 0;
+	position.dir = EntityPosition::Up;
 	uuid = UUID::create();
 	lTime = Entity::timer.getElapsedTime().asSeconds();
 	speed[0] = 64;
 	speed[1] = 128;
 	boundingBox = FloatRect(0, 12, graphics.getSize().x, graphics.getSize().y-12);
+	interactDistance = 12;
 	behavior = nullptr;
 }
 
@@ -38,6 +39,39 @@ FloatRect Entity::getBoundingBox() {
                   position.coords.y+boundingBox.top,
                   boundingBox.width,
                   boundingBox.height);
+}
+
+FloatRect Entity::getInteractBox() {
+    FloatRect box = boundingBox;
+    box.left += position.coords.x;
+    box.top += position.coords.y;
+
+    switch (position.dir) {
+
+    case EntityPosition::Up:
+        box.height = interactDistance;
+        box.top -= interactDistance;
+        break;
+
+    case EntityPosition::Right:
+        box.width = interactDistance;
+        box.left += boundingBox.width;
+        break;
+
+    case EntityPosition::Down:
+        box.height = interactDistance;
+        box.top += boundingBox.height;
+        break;
+
+    case EntityPosition::Left:
+        box.width = interactDistance;
+        box.left -= interactDistance;
+        break;
+
+    default:
+        cout << "Warning: " << getIdString() << " has invalid dir " << position.dir << endl;
+    }
+    return box;
 }
 
 void Entity::setPositionAndDirection(EntityPosition pos) {
@@ -84,9 +118,9 @@ void Entity::render(sf::RenderTarget& target, sf::Vector2f camPos) {
 	bubble.render(target,position.coords-camPos);
 }
 
-void Entity::move(int d, bool fast, float elapsedTime) {
+void Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
 	EntityPosition newPos = position;
-	position.dir = d;
+	position.dir = dir;
 
 	elapsedTime = (elapsedTime==0)?(Entity::timer.getElapsedTime().asSeconds()-lTime):(elapsedTime);
 	int i = int(fast);
@@ -125,6 +159,10 @@ void Entity::move(int d, bool fast, float elapsedTime) {
 
 void Entity::update() {
 	lTime = Entity::timer.getElapsedTime().asSeconds();
+}
+
+Entity::Ptr Entity::interact() {
+    return Entity::entityManager->doInteract(this);
 }
 
 void Entity::setEntityManager(EntityManager* em) {

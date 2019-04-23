@@ -201,7 +201,7 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
         tmp.name = input.getString();
         tmp.position.coords.x = input.get<uint32_t>();
         tmp.position.coords.y = input.get<uint32_t>();
-        tmp.position.dir = input.get<uint8_t>();
+        tmp.position.dir = EntityPosition::Direction(input.get<uint8_t>());
         tmp.position.mapName = uniqueName;
 		entitySpawns.push_back(tmp);
     }

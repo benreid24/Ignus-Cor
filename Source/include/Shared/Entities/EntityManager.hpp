@@ -2,6 +2,7 @@
 #define ENTITYMANAGER_HPP
 
 #include "Shared/Entities/Entity.hpp"
+#include <unordered_map>
 
 class Game;
 
@@ -12,6 +13,7 @@ class Game;
  */
 class EntityManager {
 	std::vector<Entity::Ptr> entities;
+	std::unordered_map<Entity*, Entity::WeakPtr> entityPointerMap;
     std::map<std::string, std::vector<std::vector<Entity::Ptr> > > ySortedEntities;
 	Entity* player;
 
@@ -29,6 +31,16 @@ class EntityManager {
 	 * Internal function for Entities to check if movement is valid
 	 */
 	bool canMove(Entity* e, EntityPosition oldPos, EntityPosition newPos, sf::Vector2f size);
+
+	/**
+	 * Performs interaction for the given Entity and returns a pointer to what it interacted with, if anything
+	 */
+    Entity::Ptr doInteract(Entity* interactor);
+
+    /**
+     * Returns an Entity::Ptr from an Entity*
+     */
+    Entity::Ptr getEntityPtr(Entity* ent);
 
 	friend class Entity;
 

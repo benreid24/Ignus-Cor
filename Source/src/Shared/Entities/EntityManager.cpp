@@ -103,6 +103,7 @@ void EntityManager::add(Entity::Ptr e) {
 	}
 
 	entities.push_back(e);
+	entityPointerMap[e.get()] = e;
 	int y = e->getPosition().coords.y/32;
 	if (y>=0 && y<signed(ySortedEntities[e->getPosition().mapName].size()))
 		ySortedEntities[e->getPosition().mapName][y].push_back(e);
@@ -129,6 +130,7 @@ void EntityManager::remove(Entity::Ptr e) {
 			}
 		}
 	}
+	entityPointerMap.erase(e.get());
 }
 
 void EntityManager::remove(string name, string type) {
@@ -138,6 +140,31 @@ void EntityManager::remove(string name, string type) {
             --i;
 		}
 	}
+}
+
+Entity::Ptr EntityManager::doInteract(Entity* interactor) {
+    Entity::Ptr ent = getEntityPtr(interactor);
+    if (ent.get() == nullptr) {
+        cout << "Error: " << interactor->getIdString() << " is unregistered with EntityManager\n";
+        return Entity::Ptr(nullptr);
+    }
+
+    FloatRect box = ent->getInteractBox();
+    vector<vector<Entity::Ptr> >& ents = getYSorted(ent->getPosition().mapName);
+    unsigned int minY = (box.top-box.height/2)/32;
+    unsigned int maxY = (box.top+box.height*1.5)/32;
+
+    for (unsigned int y = minY; y<=maxY; ++y) {
+        if (y>=0 && y<ents.size()) {
+            for (unsigned int i = 0; i<ents[y].size(); ++y) {
+                if (box.intersects(ents[y][i]->getBoundingBox())) {
+                    ents[y][i]->notifyInteracted(ent);
+                    return ents[y][i];
+                }
+            }
+        }
+    }
+    return Entity::Ptr(nullptr);
 }
 
 void EntityManager::update() {
@@ -150,4 +177,10 @@ void EntityManager::updateRenderPosition(sf::Vector2f playerCoords) {
     #ifdef GAME
 	Game::get()->mapManager.updateRenderPosition(playerCoords);
 	#endif
+}
+
+Entity::Ptr EntityManager::getEntityPtr(Entity* ent) {
+    if (entityPointerMap.find(ent)!=entityPointerMap.end())
+        return entityPointerMap[ent].lock();
+    return Entity::Ptr(nullptr);
 }

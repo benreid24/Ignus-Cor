@@ -6,7 +6,7 @@ using namespace sf;
 
 Player::Player() :
 	Entity("player name",
-		   EntityPosition(Vector2f(5,5), "test.map", 0),
+		   EntityPosition(Vector2f(5,5), "test.map", EntityPosition::Direction::Up),
 		   Properties::AnimationPath+"Entities/BoyPlayer/Walk",
 		   Properties::AnimationPath+"Entities/BoyPlayer/Run") {
 	speed[0] = 64;
@@ -23,15 +23,19 @@ void Player::update() {
     bool moved = true;
 
 	if (Keyboard::isKeyPressed(Keyboard::W))
-		move(0, running);
+		move(EntityPosition::Up, running);
 	else if (Keyboard::isKeyPressed(Keyboard::A))
-		move(3, running);
+		move(EntityPosition::Left, running);
 	else if (Keyboard::isKeyPressed(Keyboard::S))
-		move(2, running);
+		move(EntityPosition::Down, running);
 	else if (Keyboard::isKeyPressed(Keyboard::D))
-		move(1, running);
+		move(EntityPosition::Right, running);
 	else
 		moved = false;
+
+	if (Keyboard::isKeyPressed(Keyboard::E))
+        interact();
+
 	Entity::entityManager->updateRenderPosition(position.coords);
 
 	Entity::update();

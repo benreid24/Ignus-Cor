@@ -21,17 +21,23 @@ class EntityManager;
 struct EntityPosition {
 	sf::Vector2f coords;
 	std::string mapName;
-	int dir;
+
+	enum Direction {
+        Up = 0,
+        Right,
+        Down,
+        Left
+	}dir;
 
 	/**
 	 * Zeros the position
 	 */
-	EntityPosition() : coords(0,0) { dir = 0; }
+	EntityPosition() : coords(0,0) { dir = Up; }
 
 	/**
 	 * Assigns the given values to the position
 	 */
-	EntityPosition(sf::Vector2f pos, std::string map, int d) {
+	EntityPosition(sf::Vector2f pos, std::string map, Direction d) {
 		coords = pos;
 		mapName = map;
 		dir = d;
@@ -52,13 +58,20 @@ public:
 protected:
 	int uuid;
 	std::string name;
+
 	EntityPosition position;
 	EntityVisual graphics;
 	EntityBubble bubble;
 	EntityBehavior* behavior;
+
+	sf::FloatRect boundingBox; //relative to upper left corner (position and gfx origin)
+	float interactDistance; //how far away it can interact
+	//TODO - attack distance via weapon? what about spells?
+
 	double lTime;
 	float speed[2]; //speed in pixels/second for [slow,fast]. Will be set by child classes
-	sf::FloatRect boundingBox; //relative to upper left corner (position and gfx origin)
+
+	Ptr interact();
 
 	static sf::Clock timer; //for doing movement based on time
 
@@ -81,11 +94,6 @@ public:
 	virtual const std::string getType() = 0;
 
 	/**
-	 * Returns the bounding box for the Entity
-	 */
-	virtual sf::FloatRect getBoundingBox();
-
-	/**
 	 * Updates the Entity. Base function just updates last update time
 	 * Child overloads should call this when finished
 	 */
@@ -105,6 +113,16 @@ public:
      * Notifies the Entity that they were interacted with
      */
     virtual void notifyInteracted(Ptr user);
+
+    /**
+	 * Returns the bounding box for the Entity
+	 */
+	sf::FloatRect getBoundingBox();
+
+	/**
+	 * Returns the bounding box of the interaction zone
+	 */
+    sf::FloatRect getInteractBox();
 
 	/**
 	 * Sets the position and direction of the Entity. Leave direction empty to maintain it. Position is in pixels
@@ -143,7 +161,7 @@ public:
 	 * \param fast Whether or not to move fast
 	 * \param elapsedTime Elapsed time to use, leave blank for the function to figure it out. Used for diagonal motion
 	 */
-	void move(int dir, bool fast = false, float elapsedTime = 0);
+	void move(EntityPosition::Direction dir, bool fast = false, float elapsedTime = 0);
 
 	/**
 	 * Sets the static internal pointer to the Game EntityManager
