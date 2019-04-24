@@ -282,10 +282,9 @@ public:
      * It checks and plays animations that may have been activated while also checking scripts to run
      *
      * \param ent The Entity moving
-     * \param pos The current tile position of the Entity
-     * \param lastPos The last position the Entity was in
+     * \param oldBox The former bounding box
      */
-    void moveOntoTile(Entity::Ptr ent, sf::Vector2i pos, sf::Vector2i lastPos);
+    void moveOntoTile(Entity::Ptr ent, sf::FloatRect oldBox);
 
     /**
      * Returns the position of the camera in world pixels

@@ -849,32 +849,34 @@ Vector2f Map::getCamera() {
 	return camPos;
 }
 
-void Map::moveOntoTile(Entity::Ptr ent, sf::Vector2i pos, sf::Vector2i lastPos) {
-    pos.x--; //TODO - why is this here?
-    pos.y--;
-    lastPos.x--;
-    lastPos.y--;
+void Map::moveOntoTile(Entity::Ptr ent, sf::FloatRect oldBox) {
+    FloatRect box = ent->getBoundingBox();
+    int minX = box.left/32;
+    int minY = box.top/32;
+    int maxX = ceil(box.left+box.width);
+    int maxY = ceil(box.top+box.height);
 
-	if (pos.x<size.x && pos.y<size.y && pos.x>=0 && pos.y>=0) {
-    	for (unsigned int i = 0; i<layers.size(); ++i) {
-			if (layers[i](pos.x,pos.y).isAnim && layers[i](pos.x,pos.y).nonZero) {
-				if (layers[i](pos.x,pos.y).anim) {
-					if (!layers[i](pos.x,pos.y).anim->isLooping())
-						layers[i](pos.x,pos.y).anim->play();
-				}
-			}
-		}
+    for (unsigned int i = 0; i<layers.size(); ++i) {
+        for (int x = minX; x<=maxX; ++x) {
+            for (int y = 0; y<=maxY; ++y) {
+                if (x>=0 && y>=0 && x<size.x && y<size.y) {
+                    if (layers[i](x,y).isAnim && layers[i](x,y).nonZero) {
+                        if (layers[i](x,y).anim) {
+                            if (!layers[i](x,y).anim->isLooping())
+                                layers[i](x,y).anim->play();
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
 
     for (unsigned int i = 0; i<events.size(); ++i) {
-    	int minX = events[i].position.x/32;
-    	int minY = events[i].position.y/32;
-    	int maxX = minX+events[i].size.x;
-    	int maxY = minY+events[i].size.y;
-        bool inNow = pos.x>=minX && pos.x<maxX && pos.y>=minY && pos.y<maxY;
-        bool wasIn = lastPos.x>=minX && lastPos.x<maxX && lastPos.y>=minY && lastPos.y<maxY;
+        FloatRect eventBox(events[i].position.x, events[i].position.y, events[i].size.x*32, events[i].size.y*32);
+        bool inNow = box.intersects(eventBox);
+        bool wasIn = oldBox.intersects(eventBox);
         if ((events[i].trigger==1 && inNow && !wasIn) || (events[i].trigger==2 && !inNow && wasIn) || (events[i].trigger==3 && inNow!=wasIn) || (events[i].trigger==4 && inNow)) {
             if (events[i].runs<events[i].maxRuns || events[i].maxRuns==0)
                 ScriptManager::get()->runScript(makeMapScript(events[i].script, events[i], ent));

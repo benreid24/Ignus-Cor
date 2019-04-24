@@ -73,6 +73,11 @@ public:
 	 */
 	bool spaceFree(EntityPosition space, sf::Vector2f size);
 
+	/**
+	 * Registers Entity movement with the proper Map
+	 */
+    void registerEntityMovement(Entity::Ptr entity, sf::FloatRect oldBox);
+
     /**
      * Updates all internal maps and removes stale maps from memory
      */

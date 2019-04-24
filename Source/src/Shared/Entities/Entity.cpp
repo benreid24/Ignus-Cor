@@ -1,6 +1,7 @@
 #include "Shared/Entities/Entity.hpp"
 #include "Shared/Entities/EntityManager.hpp"
 #include "Shared/Entities/EntityBehavior.hpp"
+#include "Shared/Maps/MapManager.hpp"
 #include "Shared/Util/UUID.hpp"
 #include <sstream>
 using namespace std;
@@ -150,9 +151,11 @@ void Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
 		Vector2f size = Vector2f(boundingBox.width, boundingBox.height);
 		if (EntityManager::get()->canMove(this, oldPosOffset, newPosOffset, size)) {
 			graphics.setMoving(position.dir, fast);
-			swap(position, newPos); //newPos is now old pos
-			//TODO - Map -> moveOntoTile
-			EntityManager::get()->updatePosition(this, newPos);
+			EntityPosition oldPos = position;
+			FloatRect oldBox = getBoundingBox();
+			position = newPos;
+			EntityManager::get()->updatePosition(this, oldPos);
+			MapManager::get()->registerEntityMovement(EntityManager::get()->getEntityPtr(this), oldBox);
 		}
 	}
 }

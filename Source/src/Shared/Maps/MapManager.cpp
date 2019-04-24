@@ -76,6 +76,16 @@ void MapManager::update() {
     }
 }
 
+void MapManager::registerEntityMovement(Entity::Ptr ent, FloatRect oldBox) {
+    auto i = maps.find(ent->getPosition().mapName);
+    if (i!=maps.end())
+        i->second.mapdata->moveOntoTile(ent, oldBox);
+    else {
+        cout << "Error: " << ent->getIdString() << " in unloaded map " << ent->getPosition().mapName << ", deleting\n";
+        EntityManager::get()->remove(ent);
+    }
+}
+
 void MapManager::render() {
     #ifdef GAME
     maps[activeMap].mapdata->draw(Game::get()->window);
