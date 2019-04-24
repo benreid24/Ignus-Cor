@@ -851,10 +851,13 @@ Vector2f Map::getCamera() {
 
 void Map::moveOntoTile(Entity::Ptr ent, sf::FloatRect oldBox) {
     FloatRect box = ent->getBoundingBox();
-    int minX = box.left/32;
-    int minY = box.top/32;
-    int maxX = ceil(box.left+box.width);
-    int maxY = ceil(box.top+box.height);
+    int minX = round(box.left/32+0.5);
+    int minY = round(box.top/32+0.5);
+    int maxX = ceil((box.left+box.width)/32-0.5);
+    int maxY = ceil((box.top+box.height)/32-0.5);
+
+    //TODO - refine on tile detection
+    cout << minX << ", " << minY << ", " << maxX << ", " << maxY << endl;
 
     for (unsigned int i = 0; i<layers.size(); ++i) {
         for (int x = minX; x<=maxX; ++x) {
@@ -862,7 +865,7 @@ void Map::moveOntoTile(Entity::Ptr ent, sf::FloatRect oldBox) {
                 if (x>=0 && y>=0 && x<size.x && y<size.y) {
                     if (layers[i](x,y).isAnim && layers[i](x,y).nonZero) {
                         if (layers[i](x,y).anim) {
-                            if (!layers[i](x,y).anim->isLooping())
+                            if (!layers[i](x,y).anim->isLooping() && !layers[i](x,y).anim->isPlaying())
                                 layers[i](x,y).anim->play();
                         }
                     }
@@ -874,7 +877,7 @@ void Map::moveOntoTile(Entity::Ptr ent, sf::FloatRect oldBox) {
 
 
     for (unsigned int i = 0; i<events.size(); ++i) {
-        FloatRect eventBox(events[i].position.x, events[i].position.y, events[i].size.x*32, events[i].size.y*32);
+        FloatRect eventBox(events[i].position.x*32, events[i].position.y*32, events[i].size.x*32, events[i].size.y*32);
         bool inNow = box.intersects(eventBox);
         bool wasIn = oldBox.intersects(eventBox);
         if ((events[i].trigger==1 && inNow && !wasIn) || (events[i].trigger==2 && !inNow && wasIn) || (events[i].trigger==3 && inNow!=wasIn) || (events[i].trigger==4 && inNow)) {

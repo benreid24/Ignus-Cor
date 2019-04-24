@@ -165,7 +165,7 @@ void Animation::update()
     if (t!=curFrm)
         lastFrmChangeTime = Animation::clock.getElapsedTime().asMilliseconds();
 
-    if (playing && curFrm==animSrc->numFrames())
+    if (playing && curFrm==animSrc->numFrames()-1)
     {
         playing = false;
         setFrame(0);
@@ -227,7 +227,12 @@ void Animation::draw(sf::RenderTarget& window)
     if (!animSrc)
         return;
 
+    update();
     std::vector<Sprite>& t = animSrc->getFrame(curFrm, position, isCenterOrigin);
     for (unsigned int i = 0; i<t.size(); ++i)
 		window.draw(t[i]);
+}
+
+bool Animation::isPlaying() {
+    return playing;
 }

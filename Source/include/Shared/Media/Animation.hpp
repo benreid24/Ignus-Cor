@@ -168,6 +168,11 @@ public:
     void play();
 
     /**
+     * Tells whether or not the Animation is currently playing
+     */
+    bool isPlaying();
+
+    /**
      * Sets the desired position of the animation on screen. Individual frames are offset from this position
      *
      * \param pos The desired on screen position
