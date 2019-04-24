@@ -58,7 +58,7 @@ class MapEditor {
     //Animations page
     sfg::ScrolledWindow::Ptr animPageScroll;
     sfg::Box::Ptr animPage;
-    sfg::Button::Ptr newAnimBut, addAnimBut, loadAnimBut, delAnimBut;
+    sfg::Button::Ptr addAnimBut, loadAnimBut, delAnimBut;
     sfg::ToggleButton::Ptr noAnimBut;
     std::map<int, sfg::ToggleButton::Ptr> animButs;
     WrappingBox animBox;
@@ -74,8 +74,6 @@ class MapEditor {
     sfg::Desktop& desktop;
     sfg::Notebook::Ptr owner;
     Map* mapData;
-    SoundEngine soundEngine;
-    EntityManager* entityManager;
     std::string mapFolder;
     Tileset tileset;
     sf::Vector2i selCorner1, selCorner2;

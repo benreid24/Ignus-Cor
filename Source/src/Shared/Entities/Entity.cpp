@@ -7,7 +7,6 @@ using namespace std;
 using namespace sf;
 
 Clock Entity::timer;
-EntityManager* Entity::entityManager = nullptr;
 int UUID::nextUuid = 1;
 
 Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
@@ -149,10 +148,11 @@ void Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
 		oldPosOffset.coords += Vector2f(boundingBox.left, boundingBox.top);
 		newPosOffset.coords += Vector2f(boundingBox.left, boundingBox.top);
 		Vector2f size = Vector2f(boundingBox.width, boundingBox.height);
-		if (Entity::entityManager->canMove(this, oldPosOffset, newPosOffset, size)) {
+		if (EntityManager::get()->canMove(this, oldPosOffset, newPosOffset, size)) {
 			graphics.setMoving(position.dir, fast);
 			swap(position, newPos); //newPos is now old pos
-			Entity::entityManager->updatePosition(this, newPos);
+			//TODO - Map -> moveOntoTile
+			EntityManager::get()->updatePosition(this, newPos);
 		}
 	}
 }
@@ -162,9 +162,5 @@ void Entity::update() {
 }
 
 Entity::Ptr Entity::interact() {
-    return Entity::entityManager->doInteract(this);
-}
-
-void Entity::setEntityManager(EntityManager* em) {
-	entityManager = em;
+    return EntityManager::get()->doInteract(this);
 }

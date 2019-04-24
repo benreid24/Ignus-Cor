@@ -37,6 +37,14 @@ Script::Script(string scr) : Script()
     load(scr);
 }
 
+Script::Script(const Script& scr) : Script() {
+    contextData = scr.contextData;
+    libraryFunctions = scr.libraryFunctions;
+    tokens = scr.tokens;
+    functions = scr.functions;
+    branchTable = scr.branchTable;
+}
+
 Script::~Script()
 {
 	//dtor
@@ -745,11 +753,7 @@ Value Script::runTokens(int pos)
 	}
 
 	voidRet:
-	Value v;
-	v.type = Value::Void;
-	v.iValue = 0;
-	v.sValue = "noret";
-	return v;
+	return Value();
 }
 
 void Script::run()

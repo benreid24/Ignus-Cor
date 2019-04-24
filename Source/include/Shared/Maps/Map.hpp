@@ -7,6 +7,7 @@
 #include "Shared/Util/ResourcePool.hpp"
 #include "Shared/Util/Vector2d.hpp"
 #include "Shared/Scripts/ScriptManager.hpp"
+#include "Shared/Scripts/Specialized/MapScript.hpp"
 #include "Shared/Maps/Tileset.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Maps/Weather.hpp"
@@ -51,7 +52,7 @@ struct Light {
  * \ingroup World
  */
 struct MapEvent {
-    ScriptReference script;
+    Script::Ptr script;
     std::string scriptStr;
     sf::Vector2i position;
     sf::Vector2i size;
@@ -98,7 +99,6 @@ class Map {
 	std::string name, uniqueName;
 	sf::Vector2i size;
 	Tileset& tileset;
-	EntityManager* entityManager;
 	std::string music;
 
 	std::map<int,Animation*> animTable;
@@ -122,8 +122,6 @@ class Map {
     int maxMapItemId;
 
     std::vector<EntitySpawn> entitySpawns;
-    static std::string lastMap, curMap;
-    static EntityPosition lastPos; //TODO - With many maps implementation, does this have to be static? Each map could store it's own and it would persist
 
     int firstYSortLayer, firstTopLayer;
     int ambientLightOverride, currentLighting;
@@ -137,13 +135,13 @@ class Map {
 
 	static bool staticMemebersCreated;
 
-    ScriptReference unloadScript;
+    Script::Ptr unloadScript;
     std::string unloadScriptStr, loadScriptStr;
 
     /**
      * Private constructor containing common init code
      */
-	Map(Tileset& tlst, SoundEngine* se);
+	Map(Tileset& tlst);
 
 	/**
 	 * Resets all of the y-sorted tiles
@@ -157,14 +155,21 @@ class Map {
      */
     static void addVisitedMap(std::string m);
 
+    /**
+     * Helper function for making MapScript objects
+     */
+    Script::Ptr makeMapScript(Script::Ptr scr, MapEvent evt, Entity::Ptr ent) {
+        return Script::Ptr(new MapScript(*scr, name, evt.position, evt.size, ent, evt.runs));
+    }
+
     static std::vector<std::string> visitedMaps;
     static std::map<std::string, std::vector<int> > pickedUpItems;
 
 public:
 	/**
-	 * Creates the map with the given name and size
+	 * Creates the map with the given name and size. Editor only
 	 */
-	Map(std::string name, sf::Vector2i size, Tileset& tileset, SoundEngine* se, EntityManager* entityManager, int nLayers = 5, int firstYSort = 2, int firstTop = 4);
+	Map(std::string name, std::string uniqueName, sf::Vector2i size, Tileset& tileset, int nLayers = 5, int firstYSort = 2, int firstTop = 4);
 
 	/**
      * Loads the map from the given file
@@ -177,7 +182,7 @@ public:
      * \param spName The name of the spawn to put the player at. Use "prev" to put the player where they were in the previous map
      * \param plst A pointer to the Playlist object to update, if any
      */
-    Map(std::string file, Tileset& tileset, EntityManager* entityManager, SoundEngine* se, Entity* player = nullptr, Playlist* plst = nullptr);
+    Map(std::string file, Tileset& tileset, Entity::Ptr player = nullptr);
 
     /**
      * Runs the unload script, if any
@@ -187,7 +192,7 @@ public:
     /**
      * Spawns the given Entity into the map using the given spawn
      */
-    void spawnEntity(Entity* e, std::string spawn);
+    void spawnEntity(Entity::Ptr e, std::string spawn);
 
 	/**
      * Returns the name of the currently loaded map
@@ -273,19 +278,14 @@ public:
     void setRenderPosition(sf::Vector2f playerPos); //called by player class each time it moves
 
     /**
-     * This function is used by the player when they move onto a tile. It calls the other moveOnToTile function, while also checking scripts to run and deciding whether or not the player should be attacked
+     * This function is used by an Entity when they move onto a tile.
+     * It checks and plays animations that may have been activated while also checking scripts to run
      *
-     * \param playerPos The current tile position of the player
-     * \param lastPos The last position the player was in
+     * \param ent The Entity moving
+     * \param pos The current tile position of the Entity
+     * \param lastPos The last position the Entity was in
      */
-    void moveOntoTile(sf::Vector2i playerPos, sf::Vector2i lastPos);
-
-    /**
-     * Checks and plays animations that may have been activated. This function is used by all entities that move
-     *
-     * \param pos The position of the entity
-     */
-    void moveOntoTile(sf::Vector2i pos); //version used by other characters and scripts
+    void moveOntoTile(Entity::Ptr ent, sf::Vector2i pos, sf::Vector2i lastPos);
 
     /**
      * Returns the position of the camera in world pixels

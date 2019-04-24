@@ -75,8 +75,6 @@ protected:
 
 	static sf::Clock timer; //for doing movement based on time
 
-	static EntityManager* entityManager;
-
 public:
 	/**
 	 * Creates the Entity with the given name, position, and graphics
@@ -162,11 +160,6 @@ public:
 	 * \param elapsedTime Elapsed time to use, leave blank for the function to figure it out. Used for diagonal motion
 	 */
 	void move(EntityPosition::Direction dir, bool fast = false, float elapsedTime = 0);
-
-	/**
-	 * Sets the static internal pointer to the Game EntityManager
-	 */
-	static void setEntityManager(EntityManager* em);
 };
 
 #endif // ENTITY_HPP

@@ -10,10 +10,13 @@ namespace {
     const int mapTimeout = 10 * 60*1000;
 }
 
-MapManager::MapManager(EntityManager* em, SoundEngine* se, Playlist* plst) {
-    entityManager = em;
-    soundEngine = se;
-    playlist = plst;
+MapManager::MapManager() {
+    //ctor
+}
+
+MapManager* MapManager::get() {
+    static MapManager manager;
+    return &manager;
 }
 
 void MapManager::setPlayer(Entity::Ptr p) {
@@ -43,17 +46,17 @@ void MapManager::loadMap(string mapfile) {
     if (maps.find(mapfile)==maps.end()) {
         MapHolder temp;
         temp.lastActiveTime = timer.getElapsedTime().asMilliseconds();
-        temp.mapdata = shared_ptr<Map>(new Map(mapfile, tileset, entityManager, soundEngine, player.get(), playlist));
+        temp.mapdata = shared_ptr<Map>(new Map(mapfile, tileset, player));
         maps.insert(make_pair(mapfile, temp)).first;
         if (maps.size()==1)
 			activeMap = mapfile;
     }
 }
 
-void MapManager::mapChange(Entity* e, string mapfile, string spawn) {
+void MapManager::mapChange(Entity::Ptr e, string mapfile, string spawn) {
     loadMap(mapfile);
     map<string,MapHolder>::iterator i = maps.find(mapfile);
-    if (e==player.get())
+    if (e==player)
         activeMap = mapfile;
 	i->second.mapdata->spawnEntity(e, spawn);
 }

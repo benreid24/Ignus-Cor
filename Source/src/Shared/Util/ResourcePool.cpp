@@ -3,7 +3,6 @@
 
 ResourcePool<sf::Texture> imagePool;
 ResourcePool<AnimationSource> animPool;
-ResourcePool<Script> scriptPool;
 ResourcePool<sf::SoundBuffer> audioPool;
 
 template<>

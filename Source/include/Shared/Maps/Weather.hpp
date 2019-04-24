@@ -482,9 +482,8 @@ public:
      * Initializes the internal state
      *
      * \param m A pointer to the owning Map object
-     * \param sEngine A pointer to the SoundEngine object
      */
-    Weather(Map* m, SoundEngine* sEngine);
+    Weather(Map* m);
 
     /**
      * Defines all of the various types of weather

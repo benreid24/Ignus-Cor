@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <deque>
+#include <memory>
 #include "Util/Frame.hpp"
 #include "Util/Token.hpp"
 #include "Util/FunctionEntry.hpp"
@@ -16,14 +17,20 @@
 class Script
 {
 public:
-    typedef Value (*LibraryFunction)(std::vector<Value>);
+    typedef std::map<std::string,Value> ContextData;
+
+    typedef std::shared_ptr<Script> Ptr;
+    typedef Value (*LibraryFunction)(std::vector<Value>, Script*, const ContextData&);
+
+protected:
+    ContextData contextData;
+    std::map<std::string,LibraryFunction> libraryFunctions;
 
 private:
 	std::string original;
 	bool stopping, stopped;
 	std::deque<Frame> stackFrames;
 	Frame globalFrame;
-	std::map<std::string,LibraryFunction> libraryFunctions;
 	std::map<std::string,FunctionEntry> functions; //index to jump to for functions
 	std::map<std::string,int> branchTable;
     std::vector<Token> tokens;
@@ -72,9 +79,14 @@ public:
 	Script(std::string scr);
 
 	/**
+	 * Copies the Script from an existing Script
+	 */
+    Script(const Script& scr);
+
+	/**
 	 * Cleans up all memory
 	 */
-	~Script();
+	virtual ~Script();
 
 	/**
 	 * Loads the script from the given file or string.
@@ -86,7 +98,7 @@ public:
 	/**
 	 * Runs the script
 	 */
-	void run();
+	virtual void run();
 
 	/**
 	 * Stops the script and returns when the script has finished

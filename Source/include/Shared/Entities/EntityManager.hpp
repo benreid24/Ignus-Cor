@@ -15,7 +15,7 @@ class EntityManager {
 	std::vector<Entity::Ptr> entities;
 	std::unordered_map<Entity*, Entity::WeakPtr> entityPointerMap;
     std::map<std::string, std::vector<std::vector<Entity::Ptr> > > ySortedEntities;
-	Entity* player;
+	Entity::Ptr player;
 
 	/**
 	 * Internal function for Entities to update their y-sort if they move
@@ -38,14 +38,6 @@ class EntityManager {
     Entity::Ptr doInteract(Entity* interactor);
 
     /**
-     * Returns an Entity::Ptr from an Entity*
-     */
-    Entity::Ptr getEntityPtr(Entity* ent);
-
-	friend class Entity;
-
-public:
-	/**
 	 * Creates an EntityManager
 	 */
 	EntityManager();
@@ -54,6 +46,11 @@ public:
 	 * Deletes all Entities excluding the player
 	 */
 	~EntityManager();
+
+	friend class Entity;
+
+public:
+	static EntityManager* get();
 
 	/**
 	 * Deletes all of the Entities that are owned
@@ -69,6 +66,11 @@ public:
 	 * Adds the given Entity
 	 */
 	void add(Entity::Ptr e);
+
+	/**
+     * Returns an Entity::Ptr from an Entity*
+     */
+    Entity::Ptr getEntityPtr(Entity* ent);
 
 	/**
 	 * Removes the given Entity by name, and optionally by type
@@ -89,11 +91,6 @@ public:
 	 * Returns a reference to the y-sorted list of Entities for the given map to render
 	 */
 	std::vector<std::vector<Entity::Ptr> >& getYSorted(std::string mapname);
-
-	/**
-	 * Proxy function for the Player Entity to update the render position through the MapManager
-	 */
-	void updateRenderPosition(sf::Vector2f playerCoords);
 };
 
 #endif // ENTITYMANAGER_HPP

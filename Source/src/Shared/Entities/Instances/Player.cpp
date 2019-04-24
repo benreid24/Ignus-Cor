@@ -1,5 +1,6 @@
 #include "Shared/Entities/Instances/Player.hpp"
 #include "Shared/Entities/EntityManager.hpp"
+#include "Shared/Maps/MapManager.hpp"
 #include "Shared/Properties.hpp"
 using namespace std;
 using namespace sf;
@@ -36,7 +37,7 @@ void Player::update() {
 	if (Keyboard::isKeyPressed(Keyboard::E))
         interact();
 
-	Entity::entityManager->updateRenderPosition(position.coords);
+	MapManager::get()->updateRenderPosition(position.coords);
 
 	Entity::update();
 }

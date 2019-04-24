@@ -27,6 +27,10 @@ struct Value
     }
 
     Value() : type(Void) {}
+
+    Value(double d) : type(Integer), iValue(d) {}
+
+    Value(std::string s) : type(String), sValue(s) {}
 };
 
 #endif // VALUE_HPP

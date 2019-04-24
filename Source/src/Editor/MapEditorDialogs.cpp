@@ -36,7 +36,6 @@ namespace {
 MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientation::HORIZONTAL,5,6), animBox(Box::Orientation::HORIZONTAL,5,6), collisionBox(Box::Orientation::HORIZONTAL,5,6), desktop(dk), owner(parent) {
 	MapEditor* me = this;
 	mapData = nullptr;
-	entityManager = nullptr;
 	curTool = Set;
 	selCorner1.x = selCorner2.x = -1;
 
@@ -177,9 +176,6 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
     animPageScroll = ScrolledWindow::Create();
     animPageScroll->SetScrollbarPolicy( sfg::ScrolledWindow::HORIZONTAL_AUTOMATIC | sfg::ScrolledWindow::VERTICAL_AUTOMATIC );
     Box::Ptr animCtrl = Box::Create(Box::Orientation::HORIZONTAL,5);
-    newAnimBut = Button::Create("Create New");
-    newAnimBut->GetSignal(Widget::OnLeftClick).Connect( [me] { me->createAnim(); });
-    animCtrl->Pack(newAnimBut,false,false);
     addAnimBut = Button::Create("Import From External Source");
     addAnimBut->GetSignal(Widget::OnLeftClick).Connect( [me] { me->addAnim(); });
     animCtrl->Pack(addAnimBut,false,false);
@@ -260,10 +256,6 @@ void MapEditor::addTileFolder() {
 		tileButs[id] = but;
 		tileBox.addWidget(but);
 	}
-}
-
-void MapEditor::createAnim() {
-	//TODO - create animation editor
 }
 
 void MapEditor::addAnim() {
@@ -395,12 +387,10 @@ void MapEditor::newMap() {
 				mkdir(string(Properties::MapPath+mapFolder).c_str());
 				if (mapData!=nullptr)
 					delete mapData;
-				if (entityManager!=nullptr)
-					delete entityManager;
+				EntityManager::get()->clear();
 				layerButtons.clear();
 
-                entityManager = new EntityManager();
-				mapData = new Map(name,Vector2i(w,h),tileset,&soundEngine,entityManager,nLayers,firstY,firstTop);
+				mapData = new Map(name,mapFolder+"/"+name+".map",Vector2i(w,h),tileset,nLayers,firstY,firstTop);
 				layerButtons.setLayers(nLayers);
 				break;
 			}
@@ -426,14 +416,11 @@ void MapEditor::loadMap() {
 
 	if (picker.pickFile()) {
 		if (mapData!=nullptr) {
-			save();
 			delete mapData;
 		}
-		if (entityManager!=nullptr)
-			delete entityManager;
+		EntityManager::get()->clear();
 		layerButtons.clear();
-		entityManager = new EntityManager();
-		mapData = new Map(picker.getChoice(),tileset,entityManager,&soundEngine);
+		mapData = new Map(picker.getChoice(),tileset);
 		layerButtons.setLayers(mapData->getLayerCount());
 	}
 }
@@ -985,7 +972,7 @@ void MapEditor::itemHandler(sf::Vector2i pos) {
 		idEntry->SelectItem(idComboMap[item->itemId]);
 	else
 		idEntry->SelectItem(0);
-    box->Pack(Label::Create("Trigger: "),false,false);
+    box->Pack(Label::Create("Item: "),false,false);
     box->Pack(idEntry,false,false);
     winBox->Pack(box,false,false);
 

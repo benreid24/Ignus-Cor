@@ -45,12 +45,6 @@ public:
 
 	 std::stack<BaseState*> states;
 	 Entity::Ptr player;
-
-	 MapManager mapManager;
-	 EntityManager entityManager;
-
-	 SoundEngine soundEngine;
-	 Playlist playlist;
 };
 
 #endif // GAME_HPP

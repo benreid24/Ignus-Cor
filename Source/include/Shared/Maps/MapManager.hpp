@@ -31,15 +31,17 @@ class MapManager {
     sf::Clock timer;
 
     Entity::Ptr player;
-    EntityManager* entityManager;
-    Playlist* playlist;
-    SoundEngine* soundEngine;
 
-public:
     /**
      * Defaults internal data and loads tileset
      */
-    MapManager(EntityManager* em, SoundEngine* se, Playlist* plst);
+    MapManager();
+
+public:
+    /**
+     * Returns a pointer to the MapManager
+     */
+    static MapManager* get();
 
     /**
      * Sets the internal reference to the player
@@ -54,7 +56,7 @@ public:
     /**
      * Moves the given Entity to the requested map
      */
-    void mapChange(Entity* ent, std::string mapFile, std::string spawnName);
+    void mapChange(Entity::Ptr ent, std::string mapFile, std::string spawnName);
 
     /**
      * Updates the camera position in the active map

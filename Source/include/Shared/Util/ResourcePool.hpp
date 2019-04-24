@@ -137,7 +137,6 @@ public:
 
 extern ResourcePool<sf::Texture> imagePool;
 extern ResourcePool<AnimationSource> animPool;
-extern ResourcePool<Script> scriptPool;
 extern ResourcePool<sf::SoundBuffer> audioPool;
 
 #endif // RESOURCEPOOL_HPP

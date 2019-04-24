@@ -27,7 +27,7 @@ ScriptManager* ScriptManager::get() {
     return &manager;
 }
 
-void ScriptManager::runScript(ScriptReference scr, bool concurrent)
+void ScriptManager::runScript(Script::Ptr scr, bool concurrent)
 {
 	#ifdef GAME
 	if (scr->isRunning())

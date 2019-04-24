@@ -27,7 +27,7 @@ public:
     struct ScriptData
     {
         std::shared_ptr<sf::Thread> thread;
-        ScriptReference script;
+        Script::Ptr script;
         bool finished;
         //TODO - delayed start
     };
@@ -70,7 +70,7 @@ public:
      * \param scr A pointer to the Script to run
      * \param concurrent Whether or not the run the script concurrently. Default is false
      */
-    void runScript(ScriptReference scr, bool concurrent = false);
+    void runScript(Script::Ptr scr, bool concurrent = false);
 
     /**
      * Stops all of the currently running threads

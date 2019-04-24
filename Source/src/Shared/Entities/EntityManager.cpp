@@ -11,6 +11,11 @@ EntityManager::~EntityManager() {
 	clear();
 }
 
+EntityManager* EntityManager::get() {
+    static EntityManager manager;
+    return &manager;
+}
+
 void EntityManager::updatePosition(Entity* e, EntityPosition oldPos) {
 	int ly = oldPos.coords.y/32;
 	int cy = e->getPosition().coords.y/32;
@@ -63,11 +68,9 @@ bool EntityManager::spaceFree(Entity* e, EntityPosition space, Vector2f size) {
 }
 
 bool EntityManager::canMove(Entity* e, EntityPosition oldPos, EntityPosition newPos, Vector2f size) {
-    #ifdef GAME
     if (oldPos.mapName==newPos.mapName)
-		return Game::get()->mapManager.movementValid(oldPos, newPos, size) && spaceFree(e, newPos, size);
-    return Game::get()->mapManager.spaceFree(newPos, size) && spaceFree(e, newPos, size);
-    #endif
+		return MapManager::get()->movementValid(oldPos, newPos, size) && spaceFree(e, newPos, size);
+    return MapManager::get()->spaceFree(newPos, size) && spaceFree(e, newPos, size);
     return false;
 }
 
@@ -171,12 +174,6 @@ void EntityManager::update() {
 	for (unsigned int i = 0; i<entities.size(); ++i) {
 		entities[i]->update();
 	}
-}
-
-void EntityManager::updateRenderPosition(sf::Vector2f playerCoords) {
-    #ifdef GAME
-	Game::get()->mapManager.updateRenderPosition(playerCoords);
-	#endif
 }
 
 Entity::Ptr EntityManager::getEntityPtr(Entity* ent) {

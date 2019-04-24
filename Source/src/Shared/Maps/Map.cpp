@@ -31,9 +31,7 @@ namespace {
 
 std::vector<std::string> Map::visitedMaps;
 std::map<std::string, std::vector<int> > Map::pickedUpItems;
-string Map::lastMap, Map::curMap;
 Weather* Map::weather = nullptr;
-EntityPosition Map::lastPos;
 sf::RenderTexture Map::lightTxtr;
 sf::Sprite Map::lightSpr;
 sf::VertexArray Map::light(TrianglesFan, 362);
@@ -41,7 +39,7 @@ bool Map::staticMemebersCreated = false;
 vector<TextureReference> Map::collisionTextures;
 Sprite Map::collisionSprite;
 
-Map::Map(Tileset& tlst, SoundEngine* se) : tileset(tlst) {
+Map::Map(Tileset& tlst) : tileset(tlst) {
 	maxMapItemId = 1;
 
 	#ifdef EDITOR
@@ -59,7 +57,7 @@ Map::Map(Tileset& tlst, SoundEngine* se) : tileset(tlst) {
 		Map::staticMemebersCreated = true;
 		Map::lightTxtr.create(Properties::ScreenWidth,Properties::ScreenHeight);
 		Map::lightSpr.setTexture(lightTxtr.getTexture());
-		Map::weather = new Weather(nullptr,se);
+		Map::weather = new Weather(this);
 		#ifdef EDITOR
 		for (int i = 0; i<16; ++i) {
             Map::collisionTextures.push_back(imagePool.loadResource(collisionFiles[i]));
@@ -68,11 +66,11 @@ Map::Map(Tileset& tlst, SoundEngine* se) : tileset(tlst) {
 	}
 }
 
-Map::Map(string nm, Vector2i sz, Tileset& tlst, SoundEngine* se, EntityManager* em, int nLayers, int firstYSort, int firstTop) : Map(tlst,se) {
+Map::Map(string nm, string uniqueNm, Vector2i sz, Tileset& tlst, int nLayers, int firstYSort, int firstTop) : Map(tlst) {
 	Map::weather->setOwner(this);
-	entityManager = em;
 
 	name = nm;
+	uniqueName = uniqueNm;
 	size = sz;
 	firstYSortLayer = firstYSort;
 	firstTopLayer = firstTop;
@@ -88,19 +86,12 @@ Map::Map(string nm, Vector2i sz, Tileset& tlst, SoundEngine* se, EntityManager* 
 	}
 	collisions.setSize(size.x,size.y);
 	resetYSorted();
-	entityManager->registerMap(nm, size.y);
+	EntityManager::get()->registerMap(uniqueNm, size.y);
 }
 
-Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity* player, Playlist* plst) : Map(tlst,se) {
+Map::Map(string file, Tileset& tlst, Entity::Ptr player) : Map(tlst) {
 	Map::weather->setOwner(this);
-	entityManager = em;
 	uniqueName = file;
-
-	//Handle previous map data
-    if (file=="LastMap")
-		file = Map::lastMap;
-	Map::lastMap = curMap;
-    curMap = file;
 
     cout << "Loading map: " << file << "\n";
 
@@ -111,8 +102,8 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
     //Load name and music
     name = input.getString();
     string temp = input.getString();
-    if (temp.size() && plst)
-		plst->load(Properties::PlaylistPath+temp);
+    //if (temp.size())
+	//	Playlist::get()->load(Properties::PlaylistPath+temp); //TODO - music manager
 	music = temp;
     addVisitedMap(name);
 
@@ -209,7 +200,7 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
 		setRenderPosition(player->getPosition().coords);
 
     //Load AI
-	entityManager->registerMap(uniqueName, size.y);
+	EntityManager::get()->registerMap(uniqueName, size.y);
     tInt = input.get<uint16_t>();
     for (int i = 0; i<tInt; ++i) {
         Vector2f pos;
@@ -256,7 +247,7 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
 			pos.mapName = uniqueName;
 			item.ie = ItemEntity::create(item.itemId,pos);
             items.push_back(item);
-            entityManager->add(item.ie);
+            EntityManager::get()->add(item.ie);
         }
 		if (item.mapId>maxMapItemId)
 			maxMapItemId = item.mapId+1;
@@ -291,9 +282,8 @@ Map::Map(string file, Tileset& tlst, EntityManager* em, SoundEngine* se, Entity*
         else
             evt.script->load(evt.scriptStr);
 
-        //if (evt.trigger==0 && Map::scriptEnv)
-        //    Map::scriptEnv->runScript(evt.script);
-        //TODO - SCRIPT MANAGER
+        if (evt.trigger==0)
+            ScriptManager::get()->runScript(makeMapScript(evt.script, evt, nullptr));
 
         events.push_back(evt);
     }
@@ -318,15 +308,15 @@ Map::~Map() {
 	}
 }
 
-void Map::spawnEntity(Entity* e, string spawn) {
+void Map::spawnEntity(Entity::Ptr e, string spawn) {
     EntitySpawn spawnPoint;
+    //TODO - what to do if spawn is filled?
     for (unsigned int i = 0; i<entitySpawns.size(); ++i) {
         if (entitySpawns[i].name==spawn)
             spawnPoint = entitySpawns[i];
     }
     e->setPositionAndDirection(spawnPoint.position);
 
-    //TODO - Change other checks for player to type check instead of pointer compare?
 	if (e->getType()=="Player")
 		setRenderPosition(e->getPosition().coords);
 
@@ -563,8 +553,8 @@ void Map::draw(sf::RenderTarget& target) {
                     }
                 }
             }
-            for (unsigned int i = 0; i<entityManager->getYSorted(uniqueName).at(y).size(); ++i) {
-                entityManager->getYSorted(uniqueName).at(y).at(i)->render(target,camPos);
+            for (unsigned int i = 0; i<EntityManager::get()->getYSorted(uniqueName).at(y).size(); ++i) {
+                EntityManager::get()->getYSorted(uniqueName).at(y).at(i)->render(target,camPos);
             }
         }
     }
@@ -645,8 +635,8 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection, 
                     }
                 }
             }
-            for (unsigned int i = 0; i<entityManager->getYSorted(uniqueName).at(y).size(); ++i) {
-                entityManager->getYSorted(uniqueName).at(y).at(i)->render(target,camPos);
+            for (unsigned int i = 0; i<EntityManager::get()->getYSorted(uniqueName).at(y).size(); ++i) {
+                EntityManager::get()->getYSorted(uniqueName).at(y).at(i)->render(target,camPos);
             }
         }
     }
@@ -859,38 +849,37 @@ Vector2f Map::getCamera() {
 	return camPos;
 }
 
-void Map::moveOntoTile(sf::Vector2i playerPos, sf::Vector2i lastPos) {
-	moveOntoTile(playerPos);
-    playerPos.x--;
-    playerPos.y--;
+void Map::moveOntoTile(Entity::Ptr ent, sf::Vector2i pos, sf::Vector2i lastPos) {
+    pos.x--; //TODO - why is this here?
+    pos.y--;
     lastPos.x--;
     lastPos.y--;
+
+	if (pos.x<size.x && pos.y<size.y && pos.x>=0 && pos.y>=0) {
+    	for (unsigned int i = 0; i<layers.size(); ++i) {
+			if (layers[i](pos.x,pos.y).isAnim && layers[i](pos.x,pos.y).nonZero) {
+				if (layers[i](pos.x,pos.y).anim) {
+					if (!layers[i](pos.x,pos.y).anim->isLooping())
+						layers[i](pos.x,pos.y).anim->play();
+				}
+			}
+		}
+    }
+
+
 
     for (unsigned int i = 0; i<events.size(); ++i) {
     	int minX = events[i].position.x/32;
     	int minY = events[i].position.y/32;
     	int maxX = minX+events[i].size.x;
     	int maxY = minY+events[i].size.y;
-        bool inNow = playerPos.x>=minX && playerPos.x<maxX && playerPos.y>=minY && playerPos.y<maxY;
+        bool inNow = pos.x>=minX && pos.x<maxX && pos.y>=minY && pos.y<maxY;
         bool wasIn = lastPos.x>=minX && lastPos.x<maxX && lastPos.y>=minY && lastPos.y<maxY;
         if ((events[i].trigger==1 && inNow && !wasIn) || (events[i].trigger==2 && !inNow && wasIn) || (events[i].trigger==3 && inNow!=wasIn) || (events[i].trigger==4 && inNow)) {
             if (events[i].runs<events[i].maxRuns || events[i].maxRuns==0)
-                ScriptManager::get()->runScript(events[i].script);
+                ScriptManager::get()->runScript(makeMapScript(events[i].script, events[i], ent));
             events[i].runs++;
         }
-    }
-}
-
-void Map::moveOntoTile(sf::Vector2i pos) {
-	if (pos.x-1<size.x && pos.y-1<size.y && pos.x-1>=0 && pos.y-1>=0) {
-    	for (unsigned int i = 0; i<layers.size(); ++i) {
-			if (layers[i](pos.x-1,pos.y-1).isAnim && layers[i](pos.x-1,pos.y-1).nonZero) {
-				if (layers[i](pos.x-1,pos.y-1).anim) {
-					if (!layers[i](pos.x-1,pos.y-1).anim->isLooping())
-						layers[i](pos.x-1,pos.y-1).anim->play();
-				}
-			}
-		}
     }
 }
 
@@ -1109,9 +1098,9 @@ void Map::addItem(int itemId, Vector2i position) {
 	maxMapItemId++;
 	EntityPosition pos;
 	pos.coords = Vector2f(position);
-	pos.mapName = name;
+	pos.mapName = uniqueName;
 	Entity::Ptr ie = ItemEntity::create(item.itemId, pos);
-	entityManager->add(ie);
+	EntityManager::get()->add(ie);
 	items.push_back(item);
 }
 
@@ -1125,15 +1114,15 @@ MapItem* Map::getItem(Vector2i position) {
 
 void Map::updateItem(MapItem* orig) {
 	EntityPosition pos = orig->ie->getPosition();
-	entityManager->remove(orig->ie);
+	EntityManager::get()->remove(orig->ie);
 	orig->ie = ItemEntity::create(orig->itemId, pos);
-	entityManager->add(orig->ie);
+	EntityManager::get()->add(orig->ie);
 }
 
 void Map::removeItem(Vector2i position) {
 	for (unsigned int i = 0; i<items.size(); ++i) {
 		if (abs(items[i].position.x-position.x)<=32 && abs(items[i].position.y-position.y)<=32) {
-			entityManager->remove(items[i].ie);
+			EntityManager::get()->remove(items[i].ie);
 			items.erase(items.begin()+i);
 			--i;
 		}
@@ -1174,6 +1163,9 @@ int Map::getLightOverride() {
 }
 
 void Map::editTile(int x, int y, int layer, int nId, bool isAnim) {
+    if (layer<0 || layer>=layers.size() || x<0 || x>=size.x || y<0 || y>=size.y)
+        return;
+
 	if (layer>=firstYSortLayer && layer<firstTopLayer) {
 		if (layers[layer](x,y).nonZero) {
 			int eY = y+layers[layer](x,y).spr.getGlobalBounds().height/64+1;

@@ -633,10 +633,9 @@ void SandstormWeather::draw(RenderTarget& window)
     }
 }
 
-Weather::Weather(Map* m, SoundEngine* se)
+Weather::Weather(Map* m)
 {
     owner = m;
-    sEngine = se;
     weather = nullptr;
     nextChange = 0;
     type = None;
