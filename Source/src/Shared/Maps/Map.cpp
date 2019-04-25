@@ -857,7 +857,6 @@ void Map::moveOntoTile(Entity::Ptr ent, sf::FloatRect oldBox) {
     int maxY = ceil((box.top+box.height)/32-0.5);
 
     //TODO - refine on tile detection
-    cout << minX << ", " << minY << ", " << maxX << ", " << maxY << endl;
 
     for (unsigned int i = 0; i<layers.size(); ++i) {
         for (int x = minX; x<=maxX; ++x) {

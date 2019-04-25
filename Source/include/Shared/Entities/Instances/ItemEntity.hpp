@@ -1,7 +1,8 @@
 #ifndef ITEMENTITY_HPP
 #define ITEMENTITY_HPP
 
-#include "../Entity.hpp"
+#include "Shared/Entities/Entity.hpp"
+#include "Shared/Entities/EntityManager.hpp"
 #include "Shared/Properties.hpp"
 #include "Shared/Data/ItemDB.hpp"
 
@@ -24,6 +25,14 @@ public:
 	static Entity::Ptr create(int itemId, EntityPosition position) { return Entity::Ptr(new ItemEntity(itemId, position)); }
 
     const std::string getType() { return "Item"; }
+
+    void notifyInteracted(Entity::Ptr user) {
+        Entity::notifyInteracted(user);
+        if (user->getType()=="Player") {
+            //TODO - add to inventory
+            EntityManager::get()->remove(EntityManager::get()->getEntityPtr(this));
+        }
+    }
 };
 
 #endif // ITEMENTITY_HPP
