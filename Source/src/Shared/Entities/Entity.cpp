@@ -24,7 +24,7 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 }
 
 Entity::~Entity() {
-
+    cout << "Entity '" << name << "'(uuid: " << uuid << ") deleted\n";
 }
 
 EntityPosition Entity::getPosition() {

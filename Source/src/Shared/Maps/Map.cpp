@@ -291,6 +291,11 @@ Map::Map(string file, Tileset& tlst, Entity::Ptr player) : Map(tlst) {
     //Run on-load script
     Script loadScript(loadScriptStr);
     loadScript.run();
+
+    //Clean up Editor only data
+    #ifndef EDITOR
+    items.clear();
+    #endif // EDITOR
 }
 
 Map::~Map() {

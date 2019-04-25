@@ -114,7 +114,7 @@ void EntityManager::add(Entity::Ptr e) {
 		cout << "ERROR: Tried to add entity to map " << e->getPosition().mapName << " but position was out of range" << endl;
 }
 
-void EntityManager::remove(Entity::Ptr e) {
+void EntityManager::doDelete(Entity::Ptr e) {
 	int y = e->getPosition().coords.y/32;
 	for (unsigned int i = 0; i<entities.size(); ++i) {
 		if (entities[i]==e) {
@@ -134,6 +134,11 @@ void EntityManager::remove(Entity::Ptr e) {
 		}
 	}
 	entityPointerMap.erase(e.get());
+}
+
+void EntityManager::remove(Entity::Ptr e) {
+    Lock delLock(deleteLock);
+    entityDeleteQueue.push_back(e);
 }
 
 void EntityManager::remove(string name, string type) {
@@ -174,6 +179,12 @@ void EntityManager::update() {
 	for (unsigned int i = 0; i<entities.size(); ++i) {
 		entities[i]->update();
 	}
+
+	Lock delLock(deleteLock);
+	for (auto i = entityDeleteQueue.begin(); i!=entityDeleteQueue.end(); ++i) {
+        doDelete(*i);
+	}
+	entityDeleteQueue.clear();
 }
 
 Entity::Ptr EntityManager::getEntityPtr(Entity* ent) {

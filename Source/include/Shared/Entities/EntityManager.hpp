@@ -12,6 +12,9 @@ class Game;
  * \ingroup Entity
  */
 class EntityManager {
+    sf::Mutex deleteLock;
+    std::list<Entity::Ptr> entityDeleteQueue;
+
 	std::vector<Entity::Ptr> entities;
 	std::unordered_map<Entity*, Entity::WeakPtr> entityPointerMap;
     std::map<std::string, std::vector<std::vector<Entity::Ptr> > > ySortedEntities;
@@ -36,6 +39,11 @@ class EntityManager {
 	 * Performs interaction for the given Entity and returns a pointer to what it interacted with, if anything
 	 */
     Entity::Ptr doInteract(Entity* interactor);
+
+    /**
+     * Performs the actual deletion of an Entity
+     */
+    void doDelete(Entity::Ptr e);
 
     /**
 	 * Creates an EntityManager
