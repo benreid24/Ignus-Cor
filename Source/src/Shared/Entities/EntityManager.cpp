@@ -150,7 +150,7 @@ void EntityManager::remove(string name, string type) {
 	}
 }
 
-Entity::Ptr EntityManager::doInteract(Entity* interactor) {
+Entity::Ptr EntityManager::doInteract(Entity* interactor, bool notify) {
     Entity::Ptr ent = getEntityPtr(interactor);
     if (ent.get() == nullptr) {
         cout << "Error: " << interactor->getIdString() << " is unregistered with EntityManager\n";
@@ -166,7 +166,8 @@ Entity::Ptr EntityManager::doInteract(Entity* interactor) {
         if (y>=0 && y<ents.size()) {
             for (unsigned int i = 0; i<ents[y].size(); ++y) {
                 if (box.intersects(ents[y][i]->getBoundingBox())) {
-                    ents[y][i]->notifyInteracted(ent);
+                    if (notify)
+                        ents[y][i]->notifyInteracted(ent);
                     return ents[y][i];
                 }
             }

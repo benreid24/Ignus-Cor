@@ -70,7 +70,10 @@ protected:
 	double lTime;
 	float speed[2]; //speed in pixels/second for [slow,fast]. Will be set by child classes
 
-	Ptr interact();
+	/**
+	 * Accessor function for child classes to call EntityManager::doInteract
+	 */
+	Ptr interact(bool notify = true);
 
 	static sf::Clock timer; //for doing movement based on time
 
@@ -157,8 +160,9 @@ public:
 	 * \param dir The direction to move in
 	 * \param fast Whether or not to move fast
 	 * \param elapsedTime Elapsed time to use, leave blank for the function to figure it out. Used for diagonal motion
+	 * \return True if the Entity was able to move, false otherwise
 	 */
-	void move(EntityPosition::Direction dir, bool fast = false, float elapsedTime = 0);
+	bool move(EntityPosition::Direction dir, bool fast = false, float elapsedTime = 0);
 };
 
 #endif // ENTITY_HPP

@@ -38,7 +38,7 @@ class EntityManager {
 	/**
 	 * Performs interaction for the given Entity and returns a pointer to what it interacted with, if anything
 	 */
-    Entity::Ptr doInteract(Entity* interactor);
+    Entity::Ptr doInteract(Entity* interactor, bool notify = true);
 
     /**
      * Performs the actual deletion of an Entity

@@ -1,5 +1,5 @@
-#ifndef NPCENTITY_HPP
-#define NPCENTITY_HPP
+#ifndef CREATUREENTITY_HPP
+#define CREATUREENTITY_HPP
 
 #include "Shared/Entities/Instances/AiEntity.hpp"
 #include "Shared/Util/File.hpp"
@@ -52,5 +52,5 @@ public:
     void notifyInteracted(Ptr user);
 };
 
-#endif // NPCENTITY_HPP
+#endif // CREATUREENTITY_HPP
 

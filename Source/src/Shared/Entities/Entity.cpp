@@ -111,7 +111,7 @@ void Entity::render(sf::RenderTarget& target, sf::Vector2f camPos) {
 	bubble.render(target,position.coords-camPos);
 }
 
-void Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
+bool Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
 	EntityPosition newPos = position;
 	position.dir = dir;
 
@@ -149,14 +149,16 @@ void Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
 			position = newPos;
 			EntityManager::get()->updatePosition(this, oldPos);
 			MapManager::get()->registerEntityMovement(EntityManager::get()->getEntityPtr(this), oldBox);
+			return true;
 		}
 	}
+	return false;
 }
 
 void Entity::update() {
 	lTime = Entity::timer.getElapsedTime().asSeconds();
 }
 
-Entity::Ptr Entity::interact() {
-    return EntityManager::get()->doInteract(this);
+Entity::Ptr Entity::interact(bool notify) {
+    return EntityManager::get()->doInteract(this, notify);
 }
