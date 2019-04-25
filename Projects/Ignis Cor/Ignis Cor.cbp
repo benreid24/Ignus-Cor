@@ -83,10 +83,14 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/include/Game/Core/States/MainState.hpp" />
 		<Unit filename="../../Source/include/Shared/Data/ItemDB.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Entity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/EntityBehavior.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityBubble.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityManager.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityVisual.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/AiEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/CreatureEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/ItemEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/NpcEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/Player.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/CellTable.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/Form.hpp" />
@@ -105,6 +109,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/include/Shared/Properties.hpp" />
 		<Unit filename="../../Source/include/Shared/Scripts/Script.hpp" />
 		<Unit filename="../../Source/include/Shared/Scripts/ScriptManager.hpp" />
+		<Unit filename="../../Source/include/Shared/Scripts/Specialized/AiScript.hpp" />
 		<Unit filename="../../Source/include/Shared/Scripts/Specialized/MapScript.hpp" />
 		<Unit filename="../../Source/include/Shared/Scripts/Util/Frame.hpp" />
 		<Unit filename="../../Source/include/Shared/Scripts/Util/FunctionEntry.hpp" />
@@ -125,9 +130,13 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/src/Game/main.cpp" />
 		<Unit filename="../../Source/src/Shared/Data/ItemDB.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Entity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/EntityBehavior.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityBubble.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityManager.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityVisual.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Instances/AiEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Instances/CreatureEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Instances/NpcEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Instances/Player.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/CellTable.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/Form.cpp" />
