@@ -62,7 +62,6 @@ protected:
 	EntityPosition position;
 	EntityVisual graphics;
 	EntityBubble bubble;
-	EntityBehavior* behavior;
 
 	sf::FloatRect boundingBox; //relative to upper left corner (position and gfx origin)
 	float interactDistance; //how far away it can interact
@@ -150,7 +149,7 @@ public:
 	/**
 	 * Renders the Entity to the given target
 	 */
-	void render(sf::RenderTarget& target, sf::Vector2f camPos);
+	virtual void render(sf::RenderTarget& target, sf::Vector2f camPos);
 
 	/**
 	 * Moves the Entity in the given direction. Actual amount is based on if fast and how much time elapsed

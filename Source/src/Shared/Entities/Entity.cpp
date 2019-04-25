@@ -21,12 +21,10 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	speed[1] = 128;
 	boundingBox = FloatRect(0, 12, graphics.getSize().x, graphics.getSize().y-12);
 	interactDistance = 12;
-	behavior = nullptr;
 }
 
 Entity::~Entity() {
-    if (behavior != nullptr)
-        delete behavior;
+
 }
 
 EntityPosition Entity::getPosition() {
@@ -92,24 +90,19 @@ string Entity::getName() {
 
 void Entity::notifyAttacked(Ptr attacker) {
     cout << getIdString() << " ATTACKED BY " << attacker->getIdString() << endl;
-    if (behavior != nullptr)
-        behavior->notifyAttacked(attacker);
 }
 
 void Entity::notifyInteracted(Ptr user) {
     cout << getIdString() << " INTERACTED BY " << user->getIdString() << endl;
-    if (behavior != nullptr)
-        behavior->notifyInteracted(user);
 }
 
 void Entity::notifyCombatNearby(List combatants) {
-    if (behavior != nullptr)
-        behavior->notifyCombatNearby(combatants);
+    cout << getIdString() << " notified of nearby combat\n";
 }
 
 string Entity::getIdString() {
     stringstream ss;
-    ss << "<" << getType() << ":" << getName() << "(uuid: " << uuid << ")>";
+    ss << "<" << getType() << ": '" << getName() << "'(uuid: " << uuid << ")>";
     return ss.str();
 }
 
