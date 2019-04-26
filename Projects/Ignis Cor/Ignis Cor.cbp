@@ -92,6 +92,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/include/Shared/Entities/Instances/ItemEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/NpcEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/Player.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/RangedAttackEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/CellTable.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/Form.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/ResizableImage.hpp" />
@@ -138,6 +139,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/src/Shared/Entities/Instances/CreatureEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Instances/NpcEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Instances/Player.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Instances/RangedAttackEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/CellTable.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/Form.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/WrappingBox.cpp" />
