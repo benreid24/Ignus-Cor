@@ -56,7 +56,7 @@ bool EntityManager::spaceFree(Entity* e, EntityPosition space, Vector2f size) {
 		for (int y = spaceY - 2; y <= spaceY + 2; ++y) {
 			if (y>=0 && y<signed(i->second.size())) {
                 for (unsigned int j = 0; j<i->second[y].size(); ++j) {
-					if (box.intersects(i->second[y][j]->getBoundingBox()) && i->second[y][j].get()!=e)
+					if (box.intersects(i->second[y][j]->getBoundingBox()) && i->second[y][j].get()!=e && i->second[y][j]->collidesWithOtherEntities())
 						return false;
                 }
 			}

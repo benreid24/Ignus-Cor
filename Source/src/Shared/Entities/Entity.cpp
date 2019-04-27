@@ -21,6 +21,7 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	speed[1] = 128;
 	boundingBox = FloatRect(0, 12, graphics.getSize().x, graphics.getSize().y-12);
 	interactDistance = 12;
+	collisionsEnabled = true;
 }
 
 Entity::~Entity() {
@@ -161,4 +162,8 @@ void Entity::update() {
 
 Entity::Ptr Entity::interact(bool notify) {
     return EntityManager::get()->doInteract(this, notify);
+}
+
+bool Entity::collidesWithOtherEntities() {
+    return collisionsEnabled;
 }

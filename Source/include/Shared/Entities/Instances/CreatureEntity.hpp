@@ -1,7 +1,7 @@
 #ifndef CREATUREENTITY_HPP
 #define CREATUREENTITY_HPP
 
-#include "Shared/Entities/Instances/AiEntity.hpp"
+#include "Shared/Entities/Virtual/AiEntity.hpp"
 #include "Shared/Util/File.hpp"
 
 /**

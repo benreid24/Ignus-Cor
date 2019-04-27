@@ -3,11 +3,10 @@
 using namespace std;
 
 RangedAttackEntity::RangedAttackEntity(Entity::Ptr atk)
-: Entity("ranged attack dummy", atk->getPosition(), "", "") {
+: AttackEntity(atk) {
     //TODO - set damage, speed, graphics etc from weapon
     speed[0] = 512;
     interactDistance = 12; //larger radius attacks?
-    attacker = atk;
 }
 
 const string RangedAttackEntity::getType() {

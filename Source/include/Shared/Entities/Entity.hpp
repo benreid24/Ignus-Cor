@@ -65,6 +65,7 @@ protected:
 
 	sf::FloatRect boundingBox; //relative to upper left corner (position and gfx origin)
 	float interactDistance; //how far away it can interact
+	bool collisionsEnabled; //if it blocks other Entities
 	//TODO - attack distance via weapon? what about spells?
 
 	double lTime;
@@ -163,6 +164,11 @@ public:
 	 * \return True if the Entity was able to move, false otherwise
 	 */
 	bool move(EntityPosition::Direction dir, bool fast = false, float elapsedTime = 0);
+
+	/**
+	 * Returns whether or not this Entity should be considered when doing collisions between other Entities
+	 */
+    bool collidesWithOtherEntities();
 };
 
 #endif // ENTITY_HPP

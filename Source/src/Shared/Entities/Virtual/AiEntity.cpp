@@ -1,4 +1,4 @@
-#include "Shared/Entities/Instances/AiEntity.hpp"
+#include "Shared/Entities/Virtual/AiEntity.hpp"
 #include "Shared/Entities/EntityBehavior.hpp"
 using namespace std;
 

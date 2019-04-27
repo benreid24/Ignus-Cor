@@ -1,17 +1,16 @@
 #ifndef RANGEDATTACKENTITY_HPP
 #define RANGEDATTACKENTITY_HPP
 
-#include "Shared/Entities/Entity.hpp"
+#include "Shared/Entities/Virtual/AttackEntity.hpp"
 
 /**
  * Entity for objects created from ranged attacks (arrows, spells, etc). Generally move in one
  * direction until hitting an Entity and applying damage
  *
  * \ingroup Entity
+ * \ingroup Combat
  */
-class RangedAttackEntity : public Entity {
-    Entity::Ptr attacker;
-
+class RangedAttackEntity : public AttackEntity {
     /**
      * Creates the RangedAttackEntity from the given attacker and weapon
      */
@@ -21,7 +20,7 @@ public:
     /**
      * Creates the projectile from the weapon/spell and source Entity
      */
-    static Entity::Ptr create(Entity::Ptr attacker); //TODO - combat stuff
+    static Entity::Ptr create(Entity::Ptr attacker);
 
     /**
      * vtable
