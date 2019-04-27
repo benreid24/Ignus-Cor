@@ -12,7 +12,7 @@
  * \ingroup Combat
  */
 class RangedAttackEntity : public AttackEntity {
-    const CombatRangedAttack& attack;
+    CombatRangedAttack attack;
 
     /**
      * Creates the RangedAttackEntity from the given attacker and attack

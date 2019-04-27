@@ -11,7 +11,7 @@
  */
 class MeleeAttackEntity : public AttackEntity {
     Entity::List entitiesHit;
-    const CombatAttack& attack;
+    CombatAttack attack;
 
     /**
      * Creates the MeleeAttackEntity instance from the attacking Entity and attack

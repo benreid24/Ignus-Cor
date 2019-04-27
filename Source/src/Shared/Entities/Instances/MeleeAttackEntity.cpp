@@ -21,7 +21,7 @@ void MeleeAttackEntity::update() {
     for (Entity::List::iterator i = hits.begin(); i!=hits.end(); ++i) {
         if (find(entitiesHit.begin(), entitiesHit.end(), *i) == entitiesHit.end()) {
             entitiesHit.push_back(*i);
-            //TODO - do weapon hit
+            attack.apply(attacker.get(), i->get());
         }
     }
 }
