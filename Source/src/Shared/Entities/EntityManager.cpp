@@ -91,7 +91,6 @@ bool EntityManager::canMove(Entity* e, EntityPosition oldPos, EntityPosition new
     if (oldPos.mapName==newPos.mapName)
 		return MapManager::get()->movementValid(oldPos, newPos, size) && spaceFree(e, newPos, size);
     return MapManager::get()->spaceFree(newPos, size) && spaceFree(e, newPos, size);
-    return false;
 }
 
 void EntityManager::clear() {
