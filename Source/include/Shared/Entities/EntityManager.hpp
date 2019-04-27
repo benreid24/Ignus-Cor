@@ -99,6 +99,11 @@ public:
 	 * Returns a reference to the y-sorted list of Entities for the given map to render
 	 */
 	std::vector<std::vector<Entity::Ptr> >& getYSorted(std::string mapname);
+
+	/**
+	 * Returns an Entity::List with all the Entities in the given space
+	 */
+    Entity::List getEntitiesInSpace(const std::string& mapName, const sf::FloatRect& area);
 };
 
 #endif // ENTITYMANAGER_HPP

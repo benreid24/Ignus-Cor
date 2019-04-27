@@ -47,6 +47,24 @@ void EntityManager::updatePosition(Entity* e, EntityPosition oldPos) {
 	}
 }
 
+Entity::List EntityManager::getEntitiesInSpace(const string& mapName, const FloatRect& box) {
+	Entity::List ret;
+	auto i = ySortedEntities.find(mapName);
+	int spaceY = box.top/32;
+
+	if (i!=ySortedEntities.end()) {
+		for (int y = spaceY - 2; y <= spaceY + 2; ++y) {
+			if (y>=0 && y<signed(i->second.size())) {
+                for (unsigned int j = 0; j<i->second[y].size(); ++j) {
+					if (box.intersects(i->second[y][j]->getBoundingBox()))
+						ret.push_back( i->second[y][j]);
+                }
+			}
+		}
+	}
+	return ret;
+}
+
 bool EntityManager::spaceFree(Entity* e, EntityPosition space, Vector2f size) {
 	auto i = ySortedEntities.find(space.mapName);
 	int spaceY = space.coords.y/32;
@@ -63,8 +81,7 @@ bool EntityManager::spaceFree(Entity* e, EntityPosition space, Vector2f size) {
 		}
 		return true;
 	}
-	else
-		return false;
+    return false;
 }
 
 bool EntityManager::canMove(Entity* e, EntityPosition oldPos, EntityPosition newPos, Vector2f size) {

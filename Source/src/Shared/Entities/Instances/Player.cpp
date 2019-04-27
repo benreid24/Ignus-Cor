@@ -21,8 +21,6 @@ Player::Ptr Player::create() {
 
 void Player::update() {
 	bool running = Keyboard::isKeyPressed(Keyboard::Space);
-    bool moved = true;
-
 	if (Keyboard::isKeyPressed(Keyboard::W))
 		move(EntityPosition::Up, running);
 	else if (Keyboard::isKeyPressed(Keyboard::A))
@@ -31,8 +29,6 @@ void Player::update() {
 		move(EntityPosition::Down, running);
 	else if (Keyboard::isKeyPressed(Keyboard::D))
 		move(EntityPosition::Right, running);
-	else
-		moved = false;
 
 	if (Keyboard::isKeyPressed(Keyboard::E))
         interact();

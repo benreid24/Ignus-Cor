@@ -1172,7 +1172,7 @@ int Map::getLightOverride() {
 }
 
 void Map::editTile(int x, int y, int layer, int nId, bool isAnim) {
-    if (layer<0 || layer>=layers.size() || x<0 || x>=size.x || y<0 || y>=size.y)
+    if (layer<0 || layer>=signed(layers.size()) || x<0 || x>=size.x || y<0 || y>=size.y)
         return;
 
 	if (layer>=firstYSortLayer && layer<firstTopLayer) {
