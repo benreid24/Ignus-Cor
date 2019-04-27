@@ -865,7 +865,7 @@ void Map::moveOntoTile(Entity::Ptr ent, sf::FloatRect oldBox) {
 
     for (unsigned int i = 0; i<layers.size(); ++i) {
         for (int x = minX; x<=maxX; ++x) {
-            for (int y = 0; y<=maxY; ++y) {
+            for (int y = minY; y<=maxY; ++y) {
                 if (x>=0 && y>=0 && x<size.x && y<size.y) {
                     if (layers[i](x,y).isAnim && layers[i](x,y).nonZero) {
                         if (layers[i](x,y).anim) {
