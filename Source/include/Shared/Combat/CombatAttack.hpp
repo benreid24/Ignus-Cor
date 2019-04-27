@@ -5,6 +5,8 @@
 #include <list>
 #include "Shared/Combat/CombatEffect.hpp"
 
+class Entity;
+
 /**
  * \defgroup Combat
  * \brief Classes and code related to Combat between Entity objects
@@ -59,6 +61,11 @@ public:
      * Returns the animation file for the attack
      */
     std::string getAnimation() const;
+
+    /**
+     * Applies an attack from one Entity to another, handling damage and effects
+     */
+    void apply(Entity* attacker, Entity* defender) const;
 };
 
 #endif // COMBATATTACK_HPP

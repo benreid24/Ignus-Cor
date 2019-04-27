@@ -38,6 +38,11 @@ class CombatArmor {
 
 public:
     /**
+     * Empty armor
+     */
+    CombatArmor();
+
+    /**
      * Constructs from all parameters
      */
     CombatArmor(const std::string& name, const std::string& description, double damageResistance, const std::list<CombatArmorEffect>& effects);

@@ -1,6 +1,12 @@
 #include "Shared/Combat/CombatArmor.hpp"
 using namespace std;
 
+CombatArmor::CombatArmor() {
+    name = "Clothing";
+    description = "Just barely a step above being naked. These thin garbs offer no protection whatsoever";
+    damageResist = 0;
+}
+
 CombatArmor::CombatArmor(const string& nm, const string& desc, double dr, const list<CombatArmorEffect>& efx) {
     name = nm;
     description = desc;

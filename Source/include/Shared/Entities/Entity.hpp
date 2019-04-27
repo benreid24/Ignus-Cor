@@ -7,6 +7,7 @@
 #include "Shared/Entities/EntityVisual.hpp"
 #include "Shared/Entities/EntityBubble.hpp"
 #include "Shared/Combat/CombatAttack.hpp"
+#include "Shared/Combat/CombatArmor.hpp"
 
 /**
  * \defgroup Entity
@@ -53,10 +54,10 @@ struct EntityPosition {
 struct EntityStats {
     bool canDie;
     double health, maxHealth;
-    int currentLevel;
+    int level;
     double currentXp, nextLevelXp;
 
-    EntityStats() : canDie(false), currentLevel(1), currentXp(0) {}
+    EntityStats() : canDie(false), level(1), currentXp(0) {}
 };
 
 /**
@@ -86,7 +87,7 @@ protected:
 	float speed[2]; //speed in pixels/second for [slow,fast]. Will be set by child classes
 
 	EntityStats stats;
-	double currentDamageResistance; //set by equipping armor
+	CombatArmor armor;
 	double xpRewardMultiplier; //xp reward = levelDiff^2 * xpRewardMultiplier + level
 
 	/**
@@ -187,6 +188,16 @@ public:
 	 * Returns whether or not this Entity should be considered when doing collisions between other Entities
 	 */
     bool collidesWithOtherEntities();
+
+    /**
+     * Returns the stats of the Entity
+     */
+    EntityStats& getStats();
+
+    /**
+     * Returns the current armor of the Entity
+     */
+    const CombatArmor& getArmor();
 };
 
 #endif // ENTITY_HPP

@@ -23,7 +23,6 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	interactDistance = 12;
 	collisionsEnabled = true;
 	xpRewardMultiplier = 0;
-	currentDamageResistance = 0;
 }
 
 Entity::~Entity() {
@@ -93,7 +92,17 @@ string Entity::getName() {
 
 void Entity::notifyAttacked(Ptr attacker, const CombatAttack& attack) {
     cout << getIdString() << " ATTACKED BY " << attacker->getIdString() << endl;
-    //TODO - apply damage and effects
+    if (stats.canDie) {
+        attack.apply(attacker.get(), this);
+        if (stats.health<=0) {
+            int levelDiff = stats.level - attacker->stats.level;
+            double levelMult = (levelDiff>0) ? (levelDiff*levelDiff) : (0);
+            double rewardXp = levelMult*xpRewardMultiplier + stats.level;
+            attacker->stats.currentXp += rewardXp; //TODO - level up?
+
+            EntityManager::get()->remove(EntityManager::get()->getEntityPtr(this));
+        }
+    }
 }
 
 void Entity::notifyInteracted(Ptr user) {
@@ -169,4 +178,12 @@ Entity::Ptr Entity::interact(bool notify) {
 
 bool Entity::collidesWithOtherEntities() {
     return collisionsEnabled;
+}
+
+EntityStats& Entity::getStats() {
+    return stats;
+}
+
+const CombatArmor& Entity::getArmor() {
+    return armor;
 }
