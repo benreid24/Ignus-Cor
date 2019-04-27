@@ -12,6 +12,7 @@ Player::Player() :
 		   Properties::AnimationPath+"Entities/BoyPlayer/Run") {
 	speed[0] = 64;
 	speed[1] = 128;
+	boundingBox = FloatRect(0, 12, graphics.getSize().x, graphics.getSize().y-12);
 }
 
 Player::Ptr Player::create() {

@@ -22,6 +22,7 @@ struct CombatEffect {
     Type type;
     std::string name, description;
     double intensity, chance;
+    //TODO - link to particle generator?
 };
 
 #endif // COMBATEFFECT_HPP

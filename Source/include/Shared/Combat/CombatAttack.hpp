@@ -21,11 +21,14 @@ protected:
     double power;
     std::list<CombatEffect> effects;
 
+    std::string animation;
+    //TODO - link to particle generator?
+
 public:
     /**
      * Create the CombatAttack from it's members values
      */
-    CombatAttack(const std::string& name, const std::string& description, double power, const std::list<CombatEffect>& effects);
+    CombatAttack(const std::string& name, const std::string& description, double power, const std::list<CombatEffect>& effects, const std::string& animation);
 
     /**
      * Returns the name of the CombatAttack
@@ -46,6 +49,11 @@ public:
      * Returns the effects of the CombatAttack
      */
     std::list<CombatEffect> getEffects();
+
+    /**
+     * Returns the animation file for the attack
+     */
+    std::string getAnimation();
 };
 
 #endif // COMBATATTACK_HPP

@@ -19,7 +19,7 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	lTime = Entity::timer.getElapsedTime().asSeconds();
 	speed[0] = 64;
 	speed[1] = 128;
-	boundingBox = FloatRect(0, 12, graphics.getSize().x, graphics.getSize().y-12);
+	boundingBox = FloatRect(0, 0, graphics.getSize().x, graphics.getSize().y);
 	interactDistance = 12;
 	collisionsEnabled = true;
 }
