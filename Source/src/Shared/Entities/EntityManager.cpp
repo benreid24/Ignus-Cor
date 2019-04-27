@@ -66,6 +66,9 @@ Entity::List EntityManager::getEntitiesInSpace(const string& mapName, const Floa
 }
 
 bool EntityManager::spaceFree(Entity* e, EntityPosition space, Vector2f size) {
+    if (!e->collidesWithOtherEntities())
+        return false;
+
 	auto i = ySortedEntities.find(space.mapName);
 	int spaceY = space.coords.y/32;
 	FloatRect box(space.coords, size);
