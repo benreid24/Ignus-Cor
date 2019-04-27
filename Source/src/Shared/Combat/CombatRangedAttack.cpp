@@ -10,18 +10,18 @@ CombatRangedAttack::CombatRangedAttack(const string& nm, const string& desc, dou
     explosionRadius = explosionRad;
 }
 
-double CombatRangedAttack::getRange() {
+double CombatRangedAttack::getRange() const {
     return range;
 }
 
-double CombatRangedAttack::getSpeed() {
+double CombatRangedAttack::getSpeed() const {
     return speed;
 }
 
-string CombatRangedAttack::getImpactAnimation() {
+string CombatRangedAttack::getImpactAnimation() const {
     return impactAnimation;
 }
 
-double CombatRangedAttack::getExplosionRadius() {
+double CombatRangedAttack::getExplosionRadius() const {
     return explosionRadius;
 }

@@ -9,22 +9,22 @@ CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, con
     animation = anim;
 }
 
-string CombatAttack::getName() {
+string CombatAttack::getName() const {
     return name;
 }
 
-string CombatAttack::getDescription() {
+string CombatAttack::getDescription() const {
     return description;
 }
 
-double CombatAttack::getPower() {
+double CombatAttack::getPower() const {
     return power;
 }
 
-list<CombatEffect> CombatAttack::getEffects() {
+list<CombatEffect> CombatAttack::getEffects() const {
     return effects;
 }
 
-string CombatAttack::getAnimation() {
+string CombatAttack::getAnimation() const {
     return animation;
 }

@@ -33,27 +33,27 @@ public:
     /**
      * Returns the name of the CombatAttack
      */
-    std::string getName();
+    std::string getName() const;
 
     /**
      * Returns the description of the CombatAttack
      */
-    std::string getDescription();
+    std::string getDescription() const;
 
     /**
      * Returns the power of the CombatAttack
      */
-    double getPower();
+    double getPower() const;
 
     /**
      * Returns the effects of the CombatAttack
      */
-    std::list<CombatEffect> getEffects();
+    std::list<CombatEffect> getEffects() const;
 
     /**
      * Returns the animation file for the attack
      */
-    std::string getAnimation();
+    std::string getAnimation() const;
 };
 
 #endif // COMBATATTACK_HPP

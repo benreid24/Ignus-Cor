@@ -19,22 +19,22 @@ public:
     /**
      * Returns the range of the attack
      */
-    double getRange();
+    double getRange() const;
 
     /**
      * Returns the speed the attack moves at
      */
-    double getSpeed();
+    double getSpeed() const;
 
     /**
      * Returns the explosion radius on impact. 0 means no explosion
      */
-    double getExplosionRadius();
+    double getExplosionRadius() const;
 
     /**
      * Returns the file of the impact animation, if any
      */
-    std::string getImpactAnimation();
+    std::string getImpactAnimation() const;
 };
 
 #endif // COMBATRANGEDATTACK_HPP
