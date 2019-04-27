@@ -109,3 +109,17 @@ void EntityVisual::render(sf::RenderTarget& target, sf::Vector2f position) {
 
     state = Still; //setMoving will be called before next render if entity is moving, so this is fine
 }
+
+bool EntityVisual::animationDone() {
+    switch (type) {
+        case MoveAnim:
+        case SpeedAnim:
+            switch (state) {
+                case Moving:
+                    return slow[dir].finished();
+                case FastMoving:
+                    return fast[dir].finished();
+            }
+    }
+    return false;
+}

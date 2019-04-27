@@ -2,12 +2,11 @@
 using namespace std;
 
 CombatRangedAttack::CombatRangedAttack(const string& nm, const string& desc, double pwr, const list<CombatEffect>& efx, const string& anim,
-                                       double rng, double spd, const string& impactAnim, double explosionRad)
+                                       double rng, double spd, const string& impactAnim)
 : CombatAttack(nm, desc, pwr, efx, anim) {
     range = rng;
     speed = spd;
     impactAnimation = impactAnim;
-    explosionRadius = explosionRad;
 }
 
 double CombatRangedAttack::getRange() const {
@@ -20,8 +19,4 @@ double CombatRangedAttack::getSpeed() const {
 
 string CombatRangedAttack::getImpactAnimation() const {
     return impactAnimation;
-}
-
-double CombatRangedAttack::getExplosionRadius() const {
-    return explosionRadius;
 }

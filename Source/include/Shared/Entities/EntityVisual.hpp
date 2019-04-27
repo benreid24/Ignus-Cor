@@ -72,6 +72,12 @@ public:
 	 * \param position The on screen position to render to
 	 */
 	void render(sf::RenderTarget& target, sf::Vector2f position);
+
+	/**
+	 * Returns whether or not the animation is done. Useful for Entities that play non looping
+	 * animation once
+	 */
+    bool animationDone();
 };
 
 #endif // ENTITYVISUAL_HPP

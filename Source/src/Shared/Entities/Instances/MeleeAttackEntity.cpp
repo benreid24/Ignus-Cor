@@ -5,6 +5,7 @@ using namespace std;
 MeleeAttackEntity::MeleeAttackEntity(Entity::Ptr attacker, const CombatAttack& atk)
 : AttackEntity(attacker, atk.getAnimation()), attack(atk) {
     speed[0] = speed[1] = 0;
+    graphics.setMoving(attacker->getPosition().dir, false);
 }
 
 Entity::Ptr MeleeAttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk) {
@@ -24,4 +25,7 @@ void MeleeAttackEntity::update() {
             attack.apply(attacker.get(), i->get());
         }
     }
+
+    if (graphics.animationDone())
+        EntityManager::get()->remove(EntityManager::get()->getEntityPtr(this));
 }

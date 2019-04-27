@@ -10,14 +10,14 @@
  */
 class CombatRangedAttack : public CombatAttack {
     std::string impactAnimation;
-    double range, speed, explosionRadius;
+    double range, speed;
 
 public:
     /**
      * Creates the ranged attack from all the parameters
      */
     CombatRangedAttack(const std::string& name, const std::string& description, double power, const std::list<CombatEffect>& effects, const std::string& animation,
-                       double range, double speed, const std::string& impactAnimation = "", double explosionRadius = 0);
+                       double range, double speed, const std::string& impactAnimation = "");
 
     /**
      * vtable
@@ -33,11 +33,6 @@ public:
      * Returns the speed the attack moves at
      */
     double getSpeed() const;
-
-    /**
-     * Returns the explosion radius on impact. 0 means no explosion
-     */
-    double getExplosionRadius() const;
 
     /**
      * Returns the file of the impact animation, if any
