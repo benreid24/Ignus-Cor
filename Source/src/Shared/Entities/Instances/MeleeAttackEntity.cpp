@@ -2,13 +2,13 @@
 #include "Shared/Entities/EntityManager.hpp"
 using namespace std;
 
-MeleeAttackEntity::MeleeAttackEntity(Entity::Ptr attacker)
-: AttackEntity(attacker) {
+MeleeAttackEntity::MeleeAttackEntity(Entity::Ptr attacker, const CombatAttack& atk)
+: AttackEntity(attacker, atk.getAnimation()), attack(atk) {
     speed[0] = speed[1] = 0;
 }
 
-Entity::Ptr MeleeAttackEntity::create(Entity::Ptr attacker) {
-    return Entity::Ptr(new MeleeAttackEntity(attacker));
+Entity::Ptr MeleeAttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk) {
+    return Entity::Ptr(new MeleeAttackEntity(attacker, atk));
 }
 
 const string MeleeAttackEntity::getType() {
@@ -16,6 +16,7 @@ const string MeleeAttackEntity::getType() {
 }
 
 void MeleeAttackEntity::update() {
+    AttackEntity::update();
     Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, boundingBox);
     for (Entity::List::iterator i = hits.begin(); i!=hits.end(); ++i) {
         if (find(entitiesHit.begin(), entitiesHit.end(), *i) == entitiesHit.end()) {

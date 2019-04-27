@@ -18,8 +18,8 @@ void CreatureEntity::update() {
     AiEntity::update();
 }
 
-void CreatureEntity::notifyAttacked(Entity::Ptr attacker) {
-    AiEntity::notifyAttacked(attacker);
+void CreatureEntity::notifyAttacked(Entity::Ptr attacker, const CombatAttack& attack) {
+    AiEntity::notifyAttacked(attacker, attack);
 }
 
 void CreatureEntity::notifyInteracted(Entity::Ptr user) {

@@ -18,8 +18,8 @@ void NpcEntity::update() {
     AiEntity::update();
 }
 
-void NpcEntity::notifyAttacked(Entity::Ptr attacker) {
-    AiEntity::notifyAttacked(attacker);
+void NpcEntity::notifyAttacked(Entity::Ptr attacker, const CombatAttack& attack) {
+    AiEntity::notifyAttacked(attacker, attack);
 }
 
 void NpcEntity::notifyInteracted(Entity::Ptr user) {

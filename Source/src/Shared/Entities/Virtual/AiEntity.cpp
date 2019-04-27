@@ -21,10 +21,10 @@ void AiEntity::update() {
         behavior->update();
 }
 
-void AiEntity::notifyAttacked(Ptr attacker) {
-    Entity::notifyAttacked(attacker);
+void AiEntity::notifyAttacked(Ptr attacker, const CombatAttack& attack) {
+    Entity::notifyAttacked(attacker, attack);
     if (behavior != nullptr)
-        behavior->notifyAttacked(attacker);
+        behavior->notifyAttacked(attacker, attack);
 }
 
 void AiEntity::notifyInteracted(Ptr user) {

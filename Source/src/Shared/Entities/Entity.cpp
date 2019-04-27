@@ -89,8 +89,9 @@ string Entity::getName() {
 	return name;
 }
 
-void Entity::notifyAttacked(Ptr attacker) {
+void Entity::notifyAttacked(Ptr attacker, const CombatAttack& attack) {
     cout << getIdString() << " ATTACKED BY " << attacker->getIdString() << endl;
+    //TODO - apply damage and effects
 }
 
 void Entity::notifyInteracted(Ptr user) {

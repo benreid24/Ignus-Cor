@@ -6,6 +6,7 @@
 #include <list>
 #include "Shared/Entities/EntityVisual.hpp"
 #include "Shared/Entities/EntityBubble.hpp"
+#include "Shared/Combat/CombatAttack.hpp"
 
 /**
  * \defgroup Entity
@@ -66,7 +67,6 @@ protected:
 	sf::FloatRect boundingBox; //relative to upper left corner (position and gfx origin)
 	float interactDistance; //how far away it can interact
 	bool collisionsEnabled; //if it blocks other Entities
-	//TODO - attack distance via weapon? what about spells?
 
 	double lTime;
 	float speed[2]; //speed in pixels/second for [slow,fast]. Will be set by child classes
@@ -103,7 +103,7 @@ public:
 	/**
 	 * Notifies the Entity that they were attacked by another Entity
 	 */
-    virtual void notifyAttacked(Ptr attacker); //TODO - attack type?
+    virtual void notifyAttacked(Ptr attacker, const CombatAttack& attack);
 
     /**
      * Notifies the Entity of nearby combat

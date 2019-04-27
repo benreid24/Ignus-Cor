@@ -38,7 +38,7 @@ public:
 	/**
 	 * Notifies the Entity that they were attacked by another Entity
 	 */
-    virtual void notifyAttacked(Ptr attacker);
+    virtual void notifyAttacked(Ptr attacker, const CombatAttack& attack);
 
     /**
      * Notifies the Entity of nearby combat

@@ -2,11 +2,10 @@
 #include "Shared/Entities/EntityManager.hpp"
 using namespace std;
 
-RangedAttackEntity::RangedAttackEntity(Entity::Ptr atk)
-: AttackEntity(atk) {
-    //TODO - set damage, speed, graphics etc from weapon
-    speed[0] = 512;
-    interactDistance = 12; //larger radius attacks?
+RangedAttackEntity::RangedAttackEntity(Entity::Ptr atk, const CombatRangedAttack& weapon)
+: AttackEntity(atk, weapon.getAnimation()), attack(weapon) {
+    speed[0] = attack.getSpeed();
+    position = attacker->getPosition();
 }
 
 const string RangedAttackEntity::getType() {
@@ -14,12 +13,10 @@ const string RangedAttackEntity::getType() {
 }
 
 void RangedAttackEntity::update() {
-    Entity::update();
+    AttackEntity::update();
     if (!move(position.dir, false)) {
-        Entity::Ptr target = interact(false);
-        if (target) {
-            //TODO - apply damage
-        }
+        Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, boundingBox);
+        //TODO - apply damage. check for explosion. create explosion entity. harm caster?
         EntityManager::get()->remove(EntityManager::get()->getEntityPtr(this));
     }
 }

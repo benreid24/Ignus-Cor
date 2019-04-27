@@ -14,9 +14,9 @@ protected:
     Entity::Ptr attacker;
 
     /**
-     * Creates the AttackEntity from the given attacker and weapon
+     * Creates the AttackEntity from the given attacker and animation file
      */
-    AttackEntity(Entity::Ptr attacker);
+    AttackEntity(Entity::Ptr attacker, const std::string& anim);
 
 public:
     /**
@@ -30,9 +30,9 @@ public:
     const std::string getType();
 
     /**
-	 * Pure virtual
+	 * Calls Entity::update()
 	 */
-	virtual void update() = 0;
+	virtual void update();
 };
 
 #endif // RANGEDATTACK
