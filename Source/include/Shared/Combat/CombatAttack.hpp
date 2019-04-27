@@ -31,6 +31,11 @@ public:
     CombatAttack(const std::string& name, const std::string& description, double power, const std::list<CombatEffect>& effects, const std::string& animation);
 
     /**
+     * vtable
+     */
+    virtual ~CombatAttack() = default;
+
+    /**
      * Returns the name of the CombatAttack
      */
     std::string getName() const;

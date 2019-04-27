@@ -25,6 +25,11 @@ public:
     virtual ~AttackEntity() = default;
 
     /**
+     * Creates either a MeleeAttackEntity or RangedAttackEntity based on what the CombatAttack is
+     */
+    static Entity::Ptr create(Entity::Ptr attacker, const CombatAttack& atk);
+
+    /**
      * Returns "AttackEntity"
      */
     const std::string getType();

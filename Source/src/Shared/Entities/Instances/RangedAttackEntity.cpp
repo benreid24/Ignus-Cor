@@ -8,6 +8,10 @@ RangedAttackEntity::RangedAttackEntity(Entity::Ptr atk, const CombatRangedAttack
     position = attacker->getPosition();
 }
 
+Entity::Ptr RangedAttackEntity::create(Entity::Ptr attacker, const CombatRangedAttack& atk) {
+    return Entity::Ptr(new RangedAttackEntity(attacker, atk));
+}
+
 const string RangedAttackEntity::getType() {
     return "RangedAttackEntity";
 }
