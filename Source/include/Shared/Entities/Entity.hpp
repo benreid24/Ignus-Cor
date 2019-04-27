@@ -46,6 +46,20 @@ struct EntityPosition {
 };
 
 /**
+ * Stores combat related stats for an Entity
+ *
+ * \ingroup Entity
+ */
+struct EntityStats {
+    bool canDie;
+    double health, maxHealth;
+    int currentLevel;
+    double currentXp, nextLevelXp;
+
+    EntityStats() : canDie(false), currentLevel(1), currentXp(0) {}
+};
+
+/**
  * Base class for all "physical" objects in the game. Provides an interface for the game to manage it
  *
  * \ingroup Entity
@@ -70,6 +84,9 @@ protected:
 
 	double lTime;
 	float speed[2]; //speed in pixels/second for [slow,fast]. Will be set by child classes
+
+	EntityStats stats;
+	double xpRewardMultiplier; //xp reward = levelDiff^2 * xpRewardMultiplier + level
 
 	/**
 	 * Accessor function for child classes to call EntityManager::doInteract

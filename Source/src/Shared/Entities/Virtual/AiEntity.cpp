@@ -4,6 +4,7 @@ using namespace std;
 
 AiEntity::AiEntity(string nm, EntityPosition pos, string gfx1, string gfx2) : Entity(nm, pos, gfx1, gfx2) {
     behavior = nullptr;
+    stats.canDie = true;
 }
 
 AiEntity::~AiEntity() {

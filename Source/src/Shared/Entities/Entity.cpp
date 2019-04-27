@@ -22,6 +22,7 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	boundingBox = FloatRect(0, 0, graphics.getSize().x, graphics.getSize().y);
 	interactDistance = 12;
 	collisionsEnabled = true;
+	xpRewardMultiplier = 0;
 }
 
 Entity::~Entity() {
