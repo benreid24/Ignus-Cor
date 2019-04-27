@@ -23,6 +23,7 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	interactDistance = 12;
 	collisionsEnabled = true;
 	xpRewardMultiplier = 0;
+	currentDamageResistance = 0;
 }
 
 Entity::~Entity() {

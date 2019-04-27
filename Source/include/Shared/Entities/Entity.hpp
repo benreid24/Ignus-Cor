@@ -86,6 +86,7 @@ protected:
 	float speed[2]; //speed in pixels/second for [slow,fast]. Will be set by child classes
 
 	EntityStats stats;
+	double currentDamageResistance; //set by equipping armor
 	double xpRewardMultiplier; //xp reward = levelDiff^2 * xpRewardMultiplier + level
 
 	/**
