@@ -2,9 +2,8 @@
 #include "Shared/Entities/EntityBehavior.hpp"
 using namespace std;
 
-AiEntity::AiEntity(string nm, EntityPosition pos, string gfx1, string gfx2) : Entity(nm, pos, gfx1, gfx2) {
+AiEntity::AiEntity(string nm, EntityPosition pos, string gfx1, string gfx2) : CombatEntity(nm, pos, gfx1, gfx2) {
     behavior = nullptr;
-    stats.canDie = true;
 }
 
 AiEntity::~AiEntity() {
@@ -12,30 +11,26 @@ AiEntity::~AiEntity() {
         delete behavior;
 }
 
-const string AiEntity::getType() {
-    return "AiEntity";
-}
-
 void AiEntity::update() {
-    Entity::update();
+    CombatEntity::update();
     if (behavior != nullptr)
         behavior->update();
 }
 
 void AiEntity::notifyAttacked(Ptr attacker, const CombatAttack& attack) {
-    Entity::notifyAttacked(attacker, attack);
+    CombatEntity::notifyAttacked(attacker, attack);
     if (behavior != nullptr)
         behavior->notifyAttacked(attacker, attack);
 }
 
 void AiEntity::notifyInteracted(Ptr user) {
-    Entity::notifyInteracted(user);
+    CombatEntity::notifyInteracted(user);
     if (behavior != nullptr)
         behavior->notifyInteracted(user);
 }
 
 void AiEntity::notifyCombatNearby(List combatants) {
-    Entity::notifyCombatNearby(combatants);
+    CombatEntity::notifyCombatNearby(combatants);
     if (behavior != nullptr)
         behavior->notifyCombatNearby(combatants);
 }

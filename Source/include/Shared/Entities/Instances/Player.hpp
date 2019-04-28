@@ -1,12 +1,12 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include "../Entity.hpp"
+#include "Shared/Entities/Virtual/CombatEntity.hpp"
 
 /**
  * Class to represent the player(s) in the game. Stores inventory and other player data
  */
-class Player : public Entity {
+class Player : public CombatEntity {
 	//player data (money, inventory, etc)
 
 	/**

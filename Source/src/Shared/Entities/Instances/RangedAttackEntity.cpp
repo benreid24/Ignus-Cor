@@ -22,7 +22,7 @@ void RangedAttackEntity::update() {
     if (!move(position.dir, false)) {
         Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, boundingBox);
         for (Entity::List::iterator i = hits.begin(); i!=hits.end(); ++i) {
-            attack.apply(attacker.get(), i->get());
+            (*i)->notifyAttacked(attacker, attack);
         }
 
         if (attack.getImpactAnimation().size() > 0) {

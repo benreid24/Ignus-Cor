@@ -1,7 +1,7 @@
 #ifndef AIENTITY_HPP
 #define AIENTITY_HPP
 
-#include "Shared/Entities/Entity.hpp"
+#include "Shared/Entities/Virtual/CombatEntity.hpp"
 
 class EntityBehavior;
 
@@ -10,7 +10,7 @@ class EntityBehavior;
  *
  * \ingroup Entity
  */
-class AiEntity : public Entity {
+class AiEntity : public CombatEntity {
 protected:
     EntityBehavior* behavior;
 
@@ -26,9 +26,9 @@ public:
     virtual ~AiEntity();
 
     /**
-     * Returns "AiEntity"
+     * Pure virtual
      */
-    virtual const std::string getType();
+    virtual const std::string getType() = 0;
 
     /**
 	 * Updates the Entity. Just calls behavior if present

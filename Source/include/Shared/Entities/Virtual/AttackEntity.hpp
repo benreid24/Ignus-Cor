@@ -30,9 +30,9 @@ public:
     static Entity::Ptr create(Entity::Ptr attacker, const CombatAttack& atk);
 
     /**
-     * Returns "AttackEntity"
+     * Pure virtual
      */
-    const std::string getType();
+    const virtual std::string getType() = 0;
 
     /**
 	 * Calls Entity::update()

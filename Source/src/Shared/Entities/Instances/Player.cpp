@@ -6,14 +6,13 @@ using namespace std;
 using namespace sf;
 
 Player::Player() :
-	Entity("player name",
+	CombatEntity("Test Player",
 		   EntityPosition(Vector2f(5,5), "test.map", EntityPosition::Direction::Up),
 		   Properties::AnimationPath+"Entities/BoyPlayer/Walk",
 		   Properties::AnimationPath+"Entities/BoyPlayer/Run") {
 	speed[0] = 64;
 	speed[1] = 128;
 	boundingBox = FloatRect(0, 12, graphics.getSize().x, graphics.getSize().y-12);
-	stats.canDie = true;
 }
 
 Player::Ptr Player::create() {
@@ -37,7 +36,7 @@ void Player::update() {
 
 	MapManager::get()->updateRenderPosition(position.coords);
 
-	Entity::update();
+	CombatEntity::update();
 }
 
 const string Player::getType() {

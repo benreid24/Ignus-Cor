@@ -28,6 +28,11 @@ protected:
 
 public:
     /**
+     * Creates the "empty" attack Punch
+     */
+    CombatAttack();
+
+    /**
      * Create the CombatAttack from it's members values
      */
     CombatAttack(const std::string& name, const std::string& description, double power, const std::list<CombatEffect>& effects, const std::string& animation);
@@ -61,11 +66,6 @@ public:
      * Returns the animation file for the attack
      */
     std::string getAnimation() const;
-
-    /**
-     * Applies an attack from one Entity to another, handling damage and effects
-     */
-    void apply(Entity* attacker, Entity* defender) const;
 };
 
 #endif // COMBATATTACK_HPP
