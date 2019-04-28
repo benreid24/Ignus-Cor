@@ -38,6 +38,11 @@ public:
      * Returns the file of the impact animation, if any
      */
     std::string getImpactAnimation() const;
+
+    /**
+     * Converts to a CombatAttack for the explosion
+     */
+    CombatAttack toExplosionAttack() const;
 };
 
 #endif // COMBATRANGEDATTACK_HPP

@@ -1,4 +1,5 @@
 #include "Shared/Entities/Instances/RangedAttackEntity.hpp"
+#include "Shared/Entities/Instances/MeleeAttackEntity.hpp"
 #include "Shared/Entities/EntityManager.hpp"
 using namespace std;
 
@@ -20,7 +21,15 @@ void RangedAttackEntity::update() {
     AttackEntity::update();
     if (!move(position.dir, false)) {
         Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, boundingBox);
-        //TODO - apply damage. check for explosion. create explosion entity. harm caster?
+        for (Entity::List::iterator i = hits.begin(); i!=hits.end(); ++i) {
+            attack.apply(attacker.get(), i->get());
+        }
+
+        if (attack.getImpactAnimation().size() > 0) {
+            Entity::Ptr explosion = MeleeAttackEntity::create(attacker, attack.toExplosionAttack());
+            explosion->setPositionAndDirection(position);
+            EntityManager::get()->add(explosion);
+        }
         EntityManager::get()->remove(EntityManager::get()->getEntityPtr(this));
     }
 }

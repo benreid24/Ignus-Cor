@@ -20,3 +20,13 @@ double CombatRangedAttack::getSpeed() const {
 string CombatRangedAttack::getImpactAnimation() const {
     return impactAnimation;
 }
+
+CombatAttack CombatRangedAttack::toExplosionAttack() const {
+    return CombatAttack(
+        name+"-explosion",
+        description,
+        power, //TODO - separate power/effects for explosion?
+        effects,
+        impactAnimation
+    );
+}
