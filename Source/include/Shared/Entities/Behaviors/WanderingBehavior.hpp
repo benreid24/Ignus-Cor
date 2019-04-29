@@ -10,6 +10,7 @@
  */
 class WanderingBehavior : public EntityBehavior {
     int radius;
+    double sqrdRad;
     EntityPosition::Direction movementDirection;
 
     sf::Clock timer;
@@ -34,7 +35,7 @@ public:
     /**
      * Creates the WanderingBehavior with the given owner and radius
      */
-    WanderingBehavior(Entity* owner, int radius = 20);
+    WanderingBehavior(Entity* owner, int radius = 600);
 
     /**
      * Updates the owning Entity
