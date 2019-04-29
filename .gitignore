@@ -2,7 +2,6 @@
 *.ini
 *.exe
 *.a
-*.dll
 *.depend
 *.layout
 *.cscope_file_list
