@@ -12,9 +12,9 @@ AiEntity::~AiEntity() {
 }
 
 void AiEntity::update() {
-    CombatEntity::update();
     if (behavior != nullptr)
         behavior->update();
+    CombatEntity::update();
 }
 
 void AiEntity::notifyAttacked(Ptr attacker, const CombatAttack& attack) {

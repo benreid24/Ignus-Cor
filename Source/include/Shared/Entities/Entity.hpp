@@ -43,6 +43,11 @@ struct EntityPosition {
 		mapName = map;
 		dir = d;
 	}
+
+	/**
+	 * Assigns the given values to the position. Gets the map from the MapManager
+	 */
+	EntityPosition(sf::Vector2f pos, Direction d);
 };
 
 /**

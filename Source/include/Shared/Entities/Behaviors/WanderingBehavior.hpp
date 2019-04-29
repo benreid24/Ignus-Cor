@@ -34,7 +34,7 @@ public:
     /**
      * Creates the WanderingBehavior with the given owner and radius
      */
-    WanderingBehavior(Entity::Ptr owner, int radius = 20);
+    WanderingBehavior(Entity* owner, int radius = 20);
 
     /**
      * Updates the owning Entity

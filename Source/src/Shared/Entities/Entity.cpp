@@ -10,6 +10,12 @@ using namespace sf;
 Clock Entity::timer;
 int UUID::nextUuid = 1;
 
+EntityPosition::EntityPosition(Vector2f pos, Direction d) {
+    coords = pos;
+    dir = d;
+    mapName = MapManager::get()->getCurrentMap();
+}
+
 Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	graphics.load(gfx1,gfx2);
 	position = pos;
@@ -22,6 +28,7 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	boundingBox = FloatRect(0, 0, graphics.getSize().x, graphics.getSize().y);
 	interactDistance = 12;
 	collisionsEnabled = true;
+	cout << "Entity '" << name << "'(uuid: " << uuid << ") created\n";
 }
 
 Entity::~Entity() {
@@ -121,16 +128,16 @@ bool Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
 	float dist = speed[i]*elapsedTime;
 
 	switch (position.dir) {
-	case 0:
+	case EntityPosition::Up:
         newPos.coords.y -= dist;
         break;
-	case 1:
+	case EntityPosition::Right:
 		newPos.coords.x += dist;
 		break;
-	case 2:
+	case EntityPosition::Down:
 		newPos.coords.y += dist;
 		break;
-	case 3:
+	case EntityPosition::Left:
 		newPos.coords.x -= dist;
 		break;
 	default:

@@ -2,7 +2,7 @@
 #include "Shared/Util/Util.hpp"
 using namespace std;
 
-WanderingBehavior::WanderingBehavior(Entity::Ptr ent, int rad) : EntityBehavior(ent) {
+WanderingBehavior::WanderingBehavior(Entity* ent, int rad) : EntityBehavior(ent) {
     radius = rad;
     timeOfNextStep = 0;
 }
@@ -13,8 +13,9 @@ void WanderingBehavior::update() {
     switch (state) {
         case Default:
             if (timer.getElapsedTime().asMilliseconds()<=timeOfNextStep) {
-                if (!owner.lock()->move(movementDirection))
+                if (!owner->move(movementDirection)) {
                     movementDirection = getMovementDirection();
+                }
             }
             else {
                 int chanceToStop = Random(0,100);
@@ -48,7 +49,7 @@ EntityPosition::Direction WanderingBehavior::getMovementDirection() {
     if (radius==0)
         return EntityPosition::Direction(Random(0,3));
 
-    sf::Vector2i pos = sf::Vector2i(owner.lock()->getPosition().coords);
+    sf::Vector2i pos = sf::Vector2i(owner->getPosition().coords);
     int xWeight = abs(pos.x-startPosition.coords.x);
     int yWeight = abs(pos.y-startPosition.coords.y);
 

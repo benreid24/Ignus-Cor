@@ -95,3 +95,7 @@ void MapManager::render() {
 void MapManager::updateRenderPosition(Vector2f playerCoords) {
 	maps[activeMap].mapdata->setRenderPosition(playerCoords);
 }
+
+string MapManager::getCurrentMap() {
+    return activeMap;
+}

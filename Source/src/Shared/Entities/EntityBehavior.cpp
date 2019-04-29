@@ -1,7 +1,7 @@
 #include "Shared/Entities/EntityBehavior.hpp"
 using namespace std;
 
-EntityBehavior::EntityBehavior(Entity::Ptr ent) {
+EntityBehavior::EntityBehavior(Entity* ent) {
     owner = ent;
     state = Default;
     combatTendency = Normal;
@@ -33,13 +33,14 @@ void EntityBehavior::notifyAttacked(Entity::Ptr attacker, const CombatAttack& at
 
 void EntityBehavior::notifyInteracted(Entity::Ptr user) {
     if (!interactor.expired()) {
-        cout << "Warning: " << owner.lock()->getIdString() << " interacted with by " << user->getIdString() << " but has interactor " << interactor.lock()->getIdString() << " active still\n";
+        cout << "Warning: " << owner->getIdString() << " interacted with by " << user->getIdString()
+             << " but has interactor " << interactor.lock()->getIdString() << " active still\n";
     }
     interactor = user;
 }
 
 void EntityBehavior::notifyCombatNearby(Entity::List combatants) {
-    cout << "Combat detected near " << owner.lock()->getIdString() << endl;
+    cout << "Combat detected near " << owner->getIdString() << endl;
 }
 
 void EntityBehavior::update() {

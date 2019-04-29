@@ -1,10 +1,15 @@
 #include "Shared/Entities/EntityManager.hpp"
 #include "Game/Core/Game.hpp"
+#include "Shared/Entities/Instances/NpcEntity.hpp"
 using namespace sf;
 using namespace std;
 
 EntityManager::EntityManager() {
-    //ctor
+    Entity::Ptr test = NpcEntity::create("Test Npc",
+                                         EntityPosition(Vector2f(680, 680), "test.map", EntityPosition::Up),
+                                         Properties::AnimationPath+"Entities/GirlPlayer/Walk",
+                                         Properties::AnimationPath+"Entities/GirlPlayer/Run");
+    add(test);
 }
 
 EntityManager::~EntityManager() {
@@ -94,6 +99,9 @@ bool EntityManager::canMove(Entity* e, EntityPosition oldPos, EntityPosition new
 }
 
 void EntityManager::clear() {
+    Lock lock(entityLock);
+    entityAddQueue.clear();
+    entityDeleteQueue.clear();
 	ySortedEntities.clear();
 	entities.clear();
 }

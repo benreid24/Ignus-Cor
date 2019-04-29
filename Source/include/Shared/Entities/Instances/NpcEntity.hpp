@@ -14,13 +14,18 @@ class NpcEntity : public AiEntity {
     /**
      * Creates the NpcEntity from the given data and data file
      */
-    NpcEntity(std::string nm, EntityPosition pos, std::string gfx1, std::string gfx2, File& dataFile);
+    NpcEntity(std::string nm, EntityPosition pos, std::string gfx1, std::string gfx2);
 
 public:
     /**
      * Loads the NPC from the data file and returns a Ptr to the created object
      */
     static Entity::Ptr create(std::string dataFile);
+
+    /**
+     * Creates an NpcEntity from the given data
+     */
+    static Entity::Ptr create(std::string nm, EntityPosition pos, std::string gfx1, std::string gfx2);
 
     /**
      * vtable

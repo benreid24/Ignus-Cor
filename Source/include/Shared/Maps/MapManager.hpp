@@ -53,6 +53,11 @@ public:
      */
 	void loadMap(std::string mapFile);
 
+	/**
+	 * Returns the name of the Map the Player is in
+	 */
+    std::string getCurrentMap();
+
     /**
      * Moves the given Entity to the requested map
      */

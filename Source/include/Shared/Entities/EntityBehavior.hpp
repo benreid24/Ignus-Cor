@@ -60,7 +60,7 @@ private:
 
 protected:
     EntityPosition startPosition;
-    Entity::WeakPtr owner;
+    Entity* owner;
     int state;
 
     /**
@@ -78,7 +78,7 @@ public:
     /**
      * Construct the behavior with an owner
      */
-    EntityBehavior(Entity::Ptr owner);
+    EntityBehavior(Entity* owner);
 
     /**
      * For vtable
