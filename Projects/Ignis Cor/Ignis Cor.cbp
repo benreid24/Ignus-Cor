@@ -89,6 +89,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/include/Shared/Combat/CombatMeleeAttack.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatRangedAttack.hpp" />
 		<Unit filename="../../Source/include/Shared/Data/ItemDB.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Behaviors/WanderingBehavior.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Entity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityBehavior.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityBubble.hpp" />
@@ -143,6 +144,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/src/Shared/Combat/CombatAttack.cpp" />
 		<Unit filename="../../Source/src/Shared/Combat/CombatRangedAttack.cpp" />
 		<Unit filename="../../Source/src/Shared/Data/ItemDB.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Behaviors/WanderingBehavior.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Entity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityBehavior.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityBubble.cpp" />
