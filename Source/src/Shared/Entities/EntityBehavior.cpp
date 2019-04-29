@@ -4,6 +4,8 @@ using namespace std;
 EntityBehavior::EntityBehavior(Entity::Ptr ent) {
     owner = ent;
     state = Default;
+    combatTendency = Normal;
+    startPosition = ent->getPosition();
 }
 
 Entity::Ptr EntityBehavior::getInteractor() {

@@ -160,7 +160,7 @@ public:
 	 *
 	 * \param dir The direction to move in
 	 * \param fast Whether or not to move fast
-	 * \param elapsedTime Elapsed time to use, leave blank for the function to figure it out. Used for diagonal motion
+	 * \param elapsedTime Elapsed time to use, leave blank for the function to figure it out
 	 * \return True if the Entity was able to move, false otherwise
 	 */
 	bool move(EntityPosition::Direction dir, bool fast = false, float elapsedTime = 0);

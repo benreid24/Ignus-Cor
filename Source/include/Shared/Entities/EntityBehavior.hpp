@@ -59,8 +59,9 @@ private:
     void doInteract();
 
 protected:
+    EntityPosition startPosition;
     Entity::WeakPtr owner;
-    State state;
+    int state;
 
     /**
      * Accessor function for Entity interactor. Returns nullptr if none or expired
