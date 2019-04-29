@@ -3,6 +3,7 @@ using namespace std;
 
 EntityBehavior::EntityBehavior(Entity::Ptr ent) {
     owner = ent;
+    state = Default;
 }
 
 Entity::Ptr EntityBehavior::getInteractor() {
@@ -37,4 +38,51 @@ void EntityBehavior::notifyInteracted(Entity::Ptr user) {
 
 void EntityBehavior::notifyCombatNearby(Entity::List combatants) {
     cout << "Combat detected near " << owner.lock()->getIdString() << endl;
+}
+
+void EntityBehavior::update() {
+    switch (state) {
+        case Fleeing:
+            doFlee();
+            break;
+
+        case Fighting:
+        case Aiding:
+            doFight();
+            break;
+
+        case Interacting:
+            doInteract();
+            break;
+
+        default:
+            break;
+    }
+}
+
+void EntityBehavior::doFight() {
+    Entity::List enemies = getAttackers();
+    if (enemies.size()>0) {
+        //TODO - figure out how to fight
+    }
+    else
+        state = Default;
+}
+
+void EntityBehavior::doFlee() {
+    Entity::List enemies = getAttackers();
+    if (enemies.size()>0) {
+        //TODO - find best runaway path and run that way
+    }
+    else
+        state = Default;
+}
+
+void EntityBehavior::doInteract() {
+    Entity::Ptr user = getInteractor();
+    if (user) {
+        //TODO - face them. Walk next to them?
+    }
+    else
+        state = Default;
 }

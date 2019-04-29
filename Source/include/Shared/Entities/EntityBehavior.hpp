@@ -23,7 +23,6 @@ public:
      * How the Entity should respond to being attacked or witnessing combat
      */
     enum CombatTendency {
-        Inanimate = -1,
         Normal = 0,
         Timid = 1,
         Aggressive,
@@ -44,8 +43,24 @@ private:
     std::list<Entity::WeakPtr> attackers; //TODO - allies?
     Entity::WeakPtr interactor;
 
+    /**
+     * Helper function to flee from enemies
+     */
+    void doFlee();
+
+    /**
+     * Helper function to fight enemies
+     */
+    void doFight();
+
+    /**
+     * Helper function to do interaction
+     */
+    void doInteract();
+
 protected:
     Entity::WeakPtr owner;
+    State state;
 
     /**
      * Accessor function for Entity interactor. Returns nullptr if none or expired
@@ -72,7 +87,7 @@ public:
     /**
      * Perform one update cycle. This will potentially modify the owning Entity
      */
-    virtual void update() = 0;
+    virtual void update();
 
     /**
      * Notify of being attacked. Child classes should call this to update the attacker list
@@ -82,7 +97,7 @@ public:
     /**
      * Notify of nearby combat
      */
-     virtual void notifyCombatNearby(Entity::List combatants);
+    virtual void notifyCombatNearby(Entity::List combatants);
 
     /**
      * Notify of being interacted with. Child classes should call this to update the interactor WeakPtr
