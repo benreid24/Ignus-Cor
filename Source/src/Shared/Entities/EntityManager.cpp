@@ -178,32 +178,6 @@ void EntityManager::remove(Entity* e) {
     remove(getEntityPtr(e));
 }
 
-Entity::Ptr EntityManager::doInteract(Entity* interactor, bool notify) {
-    Entity::Ptr ent = getEntityPtr(interactor);
-    if (ent.get() == nullptr) {
-        cout << "Error: " << interactor->getIdString() << " is unregistered with EntityManager\n";
-        return Entity::Ptr(nullptr);
-    }
-
-    FloatRect box = ent->getInteractBox();
-    vector<vector<Entity::Ptr> >& ents = getYSorted(ent->getPosition().mapName);
-    unsigned int minY = (box.top-box.height/2)/32;
-    unsigned int maxY = (box.top+box.height*1.5)/32;
-
-    for (unsigned int y = minY; y<=maxY; ++y) {
-        if (y>=0 && y<ents.size()) {
-            for (unsigned int i = 0; i<ents[y].size(); ++y) {
-                if (box.intersects(ents[y][i]->getBoundingBox())) {
-                    if (notify)
-                        ents[y][i]->notifyInteracted(ent);
-                    return ents[y][i];
-                }
-            }
-        }
-    }
-    return Entity::Ptr(nullptr);
-}
-
 void EntityManager::update() {
 	for (unsigned int i = 0; i<entities.size(); ++i) {
 		entities[i]->update();

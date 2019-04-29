@@ -72,9 +72,9 @@ protected:
 	float speed[2]; //speed in pixels/second for [slow,fast]. Will be set by child classes
 
 	/**
-	 * Accessor function for child classes to call EntityManager::doInteract
+	 * Helper function that notifies nearby Entities of being interacted with
 	 */
-	Ptr interact(bool notify = true);
+	Ptr interact();
 
 	static sf::Clock timer; //for doing movement based on time
 

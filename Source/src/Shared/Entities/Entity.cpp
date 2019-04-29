@@ -160,8 +160,16 @@ void Entity::update() {
 	lTime = Entity::timer.getElapsedTime().asSeconds();
 }
 
-Entity::Ptr Entity::interact(bool notify) {
-    return EntityManager::get()->doInteract(this, notify);
+Entity::Ptr Entity::interact() {
+    List ents = EntityManager::get()->getEntitiesInSpace(position.mapName, getInteractBox());
+    Ptr me = EntityManager::get()->getEntityPtr(this);
+    if (ents.size()>0) {
+        if (ents.size()>1)
+            cout << "Warning: " << getIdString() << " interacted with " << ents.size() << "entities\n";
+        (*ents.begin())->notifyInteracted(me);
+        return *ents.begin();
+    }
+    return Ptr(nullptr);
 }
 
 bool Entity::collidesWithOtherEntities() {
