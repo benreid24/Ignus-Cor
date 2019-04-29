@@ -57,7 +57,7 @@ public:
 	typedef std::list<Ptr> List;
 
 protected:
-	int uuid;
+	int uuid; //TODO - figure out best way to persist Entities across maps/gamesaves
 	std::string name;
 
 	EntityPosition position;
