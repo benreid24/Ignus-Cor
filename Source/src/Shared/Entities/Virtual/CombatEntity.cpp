@@ -30,7 +30,7 @@ void CombatEntity::notifyAttacked(Entity::Ptr attacker, const CombatAttack& atk)
             double rewardXp = levelMult*xpRewardMultiplier + stats.level;
             atkr->stats.currentXp += rewardXp; //TODO - level up?
 
-            EntityManager::get()->remove(EntityManager::get()->getEntityPtr(this));
+            EntityManager::get()->remove(this);
         }
     }
     else

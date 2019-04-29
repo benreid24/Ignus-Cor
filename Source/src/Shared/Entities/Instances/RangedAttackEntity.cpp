@@ -30,6 +30,6 @@ void RangedAttackEntity::update() {
             explosion->setPositionAndDirection(position);
             EntityManager::get()->add(explosion);
         }
-        EntityManager::get()->remove(EntityManager::get()->getEntityPtr(this));
+        EntityManager::get()->remove(this);
     }
 }

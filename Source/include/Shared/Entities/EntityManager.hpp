@@ -12,8 +12,8 @@ class Game;
  * \ingroup Entity
  */
 class EntityManager {
-    sf::Mutex deleteLock;
-    std::list<Entity::Ptr> entityDeleteQueue;
+    sf::Mutex entityLock;
+    std::list<Entity::Ptr> entityDeleteQueue, entityAddQueue;
 
 	std::vector<Entity::Ptr> entities;
 	std::unordered_map<Entity*, Entity::WeakPtr> entityPointerMap;
@@ -44,6 +44,11 @@ class EntityManager {
      * Performs the actual deletion of an Entity
      */
     void doDelete(Entity::Ptr e);
+
+    /**
+     * Performs the actual addition of an Entity
+     */
+    void doAdd(Entity::Ptr e);
 
     /**
 	 * Creates an EntityManager
@@ -86,9 +91,14 @@ public:
 	void remove(std::string name, std::string type = "");
 
 	/**
-	 * Removes the given Entity based on memory address
+	 * Removes the given Entity based on Entity::Ptr
 	 */
 	void remove(Entity::Ptr e);
+
+	/**
+	 * Removes the given Entity using a raw pointer
+	 */
+    void remove(Entity* e);
 
 	/**
 	 * Updates all Entities

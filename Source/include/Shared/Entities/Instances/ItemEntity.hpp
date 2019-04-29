@@ -30,7 +30,7 @@ public:
         Entity::notifyInteracted(user);
         if (user->getType()=="Player") {
             //TODO - add to inventory
-            EntityManager::get()->remove(EntityManager::get()->getEntityPtr(this));
+            EntityManager::get()->remove(this);
         }
     }
 };

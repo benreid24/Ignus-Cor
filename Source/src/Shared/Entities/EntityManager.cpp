@@ -119,6 +119,11 @@ void EntityManager::registerMap(string mapname, int height) {
 }
 
 void EntityManager::add(Entity::Ptr e) {
+    Lock lock(entityLock);
+    entityAddQueue.push_back(e);
+}
+
+void EntityManager::doAdd(Entity::Ptr e) {
 	if (ySortedEntities.find(e->getPosition().mapName)==ySortedEntities.end()) {
 		cout << "CRITICAL: Tried to insert an Entity into non-existent map: " << e->getPosition().mapName << endl;
 		return;
@@ -156,7 +161,7 @@ void EntityManager::doDelete(Entity::Ptr e) {
 }
 
 void EntityManager::remove(Entity::Ptr e) {
-    Lock delLock(deleteLock);
+    Lock lock(entityLock);
     entityDeleteQueue.push_back(e);
 }
 
@@ -167,6 +172,10 @@ void EntityManager::remove(string name, string type) {
             --i;
 		}
 	}
+}
+
+void EntityManager::remove(Entity* e) {
+    remove(getEntityPtr(e));
 }
 
 Entity::Ptr EntityManager::doInteract(Entity* interactor, bool notify) {
@@ -200,11 +209,15 @@ void EntityManager::update() {
 		entities[i]->update();
 	}
 
-	Lock delLock(deleteLock);
+	Lock lock(entityLock);
 	for (auto i = entityDeleteQueue.begin(); i!=entityDeleteQueue.end(); ++i) {
         doDelete(*i);
 	}
 	entityDeleteQueue.clear();
+	for (auto i = entityAddQueue.begin(); i!=entityAddQueue.end(); ++i) {
+        doAdd(*i);
+	}
+	entityAddQueue.clear();
 }
 
 Entity::Ptr EntityManager::getEntityPtr(Entity* ent) {
