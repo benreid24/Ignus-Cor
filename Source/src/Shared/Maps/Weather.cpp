@@ -67,7 +67,7 @@ void Thunder::update(SoundEngine* sEngine)
         }
         flash.setFillColor(Color(255,255,255,alpha));
     }
-    else if (Random(10000,25000)<Weather::timer.getElapsedTime().asMilliseconds()-lastTime)
+    else if (randomInt(10000,25000)<Weather::timer.getElapsedTime().asMilliseconds()-lastTime)
     {
         sEngine->playSound("thunder.wav");
         flash.setFillColor(Color(255,255,255,128));
@@ -167,7 +167,7 @@ void RainWeather::update() {
             {
                 int xMin = owner->getCamera().x-300;
                 int yMin = owner->getCamera().y-300;
-                rainDrops[i] = Vector4D(Random(xMin, xMin+1400),Random(yMin,yMin+1200),Random(50,90),0);
+                rainDrops[i] = Vector4D(randomInt(xMin, xMin+1400),randomInt(yMin,yMin+1200),randomInt(50,90),0);
             }
             else if (isStopping)
             {
@@ -186,7 +186,7 @@ void RainWeather::update() {
 		{
 			int xMin = owner->getCamera().x-300;
 			int yMin = owner->getCamera().y-300;
-			rainDrops.push_back(Vector4D(Random(xMin, xMin+1400),Random(yMin,yMin+1200),Random(50,90),0));
+			rainDrops.push_back(Vector4D(randomInt(xMin, xMin+1400),randomInt(yMin,yMin+1200),randomInt(50,90),0));
 			created++;
 		}
     }
@@ -313,7 +313,7 @@ void SnowWeather::update()
                 {
                 	int xMin = owner->getCamera().x-300;
 					int yMin = owner->getCamera().y-300;
-					flakes[i] = Vector4D(Random(xMin, xMin+1400),Random(yMin,yMin+1200),Random(50,90),0);
+					flakes[i] = Vector4D(randomInt(xMin, xMin+1400),randomInt(yMin,yMin+1200),randomInt(50,90),0);
                 }
                 else if (isStopping)
 				{
@@ -333,7 +333,7 @@ void SnowWeather::update()
 		{
 			int xMin = owner->getCamera().x-300;
 			int yMin = owner->getCamera().y-300;
-			flakes.push_back(Vector4D(Random(xMin, xMin+1400),Random(yMin,yMin+1200),Random(50,90),0));
+			flakes.push_back(Vector4D(randomInt(xMin, xMin+1400),randomInt(yMin,yMin+1200),randomInt(50,90),0));
 			created++;
 		}
     }
@@ -432,7 +432,7 @@ FogWeather::FogWeather(Map* m, bool isThick) : BaseWeatherType(m)
     {
         for (int y = -7; y<Properties::ScreenHeight*3/20; y++)
         {
-            particles.push_back(Particle(baseX+x*20,baseY+y*20,Random(0,360),double(Random(-5,5))/33));
+            particles.push_back(Particle(baseX+x*20,baseY+y*20,randomInt(0,360),double(randomInt(-5,5))/33));
         }
     }
 
@@ -482,9 +482,9 @@ void FogWeather::update()
         particles[i].rotation += particles[i].angularVel*dt;
 
         if (particles[i].x>owner->getCamera().x+Properties::ScreenWidth*3)
-			particles[i] = Particle(owner->getCamera().x-96,particles[i].y,Random(0,360),double(Random(-5,5))/33);
+			particles[i] = Particle(owner->getCamera().x-96,particles[i].y,randomInt(0,360),double(randomInt(-5,5))/33);
         if (particles[i].y>owner->getCamera().y+Properties::ScreenHeight*3)
-			particles[i] = Particle(particles[i].x,owner->getCamera().y-96,Random(0,360),double(Random(-5,5))/33);
+			particles[i] = Particle(particles[i].x,owner->getCamera().y-96,randomInt(0,360),double(randomInt(-5,5))/33);
     }
 
     if (a<targetA && !isStopping)
@@ -538,7 +538,7 @@ SandstormWeather::SandstormWeather(Map* m) : BaseWeatherType(m), cover(Vector2f(
     }
     for (int i = 0; i<40; ++i)
     {
-        swirls.push_back(Vector3f(Random(minX+200,minX+1468),Random(minY+200,minY+900),Random(0,360)));
+        swirls.push_back(Vector3f(randomInt(minX+200,minX+1468),randomInt(minY+200,minY+900),randomInt(0,360)));
     }
 }
 
@@ -588,7 +588,7 @@ void SandstormWeather::update()
         swirls[i].y -= dy2;
         swirls[i].z -= dz;
         if (swirls[i].x<minX || swirls[i].y<minY)
-            swirls[i] = Vector3f(sX,Random(minY+200,minY+900),Random(0,360));
+            swirls[i] = Vector3f(sX,randomInt(minY+200,minY+900),randomInt(0,360));
     }
 
     if (isStopping)
@@ -689,7 +689,7 @@ void Weather::init(Type tp, bool force)
 	if (type!=AllRandom && type!=WaterRandom && type!=SnowRandom && type!=DesertRandom && type!=None)
 		logWeather(type);
 
-	nextChange = Weather::timer.getElapsedTime().asMilliseconds()+Random(180000,420000);
+	nextChange = Weather::timer.getElapsedTime().asMilliseconds()+randomInt(180000,420000);
 }
 
 bool Weather::enterMap(string name)
@@ -752,7 +752,7 @@ void Weather::update()
                 isStopping = false;
                 weather.reset();
                 weather = nullptr;
-                nextChange = Weather::timer.getElapsedTime().asMilliseconds()+Random(180000,420000);
+                nextChange = Weather::timer.getElapsedTime().asMilliseconds()+randomInt(180000,420000);
             }
         }
     }
@@ -765,7 +765,7 @@ void Weather::update()
             createSnow();
         else if (type==AllRandom)
         {
-            int w = Random(0,500);
+            int w = randomInt(0,500);
             if (w<100)
                 createRain();
             else if (w<200)
@@ -777,7 +777,7 @@ void Weather::update()
 			}
             else if (w<400)
 			{
-				bool isThick = Random(0,1000)<500;
+				bool isThick = randomInt(0,1000)<500;
 				weather.reset(new FogWeather(owner,isThick));
 				logWeather(isThick?(ThickFog):(ThinFog));
 			}
@@ -787,14 +787,14 @@ void Weather::update()
 				logWeather(SandStorm);
 			}
         }
-        nextChange = Weather::timer.getElapsedTime().asMilliseconds()+Random(120000,600000);
+        nextChange = Weather::timer.getElapsedTime().asMilliseconds()+randomInt(120000,600000);
     }
 }
 
 void Weather::createRain()
 {
-    bool isHard = Random(0,1000)<500;
-    bool canThunder = Random(0,1000)<500;
+    bool isHard = randomInt(0,1000)<500;
+    bool canThunder = randomInt(0,1000)<500;
     if (isHard && canThunder)
 		logWeather(HardRainThunder);
 	else if (isHard && !canThunder)
@@ -808,8 +808,8 @@ void Weather::createRain()
 
 void Weather::createSnow()
 {
-    bool isHard = Random(0,1000)<500;
-    bool canThunder = Random(0,1000)<500;
+    bool isHard = randomInt(0,1000)<500;
+    bool canThunder = randomInt(0,1000)<500;
 	if (isHard && canThunder)
 		logWeather(HardSnowThunder);
 	else if (isHard && !canThunder)

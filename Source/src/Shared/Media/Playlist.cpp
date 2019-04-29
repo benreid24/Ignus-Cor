@@ -69,7 +69,7 @@ void Playlist::load(string file, bool savePrev)
     order.clear();
     while (temp.size()!=0)
     {
-        int i = Random(0,temp.size()-1);
+        int i = randomInt(0,temp.size()-1);
         order.push_back(temp[i]);
         temp.erase(temp.begin()+i);
     }

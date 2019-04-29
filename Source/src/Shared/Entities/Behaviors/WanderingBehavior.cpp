@@ -18,12 +18,12 @@ void WanderingBehavior::update() {
                 }
             }
             else {
-                int chanceToStop = Random(0,100);
+                int chanceToStop = randomInt(0,100);
                 if (chanceToStop<=30)
                     state = Standing;
                 else {
                     movementDirection = getMovementDirection();
-                    timeOfNextStep = 1200 + Random(0, 1000);
+                    timeOfNextStep = 1200 + randomInt(0, 1000);
                 }
                 timer.restart();
             }
@@ -31,11 +31,11 @@ void WanderingBehavior::update() {
 
         case Standing:
             if (timer.getElapsedTime().asMilliseconds()>2000) {
-                int chanceToStart = Random(0,100);
+                int chanceToStart = randomInt(0,100);
                 if (chanceToStart<=10) {
                     state = Default;
                     movementDirection = getMovementDirection();
-                    timeOfNextStep = 1200 + Random(0, 1000);
+                    timeOfNextStep = 1200 + randomInt(0, 1000);
                 }
             }
             break;
@@ -47,16 +47,16 @@ void WanderingBehavior::update() {
 
 EntityPosition::Direction WanderingBehavior::getMovementDirection() {
     if (radius==0)
-        return EntityPosition::Direction(Random(0,3));
+        return EntityPosition::Direction(randomInt(0,3));
 
     sf::Vector2i pos = sf::Vector2i(owner->getPosition().coords);
     int xWeight = abs(pos.x-startPosition.coords.x);
     int yWeight = abs(pos.y-startPosition.coords.y);
 
-    bool moveY = (abs(xWeight-yWeight)<=2)?Random(0,1):Random(0,yWeight+xWeight)<yWeight;
+    bool moveY = (abs(xWeight-yWeight)<=2)?randomInt(0,1):randomInt(0,yWeight+xWeight)<yWeight;
     if (moveY)
     {
-        int chance = Random(0,1000);
+        int chance = randomInt(0,1000);
         if (chance<530)
         {
             if (pos.y<startPosition.coords.y)
@@ -84,7 +84,7 @@ EntityPosition::Direction WanderingBehavior::getMovementDirection() {
     }
     else
     {
-        int chance = Random(0,1000);
+        int chance = randomInt(0,1000);
         if (chance<530)
         {
             if (pos.x<startPosition.coords.x)

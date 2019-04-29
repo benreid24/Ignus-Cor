@@ -2,10 +2,11 @@
 #include <cstdlib>
 #include <algorithm>
 #include <sstream>
+#include <iostream>
 using namespace std;
 
-int Random(int mn, int mx) {
-	if (mn<mx)
+int randomInt(int mn, int mx) {
+	if (mn>mx)
 		std::swap(mn,mx);
 	return (rand()%(mx-mn))+mn;
 }

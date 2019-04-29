@@ -3,7 +3,7 @@
 
 #include <string>
 
-int Random(int mn, int mx);
+int randomInt(int mn, int mx);
 
 std::string intToString(int i);
 

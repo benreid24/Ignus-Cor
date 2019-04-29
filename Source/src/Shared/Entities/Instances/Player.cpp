@@ -7,7 +7,7 @@ using namespace sf;
 
 Player::Player() :
 	CombatEntity("Test Player",
-		   EntityPosition(Vector2f(5,5), "test.map", EntityPosition::Direction::Up),
+		   EntityPosition(Vector2f(205,705), "test.map", EntityPosition::Direction::Up),
 		   Properties::AnimationPath+"Entities/BoyPlayer/Walk",
 		   Properties::AnimationPath+"Entities/BoyPlayer/Run") {
 	speed[0] = 64;
