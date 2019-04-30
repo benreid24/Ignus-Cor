@@ -7,8 +7,8 @@ using namespace std;
 EntityManager::EntityManager() {
     Entity::Ptr test = NpcEntity::create("Test Npc",
                                          EntityPosition(Vector2f(680, 680), "test.map", EntityPosition::Up),
-                                         Properties::AnimationPath+"Entities/GirlPlayer/Walk",
-                                         Properties::AnimationPath+"Entities/GirlPlayer/Run");
+                                         "Entities/GirlPlayer/Walk",
+                                         "Entities/GirlPlayer/Run");
     add(test);
 }
 

@@ -165,10 +165,12 @@ void Animation::update()
     if (t!=curFrm)
         lastFrmChangeTime = Animation::clock.getElapsedTime().asMilliseconds();
 
-    if (playing && curFrm==animSrc->numFrames()-1)
+    if (curFrm==animSrc->numFrames()-1 && playing)
     {
-        playing = false;
-        setFrame(0);
+        if (isLooping())
+            setFrame(0);
+        else
+            playing = false;
     }
 }
 

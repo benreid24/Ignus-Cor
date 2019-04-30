@@ -16,7 +16,7 @@ protected:
     /**
      * Creates the AttackEntity from the given attacker and animation file
      */
-    AttackEntity(Entity::Ptr attacker, const std::string& anim);
+    AttackEntity(Entity::Ptr attacker, const std::string& attackName, const std::string& anim);
 
 public:
     /**

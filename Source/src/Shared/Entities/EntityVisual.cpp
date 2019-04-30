@@ -1,5 +1,6 @@
 #include "Shared/Entities/EntityVisual.hpp"
 #include "Shared/Util/File.hpp"
+#include "Shared/Properties.hpp"
 using namespace std;
 using namespace sf;
 
@@ -7,11 +8,13 @@ EntityVisual::EntityVisual() {
 	type = NotLoaded;
 	state = Still;
 	dir = 0;
+	setMoveCalled = false;
 }
 
 void EntityVisual::load(std::string path1, std::string path2) {
 	if (File::getExtension(path1)==path1 || path1[path1.size()-1]=='/' || path1[path1.size()-1]=='\\') {
 		type = MoveAnim;
+		path1 = Properties::AnimationPath + path1;
 		if (path1[path1.size()-1]!='/' && path1[path1.size()-1]!='\\')
 			path1 += "/";
 		type = MoveAnim;
@@ -24,6 +27,7 @@ void EntityVisual::load(std::string path1, std::string path2) {
 	}
 	else {
 		if (File::getExtension(path1)=="png") {
+            path1 = Properties::EntityImagePath + path1;
 			type = StaticImage;
 			txtr = imagePool.loadResource(path1);
 			image.setTexture(*txtr);
@@ -36,6 +40,7 @@ void EntityVisual::load(std::string path1, std::string path2) {
 	}
 	if (path2.size()>0) {
 		type = SpeedAnim;
+		path2 = Properties::AnimationPath + path2;
 		if (path2[path2.size()-1]!='/' && path2[path2.size()-1]!='\\')
 			path2 += "/";
 		type = MoveAnim;
@@ -54,9 +59,12 @@ void EntityVisual::setDirection(int d) {
 
 void EntityVisual::setMoving(int d, bool f) {
 	dir = d;
+	setMoveCalled = true;
 	state = f?(FastMoving):(Moving);
-	slow[dir].play();
-	fast[dir].play();
+	if (!slow[dir].isPlaying())
+        slow[dir].play();
+    if (!fast[dir].isPlaying())
+        fast[dir].play();
 }
 
 Vector2f EntityVisual::getSize() {
@@ -76,14 +84,6 @@ void EntityVisual::render(sf::RenderTarget& target, sf::Vector2f position) {
     for (int i = 0; i<4; ++i) {
 		slow[i].setPosition(position);
 		fast[i].setPosition(position);
-		if (state==Still) {
-			slow[i].setFrame(0);
-			fast[i].setFrame(0);
-		}
-		else {
-			slow[i].update();
-			fast[i].update();
-		}
     }
     image.setPosition(position);
 
@@ -106,8 +106,6 @@ void EntityVisual::render(sf::RenderTarget& target, sf::Vector2f position) {
 	default:
 		break;
     }
-
-    state = Still; //setMoving will be called before next render if entity is moving, so this is fine
 }
 
 bool EntityVisual::animationDone() {
@@ -122,4 +120,21 @@ bool EntityVisual::animationDone() {
             }
     }
     return false;
+}
+
+void EntityVisual::update() {
+    if (!setMoveCalled)
+        state = Still;
+    setMoveCalled = false;
+
+    for (int i = 0; i<4; ++i) {
+		if (state==Still) {
+			slow[i].setFrame(0);
+			fast[i].setFrame(0);
+		}
+		else {
+			slow[i].update();
+			fast[i].update();
+		}
+    }
 }

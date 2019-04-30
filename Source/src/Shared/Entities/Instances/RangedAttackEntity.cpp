@@ -4,7 +4,7 @@
 using namespace std;
 
 RangedAttackEntity::RangedAttackEntity(Entity::Ptr atk, const CombatRangedAttack& weapon)
-: AttackEntity(atk, weapon.getAnimation()), attack(weapon) {
+: AttackEntity(atk, weapon.getName(), weapon.getAnimation()), attack(weapon) {
     speed[0] = attack.getSpeed();
     position = attacker->getPosition();
 }

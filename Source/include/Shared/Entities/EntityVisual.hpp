@@ -16,6 +16,7 @@ class EntityVisual {
 	TextureReference txtr;
 	sf::Sprite image;
 	int dir;
+	bool setMoveCalled;
 
 	enum Type {
 		NotLoaded,
@@ -64,6 +65,11 @@ public:
 	 * Returns the size of the visual. Used for bounding box calculation
 	 */
 	sf::Vector2f getSize();
+
+	/**
+	 * Updates the animations and internal state
+	 */
+    void update();
 
 	/**
 	 * Renders the appropriate image/animation

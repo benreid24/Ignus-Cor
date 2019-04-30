@@ -165,6 +165,7 @@ bool Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
 
 void Entity::update() {
 	lTime = Entity::timer.getElapsedTime().asSeconds();
+	graphics.update();
 }
 
 Entity::Ptr Entity::interact() {

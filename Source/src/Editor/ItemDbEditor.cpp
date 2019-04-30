@@ -116,13 +116,13 @@ void ItemDbEditor::doItem(int id) {
         }
         if (pickMapImage) { //TODO - use Windows file picker w/ default dir in correct folder? copy image if external
 			pickMapImage = false;
-			FilePicker picker(desktop, owner, "Map Image", Properties::ItemMapImagePath, "png");
+			FilePicker picker(desktop, owner, "Map Image", Properties::EntityImagePath, "png");
 			if (picker.pickFile())
 				form.setField("mp", picker.getChoice());
         }
         if (pickMenuImage) {
 			pickMenuImage = false;
-			FilePicker picker(desktop, owner, "Menu Image", Properties::ItemMapImagePath, "png");
+			FilePicker picker(desktop, owner, "Menu Image", Properties::MenuImagePath, "png");
 			if (picker.pickFile())
 				form.setField("mn", picker.getChoice());
         }

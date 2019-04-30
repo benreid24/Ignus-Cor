@@ -24,9 +24,11 @@ struct EntityStats {
  * \ingroup Combat
  */
 class CombatEntity : public Entity {
+    long int lastAttackTime;
+
 protected:
     EntityStats stats;
-    CombatAttack attack;
+    CombatAttack weapon;
 	CombatArmor armor;
 	double xpRewardMultiplier; //xp reward = levelDiff^2 * xpRewardMultiplier + level
 
@@ -34,6 +36,11 @@ protected:
 	 * Constructs the CombatEntity
 	 */
     CombatEntity(std::string name, EntityPosition pos, std::string gfx1, std::string gfx2);
+
+    /**
+     * Performs an attack using the current equipped CombatAttack
+     */
+    void doAttack();
 
 public:
     /**

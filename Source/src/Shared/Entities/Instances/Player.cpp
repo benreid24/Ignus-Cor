@@ -8,11 +8,12 @@ using namespace sf;
 Player::Player() :
 	CombatEntity("Test Player",
 		   EntityPosition(Vector2f(205,705), "test.map", EntityPosition::Direction::Up),
-		   Properties::AnimationPath+"Entities/BoyPlayer/Walk",
-		   Properties::AnimationPath+"Entities/BoyPlayer/Run") {
+		   "Entities/BoyPlayer/Walk",
+		   "Entities/BoyPlayer/Run") {
 	speed[0] = 64;
 	speed[1] = 128;
 	boundingBox = FloatRect(0, 12, graphics.getSize().x, graphics.getSize().y-12);
+	weapon = CombatAttack("TestSword", "This is for testing", 30, list<CombatEffect>(), "Combat/Weapons/TestSword");
 }
 
 Player::Ptr Player::create() {
@@ -21,15 +22,18 @@ Player::Ptr Player::create() {
 }
 
 void Player::update() {
-	bool running = Keyboard::isKeyPressed(Keyboard::Space);
+	bool running = Keyboard::isKeyPressed(Keyboard::LShift);
 	if (Keyboard::isKeyPressed(Keyboard::W))
 		move(EntityPosition::Up, running);
-	else if (Keyboard::isKeyPressed(Keyboard::A))
+	if (Keyboard::isKeyPressed(Keyboard::A))
 		move(EntityPosition::Left, running);
-	else if (Keyboard::isKeyPressed(Keyboard::S))
+	if (Keyboard::isKeyPressed(Keyboard::S))
 		move(EntityPosition::Down, running);
-	else if (Keyboard::isKeyPressed(Keyboard::D))
+	if (Keyboard::isKeyPressed(Keyboard::D))
 		move(EntityPosition::Right, running);
+
+    if (Mouse::isButtonPressed(Mouse::Left))
+        doAttack();
 
 	if (Keyboard::isKeyPressed(Keyboard::E))
         interact();

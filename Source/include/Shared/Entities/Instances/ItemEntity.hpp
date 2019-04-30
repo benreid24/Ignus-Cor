@@ -16,7 +16,7 @@ class ItemEntity : public Entity {
 	 * Constructs the ItemEntity from the given item id and position
 	 */
 	ItemEntity(int itemId, EntityPosition position) :
-	    Entity(ItemDB::getItem(itemId).getName(), position, Properties::ItemMapImagePath+ItemDB::getItem(itemId).getMapImageFile()) { }
+	    Entity(ItemDB::getItem(itemId).getName(), position, ItemDB::getItem(itemId).getMapImageFile()) { }
 
 public:
 	/**

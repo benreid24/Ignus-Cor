@@ -3,11 +3,40 @@
 #include "Shared/Entities/Instances/MeleeAttackEntity.hpp"
 using namespace std;
 
-AttackEntity::AttackEntity(Entity::Ptr atk, const string& anim)
-: Entity("set me", atk->getPosition(), anim, "") {
+AttackEntity::AttackEntity(Entity::Ptr atk, const string& atkNm, const string& anim)
+: Entity(atkNm, atk->getPosition(), anim, "") {
     attacker = atk;
     collisionsEnabled = false;
-    //TODO - set position based on attacker bounding box and direction
+
+    sf::FloatRect atkrBox = attacker->getBoundingBox();
+    sf::FloatRect atkBox = getBoundingBox();
+    float x = -100, y = -100;
+
+    switch (position.dir) {
+        case EntityPosition::Up:
+            x = atkrBox.left + atkrBox.width/2 - atkBox.width/2;
+            y = atkrBox.top - atkBox.height;
+            break;
+
+        case EntityPosition::Right:
+            x = atkrBox.left + atkrBox.width;
+            y = atkrBox.top + atkrBox.height/2 - atkBox.height/2;
+            break;
+
+        case EntityPosition::Down:
+            x = atkrBox.left + atkrBox.width/2 - atkBox.width/2;
+            y = atkrBox.top + atkrBox.height;
+            break;
+
+        case EntityPosition::Left:
+            x = atkrBox.left - atkBox.width;
+            y = atkrBox.top + atkrBox.height/2 - atkBox.height/2;
+            break;
+
+        default:
+            cout << "Warning: Attack '" << atkNm << "' created with invalid direction\n";
+    }
+    position.coords = sf::Vector2f(x,y);
 }
 
 const string AttackEntity::getType() {

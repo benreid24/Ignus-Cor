@@ -34,8 +34,7 @@ public:
     const static std::string MapAnimPath;
     const static std::string SpawnerPath;
 
-    const static std::string ItemMapImagePath;
-    const static std::string ItemMenuImagePath;
+    const static std::string EntityImagePath;
 
     const static std::string AnimationPath;
     const static std::string SpriteSheetPath;

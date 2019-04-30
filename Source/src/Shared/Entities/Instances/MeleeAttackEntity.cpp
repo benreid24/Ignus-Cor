@@ -3,9 +3,9 @@
 using namespace std;
 
 MeleeAttackEntity::MeleeAttackEntity(Entity::Ptr attacker, const CombatAttack& atk)
-: AttackEntity(attacker, atk.getAnimation()), attack(atk) {
+: AttackEntity(attacker, atk.getName(), atk.getAnimation()), attack(atk) {
     speed[0] = speed[1] = 0;
-    graphics.setMoving(attacker->getPosition().dir, false);
+    cout << position.coords.x << ", " << position.coords.y << endl;
 }
 
 Entity::Ptr MeleeAttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk) {
@@ -17,7 +17,6 @@ const string MeleeAttackEntity::getType() {
 }
 
 void MeleeAttackEntity::update() {
-    AttackEntity::update();
     Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, boundingBox);
     for (Entity::List::iterator i = hits.begin(); i!=hits.end(); ++i) {
         if (find(entitiesHit.begin(), entitiesHit.end(), *i) == entitiesHit.end()) {
@@ -26,6 +25,9 @@ void MeleeAttackEntity::update() {
         }
     }
 
+    AttackEntity::update();
     if (graphics.animationDone())
         EntityManager::get()->remove(this);
+
+    graphics.setMoving(attacker->getPosition().dir, false);
 }
