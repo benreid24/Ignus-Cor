@@ -61,10 +61,14 @@ void EntityVisual::setMoving(int d, bool f) {
 	dir = d;
 	setMoveCalled = true;
 	state = f?(FastMoving):(Moving);
-	if (!slow[dir].isPlaying())
-        slow[dir].play();
-    if (!fast[dir].isPlaying())
-        fast[dir].play();
+	if (type==MoveAnim || type==SpeedAnim) {
+        if (!slow[dir].isPlaying())
+            slow[dir].play();
+        if (!fast[dir].isPlaying())
+            fast[dir].play();
+	}
+	else if (type == SingleAnim && !slow[0].isPlaying())
+        slow[0].play();
 }
 
 Vector2f EntityVisual::getSize() {
@@ -73,6 +77,7 @@ Vector2f EntityVisual::getSize() {
 		return Vector2f(image.getGlobalBounds().width, image.getGlobalBounds().height);
 	case MoveAnim:
 	case SpeedAnim:
+    case SingleAnim:
 		return slow[0].getSize();
 	default:
 		cout << "Warning: EntityVisual getSize() called but type is invalid\n";
@@ -103,6 +108,10 @@ void EntityVisual::render(sf::RenderTarget& target, sf::Vector2f position) {
 			fast[dir].draw(target);
 		break;
 
+    case SingleAnim:
+        slow[0].draw(target);
+        break;
+
 	default:
 		break;
     }
@@ -118,6 +127,9 @@ bool EntityVisual::animationDone() {
                 case FastMoving:
                     return fast[dir].finished();
             }
+
+        case SingleAnim:
+            return slow[0].finished();
     }
     return false;
 }
