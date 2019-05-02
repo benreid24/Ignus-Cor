@@ -28,7 +28,29 @@ void RangedAttackEntity::update() {
 
         if (attack.getImpactAnimation().size() > 0) {
             Entity::Ptr explosion = MeleeAttackEntity::create(attacker, attack.toExplosionAttack(), false);
-            explosion->setPositionAndDirection(position);
+
+            EntityPosition pos = position;
+            sf::FloatRect xbox = explosion->getBoundingBox();
+            switch (position.dir) {
+                case EntityPosition::Up:
+                    pos.coords.y -= getBoundingBox().height/2;
+                    pos.coords.x -= xbox.width/2 - getBoundingBox().width/2;
+                    break;
+                case EntityPosition::Right:
+                    pos.coords.x += getBoundingBox().width/2;
+                    pos.coords.y -= xbox.height/2 - getBoundingBox().height/2;
+                    break;
+                case EntityPosition::Down:
+                    pos.coords.y += getBoundingBox().height/2;
+                    pos.coords.x -= xbox.width/2 - getBoundingBox().width/2;
+                    break;
+                case EntityPosition::Left:
+                    pos.coords.x -= getBoundingBox().width/2;
+                    pos.coords.y -= xbox.height/2 - getBoundingBox().height/2;
+                    break;
+            }
+
+            explosion->setPositionAndDirection(pos);
             EntityManager::get()->add(explosion);
         }
         EntityManager::get()->remove(this);
