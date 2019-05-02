@@ -10,8 +10,15 @@
  * \ingroup Combat
  */
 class AttackEntity : public Entity {
+    Entity::List entitiesHit;
+
 protected:
     Entity::Ptr attacker;
+
+    /**
+     * Helper function to keep track of who has been hit already
+     */
+    bool shouldApplyDamage(Entity::Ptr ent);
 
     /**
      * Creates the AttackEntity from the given attacker and animation file

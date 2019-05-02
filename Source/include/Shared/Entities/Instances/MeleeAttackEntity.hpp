@@ -10,20 +10,20 @@
  * \ingroup Combat
  */
 class MeleeAttackEntity : public AttackEntity {
-    Entity::List entitiesHit;
     CombatAttack attack;
     sf::Vector2f offset;
+    bool follow;
 
     /**
      * Creates the MeleeAttackEntity instance from the attacking Entity and attack
      */
-    MeleeAttackEntity(Entity::Ptr attacker, const CombatAttack& attack);
+    MeleeAttackEntity(Entity::Ptr attacker, const CombatAttack& attack, bool followAttacker = true);
 
 public:
     /**
      * Creates a Ptr to a MeleeAttackEntity
      */
-    static Entity::Ptr create(Entity::Ptr attacker, const CombatAttack& attack);
+    static Entity::Ptr create(Entity::Ptr attacker, const CombatAttack& attack, bool followAttacker = true);
 
     /**
      * vtable

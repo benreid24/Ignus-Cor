@@ -6,7 +6,6 @@ using namespace std;
 AttackEntity::AttackEntity(Entity::Ptr atk, const string& atkNm, const string& anim)
 : Entity(atkNm, atk->getPosition(), anim, "") {
     attacker = atk;
-    collisionsEnabled = false;
 
     sf::FloatRect atkrBox = attacker->getBoundingBox();
     sf::FloatRect atkBox = getBoundingBox();
@@ -47,12 +46,25 @@ void AttackEntity::update() {
     Entity::update();
 }
 
-Entity::Ptr AttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk) {
-    try {
-        const CombatRangedAttack& rangedAttack = dynamic_cast<const CombatRangedAttack&>(atk);
-        return RangedAttackEntity::create(attacker, rangedAttack);
+bool AttackEntity::shouldApplyDamage(Entity::Ptr ent) {
+    if (find(entitiesHit.begin(), entitiesHit.end(), ent) == entitiesHit.end()) {
+        if (ent.get() != attacker.get() && ent.get() != this) {
+            entitiesHit.push_back(ent);
+            return true;
+        }
     }
-    catch (bad_cast& exc) {
-        return MeleeAttackEntity::create(attacker, atk);
+    return false;
+}
+
+Entity::Ptr AttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk) {
+    switch (atk.getType()) {
+        case CombatAttack::Ranged:
+            return RangedAttackEntity::create(attacker, atk);
+        case CombatAttack::Melee:
+            return MeleeAttackEntity::create(attacker, atk);
+
+        default:
+            cout << "Error: Invalid CombatAttack type " << atk.getType() << " from " << attacker->getIdString() << endl;
+            return Entity::Ptr(nullptr);
     }
 }

@@ -18,29 +18,52 @@ class Entity;
   * \ingroup CombatAttack
   */
 class CombatAttack {
-protected:
+public:
+    enum Type {
+        Melee,
+        Ranged
+    };
+
+private:
+    Type type;
     std::string name, description;
     double power;
     std::list<CombatEffect> effects;
+
+    //ranged only
+    std::string impactAnimation;
+    double range, speed;
 
     std::string animation;
     //TODO - link to particle generator?
 
 public:
     /**
-     * Creates the "empty" attack Punch
+     * Creates the "empty" melee attack Punch
      */
     CombatAttack();
 
     /**
-     * Create the CombatAttack from it's members values
+     * Create the CombatAttack as a melee attack
      */
-    CombatAttack(const std::string& name, const std::string& description, double power, const std::list<CombatEffect>& effects, const std::string& animation);
+    CombatAttack(const std::string& name, const std::string& description, double power, const std::list<CombatEffect>& effects,
+                 const std::string& animation);
+
+    /**
+     * Creates a ranged attack
+     */
+    CombatAttack(const std::string& name, const std::string& description, double power, const std::list<CombatEffect>& effects,
+                       const std::string& animation, double range, double speed, const std::string& impactAnimation = "");
 
     /**
      * vtable
      */
     virtual ~CombatAttack() = default;
+
+    /**
+     * Returns the type of the attack, either Melee or Ranged
+     */
+    Type getType() const;
 
     /**
      * Returns the name of the CombatAttack
@@ -66,6 +89,26 @@ public:
      * Returns the animation file for the attack
      */
     std::string getAnimation() const;
+
+    /**
+     * Returns the range of the attack
+     */
+    double getRange() const;
+
+    /**
+     * Returns the speed the attack moves at
+     */
+    double getSpeed() const;
+
+    /**
+     * Returns the file of the impact animation, if any
+     */
+    std::string getImpactAnimation() const;
+
+    /**
+     * Converts to a CombatAttack for the explosion
+     */
+    CombatAttack toExplosionAttack() const;
 };
 
 #endif // COMBATATTACK_HPP

@@ -2,14 +2,16 @@
 #include "Shared/Entities/EntityManager.hpp"
 using namespace std;
 
-MeleeAttackEntity::MeleeAttackEntity(Entity::Ptr attacker, const CombatAttack& atk)
+MeleeAttackEntity::MeleeAttackEntity(Entity::Ptr attacker, const CombatAttack& atk, bool followAttacker)
 : AttackEntity(attacker, atk.getName(), atk.getAnimation()), attack(atk) {
     speed[0] = speed[1] = 0;
     offset = position.coords - attacker->getPosition().coords;
+    follow = followAttacker;
+    collisionsEnabled = false;
 }
 
-Entity::Ptr MeleeAttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk) {
-    return Entity::Ptr(new MeleeAttackEntity(attacker, atk));
+Entity::Ptr MeleeAttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk, bool follow) {
+    return Entity::Ptr(new MeleeAttackEntity(attacker, atk, follow));
 }
 
 const string MeleeAttackEntity::getType() {
@@ -17,16 +19,15 @@ const string MeleeAttackEntity::getType() {
 }
 
 void MeleeAttackEntity::update() {
-    sf::Vector2f shiftAmount = attacker->getPosition().coords + offset - position.coords;
-    Entity::shift(shiftAmount, false);
+    if (follow) {
+        sf::Vector2f shiftAmount = attacker->getPosition().coords + offset - position.coords;
+        Entity::shift(shiftAmount, false);
+    }
 
     Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, getBoundingBox());
     for (Entity::List::iterator i = hits.begin(); i!=hits.end(); ++i) {
-        if (find(entitiesHit.begin(), entitiesHit.end(), *i) == entitiesHit.end()) {
-            if (i->get() != attacker.get() && i->get() != this) {
-                entitiesHit.push_back(*i);
-                (*i)->notifyAttacked(attacker, attack);
-            }
+        if (shouldApplyDamage(*i)) {
+            (*i)->notifyAttacked(attacker, attack);
         }
     }
 

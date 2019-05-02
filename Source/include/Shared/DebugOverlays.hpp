@@ -46,7 +46,7 @@ public:
     }
 
     static inline void toggleOverlay(Type overlay) {
-        if (p_timer().getElapsedTime().asMilliseconds()-p_lastUpdate() >= 500) {
+        if (p_timer().getElapsedTime().asMilliseconds()-p_lastUpdate() >= 500 || p_lastUpdate()==0) {
             p_get() = Type((int)p_get() ^ (int)overlay);
             p_lastUpdate() = p_timer().getElapsedTime().asMilliseconds();
             std::cout << "Active Debug Overlays: " << toString(p_get()) << std::endl;
