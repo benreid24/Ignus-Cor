@@ -86,9 +86,9 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/include/Shared/Combat/CombatArmor.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatAttack.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatEffect.hpp" />
-		<Unit filename="../../Source/include/Shared/Combat/CombatMeleeAttack.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatRangedAttack.hpp" />
 		<Unit filename="../../Source/include/Shared/Data/ItemDB.hpp" />
+		<Unit filename="../../Source/include/Shared/DebugOverlays.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Behaviors/WanderingBehavior.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Entity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityBehavior.hpp" />
