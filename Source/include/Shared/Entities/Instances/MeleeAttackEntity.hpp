@@ -12,6 +12,7 @@
 class MeleeAttackEntity : public AttackEntity {
     Entity::List entitiesHit;
     CombatAttack attack;
+    sf::Vector2f offset;
 
     /**
      * Creates the MeleeAttackEntity instance from the attacking Entity and attack

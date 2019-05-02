@@ -85,11 +85,13 @@ void Entity::setPositionAndDirection(EntityPosition pos) {
 }
 
 void Entity::shift(sf::Vector2f amount, bool truncate) {
+    EntityPosition oldPos = position;
 	position.coords += amount;
 	if (truncate) {
         position.coords.x = int(position.coords.x/32)*32;
         position.coords.y = int(position.coords.y/32)*32;
 	}
+	EntityManager::get()->updatePosition(this, oldPos);
 }
 
 string Entity::getName() {

@@ -5,6 +5,7 @@ using namespace std;
 MeleeAttackEntity::MeleeAttackEntity(Entity::Ptr attacker, const CombatAttack& atk)
 : AttackEntity(attacker, atk.getName(), atk.getAnimation()), attack(atk) {
     speed[0] = speed[1] = 0;
+    offset = position.coords - attacker->getPosition().coords;
 }
 
 Entity::Ptr MeleeAttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk) {
@@ -16,6 +17,9 @@ const string MeleeAttackEntity::getType() {
 }
 
 void MeleeAttackEntity::update() {
+    sf::Vector2f shiftAmount = attacker->getPosition().coords + offset - position.coords;
+    Entity::shift(shiftAmount, false);
+
     Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, getBoundingBox());
     for (Entity::List::iterator i = hits.begin(); i!=hits.end(); ++i) {
         if (find(entitiesHit.begin(), entitiesHit.end(), *i) == entitiesHit.end()) {
@@ -30,5 +34,5 @@ void MeleeAttackEntity::update() {
     if (graphics.animationDone())
         EntityManager::get()->remove(this);
 
-    graphics.setMoving(attacker->getPosition().dir, false);
+    graphics.setMoving(position.dir, false);
 }
