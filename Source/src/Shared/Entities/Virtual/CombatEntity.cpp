@@ -1,7 +1,9 @@
 #include "Shared/Entities/Virtual/CombatEntity.hpp"
 #include "Shared/Entities/Virtual/AttackEntity.hpp"
 #include "Shared/Entities/EntityManager.hpp"
+#include "Shared/DebugOverlays.hpp"
 #include <iostream>
+#include <iomanip>
 using namespace std;
 
 CombatEntity::CombatEntity(string nm, EntityPosition pos, string gfx1, string gfx2)
@@ -20,11 +22,19 @@ void CombatEntity::notifyAttacked(Entity::Ptr attacker, const CombatAttack& atk)
     CombatEntity* atkr = dynamic_cast<CombatEntity*>(attacker.get());
     if (atkr!=nullptr) {
         double ld = atkr->stats.level - stats.level;
-        double lvlMult = (ld>0) ? (ld*ld) : (2.5/abs(ld));
+        double lvlMult = (ld>=0) ? (ld*ld+1) : (2.5/abs(ld));
         double atkPower = atk.getPower() * lvlMult;
         double damage = atkPower - armor.getDamageResist();
         stats.health -= damage;
         //TODO - effects and create particle generators from them
+
+        if (DebugOverlays::isOverlayActive(DebugOverlays::CombatData)) {
+            cout << left << setw(40) << "Attacker Level: " << atkr->stats.level << left << setw(40) << "\tDefender Level: " << stats.level << endl;
+            cout << left << setw(40) << "Weapon Power: " << atk.getPower() << left << setw(40) << "\tArmor Resistance: " << armor.getDamageResist() << endl;
+            cout << left << setw(40) << "Power Multiplier: " << lvlMult << left << setw(40) << "\tPower: " << atkPower << endl;
+            cout << left << setw(40) << "Damage: " << damage << left << setw(40) << "\tHealth: " << (stats.health+damage) << " -> " << stats.health << endl;
+            cout << endl;
+        }
 
         if (stats.health<=0) {
             int levelDiff = stats.level - atkr->stats.level;
@@ -40,7 +50,7 @@ void CombatEntity::notifyAttacked(Entity::Ptr attacker, const CombatAttack& atk)
 }
 
 void CombatEntity::doAttack() {
-    if (Entity::timer.getElapsedTime().asMilliseconds()-lastAttackTime >= 1000) { //TODO - get attack delay from weapon
+    if (Entity::timer.getElapsedTime().asMilliseconds()-lastAttackTime >= 800) { //TODO - get attack delay from weapon
         Entity::Ptr atkEnt = AttackEntity::create(EntityManager::get()->getEntityPtr(this), weapon);
         EntityManager::get()->add(atkEnt);
         lastAttackTime = Entity::timer.getElapsedTime().asMilliseconds();

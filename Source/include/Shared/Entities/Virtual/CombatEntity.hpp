@@ -14,7 +14,7 @@ struct EntityStats {
     int level;
     double currentXp, nextLevelXp;
 
-    EntityStats() : level(1), currentXp(0) {}
+    EntityStats() : level(1), currentXp(0), health(100) {}
 };
 
 /**
