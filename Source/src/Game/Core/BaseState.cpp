@@ -1,6 +1,7 @@
 #include "Game/Core/BaseState.hpp"
 #include "Game/Core/Game.hpp"
 #include "Shared/Properties.hpp"
+#include "Shared/DebugOverlays.hpp"
 using namespace std;
 using namespace sf;
 
@@ -91,10 +92,12 @@ bool BaseState::handleWindow() {
 			Game::get()->inFocus = false;
     }
 
-    if (Keyboard::isKeyPressed(Keyboard::Tilde) && timer.getElapsedTime().asMilliseconds()-debugToggledTime>500) {
-        debugToggledTime = timer.getElapsedTime().asMilliseconds();
-        Properties::debugMode = !Properties::debugMode;
-    }
+    if (Keyboard::isKeyPressed(Keyboard::Numpad1))
+        DebugOverlays::toggleOverlay(DebugOverlays::EntityInfo);
+    if (Keyboard::isKeyPressed(Keyboard::Numpad2))
+        DebugOverlays::toggleOverlay(DebugOverlays::CombatData);
+    if (Keyboard::isKeyPressed(Keyboard::Numpad0))
+        DebugOverlays::toggleOverlay(DebugOverlays::BoundingBoxes);
 
     return false;
 }

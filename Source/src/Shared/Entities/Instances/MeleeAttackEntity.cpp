@@ -5,8 +5,6 @@ using namespace std;
 MeleeAttackEntity::MeleeAttackEntity(Entity::Ptr attacker, const CombatAttack& atk)
 : AttackEntity(attacker, atk.getName(), atk.getAnimation()), attack(atk) {
     speed[0] = speed[1] = 0;
-    cout << position.coords.x << ", " << position.coords.y << endl;
-    cout << position.dir << endl;
 }
 
 Entity::Ptr MeleeAttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk) {
@@ -18,11 +16,13 @@ const string MeleeAttackEntity::getType() {
 }
 
 void MeleeAttackEntity::update() {
-    Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, boundingBox);
+    Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, getBoundingBox());
     for (Entity::List::iterator i = hits.begin(); i!=hits.end(); ++i) {
         if (find(entitiesHit.begin(), entitiesHit.end(), *i) == entitiesHit.end()) {
-            entitiesHit.push_back(*i);
-            (*i)->notifyAttacked(attacker, attack);
+            if (i->get() != attacker.get() && i->get() != this) {
+                entitiesHit.push_back(*i);
+                (*i)->notifyAttacked(attacker, attack);
+            }
         }
     }
 

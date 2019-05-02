@@ -19,7 +19,6 @@ const std::string Properties::ConversationPath;
 const std::string Properties::MenuImagePath = "Resources/Media/Images/Menu/";
 const std::string Properties::MiscImagePath = "Resources/Media/Images/Misc/";
 const std::string Properties::ItemDbFile = "Resources/Data/Objects/items.db";
-bool Properties::debugMode = false;
 
 sf::Font Properties::PrimaryMenuFont;
 

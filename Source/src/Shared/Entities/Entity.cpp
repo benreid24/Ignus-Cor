@@ -3,6 +3,7 @@
 #include "Shared/Entities/EntityBehavior.hpp"
 #include "Shared/Maps/MapManager.hpp"
 #include "Shared/Util/UUID.hpp"
+#include "Shared/DebugOverlays.hpp"
 #include <sstream>
 using namespace std;
 using namespace sf;
@@ -27,12 +28,12 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	boundingBox = FloatRect(0, 0, graphics.getSize().x, graphics.getSize().y);
 	interactDistance = 12;
 	collisionsEnabled = true;
-	if (Properties::debugMode)
+	if (DebugOverlays::isOverlayActive(DebugOverlays::EntityInfo))
         cout << "Entity '" << name << "'(uuid: " << uuid << ") created\n";
 }
 
 Entity::~Entity() {
-    if (Properties::debugMode)
+    if (DebugOverlays::isOverlayActive(DebugOverlays::EntityInfo))
         cout << "Entity '" << name << "'(uuid: " << uuid << ") deleted\n";
 }
 
@@ -96,17 +97,17 @@ string Entity::getName() {
 }
 
 void Entity::notifyAttacked(Ptr attacker, const CombatAttack& attack) {
-    if (Properties::debugMode)
+    if (DebugOverlays::isOverlayActive(DebugOverlays::EntityInfo))
         cout << getIdString() << " ATTACKED BY " << attacker->getIdString() << endl;
 }
 
 void Entity::notifyInteracted(Ptr user) {
-    if (Properties::debugMode)
+    if (DebugOverlays::isOverlayActive(DebugOverlays::EntityInfo))
         cout << getIdString() << " INTERACTED BY " << user->getIdString() << endl;
 }
 
 void Entity::notifyCombatNearby(List combatants) {
-    if (Properties::debugMode)
+    if (DebugOverlays::isOverlayActive(DebugOverlays::EntityInfo))
         cout << getIdString() << " notified of nearby combat\n";
 }
 
@@ -120,7 +121,7 @@ void Entity::render(sf::RenderTarget& target, sf::Vector2f camPos) {
 	graphics.render(target,position.coords-camPos);
 	bubble.render(target,position.coords-camPos);
 
-	if (Properties::debugMode) {
+	if (DebugOverlays::isOverlayActive(DebugOverlays::BoundingBoxes)) {
         RectangleShape bounds;
         bounds.setSize(Vector2f(getBoundingBox().width, getBoundingBox().height));
         bounds.setPosition(getBoundingBox().left-camPos.x, getBoundingBox().top-camPos.y);

@@ -68,8 +68,6 @@ public:
     static sf::Keyboard::Key runKey;
     static sf::Keyboard::Key interactKey;
     static sf::Keyboard::Key pauseKey;
-
-    static bool debugMode;
 };
 
 #endif // PROPERTIES_HPP
