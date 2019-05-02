@@ -86,7 +86,6 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/include/Shared/Combat/CombatArmor.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatAttack.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatEffect.hpp" />
-		<Unit filename="../../Source/include/Shared/Combat/CombatRangedAttack.hpp" />
 		<Unit filename="../../Source/include/Shared/Data/ItemDB.hpp" />
 		<Unit filename="../../Source/include/Shared/DebugOverlays.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Behaviors/WanderingBehavior.hpp" />
@@ -96,8 +95,8 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/include/Shared/Entities/EntityManager.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityVisual.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/CreatureEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/DirectAttackEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/ItemEntity.hpp" />
-		<Unit filename="../../Source/include/Shared/Entities/Instances/MeleeAttackEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/NpcEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/Player.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/RangedAttackEntity.hpp" />
@@ -142,7 +141,6 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/src/Game/main.cpp" />
 		<Unit filename="../../Source/src/Shared/Combat/CombatArmor.cpp" />
 		<Unit filename="../../Source/src/Shared/Combat/CombatAttack.cpp" />
-		<Unit filename="../../Source/src/Shared/Combat/CombatRangedAttack.cpp" />
 		<Unit filename="../../Source/src/Shared/Data/ItemDB.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Behaviors/WanderingBehavior.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Entity.cpp" />
@@ -151,7 +149,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/src/Shared/Entities/EntityManager.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityVisual.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Instances/CreatureEntity.cpp" />
-		<Unit filename="../../Source/src/Shared/Entities/Instances/MeleeAttackEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Instances/DirectAttackEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Instances/NpcEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Instances/Player.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Instances/RangedAttackEntity.cpp" />
