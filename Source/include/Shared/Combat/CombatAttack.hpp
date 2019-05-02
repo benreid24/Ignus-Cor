@@ -91,22 +91,22 @@ public:
     std::string getAnimation() const;
 
     /**
-     * Returns the range of the attack
+     * Returns the range of the attack. Ranged only
      */
     double getRange() const;
 
     /**
-     * Returns the speed the attack moves at
+     * Returns the speed the attack moves at. Ranged only
      */
     double getSpeed() const;
 
     /**
-     * Returns the file of the impact animation, if any
+     * Returns the file of the impact animation, if any. Ranged only
      */
     std::string getImpactAnimation() const;
 
     /**
-     * Converts to a CombatAttack for the explosion
+     * Converts to a CombatAttack for the explosion. Ranged only
      */
     CombatAttack toExplosionAttack() const;
 };
