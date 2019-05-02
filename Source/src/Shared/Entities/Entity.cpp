@@ -20,7 +20,6 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	graphics.load(gfx1,gfx2);
 	position = pos;
 	name = nm;
-	position.dir = EntityPosition::Up;
 	uuid = UUID::create();
 	lTime = Entity::timer.getElapsedTime().asSeconds();
 	speed[0] = 64;
@@ -28,11 +27,13 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	boundingBox = FloatRect(0, 0, graphics.getSize().x, graphics.getSize().y);
 	interactDistance = 12;
 	collisionsEnabled = true;
-	cout << "Entity '" << name << "'(uuid: " << uuid << ") created\n";
+	if (Properties::debugMode)
+        cout << "Entity '" << name << "'(uuid: " << uuid << ") created\n";
 }
 
 Entity::~Entity() {
-    cout << "Entity '" << name << "'(uuid: " << uuid << ") deleted\n";
+    if (Properties::debugMode)
+        cout << "Entity '" << name << "'(uuid: " << uuid << ") deleted\n";
 }
 
 EntityPosition Entity::getPosition() {
@@ -95,15 +96,18 @@ string Entity::getName() {
 }
 
 void Entity::notifyAttacked(Ptr attacker, const CombatAttack& attack) {
-    cout << getIdString() << " ATTACKED BY " << attacker->getIdString() << endl;
+    if (Properties::debugMode)
+        cout << getIdString() << " ATTACKED BY " << attacker->getIdString() << endl;
 }
 
 void Entity::notifyInteracted(Ptr user) {
-    cout << getIdString() << " INTERACTED BY " << user->getIdString() << endl;
+    if (Properties::debugMode)
+        cout << getIdString() << " INTERACTED BY " << user->getIdString() << endl;
 }
 
 void Entity::notifyCombatNearby(List combatants) {
-    cout << getIdString() << " notified of nearby combat\n";
+    if (Properties::debugMode)
+        cout << getIdString() << " notified of nearby combat\n";
 }
 
 string Entity::getIdString() {
