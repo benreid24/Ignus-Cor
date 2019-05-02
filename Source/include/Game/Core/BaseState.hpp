@@ -12,6 +12,8 @@ class Game;
  * \ingroup Core
  */
 class BaseState {
+    int debugToggledTime;
+
 public:
 	typedef std::shared_ptr<BaseState> Ptr;
 
@@ -66,7 +68,7 @@ public:
 	 *
 	 * This is implemented by setting an internal flag which is then checked every update loop
 	 * Some children may not do this, resulting in the state never being executed
-	 * It is meant as a means for none state code to run new states
+	 * It is meant as a means for non state code to run new states
 	 */
 	void runState(BaseState::Ptr immediate);
 

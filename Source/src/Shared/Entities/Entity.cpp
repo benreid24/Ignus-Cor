@@ -48,9 +48,7 @@ FloatRect Entity::getBoundingBox() {
 }
 
 FloatRect Entity::getInteractBox() {
-    FloatRect box = boundingBox;
-    box.left += position.coords.x;
-    box.top += position.coords.y;
+    FloatRect box = FloatRect(position.coords, graphics.getSize());
 
     switch (position.dir) {
 
@@ -60,13 +58,13 @@ FloatRect Entity::getInteractBox() {
         break;
 
     case EntityPosition::Right:
+        box.left += box.width;
         box.width = interactDistance;
-        box.left += boundingBox.width;
         break;
 
     case EntityPosition::Down:
+        box.top += box.height;
         box.height = interactDistance;
-        box.top += boundingBox.height;
         break;
 
     case EntityPosition::Left:
@@ -117,10 +115,29 @@ string Entity::getIdString() {
 void Entity::render(sf::RenderTarget& target, sf::Vector2f camPos) {
 	graphics.render(target,position.coords-camPos);
 	bubble.render(target,position.coords-camPos);
+
+	if (Properties::debugMode) {
+        RectangleShape bounds;
+        bounds.setSize(Vector2f(getBoundingBox().width, getBoundingBox().height));
+        bounds.setPosition(getBoundingBox().left-camPos.x, getBoundingBox().top-camPos.y);
+        bounds.setFillColor(Color::Transparent);
+        bounds.setOutlineColor(Color::Red);
+        bounds.setOutlineThickness(2.5);
+
+        RectangleShape intBounds;
+        intBounds.setSize(Vector2f(getInteractBox().width, getInteractBox().height));
+        intBounds.setPosition(getInteractBox().left-camPos.x, getInteractBox().top-camPos.y);
+        intBounds.setFillColor(Color::Transparent);
+        intBounds.setOutlineColor(Color::Cyan);
+        intBounds.setOutlineThickness(1.5);
+
+        target.draw(bounds);
+        target.draw(intBounds);
+	}
 }
 
 bool Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
-	EntityPosition newPos = position;
+	Vector2f newPos = position.coords;
 	position.dir = dir;
 
 	elapsedTime = (elapsedTime==0)?(Entity::timer.getElapsedTime().asSeconds()-lTime):(elapsedTime);
@@ -129,37 +146,42 @@ bool Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
 
 	switch (position.dir) {
 	case EntityPosition::Up:
-        newPos.coords.y -= dist;
+        newPos.y -= dist;
         break;
 	case EntityPosition::Right:
-		newPos.coords.x += dist;
+		newPos.x += dist;
 		break;
 	case EntityPosition::Down:
-		newPos.coords.y += dist;
+		newPos.y += dist;
 		break;
 	case EntityPosition::Left:
-		newPos.coords.x -= dist;
+		newPos.x -= dist;
 		break;
 	default:
 		cout << "Warning: Entity::move received an invalid direction!\n";
 	}
 
-	if (newPos.coords != position.coords) {
+	if (newPos != position.coords) {
 		EntityPosition oldPosOffset = position;
-		EntityPosition newPosOffset = newPos;
+		EntityPosition newPosOffset = EntityPosition(newPos, position.mapName, position.dir);
 		oldPosOffset.coords += Vector2f(boundingBox.left, boundingBox.top);
 		newPosOffset.coords += Vector2f(boundingBox.left, boundingBox.top);
 		Vector2f size = Vector2f(boundingBox.width, boundingBox.height);
+
 		if (EntityManager::get()->canMove(this, oldPosOffset, newPosOffset, size)) {
 			graphics.setMoving(position.dir, fast);
+
 			EntityPosition oldPos = position;
 			FloatRect oldBox = getBoundingBox();
-			position = newPos;
+			position.coords = newPos;
+
 			EntityManager::get()->updatePosition(this, oldPos);
 			MapManager::get()->registerEntityMovement(EntityManager::get()->getEntityPtr(this), oldBox);
 			return true;
 		}
 	}
+
+	graphics.setDirection(position.dir);
 	return false;
 }
 

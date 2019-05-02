@@ -6,6 +6,7 @@ MeleeAttackEntity::MeleeAttackEntity(Entity::Ptr attacker, const CombatAttack& a
 : AttackEntity(attacker, atk.getName(), atk.getAnimation()), attack(atk) {
     speed[0] = speed[1] = 0;
     cout << position.coords.x << ", " << position.coords.y << endl;
+    cout << position.dir << endl;
 }
 
 Entity::Ptr MeleeAttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk) {

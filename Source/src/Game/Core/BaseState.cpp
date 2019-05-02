@@ -40,6 +40,7 @@ namespace {
 
 BaseState::BaseState(BaseState::Ptr next) {
 	nextState = next;
+	debugToggledTime = 0;
 }
 
 void BaseState::setNextState(BaseState::Ptr next) {
@@ -89,5 +90,11 @@ bool BaseState::handleWindow() {
 		if (event.type==Event::LostFocus)
 			Game::get()->inFocus = false;
     }
+
+    if (Keyboard::isKeyPressed(Keyboard::Tilde) && timer.getElapsedTime().asMilliseconds()-debugToggledTime>500) {
+        debugToggledTime = timer.getElapsedTime().asMilliseconds();
+        Properties::debugMode = !Properties::debugMode;
+    }
+
     return false;
 }
