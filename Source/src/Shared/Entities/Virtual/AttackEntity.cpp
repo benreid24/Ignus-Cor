@@ -1,6 +1,6 @@
 #include "Shared/Entities/Virtual/AttackEntity.hpp"
 #include "Shared/Entities/Instances/RangedAttackEntity.hpp"
-#include "Shared/Entities/Instances/MeleeAttackEntity.hpp"
+#include "Shared/Entities/Instances/DirectAttackEntity.hpp"
 using namespace std;
 
 AttackEntity::AttackEntity(Entity::Ptr atk, const string& atkNm, const string& anim)
@@ -61,7 +61,7 @@ Entity::Ptr AttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk) 
         case CombatAttack::Ranged:
             return RangedAttackEntity::create(attacker, atk);
         case CombatAttack::Melee:
-            return MeleeAttackEntity::create(attacker, atk);
+            return DirectAttackEntity::create(attacker, atk);
 
         default:
             cout << "Error: Invalid CombatAttack type " << atk.getType() << " from " << attacker->getIdString() << endl;

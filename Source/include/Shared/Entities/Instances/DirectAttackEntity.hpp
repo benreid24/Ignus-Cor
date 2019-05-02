@@ -9,29 +9,29 @@
  * \ingroup Entity
  * \ingroup Combat
  */
-class MeleeAttackEntity : public AttackEntity {
+class DirectAttackEntity : public AttackEntity {
     CombatAttack attack;
     sf::Vector2f offset;
     bool follow;
 
     /**
-     * Creates the MeleeAttackEntity instance from the attacking Entity and attack
+     * Creates the DirectAttackEntity instance from the attacking Entity and attack
      */
-    MeleeAttackEntity(Entity::Ptr attacker, const CombatAttack& attack, bool followAttacker = true);
+    DirectAttackEntity(Entity::Ptr attacker, const CombatAttack& attack, bool followAttacker = true);
 
 public:
     /**
-     * Creates a Ptr to a MeleeAttackEntity
+     * Creates a Ptr to a DirectAttackEntity
      */
     static Entity::Ptr create(Entity::Ptr attacker, const CombatAttack& attack, bool followAttacker = true);
 
     /**
      * vtable
      */
-    virtual ~MeleeAttackEntity() = default;
+    virtual ~DirectAttackEntity() = default;
 
     /**
-     * Returns "MeleeAttackEntity"
+     * Returns "DirectAttackEntity"
      */
     const std::string getType();
 

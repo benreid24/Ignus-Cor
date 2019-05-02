@@ -1,8 +1,8 @@
-#include "Shared/Entities/Instances/MeleeAttackEntity.hpp"
+#include "Shared/Entities/Instances/DirectAttackEntity.hpp"
 #include "Shared/Entities/EntityManager.hpp"
 using namespace std;
 
-MeleeAttackEntity::MeleeAttackEntity(Entity::Ptr attacker, const CombatAttack& atk, bool followAttacker)
+DirectAttackEntity::DirectAttackEntity(Entity::Ptr attacker, const CombatAttack& atk, bool followAttacker)
 : AttackEntity(attacker, atk.getName(), atk.getAnimation()), attack(atk) {
     speed[0] = speed[1] = 0;
     offset = position.coords - attacker->getPosition().coords;
@@ -10,15 +10,15 @@ MeleeAttackEntity::MeleeAttackEntity(Entity::Ptr attacker, const CombatAttack& a
     collisionsEnabled = false;
 }
 
-Entity::Ptr MeleeAttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk, bool follow) {
-    return Entity::Ptr(new MeleeAttackEntity(attacker, atk, follow));
+Entity::Ptr DirectAttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk, bool follow) {
+    return Entity::Ptr(new DirectAttackEntity(attacker, atk, follow));
 }
 
-const string MeleeAttackEntity::getType() {
-    return "MeleeAttackEntity";
+const string DirectAttackEntity::getType() {
+    return "DirectAttackEntity";
 }
 
-void MeleeAttackEntity::update() {
+void DirectAttackEntity::update() {
     if (follow) {
         sf::Vector2f shiftAmount = attacker->getPosition().coords + offset - position.coords;
         Entity::shift(shiftAmount, false);

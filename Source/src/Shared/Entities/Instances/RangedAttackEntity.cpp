@@ -1,5 +1,5 @@
 #include "Shared/Entities/Instances/RangedAttackEntity.hpp"
-#include "Shared/Entities/Instances/MeleeAttackEntity.hpp"
+#include "Shared/Entities/Instances/DirectAttackEntity.hpp"
 #include "Shared/Entities/EntityManager.hpp"
 using namespace std;
 
@@ -27,7 +27,7 @@ void RangedAttackEntity::update() {
         }
 
         if (attack.getImpactAnimation().size() > 0) {
-            Entity::Ptr explosion = MeleeAttackEntity::create(attacker, attack.toExplosionAttack(), false);
+            Entity::Ptr explosion = DirectAttackEntity::create(attacker, attack.toExplosionAttack(), false);
 
             EntityPosition pos = position;
             sf::FloatRect xbox = explosion->getBoundingBox();
