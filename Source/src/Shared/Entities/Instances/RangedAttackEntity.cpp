@@ -19,13 +19,34 @@ const string RangedAttackEntity::getType() {
 
 void RangedAttackEntity::update() {
     if (!move(position.dir, false)) {
-        Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, boundingBox);
+        //move over slightly more to get in bounding box
+        sf::Vector2f shiftAmount;
+        double shiftValue = speed[0] * (Entity::timer.getElapsedTime().asSeconds()-lTime);
+        switch (position.dir) {
+            case EntityPosition::Up:
+                shiftAmount.y = -shiftValue;
+                break;
+            case EntityPosition::Right:
+                shiftAmount.x = shiftValue;
+                break;
+            case EntityPosition::Down:
+                shiftAmount.y = shiftValue;
+                break;
+            case EntityPosition::Left:
+                shiftAmount.x = -shiftValue;
+                break;
+        }
+        Entity::shift(shiftAmount, false);
+
+        //apply damage
+        Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, getBoundingBox());
         for (Entity::List::iterator i = hits.begin(); i!=hits.end(); ++i) {
             if (shouldApplyDamage(*i)) {
                 (*i)->notifyAttacked(attacker, attack);
             }
         }
 
+        //create explosion
         if (attack.getImpactAnimation().size() > 0) {
             Entity::Ptr explosion = DirectAttackEntity::create(attacker, attack.toExplosionAttack(), false);
 

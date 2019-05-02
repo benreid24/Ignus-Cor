@@ -29,6 +29,7 @@ void CombatEntity::notifyAttacked(Entity::Ptr attacker, const CombatAttack& atk)
         //TODO - effects and create particle generators from them
 
         if (DebugOverlays::isOverlayActive(DebugOverlays::CombatData)) {
+            cout << endl << left << setw(40) << "Attack: " << atk.getName() << endl;
             cout << left << setw(40) << "Attacker Level: " << atkr->stats.level << left << setw(40) << "\tDefender Level: " << stats.level << endl;
             cout << left << setw(40) << "Weapon Power: " << atk.getPower() << left << setw(40) << "\tArmor Resistance: " << armor.getDamageResist() << endl;
             cout << left << setw(40) << "Power Multiplier: " << lvlMult << left << setw(40) << "\tPower: " << atkPower << endl;
