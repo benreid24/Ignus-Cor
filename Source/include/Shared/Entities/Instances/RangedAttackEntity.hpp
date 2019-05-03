@@ -13,7 +13,7 @@
  */
 class RangedAttackEntity : public AttackEntity {
     CombatAttack attack;
-    float cosDir, sinDir;
+    float cosDir, sinDir, distanceTraveled;
 
     /**
      * Creates the RangedAttackEntity from the given attacker and attack
