@@ -24,6 +24,11 @@ public:
     virtual ~GraphicalEffectEntity() = default;
 
     /**
+     * Returns "GraphicalEffectEntity"
+     */
+    virtual const std::string getType();
+
+    /**
      * If bound, updates the position based on the bound Entity. Deletes if bound Entity no longer exists
      */
     virtual void update();

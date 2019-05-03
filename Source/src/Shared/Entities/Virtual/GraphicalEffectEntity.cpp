@@ -24,5 +24,9 @@ void GraphicalEffectEntity::update() {
 }
 
 void GraphicalEffectEntity::render(sf::RenderTarget& target, sf::Vector2f camPos) {
-    //
+    Entity::render(target, camPos);
+}
+
+const string GraphicalEffectEntity::getType() {
+    return "GraphicalEffectEntity";
 }
