@@ -24,6 +24,7 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 					<Add option="-g" />
 					<Add option="-Wno-misleading-indentation" />
 					<Add option="-Wno-reorder" />
+					<Add option="-Wno-switch" />
 					<Add option="-DEDITOR" />
 					<Add directory="C:/Users/Ben/SFGUI/include" />
 					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
@@ -51,6 +52,7 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 					<Add option="-std=c++11" />
 					<Add option="-Wno-misleading-indentation" />
 					<Add option="-Wno-reorder" />
+					<Add option="-Wno-switch" />
 					<Add option="-DEDITOR" />
 					<Add directory="../../Source/include" />
 					<Add directory="C:/Users/Ben/SFGUI/include" />
@@ -92,14 +94,16 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/include/Shared/Entities/EntityManager.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityVisual.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/CreatureEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/DirectAttackEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/ItemEntity.hpp" />
-		<Unit filename="../../Source/include/Shared/Entities/Instances/MeleeAttackEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/NpcEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/ParticleGeneratorEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/Player.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/RangedAttackEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Virtual/AiEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Virtual/AttackEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Virtual/CombatEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Virtual/GraphicalEffectEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/CellTable.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/Form.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/ResizableImage.hpp" />
@@ -151,13 +155,15 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/src/Shared/Entities/EntityManager.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityVisual.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Instances/CreatureEntity.cpp" />
-		<Unit filename="../../Source/src/Shared/Entities/Instances/MeleeAttackEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Instances/DirectAttackEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Instances/NpcEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Instances/ParticleGeneratorEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Instances/Player.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Instances/RangedAttackEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Virtual/AiEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Virtual/AttackEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Virtual/CombatEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Virtual/GraphicalEffectEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/CellTable.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/Form.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/WrappingBox.cpp" />

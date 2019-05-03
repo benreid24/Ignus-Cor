@@ -58,8 +58,12 @@ const string Player::getType() {
 }
 
 int Player::getAttackDirection() {
+    #ifdef GAME
     Vector2f scrnCenter(Properties::ScreenWidth/2, Properties::ScreenHeight/2);
     Vector2f mousePos = Vector2f(Mouse::getPosition(Game::get()->window));
     Vector2f diff = mousePos - scrnCenter;
     return atan2(diff.y, diff.x) * 180 / 3.1415926;
+    #else
+    return 0;
+    #endif
 }
