@@ -28,6 +28,7 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	boundingBox = FloatRect(0, 0, graphics.getSize().x, graphics.getSize().y);
 	interactDistance = 12;
 	collisionsEnabled = true;
+	isYSorted = true;
 	if (DebugOverlays::isOverlayActive(DebugOverlays::EntityInfo))
         cout << "Entity '" << name << "'(uuid: " << uuid << ") created\n";
 }
@@ -84,13 +85,11 @@ void Entity::setPositionAndDirection(EntityPosition pos) {
 	position = pos;
 }
 
-void Entity::shift(sf::Vector2f amount, bool truncate) {
+void Entity::shift(sf::Vector2f amount, const string& newMap) {
     EntityPosition oldPos = position;
 	position.coords += amount;
-	if (truncate) {
-        position.coords.x = int(position.coords.x/32)*32;
-        position.coords.y = int(position.coords.y/32)*32;
-	}
+	if (newMap.size() > 0)
+        position.mapName = newMap;
 	EntityManager::get()->updatePosition(this, oldPos);
 }
 
@@ -211,4 +210,8 @@ Entity::Ptr Entity::interact() {
 
 bool Entity::collidesWithOtherEntities() {
     return collisionsEnabled;
+}
+
+bool Entity::isYSortRendered() {
+    return isYSorted;
 }

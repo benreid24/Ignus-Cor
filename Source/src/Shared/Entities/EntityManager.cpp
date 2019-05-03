@@ -22,6 +22,7 @@ EntityManager* EntityManager::get() {
 }
 
 void EntityManager::updatePosition(Entity* e, EntityPosition oldPos) {
+    Entity::Ptr ent = getEntityPtr(e);
 	int ly = oldPos.coords.y/32;
 	int cy = e->getPosition().coords.y/32;
 	string lmap = oldPos.mapName;
@@ -37,18 +38,24 @@ void EntityManager::updatePosition(Entity* e, EntityPosition oldPos) {
 	}
 
 	if (ly!=cy || lmap!=cmap) {
-		//Remove from old row
-		Entity::Ptr fe;
-		vector<Entity::Ptr>* ymap = &(ySortedEntities[lmap][ly]);
-		for (unsigned int i = 0; i<ymap->size(); ++i) {
-			if (ymap->at(i).get()==e) {
-				fe = ymap->at(i);
-				ymap->erase(ymap->begin()+i);
-				break;
-			}
+		if (e->isYSortRendered()) {
+            //Remove from old row
+            vector<Entity::Ptr>* ymap = &(ySortedEntities[lmap][ly]);
+            for (unsigned int i = 0; i<ymap->size(); ++i) {
+                if (ymap->at(i).get()==e) {
+                    ymap->erase(ymap->begin()+i);
+                    break;
+                }
+            }
+            //Add to new row
+            ySortedEntities[cmap][cy].push_back(ent);
 		}
-		//Add to new row
-		ySortedEntities[cmap][cy].push_back(fe);
+		else if (lmap != cmap) {
+            auto iter = find(topEntities[lmap].begin(), topEntities[lmap].end(), ent);
+            if (iter != topEntities[lmap].end())
+                topEntities[lmap].erase(iter);
+            topEntities[cmap].push_back(ent);
+		}
 	}
 }
 
@@ -103,10 +110,11 @@ void EntityManager::clear() {
     entityAddQueue.clear();
     entityDeleteQueue.clear();
 	ySortedEntities.clear();
+	topEntities.clear();
 	entities.clear();
 }
 
-vector<vector<Entity::Ptr> >& EntityManager::getYSorted(string mapname) {
+vector<vector<Entity::Ptr> >& EntityManager::getYSortedEntities(string mapname) {
 	auto i = ySortedEntities.find(mapname);
 	if (i==ySortedEntities.end()) {
 		cout << "CRITICAL: Map requesting non-existent ysorted array by name: " << mapname << endl;
@@ -115,14 +123,29 @@ vector<vector<Entity::Ptr> >& EntityManager::getYSorted(string mapname) {
 	return i->second;
 }
 
+vector<Entity::Ptr>& EntityManager::getTopEntities(string mapname) {
+    auto i = topEntities.find(mapname);
+	if (i==topEntities.end()) {
+		cout << "CRITICAL: Map requesting non-existent ysorted array by name: " << mapname << endl;
+		return topEntities.begin()->second;
+	}
+	return i->second;
+}
+
 void EntityManager::registerMap(string mapname, int height) {
 	ySortedEntities.erase(mapname);
+	topEntities.erase(mapname);
 	ySortedEntities[mapname] = vector<vector<Entity::Ptr> >(height);
+	topEntities[mapname] = vector<Entity::Ptr>();
 	vector<vector<Entity::Ptr> >* ymap = &ySortedEntities[mapname];
 	for (unsigned int i = 0; i<entities.size(); ++i) {
 		int y = entities[i]->getPosition().coords.y/32;
-		if (y>=0 && y<height && entities[i]->getPosition().mapName==mapname)
-			ymap->at(i).push_back(entities[i]);
+		if (y>=0 && y<height && entities[i]->getPosition().mapName==mapname) {
+            if (entities[i]->isYSortRendered())
+                ymap->at(i).push_back(entities[i]);
+			else
+                topEntities[mapname].push_back(entities[i]);
+		}
 	}
 }
 
@@ -140,8 +163,12 @@ void EntityManager::doAdd(Entity::Ptr e) {
 	entities.push_back(e);
 	entityPointerMap[e.get()] = e;
 	int y = e->getPosition().coords.y/32;
-	if (y>=0 && y<signed(ySortedEntities[e->getPosition().mapName].size()))
-		ySortedEntities[e->getPosition().mapName][y].push_back(e);
+	if (y>=0 && y<signed(ySortedEntities[e->getPosition().mapName].size())) {
+        if (e->isYSortRendered())
+            ySortedEntities[e->getPosition().mapName][y].push_back(e);
+        else
+            topEntities[e->getPosition().mapName].push_back(e);
+	}
 	else
 		cout << "ERROR: Tried to add entity to map " << e->getPosition().mapName << " but position was out of range" << endl;
 }
@@ -164,7 +191,14 @@ void EntityManager::doDelete(Entity::Ptr e) {
 				}
 			}
 		}
+		for (unsigned int i = 0; i<topEntities[e->getPosition().mapName].size(); ++i) {
+            if (topEntities[e->getPosition().mapName][i]==e) {
+                topEntities[e->getPosition().mapName].erase(topEntities[e->getPosition().mapName].begin()+i);
+                --i;
+            }
+		}
 	}
+
 	entityPointerMap.erase(e.get());
 }
 

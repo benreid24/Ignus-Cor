@@ -72,6 +72,7 @@ protected:
 	sf::FloatRect boundingBox; //relative to upper left corner (position and gfx origin)
 	float interactDistance; //how far away it can interact
 	bool collisionsEnabled; //if it blocks other Entities
+	bool isYSorted; //true to render in y sort, false to render on top
 
 	double lTime;
 	float speed[2]; //speed in pixels/second for [slow,fast]. Will be set by child classes
@@ -136,9 +137,9 @@ public:
 	void setPositionAndDirection(EntityPosition pos);
 
 	/**
-	 * Shifts the Entity by the given amount of pixels. Set truncate to true to force the Entity onto a tile border
+	 * Shifts the Entity by the given amount of pixels. Also optionally changes the map
 	 */
-	void shift(sf::Vector2f amount, bool truncate = false);
+	void shift(sf::Vector2f amount, const std::string& newMap = "");
 
 	/**
 	 * Returns the name of the Entity
@@ -174,6 +175,11 @@ public:
 	 * Returns whether or not this Entity should be considered when doing collisions between other Entities
 	 */
     bool collidesWithOtherEntities();
+
+    /**
+     * Returns whether or not the Entity is y-sorted when rendering, or if it should render on top of other Entities
+     */
+    bool isYSortRendered();
 };
 
 #endif // ENTITY_HPP

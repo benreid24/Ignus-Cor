@@ -31,7 +31,7 @@ void RangedAttackEntity::update() {
     EntityPosition oldPos = position;
     float displacement = speed[0] * (Entity::timer.getElapsedTime().asSeconds()-lTime);
     sf::Vector2f movedist(displacement*cosDir, displacement*sinDir);
-    Entity::shift(movedist, false);
+    Entity::shift(movedist);
     distanceTraveled += displacement;
 
     Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, getBoundingBox());

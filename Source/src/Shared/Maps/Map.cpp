@@ -558,10 +558,13 @@ void Map::draw(sf::RenderTarget& target) {
                     }
                 }
             }
-            for (unsigned int i = 0; i<EntityManager::get()->getYSorted(uniqueName).at(y).size(); ++i) {
-                EntityManager::get()->getYSorted(uniqueName).at(y).at(i)->render(target,camPos);
+            for (unsigned int i = 0; i<EntityManager::get()->getYSortedEntities(uniqueName).at(y).size(); ++i) {
+                EntityManager::get()->getYSortedEntities(uniqueName).at(y).at(i)->render(target,camPos);
             }
         }
+    }
+    for (unsigned int i = 0; i<EntityManager::get()->getTopEntities(uniqueName).size(); ++i) {
+        EntityManager::get()->getTopEntities(uniqueName)[i]->render(target,camPos);
     }
 
     weather->draw(target);
@@ -640,10 +643,13 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection, 
                     }
                 }
             }
-            for (unsigned int i = 0; i<EntityManager::get()->getYSorted(uniqueName).at(y).size(); ++i) {
-                EntityManager::get()->getYSorted(uniqueName).at(y).at(i)->render(target,camPos);
+            for (unsigned int i = 0; i<EntityManager::get()->getYSortedEntities(uniqueName).at(y).size(); ++i) {
+                EntityManager::get()->getYSortedEntities(uniqueName).at(y).at(i)->render(target,camPos);
             }
         }
+    }
+    for (unsigned int i = 0; i<EntityManager::get()->getTopEntities(uniqueName).size(); ++i) {
+        EntityManager::get()->getTopEntities(uniqueName)[i]->render(target,camPos);
     }
 
     weather->draw(target);

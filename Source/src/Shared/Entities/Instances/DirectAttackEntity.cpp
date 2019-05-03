@@ -21,7 +21,7 @@ const string DirectAttackEntity::getType() {
 void DirectAttackEntity::update() {
     if (follow) {
         sf::Vector2f shiftAmount = attacker->getPosition().coords + offset - position.coords;
-        Entity::shift(shiftAmount, false);
+        Entity::shift(shiftAmount);
     }
 
     Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, getBoundingBox());

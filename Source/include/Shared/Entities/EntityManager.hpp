@@ -18,6 +18,7 @@ class EntityManager {
 	std::vector<Entity::Ptr> entities;
 	std::unordered_map<Entity*, Entity::WeakPtr> entityPointerMap;
     std::map<std::string, std::vector<std::vector<Entity::Ptr> > > ySortedEntities;
+    std::map<std::string, std::vector<Entity::Ptr> > topEntities;
 	Entity::Ptr player;
 
 	/**
@@ -103,7 +104,12 @@ public:
 	/**
 	 * Returns a reference to the y-sorted list of Entities for the given map to render
 	 */
-	std::vector<std::vector<Entity::Ptr> >& getYSorted(std::string mapname);
+	std::vector<std::vector<Entity::Ptr> >& getYSortedEntities(std::string mapname);
+
+	/**
+	 * Returns a reference to the list of Entities to render on top of the given map
+	 */
+    std::vector<Entity::Ptr>& getTopEntities(std::string mapname);
 
 	/**
 	 * Returns an Entity::List with all the Entities in the given space
