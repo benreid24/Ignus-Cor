@@ -56,10 +56,10 @@ bool AttackEntity::shouldApplyDamage(Entity::Ptr ent) {
     return false;
 }
 
-Entity::Ptr AttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk) {
+Entity::Ptr AttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk, int atkDir) {
     switch (atk.getType()) {
         case CombatAttack::Ranged:
-            return RangedAttackEntity::create(attacker, atk);
+            return RangedAttackEntity::create(attacker, atk, atkDir);
         case CombatAttack::Melee:
             return DirectAttackEntity::create(attacker, atk);
 

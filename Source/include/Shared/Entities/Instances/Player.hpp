@@ -14,6 +14,11 @@ class Player : public CombatEntity {
 	 */
 	Player();
 
+	/**
+	 * Helper function to get attack direction based on mouse position
+	 */
+    int getAttackDirection();
+
 public:
 	typedef std::shared_ptr<Player> Ptr;
 

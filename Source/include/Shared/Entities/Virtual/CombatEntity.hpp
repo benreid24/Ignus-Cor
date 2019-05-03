@@ -39,8 +39,10 @@ protected:
 
     /**
      * Performs an attack using the current equipped CombatAttack
+     *
+     * \param atkDir Direction, in degrees, to attack in. Ranged only
      */
-    void doAttack();
+    void doAttack(int atkDir = 0);
 
 public:
     /**

@@ -50,9 +50,9 @@ void CombatEntity::notifyAttacked(Entity::Ptr attacker, const CombatAttack& atk)
         cout << "Warning: " << getIdString() << " attacked by non CombatEntity " << attacker->getIdString() << endl;
 }
 
-void CombatEntity::doAttack() {
+void CombatEntity::doAttack(int atkDir) {
     if (Entity::timer.getElapsedTime().asSeconds()-lastAttackTime >= weapon.getAttackDelay()) {
-        Entity::Ptr atkEnt = AttackEntity::create(EntityManager::get()->getEntityPtr(this), weapon);
+        Entity::Ptr atkEnt = AttackEntity::create(EntityManager::get()->getEntityPtr(this), weapon, atkDir);
         EntityManager::get()->add(atkEnt);
         lastAttackTime = Entity::timer.getElapsedTime().asSeconds();
     }

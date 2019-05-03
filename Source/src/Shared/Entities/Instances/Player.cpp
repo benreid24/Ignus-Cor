@@ -2,6 +2,8 @@
 #include "Shared/Entities/EntityManager.hpp"
 #include "Shared/Maps/MapManager.hpp"
 #include "Shared/Properties.hpp"
+#include "Game/Core/Game.hpp"
+#include <cmath>
 using namespace std;
 using namespace sf;
 
@@ -41,7 +43,7 @@ void Player::update() {
                               "Combat/Spells/fireball.anim", 320, 400, "Combat/Explosions/testexplosion.anim");
 
     if (Mouse::isButtonPressed(Mouse::Left))
-        doAttack();
+        doAttack(getAttackDirection());
 
 	if (Keyboard::isKeyPressed(Keyboard::E))
         interact();
@@ -53,4 +55,11 @@ void Player::update() {
 
 const string Player::getType() {
 	return "Player";
+}
+
+int Player::getAttackDirection() {
+    Vector2f scrnCenter(Properties::ScreenWidth/2, Properties::ScreenHeight/2);
+    Vector2f mousePos = Vector2f(Mouse::getPosition(Game::get()->window));
+    Vector2f diff = mousePos - scrnCenter;
+    return atan2(diff.y, diff.x) * 180 / 3.1415926;
 }

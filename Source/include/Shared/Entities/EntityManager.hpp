@@ -30,11 +30,6 @@ class EntityManager {
 	 */
 	bool spaceFree(Entity* e, EntityPosition space, sf::Vector2f size);
 
-	/**
-	 * Internal function for Entities to check if movement is valid
-	 */
-	bool canMove(Entity* e, EntityPosition oldPos, EntityPosition newPos, sf::Vector2f size);
-
     /**
      * Performs the actual deletion of an Entity
      */
@@ -99,6 +94,11 @@ public:
 	 * Updates all Entities
 	 */
 	void update();
+
+	/**
+	 * Check if movement is valid
+	 */
+	bool canMove(Entity* e, EntityPosition oldPos, EntityPosition newPos, sf::Vector2f size);
 
 	/**
 	 * Returns a reference to the y-sorted list of Entities for the given map to render

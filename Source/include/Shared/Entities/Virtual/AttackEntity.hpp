@@ -33,8 +33,12 @@ public:
 
     /**
      * Creates either a DirectAttackEntity or RangedAttackEntity based on what the CombatAttack is
+     *
+     * \param attacker The Entity doing the attack
+     * \param atk The attack being used
+     * \param atkDir Direction to attack in, in degrees. Ranged only
      */
-    static Entity::Ptr create(Entity::Ptr attacker, const CombatAttack& atk);
+    static Entity::Ptr create(Entity::Ptr attacker, const CombatAttack& atk, int atkDir);
 
     /**
      * Pure virtual

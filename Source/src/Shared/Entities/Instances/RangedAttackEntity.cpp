@@ -1,16 +1,20 @@
 #include "Shared/Entities/Instances/RangedAttackEntity.hpp"
 #include "Shared/Entities/Instances/DirectAttackEntity.hpp"
 #include "Shared/Entities/EntityManager.hpp"
+#include <cmath>
 using namespace std;
 
-RangedAttackEntity::RangedAttackEntity(Entity::Ptr atk, const CombatAttack& weapon)
+RangedAttackEntity::RangedAttackEntity(Entity::Ptr atk, const CombatAttack& weapon, int atkDir)
 : AttackEntity(atk, weapon.getName(), weapon.getAnimation()), attack(weapon) {
     speed[0] = attack.getSpeed();
     collisionsEnabled = true;
+    float dirRadians = float(atkDir) / 180 * 3.1415926;
+    cosDir = cos(dirRadians);
+    sinDir = sin(dirRadians);
 }
 
-Entity::Ptr RangedAttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk) {
-    return Entity::Ptr(new RangedAttackEntity(attacker, atk));
+Entity::Ptr RangedAttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk, int atkDir) {
+    return Entity::Ptr(new RangedAttackEntity(attacker, atk, atkDir));
 }
 
 const string RangedAttackEntity::getType() {
@@ -18,26 +22,12 @@ const string RangedAttackEntity::getType() {
 }
 
 void RangedAttackEntity::update() {
-    if (!move(position.dir, false)) {
-        //move over slightly more to get in bounding box
-        sf::Vector2f shiftAmount;
-        double shiftValue = speed[0] * (Entity::timer.getElapsedTime().asSeconds()-lTime);
-        switch (position.dir) {
-            case EntityPosition::Up:
-                shiftAmount.y = -shiftValue;
-                break;
-            case EntityPosition::Right:
-                shiftAmount.x = shiftValue;
-                break;
-            case EntityPosition::Down:
-                shiftAmount.y = shiftValue;
-                break;
-            case EntityPosition::Left:
-                shiftAmount.x = -shiftValue;
-                break;
-        }
-        Entity::shift(shiftAmount, false);
+    EntityPosition oldPos = position;
+    float displacement = speed[0] * (Entity::timer.getElapsedTime().asSeconds()-lTime);
+    sf::Vector2f movedist(displacement*cosDir, displacement*sinDir);
+    Entity::shift(movedist, false);
 
+    if (!EntityManager::get()->canMove(this, oldPos, position, sf::Vector2f(boundingBox.width,boundingBox.height))) {
         //apply damage
         Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, getBoundingBox());
         for (Entity::List::iterator i = hits.begin(); i!=hits.end(); ++i) {

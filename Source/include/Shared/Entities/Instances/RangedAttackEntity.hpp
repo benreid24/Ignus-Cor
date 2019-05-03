@@ -13,17 +13,18 @@
  */
 class RangedAttackEntity : public AttackEntity {
     CombatAttack attack;
+    float cosDir, sinDir;
 
     /**
      * Creates the RangedAttackEntity from the given attacker and attack
      */
-    RangedAttackEntity(Entity::Ptr attacker, const CombatAttack& attack);
+    RangedAttackEntity(Entity::Ptr attacker, const CombatAttack& attack, int atkDir);
 
 public:
     /**
      * Creates the projectile from the weapon/spell and source Entity
      */
-    static Entity::Ptr create(Entity::Ptr attacker, const CombatAttack& attack);
+    static Entity::Ptr create(Entity::Ptr attacker, const CombatAttack& attack, int atkDir);
 
     /**
      * vtable
