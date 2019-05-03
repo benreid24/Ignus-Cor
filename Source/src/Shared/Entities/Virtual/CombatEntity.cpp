@@ -51,10 +51,10 @@ void CombatEntity::notifyAttacked(Entity::Ptr attacker, const CombatAttack& atk)
 }
 
 void CombatEntity::doAttack() {
-    if (Entity::timer.getElapsedTime().asMilliseconds()-lastAttackTime >= 800) { //TODO - get attack delay from weapon
+    if (Entity::timer.getElapsedTime().asSeconds()-lastAttackTime >= weapon.getAttackDelay()) {
         Entity::Ptr atkEnt = AttackEntity::create(EntityManager::get()->getEntityPtr(this), weapon);
         EntityManager::get()->add(atkEnt);
-        lastAttackTime = Entity::timer.getElapsedTime().asMilliseconds();
+        lastAttackTime = Entity::timer.getElapsedTime().asSeconds();
     }
 }
 

@@ -24,7 +24,7 @@ struct EntityStats {
  * \ingroup Combat
  */
 class CombatEntity : public Entity {
-    long int lastAttackTime;
+    float lastAttackTime;
 
 protected:
     EntityStats stats;

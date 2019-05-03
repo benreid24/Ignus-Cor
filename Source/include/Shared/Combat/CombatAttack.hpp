@@ -29,6 +29,7 @@ private:
     std::string name, description;
     double power;
     std::list<CombatEffect> effects;
+    float delaySeconds;
 
     //ranged only
     std::string impactAnimation;
@@ -46,19 +47,15 @@ public:
     /**
      * Create the CombatAttack as a melee attack
      */
-    CombatAttack(const std::string& name, const std::string& description, double power, const std::list<CombatEffect>& effects,
-                 const std::string& animation);
+    CombatAttack(const std::string& name, const std::string& description, double power, float AttackDelay,
+                 const std::list<CombatEffect>& effects, const std::string& animation);
 
     /**
      * Creates a ranged attack
      */
-    CombatAttack(const std::string& name, const std::string& description, double power, const std::list<CombatEffect>& effects,
-                       const std::string& animation, double range, double speed, const std::string& impactAnimation = "");
-
-    /**
-     * vtable
-     */
-    virtual ~CombatAttack() = default;
+    CombatAttack(const std::string& name, const std::string& description, double power, float attackDelay,
+                 const std::list<CombatEffect>& effects, const std::string& animation, double range,
+                 double speed, const std::string& impactAnimation = "");
 
     /**
      * Returns the type of the attack, either Melee or Ranged
@@ -79,6 +76,11 @@ public:
      * Returns the power of the CombatAttack
      */
     double getPower() const;
+
+    /**
+     * Returns the delay between attacks, in seconds
+     */
+    float getAttackDelay() const;
 
     /**
      * Returns the effects of the CombatAttack

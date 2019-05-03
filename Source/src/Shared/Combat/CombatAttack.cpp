@@ -7,21 +7,23 @@ CombatAttack::CombatAttack() {
     name = "Punch";
     description = "ONE PUNCH!!";
     power = 15;
+    delaySeconds = 0.5;
     animation = "Attacks/punch.anim";
 }
 
-CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, const list<CombatEffect>& efx, const string& anim) {
+CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, float del, const list<CombatEffect>& efx, const string& anim) {
     type = Melee;
     name = nm;
     description = desc;
     power = pwr;
+    delaySeconds = del;
     effects = efx;
     animation = anim;
 }
 
-CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, const list<CombatEffect>& efx, const string& anim,
-                                       double rng, double spd, const string& impactAnim)
-: CombatAttack(nm, desc, pwr, efx, anim) {
+CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, float del, const list<CombatEffect>& efx, const string& anim,
+                           double rng, double spd, const string& impactAnim)
+: CombatAttack(nm, desc, pwr, del, efx, anim) {
     type = Ranged;
     range = rng;
     speed = spd;
@@ -42,6 +44,10 @@ string CombatAttack::getDescription() const {
 
 double CombatAttack::getPower() const {
     return power;
+}
+
+float CombatAttack::getAttackDelay() const {
+    return delaySeconds;
 }
 
 list<CombatEffect> CombatAttack::getEffects() const {
@@ -69,6 +75,7 @@ CombatAttack CombatAttack::toExplosionAttack() const {
         name+"-explosion",
         description,
         power, //TODO - separate power/effects for explosion?
+        delaySeconds,
         effects,
         impactAnimation
     );
