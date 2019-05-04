@@ -41,3 +41,7 @@ void ParticleGraphics::render(RenderTarget& target, Vector2f pos, int rotation, 
             break;
     }
 }
+
+bool ParticleGraphics::finished() {
+    return animation.finished();
+}

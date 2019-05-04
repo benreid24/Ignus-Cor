@@ -35,6 +35,7 @@ public:
      * Represents how the change to velocity, angle, and opacity is applied
      */
     enum ChangeScaleType {
+        Constant, //m
         Linear, // m*x
         Exponential, // m*x^2
         Decay, // m/x
@@ -48,23 +49,37 @@ public:
         ChangeType changeType = Particle::NoChange;
         float multiplier = 0;
         ChangeScaleType scaleType;
+
+        /**
+         * Computes the new value based on the rate of change and time elapsed
+         */
+        float getChange(float timeElapsed, float distanceTraveled);
     };
 
 protected:
     ParticleGraphics graphics;
-    sf::Vector2f position, spawnPosition;
-    float direction, velocity, spawnTime;
+    sf::Vector2f position;
+    float direction, velocity, opacity;
+
+    sf::Vector2f spawnPosition;
+    float lastUpdateTime;
+    float spawnDir, spawnVel, spawnOpacity, spawnTime;
 
     Behavior rotationBehavior, velocityBehavior, opacityBehavior;
 
     LifetimeType lifetimeType;
     float lifetimeValue;
 
+    /**
+     * Helper function to get distance traveled
+     */
+    float getSquaredDistance();
+
 public:
     /**
      * Creates the Particle from it's graphics, position, direction, and velocity
      */
-    Particle(const ParticleGraphics& gfx, sf::Vector2f pos, float dir, float vel, float currentTime);
+    Particle(const ParticleGraphics& gfx, sf::Vector2f pos, float dir, float vel, float opacity, float currentTime);
 
     /**
      * vtable
@@ -94,7 +109,7 @@ public:
     /**
      * Returns whether or not the Particle should be destroyed
      */
-    bool isFinished();
+    bool isFinished(float currentTime);
 
     /**
      * Returns whether or not this Particle existing should delay the destruction of the ParticleGenerator

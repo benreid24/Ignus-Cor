@@ -49,6 +49,11 @@ public:
      * and opacity for images only
      */
     void render(sf::RenderTarget& target, sf::Vector2f pos, int rotation = 0, int opacity = 255);
+
+    /**
+     * Returns whether or not the animation is finished. Only valid when type is non looping animation
+     */
+    bool finished();
 };
 
 #endif // PARTICLEGRAPHICS_HPP

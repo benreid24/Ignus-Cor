@@ -103,9 +103,9 @@ public:
     void setGenerationRate(float rate, GenerationRateChangeScale rateChgType, float rateChgMultiplier);
 
     /**
-     * Begins termination of the generator
+     * Begins termination of the generator. Stops generating particles over stopTime seconds
      */
-    void stop();
+    void stop(float stopTime);
 
     /**
      * Returns whether or not the generator is finished, i.e. all finite lifetime Particles are destroyed
