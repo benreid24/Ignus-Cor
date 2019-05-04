@@ -432,7 +432,7 @@ FogWeather::FogWeather(Map* m, bool isThick) : BaseWeatherType(m)
     {
         for (int y = -7; y<Properties::ScreenHeight*3/20; y++)
         {
-            particles.push_back(Particle(baseX+x*20,baseY+y*20,randomInt(0,360),double(randomInt(-5,5))/33));
+            particles.push_back(WeatherParticle(baseX+x*20,baseY+y*20,randomInt(0,360),double(randomInt(-5,5))/33));
         }
     }
 
@@ -482,9 +482,9 @@ void FogWeather::update()
         particles[i].rotation += particles[i].angularVel*dt;
 
         if (particles[i].x>owner->getCamera().x+Properties::ScreenWidth*3)
-			particles[i] = Particle(owner->getCamera().x-96,particles[i].y,randomInt(0,360),double(randomInt(-5,5))/33);
+			particles[i] = WeatherParticle(owner->getCamera().x-96,particles[i].y,randomInt(0,360),double(randomInt(-5,5))/33);
         if (particles[i].y>owner->getCamera().y+Properties::ScreenHeight*3)
-			particles[i] = Particle(particles[i].x,owner->getCamera().y-96,randomInt(0,360),double(randomInt(-5,5))/33);
+			particles[i] = WeatherParticle(particles[i].x,owner->getCamera().y-96,randomInt(0,360),double(randomInt(-5,5))/33);
     }
 
     if (a<targetA && !isStopping)

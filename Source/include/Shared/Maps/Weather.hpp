@@ -66,20 +66,20 @@ struct Vector4D
  *
  * \ingroup Utilities
  */
-struct Particle
+struct WeatherParticle
 {
     float x,y;
     float rotation, angularVel;
 
     /**
-     * Initializes the Particle with the given parameters
+     * Initializes the WeatherParticle with the given parameters
      *
      * \param _x The x component
      * \param _y The y component
      * \param r The angular position
      * \param av The angular velocity
      */
-    Particle(float _x, float _y, float r, float av)
+    WeatherParticle(float _x, float _y, float r, float av)
     {
         x = _x;
         y = _y;
@@ -315,7 +315,7 @@ class FogWeather : public BaseWeatherType
 {
     TextureReference fogTxtr;
     sf::Sprite spr;
-    std::vector<Particle> particles;
+    std::vector<WeatherParticle> particles;
     bool isStopping; //stop by making spr transparent
     int targetA, lChng;
     double a;

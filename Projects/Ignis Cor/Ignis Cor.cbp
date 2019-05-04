@@ -119,6 +119,9 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/include/Shared/Media/SoundEngine.hpp" />
 		<Unit filename="../../Source/include/Shared/Objects/Effect.hpp" />
 		<Unit filename="../../Source/include/Shared/Objects/Item.hpp" />
+		<Unit filename="../../Source/include/Shared/Particles/Particle.hpp" />
+		<Unit filename="../../Source/include/Shared/Particles/ParticleGenerator.hpp" />
+		<Unit filename="../../Source/include/Shared/Particles/ParticleGraphics.hpp" />
 		<Unit filename="../../Source/include/Shared/Properties.hpp" />
 		<Unit filename="../../Source/include/Shared/Scripts/Script.hpp" />
 		<Unit filename="../../Source/include/Shared/Scripts/ScriptManager.hpp" />
@@ -172,6 +175,9 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/src/Shared/Media/SoundEngine.cpp" />
 		<Unit filename="../../Source/src/Shared/Objects/Effect.cpp" />
 		<Unit filename="../../Source/src/Shared/Objects/Item.cpp" />
+		<Unit filename="../../Source/src/Shared/Particles/Particle.cpp" />
+		<Unit filename="../../Source/src/Shared/Particles/ParticleGenerator.cpp" />
+		<Unit filename="../../Source/src/Shared/Particles/ParticleGraphics.cpp" />
 		<Unit filename="../../Source/src/Shared/Properties.cpp" />
 		<Unit filename="../../Source/src/Shared/Scripts/Script.cpp" />
 		<Unit filename="../../Source/src/Shared/Scripts/ScriptManager.cpp" />
