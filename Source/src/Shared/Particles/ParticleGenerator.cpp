@@ -5,8 +5,8 @@ using namespace sf;
 
 float ParticleGenerator::ValueWindow::getValue() {
     float range = maximum - minimum;
-    float r = randomInt(0, 10000000);
-    return minimum + r/10000000*range;
+    float r = randomInt(0, 100000);
+    return minimum + r/100000*range;
 }
 
 ParticleGenerator::ParticleGenerator(ParticleGenerator::ValueWindow radius, ParticleGenerator::ValueWindow angle,
@@ -15,6 +15,8 @@ ParticleGenerator::ParticleGenerator(ParticleGenerator::ValueWindow radius, Part
     lifetimeType = UntilDestroyedLifetime;
     particlesPerSecond = 0;
     lastSpawnTime = 0;
+    totalCreated = 0;
+    startRate = 0;
 }
 
 ParticleGenerator::~ParticleGenerator() {
@@ -49,22 +51,35 @@ void ParticleGenerator::setLifetime(LifetimeType type, float lifetime) {
 }
 
 void ParticleGenerator::setGenerationRate(float rate, GenerationRateChangeScale rateChgType, float rateChgMultiplier) {
-    particlesPerSecond = rate;
+    particlesPerSecond = startRate = rate;
     genChgType = rateChgType;
     genChgMultiplier = rateChgMultiplier;
 }
 
 void ParticleGenerator::stop(float stopTime) {
-    genChgType = Constant;
+    genChgType = Linear;
     genChgMultiplier = -particlesPerSecond/stopTime;
 }
 
 bool ParticleGenerator::finished() {
-    for (auto i = particles.begin(); i!=particles.end(); ++i) {
-        if (!(*i)->finished(timer.getElapsedTime().asSeconds()) && (*i)->blocksGeneratorDestruction())
-            return false;
+    if (lifetimeType==TimeExistedLifetime)
+        return timer.getElapsedTime().asSeconds() >= lifetimeValue;
+    else if (lifetimeType==ParticlesGeneratedLifetime)
+        return totalCreated >= lifetimeValue;
+    else if (lifetimeType==UntilDestroyedLifetime) {
+        if (timer.getElapsedTime().asSeconds() < lifetimeValue)
+            return false; //minimum time alive
+
+        for (auto i = particles.begin(); i!=particles.end(); ++i) {
+            if (!(*i)->finished(timer.getElapsedTime().asSeconds()) && (*i)->blocksGeneratorDestruction())
+                return false;
+        }
+        return true;
     }
-    return true;
+    else {
+        cout << "Warning: Invalid ParticleGenerator lifetime type\n";
+        return true;
+    }
 }
 
 void ParticleGenerator::update() {
@@ -91,10 +106,15 @@ void ParticleGenerator::spawnParticles() {
     int spawnCount = particlesPerSecond * dt;
     ValueWindow lifetimeWindow(particleLifetimeValue-particleLifetimeFuzziness, particleLifetimeValue+particleLifetimeFuzziness);
 
-    for (int i = 0; i<=spawnCount; ++i) {
+    if (spawnCount>0) {
+        lastSpawnTime = timer.getElapsedTime().asSeconds();
+    }
+
+    totalCreated += spawnCount;
+    for (int i = 0; i<spawnCount; ++i) {
         float angle = spawnAngle.getValue() * 3.1415926/180;
-        float rad = spawnRadius.getValue();
-        float x = rad*cos(angle), y = rad*sin(angle);
+        float radius = spawnRadius.getValue();
+        float x = radius*cos(angle), y = radius*sin(angle);
         Particle* p = new Particle(defaultParticleGraphics, Vector2f(x,y), spawnDirection.getValue(),
                                    spawnVelocity.getValue(), spawnOpacity.getValue(), timer.getElapsedTime().asSeconds());
         p->setRotationBehavior(rotationBehavior);
@@ -109,22 +129,25 @@ void ParticleGenerator::updateSpawnRate() {
     float dt = timer.getElapsedTime().asSeconds();
     switch (genChgType) {
         case Constant:
-            particlesPerSecond += genChgMultiplier;
+            cout << dt << ": ";
+            cout << particlesPerSecond << " -> ";
+            particlesPerSecond = genChgMultiplier * dt;
+            cout << particlesPerSecond << endl;
             break;
 
         case Linear:
-            particlesPerSecond += genChgMultiplier * dt;
+            particlesPerSecond = startRate + genChgMultiplier * dt;
             break;
 
         case Exponential:
-            particlesPerSecond += genChgMultiplier * dt*dt;
+            particlesPerSecond = startRate + genChgMultiplier * dt*dt;
             break;
 
         case Decay:
-            particlesPerSecond += genChgMultiplier / dt;
+            particlesPerSecond = startRate + genChgMultiplier / dt;
 
         case ExponentialDecay:
-            particlesPerSecond += genChgMultiplier / (dt*dt);
+            particlesPerSecond = startRate + genChgMultiplier / (dt*dt);
             break;
 
         default:

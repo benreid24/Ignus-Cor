@@ -56,6 +56,9 @@ public:
     const static std::string WeaponDbFile;
     const static std::string SpellDbFile;
 
+    const static std::string ParticleImagePath;
+    const static std::string ParticleAnimPath;
+
     static sf::Font PrimaryMenuFont;
     static sf::Font SecondaryMenuFont;
     static sf::Font ConversationFont;

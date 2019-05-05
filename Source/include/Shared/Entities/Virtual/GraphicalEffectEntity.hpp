@@ -9,14 +9,14 @@
  */
 class GraphicalEffectEntity : public Entity {
     Entity::WeakPtr boundTo;
-    bool wasBound;
+    bool wasBound, removeWithBound;
     sf::Vector2f offset;
 
 public:
     /**
      * Creates the graphical Entity and optionally binds to the given Entity
      */
-    GraphicalEffectEntity(Entity::Ptr bindTo, EntityPosition pos, std::string gfx1);
+    GraphicalEffectEntity(Entity::Ptr bindTo, EntityPosition pos, std::string gfx1, bool removeWithBound = true);
 
     /**
      * vtable

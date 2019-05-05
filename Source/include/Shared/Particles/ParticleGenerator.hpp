@@ -54,6 +54,7 @@ public:
 protected:
     sf::Clock timer;
     std::list<Particle*> particles;
+    int totalCreated;
 
     ParticleGraphics defaultParticleGraphics;
     Particle::Behavior rotationBehavior, velocityBehavior, opacityBehavior;
@@ -66,7 +67,7 @@ protected:
     LifetimeType lifetimeType;
     float lifetimeValue;
 
-    float particlesPerSecond, lastSpawnTime;
+    float particlesPerSecond, lastSpawnTime, startRate;
     GenerationRateChangeScale genChgType;
     float genChgMultiplier;
 

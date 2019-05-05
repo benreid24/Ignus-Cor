@@ -96,6 +96,11 @@ void Particle::update(float ctime) {
     velocity = spawnVel + velocityBehavior.getChange(timeElapsed, distanceTraveled);
     direction = spawnDir + rotationBehavior.getChange(timeElapsed, distanceTraveled);
 
+    if (opacity<0)
+        opacity = 0;
+    else if (opacity>255)
+        opacity = 255;
+
     float dirRads = direction * 3.1415926/180;
     position.x += velocity*cos(dirRads) * dt;
     position.y += velocity*sin(dirRads) * dt;

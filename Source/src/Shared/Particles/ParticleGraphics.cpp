@@ -1,5 +1,6 @@
 #include "Shared/Particles/ParticleGraphics.hpp"
 #include "Shared/Util/File.hpp"
+#include "Shared/Properties.hpp"
 using namespace std;
 using namespace sf;
 
@@ -10,12 +11,18 @@ ParticleGraphics::ParticleGraphics(const string& file) : ParticleGraphics() {
 void ParticleGraphics::load(const string& file) {
     if (File::getExtension(file)=="anim") {
         gfxType = Anim;
-        animRef = animPool.loadResource(file);
+        if (!FileExists(file))
+            animRef = animPool.loadResource(Properties::ParticleAnimPath + file);
+        else
+            animRef = animPool.loadResource(file);
         animation.setSource(animRef);
     }
     else if (File::getExtension(file)=="png") {
         gfxType = Image;
-        texture = imagePool.loadResource(file);
+        if (!FileExists(file))
+            texture = imagePool.loadResource(Properties::ParticleImagePath + file);
+        else
+            texture = imagePool.loadResource(file);
         sprite.setTexture(*texture);
         sprite.setOrigin(texture->getSize().x/2, texture->getSize().y/2);
     }

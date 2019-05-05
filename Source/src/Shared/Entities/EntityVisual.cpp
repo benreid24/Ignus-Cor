@@ -12,6 +12,9 @@ EntityVisual::EntityVisual() {
 }
 
 void EntityVisual::load(std::string path1, std::string path2) {
+    if (path1.size()==0)
+        return;
+
 	if (File::getExtension(path1)==path1 || path1[path1.size()-1]=='/' || path1[path1.size()-1]=='\\') {
 		type = MoveAnim;
 		path1 = Properties::AnimationPath + path1;
@@ -80,6 +83,8 @@ Vector2f EntityVisual::getSize() {
 	case SpeedAnim:
     case SingleAnim:
 		return slow[0].getSize();
+    case NotLoaded:
+        return Vector2f(0,0);
 	default:
 		cout << "Warning: EntityVisual getSize() called but type is invalid\n";
 		return Vector2f(0,0);

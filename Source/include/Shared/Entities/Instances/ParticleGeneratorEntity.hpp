@@ -10,13 +10,18 @@ class ParticleGeneratorEntity : public GraphicalEffectEntity {
     /**
      * Creates the ParticleGeneratorEntity
      */
-    ParticleGeneratorEntity(Entity::Ptr bindTo, EntityPosition pos, ParticleGenerator::Ptr gen, const std::string& gfx);
+    ParticleGeneratorEntity(Entity::Ptr bindTo, EntityPosition pos, ParticleGenerator::Ptr gen, const std::string& gfx, bool removeWithBound = false);
 
 public:
     /**
      * Creates a ParticleGeneratorEntity and optionally binds it to the given Entity
      */
-    static Entity::Ptr create(Entity::Ptr bindTo, EntityPosition pos, ParticleGenerator::Ptr gen, const std::string& gfx);
+    static Entity::Ptr create(Entity::Ptr bindTo, EntityPosition pos, ParticleGenerator::Ptr gen, const std::string& gfx, bool removeWithBound = false);
+
+    /**
+     * Convenience function to create a generator for smoke
+     */
+    static Entity::Ptr createSmoke(Entity::Ptr bindTo, EntityPosition pos, float lifetime);
 
     /**
      * vtable

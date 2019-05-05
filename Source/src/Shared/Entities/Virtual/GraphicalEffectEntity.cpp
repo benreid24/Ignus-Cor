@@ -2,11 +2,12 @@
 #include "Shared/Entities/EntityManager.hpp"
 using namespace std;
 
-GraphicalEffectEntity::GraphicalEffectEntity(Entity::Ptr bindTo, EntityPosition pos, string gfx1)
+GraphicalEffectEntity::GraphicalEffectEntity(Entity::Ptr bindTo, EntityPosition pos, string gfx1, bool remWithBound)
 : Entity("graphical effect", pos, gfx1) {
     boundTo = bindTo;
     wasBound = bindTo.get() != nullptr;
     collisionsEnabled = false;
+    removeWithBound = remWithBound;
 
     if (wasBound)
         offset = position.coords - bindTo->getPosition().coords;
@@ -19,7 +20,7 @@ void GraphicalEffectEntity::update() {
         sf::Vector2f shiftAmt = position.coords - (boundTo.lock()->getPosition().coords + offset);
         Entity::shift(shiftAmt, boundTo.lock()->getPosition().mapName);
     }
-    else if (wasBound)
+    else if (wasBound && removeWithBound)
         EntityManager::get()->remove(this);
 }
 

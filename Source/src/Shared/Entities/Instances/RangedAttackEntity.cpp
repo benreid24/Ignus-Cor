@@ -1,5 +1,6 @@
 #include "Shared/Entities/Instances/RangedAttackEntity.hpp"
 #include "Shared/Entities/Instances/DirectAttackEntity.hpp"
+#include "Shared/Entities/Instances/ParticleGeneratorEntity.hpp"
 #include "Shared/Entities/EntityManager.hpp"
 #include "Shared/Maps/MapManager.hpp"
 #include <cmath>
@@ -57,8 +58,14 @@ void RangedAttackEntity::update() {
             displacement = boundingBox.width/8 + boundingBox.height/8;
             pos.coords.x += boundingBox.width/2 - xbox.width/2 + cosDir*displacement;
             pos.coords.y += boundingBox.height/2 - xbox.height/2 + sinDir*displacement;
-
             explosion->setPositionAndDirection(pos);
+
+            xbox = explosion->getBoundingBox();
+            pos.coords.x = xbox.left + xbox.width/2;
+            pos.coords.y = xbox.top + xbox.height/2;
+            Entity::Ptr smoke = ParticleGeneratorEntity::createSmoke(explosion, pos, 1.5);
+
+            EntityManager::get()->add(smoke);
             EntityManager::get()->add(explosion);
         }
         EntityManager::get()->remove(this);
