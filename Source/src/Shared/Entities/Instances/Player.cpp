@@ -15,9 +15,9 @@ Player::Player() :
 	speed[0] = 64;
 	speed[1] = 128;
 	boundingBox = FloatRect(0, 12, graphics.getSize().x, graphics.getSize().y-12);
-	weapon = CombatAttack("TestSword", "This is for testing", 30, 0.6, list<CombatEffect>(), "Combat/Weapons/TestSword");
-	weapon = CombatAttack("TestSpell", "This is for testing", 30, 0.4, list<CombatEffect>(),
-                          "Combat/Spells/fireball.anim", 320, 400, "Combat/Explosions/testexplosion.anim");
+	weapon = CombatAttack("TestSword", "This is for testing", 30, 0.6, list<CombatEffect>(), "Combat/Weapons/TestSword", ParticleGeneratorFactory::None);
+	weapon = CombatAttack("TestSpell", "This is for testing", 30, 0.4, list<CombatEffect>(), "Combat/Spells/fireball.anim", ParticleGeneratorFactory::Smoke,
+                          320, 400, "Combat/Explosions/testexplosion.anim", ParticleGeneratorFactory::Smoke);
 }
 
 Player::Ptr Player::create() {
@@ -37,10 +37,11 @@ void Player::update() {
 		move(EntityPosition::Right, running);
 
     if (Keyboard::isKeyPressed(Keyboard::Num1))
-        weapon = CombatAttack("TestSword", "This is for testing", 30, 0.6, list<CombatEffect>(), "Combat/Weapons/TestSword");
+        weapon = CombatAttack("TestSword", "This is for testing", 30, 0.6, list<CombatEffect>(),
+                              "Combat/Weapons/TestSword", ParticleGeneratorFactory::None);
 	if (Keyboard::isKeyPressed(Keyboard::Num2))
-        weapon = CombatAttack("TestSpell", "This is for testing", 30, 0.4, list<CombatEffect>(),
-                              "Combat/Spells/fireball.anim", 320, 400, "Combat/Explosions/testexplosion.anim");
+        weapon = CombatAttack("TestSpell", "This is for testing", 30, 0.4, list<CombatEffect>(), "Combat/Spells/fireball.anim",
+                              ParticleGeneratorFactory::Smoke, 320, 400, "Combat/Explosions/testexplosion.anim", ParticleGeneratorFactory::Smoke);
 
     if (Mouse::isButtonPressed(Mouse::Left))
         doAttack(getAttackDirection());

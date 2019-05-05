@@ -50,6 +50,11 @@ FloatRect Entity::getBoundingBox() {
                   boundingBox.height);
 }
 
+Vector2f Entity::getCenter() {
+    FloatRect box = getBoundingBox();
+    return Vector2f(box.left+box.width/2, box.top+box.height/2);
+}
+
 FloatRect Entity::getInteractBox() {
     FloatRect box = FloatRect(position.coords, graphics.getSize());
 

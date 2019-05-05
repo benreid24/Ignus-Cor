@@ -17,7 +17,7 @@ void GraphicalEffectEntity::update() {
     Entity::update();
 
     if (!boundTo.expired()) {
-        sf::Vector2f shiftAmt = position.coords - (boundTo.lock()->getPosition().coords + offset);
+        sf::Vector2f shiftAmt = (boundTo.lock()->getPosition().coords + offset) - position.coords;
         Entity::shift(shiftAmt, boundTo.lock()->getPosition().mapName);
     }
     else if (wasBound && removeWithBound)

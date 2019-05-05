@@ -6,7 +6,8 @@
 class ParticleGeneratorFactory {
 public:
     enum Preset {
-        Smoke = 0,
+        None = 0,
+        Smoke = 1,
         //TODO - other presets
     };
 

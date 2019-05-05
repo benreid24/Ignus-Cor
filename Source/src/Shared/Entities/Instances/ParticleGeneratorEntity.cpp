@@ -29,8 +29,3 @@ void ParticleGeneratorEntity::update() {
 const string ParticleGeneratorEntity::getType() {
     return "ParticleGeneratorEntity";
 }
-
-Entity::Ptr ParticleGeneratorEntity::createSmoke(Entity::Ptr bindTo, EntityPosition pos, float lifetime) {
-    ParticleGenerator::Ptr gen = ParticleGeneratorFactory::create(ParticleGeneratorFactory::Smoke, ParticleGenerator::UntilDestroyedLifetime, 1.5);
-    return Entity::Ptr(new ParticleGeneratorEntity(bindTo, pos, gen, "", false));
-}

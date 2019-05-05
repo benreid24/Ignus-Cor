@@ -7,7 +7,7 @@
 using namespace std;
 
 RangedAttackEntity::RangedAttackEntity(Entity::Ptr atk, const CombatAttack& weapon, int atkDir)
-: AttackEntity(atk, weapon.getName(), weapon.getAnimation()), attack(weapon) {
+: AttackEntity(atk, weapon) {
     position = atk->getPosition();
     position.coords.x += atk->getBoundingBox().width/2 - boundingBox.width/2;
     position.coords.y += atk->getBoundingBox().height/2 - boundingBox.height/2;
@@ -60,12 +60,6 @@ void RangedAttackEntity::update() {
             pos.coords.y += boundingBox.height/2 - xbox.height/2 + sinDir*displacement;
             explosion->setPositionAndDirection(pos);
 
-            xbox = explosion->getBoundingBox();
-            pos.coords.x = xbox.left + xbox.width/2;
-            pos.coords.y = xbox.top + xbox.height/2;
-            Entity::Ptr smoke = ParticleGeneratorEntity::createSmoke(explosion, pos, 1.5);
-
-            EntityManager::get()->add(smoke);
             EntityManager::get()->add(explosion);
         }
         EntityManager::get()->remove(this);

@@ -131,6 +131,11 @@ public:
 	 */
     sf::FloatRect getInteractBox();
 
+    /**
+     * Returns the coordinates of the center of the Entity
+     */
+    sf::Vector2f getCenter();
+
 	/**
 	 * Sets the position and direction of the Entity. Leave direction empty to maintain it. Position is in pixels
 	 */

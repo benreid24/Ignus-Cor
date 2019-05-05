@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include "Shared/Combat/CombatEffect.hpp"
+#include "Shared/Particles/ParticleGeneratorFactory.hpp"
 
 class Entity;
 
@@ -34,9 +35,10 @@ private:
     //ranged only
     std::string impactAnimation;
     double range, speed;
+    ParticleGeneratorFactory::Preset impactParticleGenerator;
 
     std::string animation;
-    //TODO - link to particle generator?
+    ParticleGeneratorFactory::Preset particleGenerator;
 
 public:
     /**
@@ -48,14 +50,14 @@ public:
      * Create the CombatAttack as a melee attack
      */
     CombatAttack(const std::string& name, const std::string& description, double power, float AttackDelay,
-                 const std::list<CombatEffect>& effects, const std::string& animation);
+                 const std::list<CombatEffect>& effects, const std::string& animation, ParticleGeneratorFactory::Preset particles);
 
     /**
      * Creates a ranged attack
      */
     CombatAttack(const std::string& name, const std::string& description, double power, float attackDelay,
-                 const std::list<CombatEffect>& effects, const std::string& animation, double range,
-                 double speed, const std::string& impactAnimation = "");
+                 const std::list<CombatEffect>& effects, const std::string& animation, ParticleGeneratorFactory::Preset particles,
+                 double range, double speed, const std::string& impactAnimation = "", ParticleGeneratorFactory::Preset impactParts = ParticleGeneratorFactory::None);
 
     /**
      * Returns the type of the attack, either Melee or Ranged
@@ -93,6 +95,11 @@ public:
     std::string getAnimation() const;
 
     /**
+     * Returns the type of ParticleGenerator the attack uses
+     */
+    ParticleGeneratorFactory::Preset getParticleType() const;
+
+    /**
      * Returns the range of the attack. Ranged only
      */
     double getRange() const;
@@ -106,6 +113,11 @@ public:
      * Returns the file of the impact animation, if any. Ranged only
      */
     std::string getImpactAnimation() const;
+
+    /**
+     * Returns the type of particles the explosion uses
+     */
+    ParticleGeneratorFactory::Preset getImpactParticles() const;
 
     /**
      * Converts to a CombatAttack for the explosion. Ranged only

@@ -1,11 +1,15 @@
 #include "Shared/Entities/Virtual/AttackEntity.hpp"
 #include "Shared/Entities/Instances/RangedAttackEntity.hpp"
 #include "Shared/Entities/Instances/DirectAttackEntity.hpp"
+#include "Shared/Entities/Instances/ParticleGeneratorEntity.hpp"
+#include "Shared/Entities/EntityManager.hpp"
 using namespace std;
 
-AttackEntity::AttackEntity(Entity::Ptr atk, const string& atkNm, const string& anim)
-: Entity(atkNm, atk->getPosition(), anim, "") {
+AttackEntity::AttackEntity(Entity::Ptr atk, const CombatAttack& weapon)
+: Entity(weapon.getName(), atk->getPosition(), weapon.getAnimation(), "") {
     attacker = atk;
+    attack = weapon;
+    particlesCreated = false;
 
     sf::FloatRect atkrBox = attacker->getBoundingBox();
     sf::FloatRect atkBox = getBoundingBox();
@@ -33,7 +37,7 @@ AttackEntity::AttackEntity(Entity::Ptr atk, const string& atkNm, const string& a
             break;
 
         default:
-            cout << "Warning: Attack '" << atkNm << "' created with invalid direction\n";
+            cout << "Warning: Attack '" << weapon.getName() << "' created with invalid direction\n";
     }
     position.coords = sf::Vector2f(x,y);
 }
@@ -44,6 +48,16 @@ const string AttackEntity::getType() {
 
 void AttackEntity::update() {
     Entity::update();
+    if (!particlesCreated) {
+        particlesCreated = true;
+        ParticleGenerator::Ptr gen = ParticleGeneratorFactory::create(attack.getParticleType(),
+                                                                      ParticleGenerator::TimeExistedLifetime,
+                                                                      1.5); //TODO - get from attack
+        EntityPosition pos = position;
+        pos.coords = getCenter();
+        Entity::Ptr genEnt = ParticleGeneratorEntity::create(EntityManager::get()->getEntityPtr(this), pos, gen);
+        EntityManager::get()->add(genEnt);
+    }
 }
 
 bool AttackEntity::shouldApplyDamage(Entity::Ptr ent) {

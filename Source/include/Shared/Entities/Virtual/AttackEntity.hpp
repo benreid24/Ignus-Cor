@@ -2,6 +2,7 @@
 #define ATTACKENTITY_HPP
 
 #include "Shared/Entities/Entity.hpp"
+#include "Shared/Combat/CombatAttack.hpp"
 
 /**
  * Virtual parent class for attacks in the map
@@ -11,9 +12,11 @@
  */
 class AttackEntity : public Entity {
     Entity::List entitiesHit;
+    bool particlesCreated;
 
 protected:
     Entity::Ptr attacker;
+    CombatAttack attack;
 
     /**
      * Helper function to keep track of who has been hit already
@@ -23,7 +26,7 @@ protected:
     /**
      * Creates the AttackEntity from the given attacker and animation file
      */
-    AttackEntity(Entity::Ptr attacker, const std::string& attackName, const std::string& anim);
+    AttackEntity(Entity::Ptr attacker, const CombatAttack& atk);
 
 public:
     /**

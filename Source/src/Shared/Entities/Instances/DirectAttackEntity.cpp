@@ -3,7 +3,7 @@
 using namespace std;
 
 DirectAttackEntity::DirectAttackEntity(Entity::Ptr attacker, const CombatAttack& atk, bool followAttacker)
-: AttackEntity(attacker, atk.getName(), atk.getAnimation()), attack(atk) {
+: AttackEntity(attacker, atk) {
     speed[0] = speed[1] = 0;
     offset = position.coords - attacker->getPosition().coords;
     follow = followAttacker;

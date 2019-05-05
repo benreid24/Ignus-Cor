@@ -36,6 +36,9 @@ ParticleGenerator::Ptr ParticleGeneratorFactory::create(Preset type, ParticleGen
         case Smoke:
             return createSmoke(lifetime);
 
+        case None:
+            return createBlank();
+
         default:
             cout << "Warning: Invalid ParticleGeneratorFactory::Preset " << type << endl;
             return createBlank();

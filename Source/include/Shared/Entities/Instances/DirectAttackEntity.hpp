@@ -10,7 +10,6 @@
  * \ingroup Combat
  */
 class DirectAttackEntity : public AttackEntity {
-    CombatAttack attack;
     sf::Vector2f offset;
     bool follow;
 
