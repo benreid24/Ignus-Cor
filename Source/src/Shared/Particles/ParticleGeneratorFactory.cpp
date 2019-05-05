@@ -1,11 +1,11 @@
 #include "Shared/Particles/ParticleGeneratorFactory.hpp"
 using namespace std;
 
-ParticleGenerator::Ptr ParticleGeneratorFactory::createSmoke(float lifetime) {
+ParticleGenerator::Ptr ParticleGeneratorFactory::createSmoke(ParticleGenerator::LifetimeType lifetimeType, float lifetime) {
     ParticleGenerator::ValueWindow spRad(0,7), spAng(0,360), spVel(2,5), spDir(-85,-110);
     ParticleGenerator::Ptr gen = ParticleGenerator::create(spRad, spAng, spVel, spDir);
-    gen->setGenerationRate(20, ParticleGenerator::Linear, -20/lifetime);
-    gen->setLifetime(ParticleGenerator::UntilDestroyedLifetime, lifetime);
+    gen->setGenerationRate(15, ParticleGenerator::Linear, 0);
+    gen->setLifetime(lifetimeType, lifetime);
 
     Particle::Behavior rotBehavior, velBehavior, opBehavior;
     rotBehavior.changeType = Particle::DistanceTraveledChange;
@@ -34,7 +34,7 @@ ParticleGenerator::Ptr ParticleGeneratorFactory::createBlank() {
 ParticleGenerator::Ptr ParticleGeneratorFactory::create(Preset type, ParticleGenerator::LifetimeType lifetimeType, float lifetime) {
     switch (type) {
         case Smoke:
-            return createSmoke(lifetime);
+            return createSmoke(lifetimeType, lifetime);
 
         case None:
             return createBlank();

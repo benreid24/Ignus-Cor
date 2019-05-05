@@ -17,7 +17,7 @@ Player::Player() :
 	boundingBox = FloatRect(0, 12, graphics.getSize().x, graphics.getSize().y-12);
 	weapon = CombatAttack("TestSword", "This is for testing", 30, 0.6, list<CombatEffect>(), "Combat/Weapons/TestSword", ParticleGeneratorFactory::None);
 	weapon = CombatAttack("TestSpell", "This is for testing", 30, 0.4, list<CombatEffect>(), "Combat/Spells/fireball.anim", ParticleGeneratorFactory::Smoke,
-                          320, 400, "Combat/Explosions/testexplosion.anim", ParticleGeneratorFactory::Smoke);
+                          0, 320, 400, "Combat/Explosions/testexplosion.anim", ParticleGeneratorFactory::Smoke, 0.5);
 }
 
 Player::Ptr Player::create() {
@@ -41,7 +41,7 @@ void Player::update() {
                               "Combat/Weapons/TestSword", ParticleGeneratorFactory::None);
 	if (Keyboard::isKeyPressed(Keyboard::Num2))
         weapon = CombatAttack("TestSpell", "This is for testing", 30, 0.4, list<CombatEffect>(), "Combat/Spells/fireball.anim",
-                              ParticleGeneratorFactory::Smoke, 320, 400, "Combat/Explosions/testexplosion.anim", ParticleGeneratorFactory::Smoke);
+                              ParticleGeneratorFactory::Smoke, 0, 320, 400, "Combat/Explosions/testexplosion.anim", ParticleGeneratorFactory::Smoke, 0.5);
 
     if (Mouse::isButtonPressed(Mouse::Left))
         doAttack(getAttackDirection());

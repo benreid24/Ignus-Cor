@@ -12,6 +12,11 @@ class ParticleGeneratorEntity : public GraphicalEffectEntity {
      */
     ParticleGeneratorEntity(Entity::Ptr bindTo, EntityPosition pos, ParticleGenerator::Ptr gen, const std::string& gfx, bool removeWithBound = false);
 
+    /**
+     * Returns generator->finished()
+     */
+    bool canDestroy();
+
 public:
     /**
      * Creates a ParticleGeneratorEntity and optionally binds it to the given Entity

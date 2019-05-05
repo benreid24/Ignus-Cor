@@ -51,8 +51,8 @@ void AttackEntity::update() {
     if (!particlesCreated) {
         particlesCreated = true;
         ParticleGenerator::Ptr gen = ParticleGeneratorFactory::create(attack.getParticleType(),
-                                                                      ParticleGenerator::TimeExistedLifetime,
-                                                                      1.5); //TODO - get from attack
+                                                                      ParticleGenerator::UntilDestroyedLifetime,
+                                                                      attack.getParticlePersistanceTime());
         EntityPosition pos = position;
         pos.coords = getCenter();
         Entity::Ptr genEnt = ParticleGeneratorEntity::create(EntityManager::get()->getEntityPtr(this), pos, gen);

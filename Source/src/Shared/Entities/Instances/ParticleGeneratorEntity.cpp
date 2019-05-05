@@ -21,6 +21,8 @@ void ParticleGeneratorEntity::render(sf::RenderTarget& target, sf::Vector2f camP
 
 void ParticleGeneratorEntity::update() {
     generator->update();
+    if (boundTo.expired() && wasBound)
+        generator->stop();
     if (generator->finished())
         EntityManager::get()->remove(this);
     GraphicalEffectEntity::update();
@@ -28,4 +30,8 @@ void ParticleGeneratorEntity::update() {
 
 const string ParticleGeneratorEntity::getType() {
     return "ParticleGeneratorEntity";
+}
+
+bool ParticleGeneratorEntity::canDestroy() {
+    return generator->finished();
 }

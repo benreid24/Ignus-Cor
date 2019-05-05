@@ -8,9 +8,18 @@
  * Virtual base class for graphical effects. Can optionally be bound to another Entity
  */
 class GraphicalEffectEntity : public Entity {
-    Entity::WeakPtr boundTo;
-    bool wasBound, removeWithBound;
+    bool removeWithBound;
     sf::Vector2f offset;
+
+protected:
+    Entity::WeakPtr boundTo;
+    bool wasBound;
+
+    /**
+     * Returns true if the entity can be destroyed. Default is always true, but subclasses
+     * can override to prevent destruction. Example: Wait for particle generator to finish
+     */
+    virtual bool canDestroy();
 
 public:
     /**

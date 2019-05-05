@@ -53,6 +53,8 @@ public:
 
 protected:
     sf::Clock timer;
+    float zeroTime;
+
     std::list<Particle*> particles;
     int totalCreated;
 
@@ -128,8 +130,9 @@ public:
 
     /**
      * Begins termination of the generator. Stops generating particles over stopTime seconds
+     * Leave blank to stop over the existing lifetime value in seconds
      */
-    void stop(float stopTime);
+    void stop(float stopTime = -1);
 
     /**
      * Returns whether or not the generator is finished, i.e. all finite lifetime Particles are destroyed

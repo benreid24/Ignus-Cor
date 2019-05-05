@@ -20,7 +20,7 @@ void GraphicalEffectEntity::update() {
         sf::Vector2f shiftAmt = (boundTo.lock()->getPosition().coords + offset) - position.coords;
         Entity::shift(shiftAmt, boundTo.lock()->getPosition().mapName);
     }
-    else if (wasBound && removeWithBound)
+    else if (wasBound && removeWithBound && canDestroy())
         EntityManager::get()->remove(this);
 }
 
@@ -30,4 +30,8 @@ void GraphicalEffectEntity::render(sf::RenderTarget& target, sf::Vector2f camPos
 
 const string GraphicalEffectEntity::getType() {
     return "GraphicalEffectEntity";
+}
+
+bool GraphicalEffectEntity::canDestroy() {
+    return true;
 }

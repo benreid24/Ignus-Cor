@@ -17,6 +17,7 @@ ParticleGenerator::ParticleGenerator(ParticleGenerator::ValueWindow radius, Part
     lastSpawnTime = 0;
     totalCreated = 0;
     startRate = 0;
+    zeroTime = 0;
 }
 
 ParticleGenerator::~ParticleGenerator() {
@@ -57,8 +58,18 @@ void ParticleGenerator::setGenerationRate(float rate, GenerationRateChangeScale 
 }
 
 void ParticleGenerator::stop(float stopTime) {
+    if (stopTime==-1)
+        stopTime = lifetimeValue;
     genChgType = Linear;
-    genChgMultiplier = -particlesPerSecond/stopTime;
+    startRate = particlesPerSecond;
+    if (stopTime!=0)
+        genChgMultiplier = -particlesPerSecond/stopTime;
+    else {
+        particlesPerSecond = 0;
+        genChgMultiplier = 0;
+        startRate = 0;
+    }
+    zeroTime = timer.getElapsedTime().asSeconds();
 }
 
 bool ParticleGenerator::finished() {
@@ -67,8 +78,8 @@ bool ParticleGenerator::finished() {
     else if (lifetimeType==ParticlesGeneratedLifetime)
         return totalCreated >= lifetimeValue;
     else if (lifetimeType==UntilDestroyedLifetime) {
-        if (timer.getElapsedTime().asSeconds() < lifetimeValue)
-            return false; //minimum time alive
+        if (totalCreated==0)
+            return false; //make at least 1
 
         for (auto i = particles.begin(); i!=particles.end(); ++i) {
             if (!(*i)->finished(timer.getElapsedTime().asSeconds()) && (*i)->blocksGeneratorDestruction())
@@ -126,13 +137,10 @@ void ParticleGenerator::spawnParticles() {
 }
 
 void ParticleGenerator::updateSpawnRate() {
-    float dt = timer.getElapsedTime().asSeconds();
+    float dt = timer.getElapsedTime().asSeconds() - zeroTime;
     switch (genChgType) {
         case Constant:
-            cout << dt << ": ";
-            cout << particlesPerSecond << " -> ";
             particlesPerSecond = genChgMultiplier * dt;
-            cout << particlesPerSecond << endl;
             break;
 
         case Linear:

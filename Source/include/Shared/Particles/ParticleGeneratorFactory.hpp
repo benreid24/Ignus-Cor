@@ -15,7 +15,7 @@ private:
     /**
      * Helper function to generate a smoke generator
      */
-    static ParticleGenerator::Ptr createSmoke(float lifetime);
+    static ParticleGenerator::Ptr createSmoke(ParticleGenerator::LifetimeType lifetimeType, float lifetime);
 
     /**
      * Helper function that returns a blank generator

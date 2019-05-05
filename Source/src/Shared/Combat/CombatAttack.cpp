@@ -11,8 +11,8 @@ CombatAttack::CombatAttack() {
     animation = "Attacks/punch.anim";
 }
 
-CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, float del,
-                           const list<CombatEffect>& efx, const string& anim, ParticleGeneratorFactory::Preset parts) {
+CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, float del, const list<CombatEffect>& efx,
+                           const string& anim, ParticleGeneratorFactory::Preset parts, float ptime) {
     type = Melee;
     name = nm;
     description = desc;
@@ -21,17 +21,19 @@ CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, flo
     effects = efx;
     animation = anim;
     particleGenerator = parts;
+    particlePersistTime = ptime;
 }
 
 CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, float del,
-                           const list<CombatEffect>& efx, const string& anim, ParticleGeneratorFactory::Preset parts,
-                           double rng, double spd, const string& impactAnim, ParticleGeneratorFactory::Preset impactParts)
-: CombatAttack(nm, desc, pwr, del, efx, anim, parts) {
+                           const list<CombatEffect>& efx, const string& anim, ParticleGeneratorFactory::Preset parts, float ptime,
+                           double rng, double spd, const string& impactAnim, ParticleGeneratorFactory::Preset impactParts, float iptime)
+: CombatAttack(nm, desc, pwr, del, efx, anim, parts, ptime) {
     type = Ranged;
     range = rng;
     speed = spd;
     impactAnimation = impactAnim;
     impactParticleGenerator = impactParts;
+    impactParticlePersistTime = iptime;
 }
 
 CombatAttack::Type CombatAttack::getType() const {
@@ -66,6 +68,10 @@ ParticleGeneratorFactory::Preset CombatAttack::getParticleType() const {
     return particleGenerator;
 }
 
+float CombatAttack::getParticlePersistanceTime() const {
+    return particlePersistTime;
+}
+
 double CombatAttack::getRange() const {
     return range;
 }
@@ -76,6 +82,10 @@ double CombatAttack::getSpeed() const {
 
 string CombatAttack::getImpactAnimation() const {
     return impactAnimation;
+}
+
+float CombatAttack::getImpactParticlePersistance() const {
+    return impactParticlePersistTime;
 }
 
 ParticleGeneratorFactory::Preset CombatAttack::getImpactParticles() const {
@@ -90,6 +100,7 @@ CombatAttack CombatAttack::toExplosionAttack() const {
         delaySeconds,
         effects,
         impactAnimation,
-        impactParticleGenerator
+        impactParticleGenerator,
+        impactParticlePersistTime
     );
 }

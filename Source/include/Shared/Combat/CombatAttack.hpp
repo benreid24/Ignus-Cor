@@ -36,9 +36,11 @@ private:
     std::string impactAnimation;
     double range, speed;
     ParticleGeneratorFactory::Preset impactParticleGenerator;
+    float particlePersistTime;
 
     std::string animation;
     ParticleGeneratorFactory::Preset particleGenerator;
+    float impactParticlePersistTime;
 
 public:
     /**
@@ -49,15 +51,16 @@ public:
     /**
      * Create the CombatAttack as a melee attack
      */
-    CombatAttack(const std::string& name, const std::string& description, double power, float AttackDelay,
-                 const std::list<CombatEffect>& effects, const std::string& animation, ParticleGeneratorFactory::Preset particles);
+    CombatAttack(const std::string& name, const std::string& description, double power, float AttackDelay, const std::list<CombatEffect>& effects,
+                 const std::string& animation, ParticleGeneratorFactory::Preset particles, float partTime = 0);
 
     /**
      * Creates a ranged attack
      */
     CombatAttack(const std::string& name, const std::string& description, double power, float attackDelay,
                  const std::list<CombatEffect>& effects, const std::string& animation, ParticleGeneratorFactory::Preset particles,
-                 double range, double speed, const std::string& impactAnimation = "", ParticleGeneratorFactory::Preset impactParts = ParticleGeneratorFactory::None);
+                 float partTime, double range, double speed, const std::string& impactAnimation = "",
+                 ParticleGeneratorFactory::Preset impactParts = ParticleGeneratorFactory::None, float impactPartTime = 0);
 
     /**
      * Returns the type of the attack, either Melee or Ranged
@@ -100,6 +103,11 @@ public:
     ParticleGeneratorFactory::Preset getParticleType() const;
 
     /**
+     * Returns how long the particles should be generated after the attack is finished
+     */
+    float getParticlePersistanceTime() const;
+
+    /**
      * Returns the range of the attack. Ranged only
      */
     double getRange() const;
@@ -118,6 +126,11 @@ public:
      * Returns the type of particles the explosion uses
      */
     ParticleGeneratorFactory::Preset getImpactParticles() const;
+
+    /**
+     * Returns how long particles should be generated after the impact attack is finished
+     */
+    float getImpactParticlePersistance() const;
 
     /**
      * Converts to a CombatAttack for the explosion. Ranged only
