@@ -4,6 +4,7 @@
 #include "Shared/Particles/Particle.hpp"
 #include <list>
 #include <cmath>
+#include <memory>
 
 /**
  * \defgroup Particles All classes and functions related to Particles and ParticleGenerators
@@ -17,6 +18,8 @@
   */
 class ParticleGenerator {
 public:
+    typedef std::shared_ptr<ParticleGenerator> Ptr;
+
     /**
      * Defines the different lifetime options for the generator
      */
@@ -77,11 +80,15 @@ protected:
      */
     virtual void spawnParticles();
 
-public:
     /**
      * Constructs the base ParticleGenerator
      */
     ParticleGenerator(ValueWindow spwnRadius, ValueWindow spwnAngle, ValueWindow spwnVel, ValueWindow spwnDir);
+
+public:
+    static Ptr create(ValueWindow spwnRadius, ValueWindow spwnAngle, ValueWindow spwnVel, ValueWindow spwnDir) {
+        return Ptr(new ParticleGenerator(spwnRadius, spwnAngle, spwnVel, spwnDir));
+    }
 
     /**
      * Frees all memory

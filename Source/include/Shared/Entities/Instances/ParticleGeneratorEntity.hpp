@@ -2,27 +2,21 @@
 #define PARTICLEGENERATORENTITY_HPP
 
 #include "Shared/Entities/Virtual/GraphicalEffectEntity.hpp"
-
-//TODO - implement and integrate particle generators
-enum ParticleGeneratorType {
-    Fire,
-    Ice,
-    Poison
-};
+#include "Shared/Particles/ParticleGenerator.hpp"
 
 class ParticleGeneratorEntity : public GraphicalEffectEntity {
-    ParticleGeneratorType type; //replace with actual generator
+    ParticleGenerator::Ptr generator;
 
     /**
      * Creates the ParticleGeneratorEntity
      */
-    ParticleGeneratorEntity(Entity::Ptr bindTo, EntityPosition pos, ParticleGeneratorType tp);
+    ParticleGeneratorEntity(Entity::Ptr bindTo, EntityPosition pos, ParticleGenerator::Ptr gen, const std::string& gfx);
 
 public:
     /**
      * Creates a ParticleGeneratorEntity and optionally binds it to the given Entity
      */
-    static Entity::Ptr create(Entity::Ptr bindTo, EntityPosition pos, ParticleGeneratorType tp);
+    static Entity::Ptr create(Entity::Ptr bindTo, EntityPosition pos, ParticleGenerator::Ptr gen, const std::string& gfx);
 
     /**
      * vtable

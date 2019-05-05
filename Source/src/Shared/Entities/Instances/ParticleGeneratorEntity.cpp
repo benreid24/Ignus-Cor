@@ -1,21 +1,24 @@
 #include "Shared/Entities/Instances/ParticleGeneratorEntity.hpp"
 using namespace std;
 
-ParticleGeneratorEntity::ParticleGeneratorEntity(Entity::Ptr bindTo, EntityPosition pos, ParticleGeneratorType tp)
-: GraphicalEffectEntity(bindTo, pos, "") {
-    //init generator
+ParticleGeneratorEntity::ParticleGeneratorEntity(Entity::Ptr bindTo, EntityPosition pos, ParticleGenerator::Ptr gen, const string& gfx)
+: GraphicalEffectEntity(bindTo, pos, gfx) {
+    generator = gen;
 }
 
-Entity::Ptr ParticleGeneratorEntity::create(Entity::Ptr bindTo, EntityPosition pos, ParticleGeneratorType tp) {
-    return Entity::Ptr(new ParticleGeneratorEntity(bindTo, pos, tp));
+Entity::Ptr ParticleGeneratorEntity::create(Entity::Ptr bindTo, EntityPosition pos, ParticleGenerator::Ptr gen, const string& gfx) {
+    return Entity::Ptr(new ParticleGeneratorEntity(bindTo, pos, gen, gfx));
 }
 
 void ParticleGeneratorEntity::render(sf::RenderTarget& target, sf::Vector2f camPos) {
-    //render
+    GraphicalEffectEntity::render(target, camPos);
+    generator->render(target, position.coords-camPos);
 }
 
 void ParticleGeneratorEntity::update() {
-    //update
+    generator->update();
+    if (generator->finished())
+        EntityManager::get()->remove(this);
     GraphicalEffectEntity::update();
 }
 
