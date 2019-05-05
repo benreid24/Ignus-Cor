@@ -58,8 +58,9 @@ public:
 
 protected:
     ParticleGraphics graphics;
-    sf::Vector2f position;
+    sf::Vector2f position, firstOffset;
     float direction, velocity, opacity;
+    bool renderedOnce;
 
     sf::Vector2f spawnPosition;
     float lastUpdateTime;
@@ -124,7 +125,7 @@ public:
     /**
      * Renders to the target relative to the position of the generator
      */
-    virtual void render(sf::RenderTarget& target, sf::Vector2f generatorPos);
+    virtual void render(sf::RenderTarget& target, sf::Vector2f generatorPos, sf::Vector2f camPos);
 };
 
 #endif // PARTICLE_HPP

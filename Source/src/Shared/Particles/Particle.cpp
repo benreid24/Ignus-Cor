@@ -35,6 +35,7 @@ Particle::Particle(const ParticleGraphics& gfx, Vector2f pos, float dir, float v
     direction = spawnDir = dir;
     opacity = spawnOpacity = opac;
     spawnTime = ctime;
+    renderedOnce = false;
 
     lifetimeType = TimeAliveLifetime;
     lifetimeValue = 3;
@@ -106,6 +107,11 @@ void Particle::update(float ctime) {
     position.y += velocity*sin(dirRads) * dt;
 }
 
-void Particle::render(RenderTarget& target, Vector2f genPos) {
-    graphics.render(target, genPos+position, direction, opacity);
+void Particle::render(RenderTarget& target, Vector2f genPos, Vector2f camPos) {
+    if (!renderedOnce) {
+        renderedOnce = true;
+        firstOffset = genPos;
+    }
+    Vector2f offset = genPos - firstOffset;
+    graphics.render(target, genPos+position-offset-camPos, direction, opacity);
 }

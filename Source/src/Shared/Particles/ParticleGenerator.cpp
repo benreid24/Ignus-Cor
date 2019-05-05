@@ -106,9 +106,9 @@ void ParticleGenerator::update() {
     }
 }
 
-void ParticleGenerator::render(RenderTarget& target, Vector2f pos) {
+void ParticleGenerator::render(RenderTarget& target, Vector2f pos, Vector2f camPos) {
     for (auto i = particles.begin(); i!=particles.end(); ++i) {
-        (*i)->render(target, pos);
+        (*i)->render(target, pos, camPos);
     }
 }
 

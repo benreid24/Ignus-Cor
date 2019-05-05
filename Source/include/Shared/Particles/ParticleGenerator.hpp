@@ -147,7 +147,7 @@ public:
     /**
      * Renders the particles
      */
-    virtual void render(sf::RenderTarget& target, sf::Vector2f pos);
+    virtual void render(sf::RenderTarget& target, sf::Vector2f pos, sf::Vector2f camPos = sf::Vector2f(0,0));
 
 };
 
