@@ -109,7 +109,7 @@ public:
     /**
      * Returns whether or not the Particle should be destroyed
      */
-    bool isFinished(float currentTime);
+    bool finished(float currentTime);
 
     /**
      * Returns whether or not this Particle existing should delay the destruction of the ParticleGenerator

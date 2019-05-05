@@ -63,7 +63,7 @@ float Particle::getSquaredDistance() {
     return dx*dx + dy*dy;
 }
 
-bool Particle::isFinished(float ctime) {
+bool Particle::finished(float ctime) {
     switch (lifetimeType) {
         case GeneratorLifetime:
             return false;

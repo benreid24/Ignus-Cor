@@ -30,6 +30,7 @@ public:
      * Represents how the generation rate changes over time
      */
     enum GenerationRateChangeScale {
+        Constant,
         Linear,
         Exponential,
         Decay,
@@ -57,14 +58,24 @@ protected:
     float particleLifetimeValue, particleLifetimeFuzziness;
 
     ValueWindow spawnRadius, spawnAngle;
-    ValueWindow spawnVelocity, spawnDirection;
+    ValueWindow spawnVelocity, spawnDirection, spawnOpacity;
 
     LifetimeType lifetimeType;
     float lifetimeValue;
 
-    float particlesPerSecond;
+    float particlesPerSecond, lastSpawnTime;
     GenerationRateChangeScale genChgType;
     float genChgMultiplier;
+
+    /**
+     * Helper function to update spawn generation rate
+     */
+    void updateSpawnRate();
+
+    /**
+     * Spawn Particles. Can be overridden by subclasses for custom Particle types
+     */
+    virtual void spawnParticles();
 
 public:
     /**
@@ -91,6 +102,11 @@ public:
      * Sets the default ParticleGraphics
      */
     void setParticleGraphics(const std::string& gfx);
+
+    /**
+     * Sets an optional variable opacity for new Particles
+     */
+    void setParticleOpacity(ValueWindow spwnOpac);
 
     /**
      * Sets the generator's own lifetime
