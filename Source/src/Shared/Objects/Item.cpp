@@ -12,34 +12,34 @@ Item::Item(int i, std::string nm, std::string desc, Effects::Effect eft, int int
 	menuImg = mn;
 }
 
-int Item::getId() {
+int Item::getId() const {
 	return id;
 }
 
-string Item::getName() {
+string Item::getName() const {
 	return name;
 }
 
-string Item::getDescription() {
+string Item::getDescription() const {
     return description;
 }
 
-Effects::Effect Item::getEffect() {
+Effects::Effect Item::getEffect() const {
 	return effect;
 }
 
-int Item::getIntensity() {
+int Item::getIntensity() const {
 	return intensity;
 }
 
-int Item::getValue() {
+int Item::getValue() const {
 	return value;
 }
 
-string Item::getMapImageFile() {
+string Item::getMapImageFile() const {
 	return mapImg;
 }
 
-string Item::getMenuImageFile() {
+string Item::getMenuImageFile() const {
 	return menuImg;
 }

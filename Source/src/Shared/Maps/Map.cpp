@@ -233,7 +233,7 @@ Map::Map(string file, Tileset& tlst, Entity::Ptr player) : Map(tlst) {
         item.mapId = input.get<uint16_t>();
         item.position.x = input.get<uint32_t>();
         item.position.y = input.get<uint32_t>();
-        if (!ItemDB::itemExists(item.itemId)) {
+        if (!ItemDB::get().itemExists(item.itemId)) {
 			cout << "Error: Item [" << item.itemId << "] does not exist, removing from map" << endl;
 			continue;
         }

@@ -10,40 +10,43 @@
  * \ingroup Objects
  */
 class ItemDB {
-	static Item errItem;
-	static std::map<int,Item*> items;
-	static bool loaded;
+	std::map<int,Item::Ptr> items;
 
-public:
 	/**
-	 * Instances of this class do nothing. Constructor is to load the item db once
+	 * Loads the items
 	 */
 	ItemDB();
+
+public:
+    /**
+     * Returns a reference to the ItemDB
+     */
+    static ItemDB& get();
 
 	/**
 	 * Returns item information for the given id
 	 */
-	static Item& getItem(int id);
+	Item::ConstPtr getItem(int id);
 
 	/**
 	 * Tells whether or not the given item exists
 	 */
-	static bool itemExists(int id);
+	bool itemExists(int id);
 
 	/**
 	 * Removes the item with the given id
 	 */
-	static void removeItem(int id);
+	void removeItem(int id);
 
 	/**
 	 * Returns a reference to the internal map of items
 	 */
-	static std::map<int,Item*>& getItems();
+	std::map<int,Item::Ptr>& getItems();
 
 	/**
 	 * Saves the item database to the file
 	 */
-	static void save();
+	void save();
 };
 
 #endif // ITEMDB_HPP

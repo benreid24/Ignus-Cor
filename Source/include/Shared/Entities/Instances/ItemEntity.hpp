@@ -15,14 +15,21 @@ class ItemEntity : public Entity {
 	/**
 	 * Constructs the ItemEntity from the given item id and position
 	 */
-	ItemEntity(int itemId, EntityPosition position) :
-	    Entity(ItemDB::getItem(itemId).getName(), position, ItemDB::getItem(itemId).getMapImageFile()) { }
+	ItemEntity(Item::ConstPtr item, EntityPosition position) :
+	    Entity(item->getName(), position, item->getMapImageFile()) { }
 
 public:
 	/**
 	 * Constructs the ItemEntity from the given item id and position
 	 */
-	static Entity::Ptr create(int itemId, EntityPosition position) { return Entity::Ptr(new ItemEntity(itemId, position)); }
+	static Entity::Ptr create(int itemId, EntityPosition position) {
+	    Item::ConstPtr item = ItemDB::get().getItem(itemId);
+	    if (!item) {
+            std::cout << "Error: ItemEntity::create called with invalid item id " << itemId << "\n";
+            return nullptr;
+	    }
+	    return Entity::Ptr(new ItemEntity(item, position));
+    }
 
     const std::string getType() { return "Item"; }
 

@@ -3,18 +3,7 @@
 #include "Shared/Properties.hpp"
 using namespace std;
 
-map<int,Item*> ItemDB::items;
-Item ItemDB::errItem(-1,"ERROR","item id not found", Effects::Effect(0), 0, 0, "", "");
-bool ItemDB::loaded = false;
-
-namespace {
-ItemDB itemDbLoader;
-}
-
 ItemDB::ItemDB() {
-	if (ItemDB::loaded)
-		return;
-
 	File file(Properties::ItemDbFile);
 	int count = file.get<uint16_t>();
 
@@ -27,26 +16,30 @@ ItemDB::ItemDB() {
         string desc = file.getString();
         string mp = file.getString();
         string mn = file.getString();
-        ItemDB::items[id] = new Item(id,name,desc,effect,intensity,value,mp,mn);
+        items.emplace(id, Item::Ptr(new Item(id,name,desc,effect,intensity,value,mp,mn)));
 	}
-	ItemDB::loaded = true;
 }
 
-Item& ItemDB::getItem(int id) {
-	if (!itemExists(id))
-		return errItem;
-	return *items[id];
+ItemDB& ItemDB::get() {
+    static ItemDB db;
+    return db;
 }
 
-map<int,Item*>& ItemDB::getItems() {
+Item::ConstPtr ItemDB::getItem(int id) {
+    auto i = items.find(id);
+    if (items.end() != i)
+        return i->second;
+    return nullptr;
+}
+
+map<int,Item::Ptr>& ItemDB::getItems() {
     return items;
 }
 
 void ItemDB::removeItem(int id) {
-	if (items.find(id)!=items.end()) {
-		delete items[id];
-		items.erase(id);
-	}
+	auto i = items.find(id);
+	if (items.end() != i)
+        items.erase(i);
 }
 
 bool ItemDB::itemExists(int id) {
@@ -57,7 +50,7 @@ void ItemDB::save() {
 	File file(Properties::ItemDbFile,File::Out);
 
 	file.write<uint16_t>(items.size());
-	for (map<int,Item*>::iterator i = items.begin(); i!=items.end(); ++i) {
+	for (map<int,Item::Ptr>::iterator i = items.begin(); i!=items.end(); ++i) {
         file.write<uint16_t>(i->second->getId());
         file.writeString(i->second->getName());
         file.write<uint32_t>(i->second->getEffect());

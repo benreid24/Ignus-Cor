@@ -9,6 +9,8 @@
 class ItemDbEditor;
 #endif
 
+class ItemDB;
+
 /**
  * Class to represent static data regarding items. This is used primarily for the global data store of item information
  * Item instances will just be id's
@@ -22,27 +24,56 @@ class Item {
 	friend class ItemDbEditor;
 	#endif
 
-public:
-    /**
+	friend class ItemDB;
+
+	/**
      * Constructs the item record from the given data
      */
 	Item(int id, std::string name, std::string desc, Effects::Effect effect, int intensity, int value, std::string mapImg, std::string menuImg);
 
-	int getId();
+public:
+    typedef std::shared_ptr<Item> Ptr;
+    typedef std::shared_ptr<const Item> ConstPtr;
 
-	std::string getName();
+	/**
+	 * Returns the item id
+	 */
+	int getId() const;
 
-	std::string getDescription();
+	/**
+	 * Returns the item name
+	 */
+	std::string getName() const;
 
-    Effects::Effect getEffect();
+	/**
+	 * Returns the item description
+	 */
+	std::string getDescription() const;
 
-    int getIntensity();
+	/**
+	 * Returns the item's effect
+	 */
+    Effects::Effect getEffect() const;
 
-    int getValue();
+    /**
+     * Returns the intensity of the effect
+     */
+    int getIntensity() const;
 
-    std::string getMapImageFile();
+    /**
+     * Returns the sale value of the item
+     */
+    int getValue() const;
 
-    std::string getMenuImageFile();
+    /**
+     * Returns the image of the item while on the map
+     */
+    std::string getMapImageFile() const;
+
+    /**
+     * Returns the image of the item in the menu
+     */
+    std::string getMenuImageFile() const;
 };
 
 #endif // ITEM_HPP
