@@ -7,6 +7,6 @@ using namespace std;
 int main() {
     srand(time(0));
     DebugOverlays::toggleOverlay(DebugOverlays::None);
-    Game::get()->run();
+    Game::get().run();
 	return 0;
 }

@@ -53,8 +53,8 @@ public:
     const static std::string MiscImagePath;
 
     const static std::string ItemDbFile;
-    const static std::string WeaponDbFile;
-    const static std::string SpellDbFile;
+    const static std::string AttackDbFile;
+    const static std::string EffectDbFile;
 
     const static std::string ParticleImagePath;
     const static std::string ParticleAnimPath;

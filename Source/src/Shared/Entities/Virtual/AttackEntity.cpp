@@ -5,8 +5,8 @@
 #include "Shared/Entities/EntityManager.hpp"
 using namespace std;
 
-AttackEntity::AttackEntity(Entity::Ptr atk, const CombatAttack& weapon)
-: Entity(weapon.getName(), atk->getPosition(), weapon.getAnimation(), "") {
+AttackEntity::AttackEntity(Entity::Ptr atk, CombatAttack::ConstPtr weapon)
+: Entity(weapon->getName(), atk->getPosition(), weapon->getAnimation(), "") {
     attacker = atk;
     attack = weapon;
     particlesCreated = false;
@@ -37,7 +37,7 @@ AttackEntity::AttackEntity(Entity::Ptr atk, const CombatAttack& weapon)
             break;
 
         default:
-            cout << "Warning: Attack '" << weapon.getName() << "' created with invalid direction\n";
+            cout << "Warning: Attack '" << weapon->getName() << "' created with invalid direction\n";
     }
     position.coords = sf::Vector2f(x,y);
 }
@@ -50,9 +50,9 @@ void AttackEntity::update() {
     Entity::update();
     if (!particlesCreated) {
         particlesCreated = true;
-        ParticleGenerator::Ptr gen = ParticleGeneratorFactory::create(attack.getParticleType(),
+        ParticleGenerator::Ptr gen = ParticleGeneratorFactory::create(attack->getParticleType(),
                                                                       ParticleGenerator::UntilDestroyedLifetime,
-                                                                      attack.getParticlePersistanceTime());
+                                                                      attack->getParticlePersistanceTime());
         EntityPosition pos = position;
         pos.coords = getCenter();
         Entity::Ptr genEnt = ParticleGeneratorEntity::create(EntityManager::get()->getEntityPtr(this), pos, gen);
@@ -70,15 +70,15 @@ bool AttackEntity::shouldApplyDamage(Entity::Ptr ent) {
     return false;
 }
 
-Entity::Ptr AttackEntity::create(Entity::Ptr attacker, const CombatAttack& atk, int atkDir) {
-    switch (atk.getType()) {
+Entity::Ptr AttackEntity::create(Entity::Ptr attacker, CombatAttack::ConstPtr atk, int atkDir) {
+    switch (atk->getType()) {
         case CombatAttack::Ranged:
             return RangedAttackEntity::create(attacker, atk, atkDir);
         case CombatAttack::Melee:
             return DirectAttackEntity::create(attacker, atk);
 
         default:
-            cout << "Error: Invalid CombatAttack type " << atk.getType() << " from " << attacker->getIdString() << endl;
+            cout << "Error: Invalid CombatAttack type " << atk->getType() << " from " << attacker->getIdString() << endl;
             return Entity::Ptr(nullptr);
     }
 }

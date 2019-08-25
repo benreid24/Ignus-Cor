@@ -18,7 +18,9 @@ const std::string Properties::NpcPath;
 const std::string Properties::ConversationPath;
 const std::string Properties::MenuImagePath = "Resources/Media/Images/Menu/";
 const std::string Properties::MiscImagePath = "Resources/Media/Images/Misc/";
-const std::string Properties::ItemDbFile = "Resources/Data/Objects/items.db";
+const std::string Properties::ItemDbFile = "Resources/Data/DB/items.db";
+const std::string Properties::AttackDbFile = "Resources/Data/DB/attacks.db";
+const std::string Properties::EffectDbFile = "Resources/Data/DB/effects.db";
 const std::string Properties::ParticleAnimPath = "Resources/Media/Animations/Particles/";
 const std::string Properties::ParticleImagePath = "Resources/Media/Images/Particles/";
 

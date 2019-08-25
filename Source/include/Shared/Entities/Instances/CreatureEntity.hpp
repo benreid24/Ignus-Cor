@@ -39,7 +39,7 @@ public:
 	/**
 	 * Notifies the Entity that they were attacked by another Entity
 	 */
-    void notifyAttacked(Ptr attacker, const CombatAttack& attack);
+    void notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack);
 
     /**
      * Notifies the Entity of nearby combat

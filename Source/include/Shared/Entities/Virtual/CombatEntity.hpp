@@ -28,7 +28,7 @@ class CombatEntity : public Entity {
 
 protected:
     EntityStats stats;
-    CombatAttack weapon;
+    CombatAttack::ConstPtr weapon;
 	CombatArmor armor;
 	double xpRewardMultiplier; //xp reward = levelDiff^2 * xpRewardMultiplier + level
 
@@ -59,7 +59,7 @@ public:
 	/**
 	 * Notifies the Entity that they were attacked by another Entity
 	 */
-    virtual void notifyAttacked(Ptr attacker, const CombatAttack& attack);
+    virtual void notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack);
 
     /**
      * Notifies the Entity of nearby combat

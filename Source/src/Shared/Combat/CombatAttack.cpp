@@ -1,4 +1,5 @@
 #include "Shared/Combat/CombatAttack.hpp"
+#include "Shared/Data/EffectDB.hpp"
 #include "Shared/Entities/Entity.hpp"
 using namespace std;
 
@@ -11,7 +12,7 @@ CombatAttack::CombatAttack() {
     animation = "Attacks/punch.anim";
 }
 
-CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, float del, const list<CombatEffect>& efx,
+CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, float del, const list<CombatEffect::Ref>& efx,
                            const string& anim, ParticleGeneratorFactory::Preset parts, float ptime) {
     type = Melee;
     name = nm;
@@ -25,7 +26,7 @@ CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, flo
 }
 
 CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, float del,
-                           const list<CombatEffect>& efx, const string& anim, ParticleGeneratorFactory::Preset parts, float ptime,
+                           const list<CombatEffect::Ref>& efx, const string& anim, ParticleGeneratorFactory::Preset parts, float ptime,
                            double rng, double spd, const string& impactAnim, ParticleGeneratorFactory::Preset impactParts, float iptime)
 : CombatAttack(nm, desc, pwr, del, efx, anim, parts, ptime) {
     type = Ranged;
@@ -34,6 +35,59 @@ CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, flo
     impactAnimation = impactAnim;
     impactParticleGenerator = impactParts;
     impactParticlePersistTime = iptime;
+}
+
+CombatAttack::CombatAttack(File& file) {
+    type = Type(file.get<uint16_t>());
+    name = file.getString();
+    description = file.getString();
+    power = file.get<uint32_t>();
+    delaySeconds = double(file.get<uint16_t>()) / 100.0;
+    animation = file.getString();
+    particleGenerator = ParticleGeneratorFactory::Preset(file.get<uint8_t>());
+    particlePersistTime = double(file.get<uint16_t>()) / 100.0;
+
+    int numEffects = file.get<uint16_t>();
+    for (int i = 0; i<numEffects; ++i) {
+        CombatEffect::Ref effect = EffectDB::get().getEffect(file.get<uint8_t>());
+        effect.intensity = double(file.get<uint16_t>()) / 100.0;
+        effect.chance = file.get<uint16_t>();
+        effects.push_back(effect);
+    }
+
+    if (type == Ranged) {
+        impactAnimation = file.getString();
+        speed = file.get<uint16_t>();
+        range = file.get<uint16_t>();
+        impactParticleGenerator = ParticleGeneratorFactory::Preset(file.get<uint8_t>());
+        impactParticlePersistTime = double(file.get<uint16_t>()) / 100.0;
+    }
+}
+
+void CombatAttack::save(File& file) const {
+    file.write<uint16_t>(type);
+    file.writeString(name);
+    file.writeString(description);
+    file.write<uint32_t>(power);
+    file.write<uint16_t>(delaySeconds * 100);
+    file.writeString(animation);
+    file.write<uint8_t>(particleGenerator);
+    file.write<uint16_t>(particlePersistTime * 100);
+
+    file.write<uint16_t>(effects.size());
+    for (auto i = effects.begin(); i!=effects.end(); ++i) {
+        file.write<uint8_t>((*i)->type);
+        file.write<uint16_t>(i->intensity * 100);
+        file.write<uint16_t>(i->chance);
+    }
+
+    if (type == Ranged) {
+        file.writeString(impactAnimation);
+        file.write<uint16_t>(speed);
+        file.write<uint16_t>(range);
+        file.write<uint8_t>(impactParticleGenerator);
+        file.write<uint16_t>(impactParticlePersistTime * 100);
+    }
 }
 
 CombatAttack::Type CombatAttack::getType() const {
@@ -56,7 +110,7 @@ float CombatAttack::getAttackDelay() const {
     return delaySeconds;
 }
 
-list<CombatEffect> CombatAttack::getEffects() const {
+list<CombatEffect::Ref> CombatAttack::getEffects() const {
     return effects;
 }
 
@@ -92,8 +146,8 @@ ParticleGeneratorFactory::Preset CombatAttack::getImpactParticles() const {
     return impactParticleGenerator;
 }
 
-CombatAttack CombatAttack::toExplosionAttack() const {
-    return CombatAttack(
+CombatAttack::ConstPtr CombatAttack::toExplosionAttack() const {
+    return make_shared<CombatAttack>(
         name+"-explosion",
         description,
         power, //TODO - separate power/effects for explosion?

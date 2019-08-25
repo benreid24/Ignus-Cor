@@ -3,8 +3,12 @@
 
 #include <string>
 
+class EffectDB;
+
 /**
  * Describes effects that spells and weapons may apply in addition to damage
+ *
+ * \ingroup Combat
  */
 struct CombatEffect {
     enum Type {
@@ -15,14 +19,26 @@ struct CombatEffect {
         Poison
     };
 
-    CombatEffect() : type(None), intensity(0), chance(0) {}
-    CombatEffect(Type type, const std::string name, const std::string description, double intensity, double chance)
-        : type(type), name(name), description(description), intensity(intensity), chance(chance) {}
-
     Type type;
     std::string name, description;
-    double intensity, chance;
     //TODO - link to particle generator?
+
+    struct Ref {
+        const CombatEffect* operator->() const { return effect; }
+        Ref(const CombatEffect* ef, double ints, double chnc) : effect(ef), intensity(ints), chance(chnc) {}
+
+        double intensity, chance;
+        const CombatEffect* effect;
+    };
+
+    Ref makeRef() const { return Ref(this, 0, 0); }
+
+private:
+    CombatEffect() : type(None) {}
+    CombatEffect(Type type, const std::string name, const std::string description)
+        : type(type), name(name), description(description) {}
+
+    friend class EffectDB;
 };
 
 #endif // COMBATEFFECT_HPP

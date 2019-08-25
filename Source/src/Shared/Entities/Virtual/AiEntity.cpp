@@ -17,7 +17,7 @@ void AiEntity::update() {
     CombatEntity::update();
 }
 
-void AiEntity::notifyAttacked(Ptr attacker, const CombatAttack& attack) {
+void AiEntity::notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack) {
     CombatEntity::notifyAttacked(attacker, attack);
     if (behavior != nullptr)
         behavior->notifyAttacked(attacker, attack);

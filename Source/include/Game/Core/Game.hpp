@@ -31,9 +31,9 @@ public:
 	 ~Game();
 
 	 /**
-	  * Returns a pointer to the instance of the Game
+	  * Returns a reference to the instance of the Game
 	  */
-     static Game* get();
+     static Game& get();
 
 	 /**
 	  * Runs the game

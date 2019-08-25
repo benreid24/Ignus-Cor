@@ -16,13 +16,13 @@ class DirectAttackEntity : public AttackEntity {
     /**
      * Creates the DirectAttackEntity instance from the attacking Entity and attack
      */
-    DirectAttackEntity(Entity::Ptr attacker, const CombatAttack& attack, bool followAttacker = true);
+    DirectAttackEntity(Entity::Ptr attacker, CombatAttack::ConstPtr attack, bool followAttacker = true);
 
 public:
     /**
      * Creates a Ptr to a DirectAttackEntity
      */
-    static Entity::Ptr create(Entity::Ptr attacker, const CombatAttack& attack, bool followAttacker = true);
+    static Entity::Ptr create(Entity::Ptr attacker, CombatAttack::ConstPtr attack, bool followAttacker = true);
 
     /**
      * vtable

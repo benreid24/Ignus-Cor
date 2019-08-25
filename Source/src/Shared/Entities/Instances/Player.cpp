@@ -3,6 +3,7 @@
 #include "Shared/Maps/MapManager.hpp"
 #include "Shared/Properties.hpp"
 #include "Game/Core/Game.hpp"
+#include "Shared/Data/AttackDB.hpp"
 #include <cmath>
 using namespace std;
 using namespace sf;
@@ -15,9 +16,7 @@ Player::Player() :
 	speed[0] = 64;
 	speed[1] = 128;
 	boundingBox = FloatRect(0, 12, graphics.getSize().x, graphics.getSize().y-12);
-	weapon = CombatAttack("TestSword", "This is for testing", 30, 0.6, list<CombatEffect>(), "Combat/Weapons/TestSword", ParticleGeneratorFactory::None);
-	weapon = CombatAttack("TestSpell", "This is for testing", 30, 0.4, list<CombatEffect>(), "Combat/Spells/fireball.anim", ParticleGeneratorFactory::Smoke,
-                          0, 320, 400, "Combat/Explosions/testexplosion.anim", ParticleGeneratorFactory::Smoke, 0.5);
+	weapon = AttackDB::get().getAttack(-1);
 }
 
 Player::Ptr Player::create() {
@@ -37,11 +36,9 @@ void Player::update() {
 		move(EntityPosition::Right, running);
 
     if (Keyboard::isKeyPressed(Keyboard::Num1))
-        weapon = CombatAttack("TestSword", "This is for testing", 30, 0.6, list<CombatEffect>(),
-                              "Combat/Weapons/TestSword", ParticleGeneratorFactory::None);
+        weapon = AttackDB::get().getAttack(-1);
 	if (Keyboard::isKeyPressed(Keyboard::Num2))
-        weapon = CombatAttack("TestSpell", "This is for testing", 30, 0.4, list<CombatEffect>(), "Combat/Spells/fireball.anim",
-                              ParticleGeneratorFactory::Smoke, 0, 320, 400, "Combat/Explosions/testexplosion.anim", ParticleGeneratorFactory::Smoke, 0.5);
+        weapon = AttackDB::get().getAttack(-2);
 
     if (Mouse::isButtonPressed(Mouse::Left))
         doAttack(getAttackDirection());
@@ -61,7 +58,7 @@ const string Player::getType() {
 int Player::getAttackDirection() {
     #ifdef GAME
     Vector2f scrnCenter(Properties::ScreenWidth/2, Properties::ScreenHeight/2);
-    Vector2f mousePos = Vector2f(Mouse::getPosition(Game::get()->window));
+    Vector2f mousePos = Vector2f(Mouse::getPosition(Game::get().window));
     Vector2f diff = mousePos - scrnCenter;
     return atan2(diff.y, diff.x) * 180 / 3.1415926;
     #else

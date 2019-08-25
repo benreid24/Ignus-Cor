@@ -49,9 +49,9 @@ void BaseState::setNextState(BaseState::Ptr next) {
 }
 
 bool BaseState::start() {
-	Game::get()->states.push(this);
+	Game::get().states.push(this);
 	bool r = doState();
-	Game::get()->states.pop();
+	Game::get().states.pop();
 	if (!r && nextState)
 		nextState->start();
 	return r;
@@ -78,18 +78,18 @@ void BaseState::ensureFps() {
 
 bool BaseState::handleWindow() {
     Event event;
-    while (Game::get()->window.pollEvent(event)) {
+    while (Game::get().window.pollEvent(event)) {
         if (event.type==Event::Closed) {
             return true;
         }
         if (event.type==Event::Resized) {
 			View view = getView(event.size.width,event.size.height);
-			Game::get()->window.setView(view);
+			Game::get().window.setView(view);
 		}
 		if (event.type==Event::GainedFocus)
-			Game::get()->inFocus = true;
+			Game::get().inFocus = true;
 		if (event.type==Event::LostFocus)
-			Game::get()->inFocus = false;
+			Game::get().inFocus = false;
     }
 
     if (Keyboard::isKeyPressed(Keyboard::Numpad1))

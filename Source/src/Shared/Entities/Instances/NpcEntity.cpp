@@ -24,7 +24,7 @@ void NpcEntity::update() {
     AiEntity::update();
 }
 
-void NpcEntity::notifyAttacked(Entity::Ptr attacker, const CombatAttack& attack) {
+void NpcEntity::notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr attack) {
     AiEntity::notifyAttacked(attacker, attack);
 }
 

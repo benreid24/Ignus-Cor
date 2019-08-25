@@ -22,7 +22,7 @@ void Game::run() {
     state->start();
 }
 
-Game* Game::get() {
+Game& Game::get() {
     static Game game;
-    return &game;
+    return game;
 }

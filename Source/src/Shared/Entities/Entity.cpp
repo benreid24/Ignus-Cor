@@ -102,7 +102,7 @@ string Entity::getName() {
 	return name;
 }
 
-void Entity::notifyAttacked(Ptr attacker, const CombatAttack& attack) {
+void Entity::notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack) {
     if (DebugOverlays::isOverlayActive(DebugOverlays::EntityInfo))
         cout << getIdString() << " ATTACKED BY " << attacker->getIdString() << endl;
 }

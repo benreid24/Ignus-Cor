@@ -16,7 +16,7 @@ class AttackEntity : public Entity {
 
 protected:
     Entity::Ptr attacker;
-    CombatAttack attack;
+    CombatAttack::ConstPtr attack;
 
     /**
      * Helper function to keep track of who has been hit already
@@ -26,7 +26,7 @@ protected:
     /**
      * Creates the AttackEntity from the given attacker and animation file
      */
-    AttackEntity(Entity::Ptr attacker, const CombatAttack& atk);
+    AttackEntity(Entity::Ptr attacker, CombatAttack::ConstPtr atk);
 
 public:
     /**
@@ -41,7 +41,7 @@ public:
      * \param atk The attack being used
      * \param atkDir Direction to attack in, in degrees. Ranged only
      */
-    static Entity::Ptr create(Entity::Ptr attacker, const CombatAttack& atk, int atkDir);
+    static Entity::Ptr create(Entity::Ptr attacker, CombatAttack::ConstPtr atk, int atkDir);
 
     /**
      * Pure virtual

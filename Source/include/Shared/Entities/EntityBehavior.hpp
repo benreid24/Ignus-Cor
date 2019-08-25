@@ -93,7 +93,7 @@ public:
     /**
      * Notify of being attacked. Child classes should call this to update the attacker list
      */
-    virtual void notifyAttacked(Entity::Ptr attacker, const CombatAttack& attack);
+    virtual void notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr attack);
 
     /**
      * Notify of nearby combat

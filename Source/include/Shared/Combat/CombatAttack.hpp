@@ -3,10 +3,13 @@
 
 #include <string>
 #include <list>
+#include <memory>
+#include "Shared/Util/File.hpp"
 #include "Shared/Combat/CombatEffect.hpp"
 #include "Shared/Particles/ParticleGeneratorFactory.hpp"
 
 class Entity;
+class AttackDB;
 
 /**
  * \defgroup Combat
@@ -16,7 +19,7 @@ class Entity;
  /**
   * Base class representing all Attacks in the game, both ranged, melee, and spells
   *
-  * \ingroup CombatAttack
+  * \ingroup Combat
   */
 class CombatAttack {
 public:
@@ -29,8 +32,12 @@ private:
     Type type;
     std::string name, description;
     double power;
-    std::list<CombatEffect> effects;
+    std::list<CombatEffect::Ref> effects;
     float delaySeconds;
+
+    std::string animation;
+    ParticleGeneratorFactory::Preset particleGenerator;
+    float impactParticlePersistTime;
 
     //ranged only
     std::string impactAnimation;
@@ -38,29 +45,40 @@ private:
     ParticleGeneratorFactory::Preset impactParticleGenerator;
     float particlePersistTime;
 
-    std::string animation;
-    ParticleGeneratorFactory::Preset particleGenerator;
-    float impactParticlePersistTime;
+    friend class AttackDB;
 
 public:
+    typedef std::shared_ptr<CombatAttack> Ptr;
+    typedef std::shared_ptr<const CombatAttack> ConstPtr;
+
     /**
      * Creates the "empty" melee attack Punch
      */
     CombatAttack();
 
     /**
+     * Loads the attack from the given file
+     */
+    CombatAttack(File& file);
+
+    /**
      * Create the CombatAttack as a melee attack
      */
-    CombatAttack(const std::string& name, const std::string& description, double power, float AttackDelay, const std::list<CombatEffect>& effects,
+    CombatAttack(const std::string& name, const std::string& description, double power, float AttackDelay, const std::list<CombatEffect::Ref>& effects,
                  const std::string& animation, ParticleGeneratorFactory::Preset particles, float partTime = 0);
 
     /**
      * Creates a ranged attack
      */
     CombatAttack(const std::string& name, const std::string& description, double power, float attackDelay,
-                 const std::list<CombatEffect>& effects, const std::string& animation, ParticleGeneratorFactory::Preset particles,
+                 const std::list<CombatEffect::Ref>& effects, const std::string& animation, ParticleGeneratorFactory::Preset particles,
                  float partTime, double range, double speed, const std::string& impactAnimation = "",
                  ParticleGeneratorFactory::Preset impactParts = ParticleGeneratorFactory::None, float impactPartTime = 0);
+
+    /**
+     * Saves the attack to the given file
+     */
+    void save(File& file) const;
 
     /**
      * Returns the type of the attack, either Melee or Ranged
@@ -90,7 +108,7 @@ public:
     /**
      * Returns the effects of the CombatAttack
      */
-    std::list<CombatEffect> getEffects() const;
+    std::list<CombatEffect::Ref> getEffects() const;
 
     /**
      * Returns the animation file for the attack
@@ -135,7 +153,7 @@ public:
     /**
      * Converts to a CombatAttack for the explosion. Ranged only
      */
-    CombatAttack toExplosionAttack() const;
+    CombatAttack::ConstPtr toExplosionAttack() const;
 };
 
 #endif // COMBATATTACK_HPP

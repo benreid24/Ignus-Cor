@@ -88,7 +88,7 @@ void MapManager::registerEntityMovement(Entity::Ptr ent, FloatRect oldBox) {
 
 void MapManager::render() {
     #ifdef GAME
-    maps[activeMap].mapdata->draw(Game::get()->window);
+    maps[activeMap].mapdata->draw(Game::get().window);
     #endif
 }
 
