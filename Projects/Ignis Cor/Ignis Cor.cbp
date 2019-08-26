@@ -7,13 +7,9 @@
 		<Option compiler="gcc" />
 		<Option show_notes="0">
 			<notes>
-				<![CDATA[std::map<Map> in Game for multiple maps. Keep many loaded, load new ones as needed. Cleanup?
+				<![CDATA[Ensure spawn space is free, dynamically shift spawn pos if not
 
 New Event type, or something else completely new, for moving between maps (no longer script based, engine will do it). Needs new map and spawn name
-
-Update all loaded maps, but only render current map
-
-Modify EntityManager to handle mulitple maps? Or have multiple EntityManagers?
 
 Playlist manages music based on game state. Fall back to current map music if nothing else
 
