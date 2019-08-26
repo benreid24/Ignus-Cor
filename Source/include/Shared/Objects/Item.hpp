@@ -2,7 +2,7 @@
 #define ITEM_HPP
 
 #include "Shared/Util/ResourcePool.hpp"
-#include "Shared/Objects/Effect.hpp"
+#include "Shared/Objects/ItemEffect.hpp"
 #include <string>
 
 #ifdef EDITOR
@@ -18,7 +18,7 @@ class ItemDB;
 class Item {
 	int id, value, intensity;
 	std::string name, description, mapImg, menuImg;
-	Effects::Effect effect;
+	ItemEffect effect;
 
 	#ifdef EDITOR
 	friend class ItemDbEditor;
@@ -29,7 +29,7 @@ class Item {
 	/**
      * Constructs the item record from the given data
      */
-	Item(int id, std::string name, std::string desc, Effects::Effect effect, int intensity, int value, std::string mapImg, std::string menuImg);
+	Item(int id, const std::string& name, const std::string& desc, ItemEffect effect, int intensity, int value, const std::string& mapImg, const std::string& menuImg);
 
 public:
     typedef std::shared_ptr<Item> Ptr;
@@ -43,17 +43,17 @@ public:
 	/**
 	 * Returns the item name
 	 */
-	std::string getName() const;
+	const std::string& getName() const;
 
 	/**
 	 * Returns the item description
 	 */
-	std::string getDescription() const;
+	const std::string& getDescription() const;
 
 	/**
 	 * Returns the item's effect
 	 */
-    Effects::Effect getEffect() const;
+    const ItemEffect& getEffect() const;
 
     /**
      * Returns the intensity of the effect
@@ -68,12 +68,12 @@ public:
     /**
      * Returns the image of the item while on the map
      */
-    std::string getMapImageFile() const;
+    const std::string& getMapImageFile() const;
 
     /**
      * Returns the image of the item in the menu
      */
-    std::string getMenuImageFile() const;
+    const std::string& getMenuImageFile() const;
 };
 
 #endif // ITEM_HPP

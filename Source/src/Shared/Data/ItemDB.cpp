@@ -10,7 +10,7 @@ ItemDB::ItemDB() {
 	for (int i = 0; i<count; ++i) {
         int id = file.get<uint16_t>();
         string name = file.getString();
-        Effects::Effect effect = Effects::Effect(file.get<uint32_t>());
+        ItemEffect effect = ItemEffect(file.get<uint32_t>());
         int intensity = file.get<uint32_t>();
         int value = file.get<uint32_t>();
         string desc = file.getString();
@@ -53,7 +53,7 @@ void ItemDB::save() {
 	for (map<int,Item::Ptr>::iterator i = items.begin(); i!=items.end(); ++i) {
         file.write<uint16_t>(i->second->getId());
         file.writeString(i->second->getName());
-        file.write<uint32_t>(i->second->getEffect());
+        file.write<uint32_t>(i->second->getEffect().getEffect());
         file.write<uint32_t>(i->second->getIntensity());
         file.write<uint32_t>(i->second->getValue());
         file.writeString(i->second->getDescription());

@@ -119,8 +119,8 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/include/Shared/Media/Animation.hpp" />
 		<Unit filename="../../Source/include/Shared/Media/Playlist.hpp" />
 		<Unit filename="../../Source/include/Shared/Media/SoundEngine.hpp" />
-		<Unit filename="../../Source/include/Shared/Objects/Effect.hpp" />
 		<Unit filename="../../Source/include/Shared/Objects/Item.hpp" />
+		<Unit filename="../../Source/include/Shared/Objects/ItemEffect.hpp" />
 		<Unit filename="../../Source/include/Shared/Particles/Particle.hpp" />
 		<Unit filename="../../Source/include/Shared/Particles/ParticleGenerator.hpp" />
 		<Unit filename="../../Source/include/Shared/Particles/ParticleGeneratorFactory.hpp" />
@@ -178,8 +178,8 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/src/Shared/Media/Animation.cpp" />
 		<Unit filename="../../Source/src/Shared/Media/Playlist.cpp" />
 		<Unit filename="../../Source/src/Shared/Media/SoundEngine.cpp" />
-		<Unit filename="../../Source/src/Shared/Objects/Effect.cpp" />
 		<Unit filename="../../Source/src/Shared/Objects/Item.cpp" />
+		<Unit filename="../../Source/src/Shared/Objects/ItemEffect.cpp" />
 		<Unit filename="../../Source/src/Shared/Particles/Particle.cpp" />
 		<Unit filename="../../Source/src/Shared/Particles/ParticleGenerator.cpp" />
 		<Unit filename="../../Source/src/Shared/Particles/ParticleGeneratorFactory.cpp" />

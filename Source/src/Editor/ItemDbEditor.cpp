@@ -68,9 +68,9 @@ void ItemDbEditor::doItem(int id) {
 
     Box::Ptr box = Box::Create(Box::Orientation::HORIZONTAL,5);
     ComboBox::Ptr effectEntry = ComboBox::Create();
-    for (unsigned int i = 0; i<Effects::effectStrings.size(); ++i)
-		effectEntry->AppendItem(Effects::effectStrings[i]);
-    effectEntry->SelectItem((item)?(item->effect):(0));
+    for (unsigned int i = 0; i<ItemEffect::getAllBaseEffects().size(); ++i)
+		effectEntry->AppendItem(ItemEffect::getAllBaseEffects()[i]);
+    effectEntry->SelectItem((item)?(ItemEffect::getIndexFromType(item->effect.getEffect())):(0));
     box->Pack(Label::Create("Effect: "),false,false);
     box->Pack(effectEntry,false,false);
     winBox->Pack(box,false,false);
@@ -104,7 +104,7 @@ void ItemDbEditor::doItem(int id) {
 			int intense = form.getFieldAsInt("int");
 			string mapImg = form.getField("mp");
 			string menuImg = form.getField("mn");
-			Effects::Effect effect = Effects::Effect(Effects::effectMap[effectEntry->GetSelectedItem()]); //TODO - multiple effects?
+			ItemEffect effect = ItemEffect(ItemEffect::getTypeFromIndex(effectEntry->GetSelectedItem())); //TODO - multiple effects?
 			if (id>0 && name.size()>0 && desc.size()>0 && val>=0 && mapImg.size()>0 && menuImg.size()>0) {
 				ItemDB::get().getItems().emplace(id, Item::Ptr(new Item(id,name,desc,effect,intense,val,mapImg,menuImg)));
 				updateGui();
@@ -159,7 +159,7 @@ void ItemDbEditor::updateGui() {
 			"Name: "+i->second->getName(),
 			"Description: "+desc,
 			"Value: "+intToString(i->second->getValue()),
-			"Effect: "+Effects::getEffectString(i->second->getEffect()),
+			"Effect: "+i->second->getEffect().getDescription(),
 			"Effect Intensity: "+intToString(i->second->getIntensity())
 		};
 		Box::Ptr row = packRow(cols);

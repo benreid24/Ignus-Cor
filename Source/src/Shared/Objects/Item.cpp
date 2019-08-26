@@ -1,7 +1,7 @@
 #include "Shared/Objects/Item.hpp"
 using namespace std;
 
-Item::Item(int i, std::string nm, std::string desc, Effects::Effect eft, int intense, int v, std::string mp, std::string mn) {
+Item::Item(int i, const string& nm, const string& desc, ItemEffect eft, int intense, int v, const string& mp, const string& mn) {
 	id = i;
 	name = nm;
 	description = desc;
@@ -16,15 +16,15 @@ int Item::getId() const {
 	return id;
 }
 
-string Item::getName() const {
+const string& Item::getName() const {
 	return name;
 }
 
-string Item::getDescription() const {
+const string& Item::getDescription() const {
     return description;
 }
 
-Effects::Effect Item::getEffect() const {
+const ItemEffect& Item::getEffect() const {
 	return effect;
 }
 
@@ -36,10 +36,10 @@ int Item::getValue() const {
 	return value;
 }
 
-string Item::getMapImageFile() const {
+const string& Item::getMapImageFile() const {
 	return mapImg;
 }
 
-string Item::getMenuImageFile() const {
+const string& Item::getMenuImageFile() const {
 	return menuImg;
 }
