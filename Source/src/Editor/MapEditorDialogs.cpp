@@ -931,7 +931,7 @@ void MapEditor::spawnerHandler(sf::Vector2i pos) {
 
 void MapEditor::itemHandler(sf::Vector2i pos) {
 	bool newItem = false;
-	if (ItemDB::getItems().size()==0) {
+	if (ItemDB::get().getItems().size()==0) {
 		cout << "No items!" << endl;
 		return;
 	}
@@ -962,7 +962,7 @@ void MapEditor::itemHandler(sf::Vector2i pos) {
     ComboBox::Ptr idEntry = ComboBox::Create();
     map<int,int> comboIdMap, idComboMap;
     int j = 0;
-    for (map<int,Item*>::iterator i = ItemDB::getItems().begin(); i!=ItemDB::getItems().end(); ++i) {
+    for (map<int,Item::Ptr>::iterator i = ItemDB::get().getItems().begin(); i!=ItemDB::get().getItems().end(); ++i) {
 		idEntry->AppendItem(intToString(i->second->getId())+": "+i->second->getName());
 		comboIdMap[j] = i->second->getId();
 		idComboMap[i->second->getId()] = j;

@@ -35,11 +35,11 @@ ItemDbEditor::ItemDbEditor(Desktop& dk, Notebook::Ptr parent) : desktop(dk), own
 }
 
 void ItemDbEditor::save() {
-	ItemDB::save();
+	ItemDB::get().save();
 }
 
 void ItemDbEditor::doItem(int id) {
-	Item* item = ItemDB::itemExists(id)?(&ItemDB::getItem(id)):(nullptr);
+	Item::ConstPtr item = ItemDB::get().getItem(id);
 
 	owner->SetState(Widget::State::INSENSITIVE);
     sfg::Window::Ptr window = sfg::Window::Create();
@@ -57,20 +57,20 @@ void ItemDbEditor::doItem(int id) {
 	menuPathBut->GetSignal(Button::OnLeftClick).Connect( [&pickMenuImage] { pickMenuImage = true; });
 
 	Form form;
-	form.addField("i", "Id: ",160,(item!=nullptr)?(item->id):(-1));
-	form.addField("n", "Name: ",160,(item!=nullptr)?(item->name):(""));
-	form.addField("d", "Description: ",220,(item!=nullptr)?(item->description):(""));
-	form.addField("v", "Value: ",160,(item!=nullptr)?(item->value):(0));
-	form.addField("mp", "Map Image: ",160,(item!=nullptr)?(item->mapImg):(""));
-	form.addField("mn", "Menu Image: ",160,(item!=nullptr)?(item->menuImg):(""));
-	form.addField("int", "Effect Intensity: ",80, (item!=nullptr)?(item->intensity):(0));
+	form.addField("i", "Id: ",160,(item)?(item->id):(-1));
+	form.addField("n", "Name: ",160,(item)?(item->name):(""));
+	form.addField("d", "Description: ",220,(item)?(item->description):(""));
+	form.addField("v", "Value: ",160,(item)?(item->value):(0));
+	form.addField("mp", "Map Image: ",160,(item)?(item->mapImg):(""));
+	form.addField("mn", "Menu Image: ",160,(item)?(item->menuImg):(""));
+	form.addField("int", "Effect Intensity: ",80, (item)?(item->intensity):(0));
     form.addToParent(winBox);
 
     Box::Ptr box = Box::Create(Box::Orientation::HORIZONTAL,5);
     ComboBox::Ptr effectEntry = ComboBox::Create();
     for (unsigned int i = 0; i<Effects::effectStrings.size(); ++i)
 		effectEntry->AppendItem(Effects::effectStrings[i]);
-    effectEntry->SelectItem((item!=nullptr)?(item->effect):(0));
+    effectEntry->SelectItem((item)?(item->effect):(0));
     box->Pack(Label::Create("Effect: "),false,false);
     box->Pack(effectEntry,false,false);
     winBox->Pack(box,false,false);
@@ -95,8 +95,8 @@ void ItemDbEditor::doItem(int id) {
 
         if (savePressed) {
 			savePressed = false;
-			if (item!=nullptr)
-				ItemDB::removeItem(item->id);
+			if (item)
+				ItemDB::get().removeItem(item->id);
 			int id = form.getFieldAsInt("i");
 			string name = form.getField("n");
 			string desc = form.getField("d");
@@ -106,7 +106,7 @@ void ItemDbEditor::doItem(int id) {
 			string menuImg = form.getField("mn");
 			Effects::Effect effect = Effects::Effect(Effects::effectMap[effectEntry->GetSelectedItem()]); //TODO - multiple effects?
 			if (id>0 && name.size()>0 && desc.size()>0 && val>=0 && mapImg.size()>0 && menuImg.size()>0) {
-				ItemDB::getItems()[id] = new Item(id,name,desc,effect,intense,val,mapImg,menuImg);
+				ItemDB::get().getItems().emplace(id, Item::Ptr(new Item(id,name,desc,effect,intense,val,mapImg,menuImg)));
 				updateGui();
 				break;
 			}
@@ -146,12 +146,12 @@ void ItemDbEditor::update() {
 		data->reorder();
 	vector<int> delIds = data->getDeletedIds();
 	for (unsigned int i = 0; i<delIds.size(); ++i)
-		ItemDB::removeItem(delIds[i]);
+		ItemDB::get().removeItem(delIds[i]);
 }
 
 void ItemDbEditor::updateGui() {
 	data->removeAll();
-	for (map<int,Item*>::iterator i = ItemDB::getItems().begin(); i!=ItemDB::getItems().end(); ++i) {
+	for (map<int,Item::Ptr>::iterator i = ItemDB::get().getItems().begin(); i!=ItemDB::get().getItems().end(); ++i) {
 		string desc = i->second->getDescription();
 		desc = (desc.size()<60)?(desc):(desc.substr(0,57)+"...");
 		vector<string> cols = {
