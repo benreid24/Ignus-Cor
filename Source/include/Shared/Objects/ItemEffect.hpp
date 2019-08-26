@@ -46,6 +46,11 @@ public:
     ItemEffect(int effect);
 
     /**
+     * Helper ctor for editor
+     */
+    ItemEffect(const std::string& desc, int intensity);
+
+    /**
      * Implicitly cast to the raw enum value of the effect
      */
     operator Type() const { return type; }
@@ -70,7 +75,7 @@ public:
     /**
      * Returns a list of base effects as strings
      */
-    static const std::vector<std::string>& getAllBaseEffects();
+    static const std::vector<std::string>& getAllEffects();
 };
 
 #endif // ITEMEFFECT_HPP

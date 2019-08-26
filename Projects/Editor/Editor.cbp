@@ -77,6 +77,7 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/include/Editor/AnimationEditor.hpp" />
 		<Unit filename="../../Source/include/Editor/Helpers/FilePicker.hpp" />
 		<Unit filename="../../Source/include/Editor/Helpers/LayerButtons.hpp" />
+		<Unit filename="../../Source/include/Editor/Helpers/MenuGenerators.hpp" />
 		<Unit filename="../../Source/include/Editor/ItemDbEditor.hpp" />
 		<Unit filename="../../Source/include/Editor/MapEditor.hpp" />
 		<Unit filename="../../Source/include/Editor/NpcEditor.hpp" />
@@ -147,6 +148,7 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/src/Editor/AnimationEditor.cpp" />
 		<Unit filename="../../Source/src/Editor/Helpers/FilePicker.cpp" />
 		<Unit filename="../../Source/src/Editor/Helpers/LayerButtons.cpp" />
+		<Unit filename="../../Source/src/Editor/Helpers/MenuGenerators.cpp" />
 		<Unit filename="../../Source/src/Editor/ItemDbEditor.cpp" />
 		<Unit filename="../../Source/src/Editor/MapEditor.cpp" />
 		<Unit filename="../../Source/src/Editor/MapEditorDialogs.cpp" />

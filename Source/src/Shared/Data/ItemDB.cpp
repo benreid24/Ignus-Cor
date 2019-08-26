@@ -10,11 +10,15 @@ ItemDB::ItemDB() {
 	for (int i = 0; i<count; ++i) {
         int id = file.get<uint16_t>();
         string name = file.getString();
+
         ItemEffect::List effects;
         int nEffects = file.get<uint8_t>();
         for (int j = 0; j<nEffects; ++j) {
-            effects.emplace_back(ItemEffect::Type(file.get<uint32_t>()), file.get<uint32_t>());
+            ItemEffect::Type t = ItemEffect::Type(file.get<uint32_t>());
+            int intensity = file.get<uint32_t>();
+            effects.emplace_back(t, intensity);
         }
+
         int value = file.get<uint32_t>();
         string desc = file.getString();
         string mp = file.getString();

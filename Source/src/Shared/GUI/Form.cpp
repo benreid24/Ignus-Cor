@@ -16,7 +16,7 @@ Form::Form(Box::Orientation dir) {
 void Form::addField(string name, string text, int width, string value) {
 	Form* me = this;
 	order.push_back(name);
-	Box::Orientation rowDir = (fillDir==Box::Orientation::HORIZONTAL)?(Box::Orientation::VERTICAL):(Box::Orientation::HORIZONTAL);
+	Box::Orientation rowDir = getAntiFillDir();
 	Box::Ptr line = Box::Create(rowDir,5);
 	Label::Ptr lbl = Label::Create(text);
 	Entry::Ptr entry = Entry::Create(value);
@@ -50,6 +50,28 @@ int Form::getFieldAsInt(string name) {
 
 void Form::setField(string name, string val) {
 	fields[name].second->SetText(val);
+}
+
+void Form::addSubform(const string& name, const Form& form) {
+    Form& f = subforms.emplace(name, form).first->second;
+    container->Pack(Separator::Create(Separator::Orientation(getAntiFillDir())));
+    container->Pack(f.container);
+    container->Pack(Separator::Create(Separator::Orientation(getAntiFillDir())));
+}
+
+Form& Form::getSubform(const std::string& name) {
+    auto i = subforms.find(name);
+    if (subforms.end() == i)
+        return *this;
+    return i->second;
+}
+
+Box::Orientation Form::getAntiFillDir() {
+    return (fillDir==Box::Orientation::HORIZONTAL)?(Box::Orientation::VERTICAL):(Box::Orientation::HORIZONTAL);
+}
+
+Box::Orientation Form::getFillDir() {
+    return fillDir;
 }
 
 void Form::addToParent(Box::Ptr parent) {

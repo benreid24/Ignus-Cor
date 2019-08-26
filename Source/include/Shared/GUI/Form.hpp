@@ -13,6 +13,7 @@ class Form {
 	sfg::Box::Ptr container;
 	sfg::Box::Orientation fillDir;
 	std::map<std::string, std::pair<sfg::Label::Ptr,sfg::Entry::Ptr> > fields;
+	std::map<std::string, Form> subforms;
 	std::vector<std::string> order;
 	std::string curActive;
 	bool tabPressedLast;
@@ -52,6 +53,26 @@ public:
 	 * Sets the value of the given field
 	 */
 	void setField(std::string name, std::string val);
+
+	/**
+	 * Adds the subform to this form
+	 */
+    void addSubform(const std::string& name, const Form& form);
+
+    /**
+     * Returns a reference to the requested subform, or a reference to this form if it does not exist
+     */
+    Form& getSubform(const std::string& name);
+
+    /**
+     * Returns the opposite direction of the fill direction
+     */
+    sfg::Box::Orientation getAntiFillDir();
+
+    /**
+     * Returns the fill direction
+     */
+    sfg::Box::Orientation getFillDir();
 
 	/**
 	 * Adds the form GUI elements to the given parent

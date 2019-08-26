@@ -4,6 +4,7 @@
 #include "Shared/Data/ItemDB.hpp"
 #include "Shared/GUI/Form.hpp"
 #include "Editor/Helpers/FilePicker.hpp"
+#include "Editor/Helpers/MenuGenerators.hpp"
 #include "Shared/Util/Util.hpp"
 using namespace sfg;
 using namespace sf;
@@ -63,17 +64,18 @@ void ItemDbEditor::doItem(int id) {
 	form.addField("v", "Value: ",160,(item)?(item->value):(0));
 	form.addField("mp", "Map Image: ",160,(item)?(item->mapImg):(""));
 	form.addField("mn", "Menu Image: ",160,(item)?(item->menuImg):(""));
-	form.addField("int", "Effect Intensity: ",80, (item)?(item->intensity):(0));
+    addItemEffectsToForm(form, (item)?(item->effects):(ItemEffect::List()));
     form.addToParent(winBox);
 
+    /*
     Box::Ptr box = Box::Create(Box::Orientation::HORIZONTAL,5);
     ComboBox::Ptr effectEntry = ComboBox::Create();
-    for (unsigned int i = 0; i<ItemEffect::getAllBaseEffects().size(); ++i)
-		effectEntry->AppendItem(ItemEffect::getAllBaseEffects()[i]);
-    effectEntry->SelectItem((item)?(ItemEffect::getIndexFromType(item->effect.getEffect())):(0));
+    for (unsigned int i = 0; i<ItemEffect::getAllEffects().size(); ++i)
+		effectEntry->AppendItem(ItemEffect::getAllEffects()[i]);
+    //effectEntry->SelectItem((item)?((item->effect.getEffect())):(0));
     box->Pack(Label::Create("Effect: "),false,false);
     box->Pack(effectEntry,false,false);
-    winBox->Pack(box,false,false);
+    winBox->Pack(box,false,false);*/
 
     Box::Ptr butBox = Box::Create(Box::Orientation::HORIZONTAL,5);
     butBox->Pack(mapPathBut,false,false);
@@ -101,12 +103,11 @@ void ItemDbEditor::doItem(int id) {
 			string name = form.getField("n");
 			string desc = form.getField("d");
 			int val = form.getFieldAsInt("v");
-			int intense = form.getFieldAsInt("int");
 			string mapImg = form.getField("mp");
 			string menuImg = form.getField("mn");
-			ItemEffect effect = ItemEffect(ItemEffect::getTypeFromIndex(effectEntry->GetSelectedItem())); //TODO - multiple effects?
+			ItemEffect::List effects = getItemEffectsFromForm(form);
 			if (id>0 && name.size()>0 && desc.size()>0 && val>=0 && mapImg.size()>0 && menuImg.size()>0) {
-				ItemDB::get().getItems().emplace(id, Item::Ptr(new Item(id,name,desc,effect,intense,val,mapImg,menuImg)));
+				ItemDB::get().getItems().emplace(id, Item::Ptr(new Item(id,name,desc,effects,val,mapImg,menuImg)));
 				updateGui();
 				break;
 			}
@@ -158,9 +159,9 @@ void ItemDbEditor::updateGui() {
 			"Id: "+intToString(i->second->getId()),
 			"Name: "+i->second->getName(),
 			"Description: "+desc,
-			"Value: "+intToString(i->second->getValue()),
-			"Effect: "+i->second->getEffect().getDescription(),
-			"Effect Intensity: "+intToString(i->second->getIntensity())
+			"Value: "+intToString(i->second->getValue())
+			//"Effect: "+i->second->getEffect().getDescription(),
+			//"Effect Intensity: "+intToString(i->second->getIntensity())
 		};
 		Box::Ptr row = packRow(cols);
 		data->appendRow(i->first,row);
