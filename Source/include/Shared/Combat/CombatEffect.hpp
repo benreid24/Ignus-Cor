@@ -27,7 +27,7 @@ struct CombatEffect {
         const CombatEffect* operator->() const { return effect; }
         Ref(const CombatEffect* ef, double ints, double chnc) : effect(ef), intensity(ints), chance(chnc) {}
 
-        double intensity, chance;
+        double intensity, chance; //TODO - add duration
         const CombatEffect* effect;
     };
 

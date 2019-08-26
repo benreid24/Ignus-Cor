@@ -16,9 +16,9 @@ class ItemDB;
  * Item instances will just be id's
  */
 class Item {
-	int id, value, intensity;
+	int id, value;
 	std::string name, description, mapImg, menuImg;
-	ItemEffect effect;
+	ItemEffect::List effects;
 
 	#ifdef EDITOR
 	friend class ItemDbEditor;
@@ -29,7 +29,8 @@ class Item {
 	/**
      * Constructs the item record from the given data
      */
-	Item(int id, const std::string& name, const std::string& desc, ItemEffect effect, int intensity, int value, const std::string& mapImg, const std::string& menuImg);
+	Item(int id, const std::string& name, const std::string& desc, const ItemEffect::List& effects,
+      int value, const std::string& mapImg, const std::string& menuImg);
 
 public:
     typedef std::shared_ptr<Item> Ptr;
@@ -53,12 +54,7 @@ public:
 	/**
 	 * Returns the item's effect
 	 */
-    const ItemEffect& getEffect() const;
-
-    /**
-     * Returns the intensity of the effect
-     */
-    int getIntensity() const;
+    const ItemEffect::List& getEffects() const;
 
     /**
      * Returns the sale value of the item

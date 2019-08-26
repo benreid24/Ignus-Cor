@@ -1,7 +1,7 @@
-#ifndef EFFECT_HPP
-#define EFFECT_HPP
+#ifndef ITEMEFFECT_HPP
+#define ITEMEFFECT_HPP
 
-#include <cstdint>
+#include <list>
 #include <vector>
 #include <string>
 
@@ -11,7 +11,7 @@
  */
 
 /**
- * Helper class for Item effects. Instances can represent lists of base effects
+ * Helper class for Item effects
  *
  * \ingroup Objects
  */
@@ -19,25 +19,26 @@ class ItemEffect {
 public:
     /**
      * Enum for the various effects that can belong to Items
-     * Values are powers of 2, so a single effect can actually be a combination of
-     * effects by ORing them together
      */
-    enum Type: std::uint32_t {
-        None = 0,
-        DamageHealth = 1,
-        RestoreHealth = 2,
-        RestoreMagic = 4,
-        DamageMagic = 8 //TODO - make effects
+    enum Type {
+        None,
+        DamageHealth,
+        RestoreHealth,
+        RestoreMagic,
+        DamageMagic
     };
 
 private:
     Type type;
+    int intensity;
 
 public:
+    typedef std::list<ItemEffect> List;
+
     /**
-     * Constructs the ItemEffect from the given Type
+     * Constructs the ItemEffect from the given Type and intensity
      */
-    ItemEffect(Type type = None);
+    ItemEffect(Type type = None, int intensity = 0);
 
     /**
      * Implicit construction from int
@@ -45,31 +46,26 @@ public:
     ItemEffect(int effect);
 
     /**
-     * Returns whether this effect contains the given base effect
+     * Implicitly cast to the raw enum value of the effect
      */
-    bool isEffect(Type test) const;
+    operator Type() const { return type; }
 
     /**
-     * Returns the raw value of the effect
+     * Cast to int for convenience
      */
-    Type getEffect() const;
+    int asInt() const { return int(type); }
 
     /**
      * Returns the string representation of the effect
      */
-    std::string getDescription(const std::string& sep = ", ") const;
+    const std::string& getDescription() const;
+
+    /**
+     * Returns the intensity of the effect
+     */
+    int getIntensity() const { return intensity; }
 
     //TODO - function to apply effects to people?
-
-    /**
-     * Returns the Type from the index of the type
-     */
-    static Type getTypeFromIndex(unsigned int index);
-
-    /**
-     * Returns the type index for the given base type
-     */
-    static unsigned int getIndexFromType(Type type);
 
     /**
      * Returns a list of base effects as strings
@@ -77,4 +73,4 @@ public:
     static const std::vector<std::string>& getAllBaseEffects();
 };
 
-#endif // EFFECT_HPP
+#endif // ITEMEFFECT_HPP

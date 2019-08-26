@@ -1,12 +1,11 @@
 #include "Shared/Objects/Item.hpp"
 using namespace std;
 
-Item::Item(int i, const string& nm, const string& desc, ItemEffect eft, int intense, int v, const string& mp, const string& mn) {
+Item::Item(int i, const string& nm, const string& desc, const ItemEffect::List& eft, int v, const string& mp, const string& mn) {
 	id = i;
 	name = nm;
 	description = desc;
-	effect = eft;
-	intensity = intense;
+	effects = eft;
 	value = v;
 	mapImg = mp;
 	menuImg = mn;
@@ -24,12 +23,8 @@ const string& Item::getDescription() const {
     return description;
 }
 
-const ItemEffect& Item::getEffect() const {
-	return effect;
-}
-
-int Item::getIntensity() const {
-	return intensity;
+const ItemEffect::List& Item::getEffects() const {
+	return effects;
 }
 
 int Item::getValue() const {

@@ -10,13 +10,16 @@ ItemDB::ItemDB() {
 	for (int i = 0; i<count; ++i) {
         int id = file.get<uint16_t>();
         string name = file.getString();
-        ItemEffect effect = ItemEffect(file.get<uint32_t>());
-        int intensity = file.get<uint32_t>();
+        ItemEffect::List effects;
+        int nEffects = file.get<uint8_t>();
+        for (int j = 0; j<nEffects; ++j) {
+            effects.emplace_back(ItemEffect::Type(file.get<uint32_t>()), file.get<uint32_t>());
+        }
         int value = file.get<uint32_t>();
         string desc = file.getString();
         string mp = file.getString();
         string mn = file.getString();
-        items.emplace(id, Item::Ptr(new Item(id,name,desc,effect,intensity,value,mp,mn)));
+        items.emplace(id, Item::Ptr(new Item(id,name,desc,effects,value,mp,mn)));
 	}
 }
 
@@ -53,8 +56,13 @@ void ItemDB::save() {
 	for (map<int,Item::Ptr>::iterator i = items.begin(); i!=items.end(); ++i) {
         file.write<uint16_t>(i->second->getId());
         file.writeString(i->second->getName());
-        file.write<uint32_t>(i->second->getEffect().getEffect());
-        file.write<uint32_t>(i->second->getIntensity());
+
+        file.write<uint8_t>(i->second->getEffects().size());
+        for (auto j = i->second->getEffects().begin(); j != i->second->getEffects().end(); ++j) {
+            file.write<uint32_t>(j->asInt());
+            file.write<uint32_t>(j->getIntensity());
+        }
+
         file.write<uint32_t>(i->second->getValue());
         file.writeString(i->second->getDescription());
         file.writeString(i->second->getMapImageFile());
