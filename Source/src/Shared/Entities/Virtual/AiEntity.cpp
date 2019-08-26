@@ -2,7 +2,8 @@
 #include "Shared/Entities/EntityBehavior.hpp"
 using namespace std;
 
-AiEntity::AiEntity(string nm, EntityPosition pos, string gfx1, string gfx2) : CombatEntity(nm, pos, gfx1, gfx2) {
+AiEntity::AiEntity(string nm, EntityPosition pos, string gfx1, string gfx2)
+: CombatEntity(nm, pos, gfx1, gfx2), conversation(this) {
     behavior = nullptr;
 }
 
@@ -12,6 +13,7 @@ AiEntity::~AiEntity() {
 }
 
 void AiEntity::update() {
+    conversation.update();
     if (behavior != nullptr)
         behavior->update();
     CombatEntity::update();

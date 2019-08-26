@@ -23,6 +23,11 @@ public:
 	typedef std::shared_ptr<Player> Ptr;
 
 	/**
+	 * Destructor
+	 */
+    virtual ~Player() = default;
+
+	/**
 	 * Creates a Player and returns a pointer
 	 */
 	static Ptr create();

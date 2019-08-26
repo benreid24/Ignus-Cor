@@ -162,6 +162,11 @@ public:
 	EntityPosition getPosition();
 
 	/**
+	 * Returns a reference to the EntityBubble
+	 */
+    EntityBubble& getBubble();
+
+	/**
 	 * Renders the Entity to the given target
 	 */
 	virtual void render(sf::RenderTarget& target, sf::Vector2f camPos);

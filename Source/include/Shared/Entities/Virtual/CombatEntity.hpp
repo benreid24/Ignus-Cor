@@ -38,6 +38,11 @@ protected:
     CombatEntity(std::string name, EntityPosition pos, std::string gfx1, std::string gfx2);
 
     /**
+     * Destructor
+     */
+    virtual ~CombatEntity() = default;
+
+    /**
      * Performs an attack using the current equipped CombatAttack
      *
      * \param atkDir Direction, in degrees, to attack in. Ranged only

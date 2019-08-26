@@ -12,3 +12,7 @@ EntityBubble::EntityBubble(Mode m) {
 void EntityBubble::render(sf::RenderTarget& target, sf::Vector2f position) {
 	//
 }
+
+void EntityBubble::update() {
+    //
+}

@@ -19,6 +19,11 @@ class ItemEntity : public Entity {
 	    Entity(item->getName(), position, item->getMapImageFile()) { }
 
 public:
+    /**
+     * Destructor
+     */
+    virtual ~ItemEntity() = default;
+
 	/**
 	 * Constructs the ItemEntity from the given item id and position
 	 */

@@ -2,6 +2,7 @@
 #define AIENTITY_HPP
 
 #include "Shared/Entities/Virtual/CombatEntity.hpp"
+#include "Shared/Entities/EntityConversation.hpp"
 
 class EntityBehavior;
 
@@ -13,6 +14,7 @@ class EntityBehavior;
 class AiEntity : public CombatEntity {
 protected:
     EntityBehavior* behavior;
+    EntityConversation conversation;
 
 public:
     /**

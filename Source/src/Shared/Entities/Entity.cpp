@@ -199,6 +199,7 @@ bool Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
 void Entity::update() {
 	lTime = Entity::timer.getElapsedTime().asSeconds();
 	graphics.update();
+	bubble.update();
 }
 
 Entity::Ptr Entity::interact() {
@@ -219,4 +220,8 @@ bool Entity::collidesWithOtherEntities() {
 
 bool Entity::isYSortRendered() {
     return isYSorted;
+}
+
+EntityBubble& Entity::getBubble() {
+    return bubble;
 }
