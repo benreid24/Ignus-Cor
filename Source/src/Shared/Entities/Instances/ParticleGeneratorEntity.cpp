@@ -14,8 +14,7 @@ Entity::Ptr ParticleGeneratorEntity::create(Entity::Ptr bindTo, EntityPosition p
     return Entity::Ptr(new ParticleGeneratorEntity(bindTo, pos, gen, gfx, rm));
 }
 
-void ParticleGeneratorEntity::render(sf::RenderTarget& target, sf::Vector2f camPos) {
-    GraphicalEffectEntity::render(target, camPos);
+void ParticleGeneratorEntity::customRenderAbove(sf::RenderTarget& target, sf::Vector2f camPos) {
     generator->render(target, position.coords, camPos);
 }
 

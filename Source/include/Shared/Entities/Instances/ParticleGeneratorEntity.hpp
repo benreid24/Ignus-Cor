@@ -34,9 +34,14 @@ public:
     const std::string getType() const;
 
     /**
-     * Renders the particles
+     * Allows derived classes to provide custom rendering below the graphics
      */
-    virtual void render(sf::RenderTarget& target, sf::Vector2f camPos);
+    virtual void customRenderBelow(sf::RenderTarget& target, sf::Vector2f camPos) {}
+
+    /**
+     * Allows derived classes to provide custom rendering above the graphics
+     */
+    virtual void customRenderAbove(sf::RenderTarget& target, sf::Vector2f camPos);
 
     /**
      * Update logic to be applied before the time variable is updated

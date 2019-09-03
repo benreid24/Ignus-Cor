@@ -31,6 +31,16 @@ protected:
      */
     void afterTimerUpdate() override final;
 
+    /**
+     * Allows derived classes to provide custom rendering below the graphics
+     */
+    virtual void customRenderBelow(sf::RenderTarget& target, sf::Vector2f camPos) override {}
+
+    /**
+     * Allows derived classes to provide custom rendering above the graphics
+     */
+    virtual void customRenderAbove(sf::RenderTarget& target, sf::Vector2f camPos) override {}
+
 public:
     /**
      * Creates the graphical Entity and optionally binds to the given Entity
@@ -46,11 +56,6 @@ public:
      * Returns "GraphicalEffectEntity"
      */
     virtual const std::string getType() const = 0;
-
-    /**
-     * Just calls Entity::render. Virtual to allow subclasses to override
-     */
-    virtual void render(sf::RenderTarget& target, sf::Vector2f camPos);
 };
 
 #endif // GRAPHICALEFFECTENTITY_HPP

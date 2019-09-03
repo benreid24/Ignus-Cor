@@ -42,7 +42,7 @@ public:
     /**
      * Update logic to be applied by derived classes after the timer is updated
      */
-    void afterTimerUpdated() override {};
+    void afterTimerUpdated() override {}
 };
 
 #endif // RANGEDATTACK

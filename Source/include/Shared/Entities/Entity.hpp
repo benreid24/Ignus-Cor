@@ -84,12 +84,22 @@ protected:
 	/**
      * Update logic to be applied before the time variable is updated
      */
-    virtual void beforeTimerUpdate() {};
+    virtual void beforeTimerUpdate() {}
 
     /**
      * Update logic to be applied after the timer variable is updated
      */
-    virtual void afterTimerUpdate() {};
+    virtual void afterTimerUpdate() {}
+
+    /**
+     * Allows derived classes to provide custom rendering below the graphics
+     */
+    virtual void customRenderBelow(sf::RenderTarget& target, sf::Vector2f camPos) {}
+
+    /**
+     * Allows derived classes to provide custom rendering above the graphics
+     */
+    virtual void customRenderAbove(sf::RenderTarget& target, sf::Vector2f camPos) {}
 
 public:
     static const sf::Clock& timer();
@@ -178,7 +188,7 @@ public:
 	/**
 	 * Renders the Entity to the given target
 	 */
-	virtual void render(sf::RenderTarget& target, sf::Vector2f camPos);
+	void render(sf::RenderTarget& target, sf::Vector2f camPos);
 
 	/**
 	 * Moves the Entity in the given direction. Actual amount is based on if fast and how much time elapsed

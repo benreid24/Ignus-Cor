@@ -35,18 +35,18 @@ public:
      * Update logic to be applied before the Behavior
      * Applied before the time is updated
      */
-    virtual void beforeBehaviorUpdate() override {};
+    virtual void beforeBehaviorUpdate() override {}
 
     /**
      * Update logic to be applied after the Behavior
      * Applied before the timer is updated
      */
-    virtual void afterBehaviorUpdate() override {};
+    virtual void afterBehaviorUpdate() override {}
 
     /**
      * Update logic to be applied after the timer variable is updated
      */
-    virtual void afterTimerUpdate() override {};
+    virtual void afterTimerUpdate() override {}
 
 	/**
 	 * Notifies the Entity that they were attacked by another Entity

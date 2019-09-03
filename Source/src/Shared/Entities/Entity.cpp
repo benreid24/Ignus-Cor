@@ -128,8 +128,10 @@ string Entity::getIdString() const {
 }
 
 void Entity::render(sf::RenderTarget& target, sf::Vector2f camPos) {
+	customRenderBelow(target, camPos);
 	graphics.render(target,position.coords-camPos);
 	bubble.render(target,position.coords-camPos);
+	customRenderAbove(target, camPos);
 
 	if (DebugOverlays::isOverlayActive(DebugOverlays::BoundingBoxes)) {
         RectangleShape bounds;
