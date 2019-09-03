@@ -101,6 +101,21 @@ protected:
      */
     virtual void customRenderAbove(sf::RenderTarget& target, sf::Vector2f camPos) {}
 
+    /**
+	 * Notifies the Entity that they were attacked by another Entity. For derived to override
+	 */
+    virtual void notifyAttackedCustom(Ptr attacker, CombatAttack::ConstPtr attack) {}
+
+    /**
+     * Notifies the Entity of nearby combat. For derived to override
+     */
+    virtual void notifyCombatNearbyCustom(List combatants) {}
+
+    /**
+     * Notifies the Entity that they were interacted with. For derived to override
+     */
+    virtual void notifyInteractedCustom(Ptr user) {}
+
 public:
     static const sf::Clock& timer();
 
@@ -128,17 +143,17 @@ public:
 	/**
 	 * Notifies the Entity that they were attacked by another Entity
 	 */
-    virtual void notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack);
+    void notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack);
 
     /**
      * Notifies the Entity of nearby combat
      */
-    virtual void notifyCombatNearby(List combatants);
+    void notifyCombatNearby(List combatants);
 
     /**
      * Notifies the Entity that they were interacted with
      */
-    virtual void notifyInteracted(Ptr user);
+    void notifyInteracted(Ptr user);
 
     /**
 	 * Returns the bounding box for the Entity

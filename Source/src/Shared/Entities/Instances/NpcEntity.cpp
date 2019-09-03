@@ -19,15 +19,3 @@ Entity::Ptr NpcEntity::create(string nm, EntityPosition pos, string gfx1, string
 const string NpcEntity::getType() const {
     return "NpcEntity";
 }
-
-void NpcEntity::notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr attack) {
-    AiEntity::notifyAttacked(attacker, attack);
-}
-
-void NpcEntity::notifyInteracted(Entity::Ptr user) {
-    AiEntity::notifyInteracted(user);
-}
-
-void NpcEntity::notifyCombatNearby(Entity::List combatants) {
-    AiEntity::notifyCombatNearby(combatants);
-}

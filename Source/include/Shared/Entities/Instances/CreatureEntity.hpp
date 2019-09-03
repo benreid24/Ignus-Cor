@@ -49,19 +49,19 @@ public:
     virtual void afterTimerUpdate() override {}
 
 	/**
-	 * Notifies the Entity that they were attacked by another Entity
+	 * Notifies the Entity that they were attacked by another Entity. For derived to override
 	 */
-    void notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack);
+    virtual void notifyAiAttacked(Ptr attacker, CombatAttack::ConstPtr attack) override {}
 
     /**
-     * Notifies the Entity of nearby combat
+     * Notifies the Entity of nearby combat. For derived to override
      */
-    void notifyCombatNearby(List combatants);
+    virtual void notifyAiCombatNearby(List combatants) override {}
 
     /**
-     * Notifies the Entity that they were interacted with
+     * Notifies the Entity that they were interacted with. For derived to override
      */
-    void notifyInteracted(Ptr user);
+    virtual void notifyAiInteracted(Ptr user) override {}
 };
 
 #endif // CREATUREENTITY_HPP

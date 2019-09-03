@@ -38,6 +38,36 @@ protected:
      */
     virtual void afterTimerUpdate() override = 0;
 
+    /**
+	 * Notifies the Entity that they were attacked by another Entity
+	 */
+    void notifyCombatAttacked(Ptr attacker, CombatAttack::ConstPtr attack) override final;
+
+    /**
+     * Notifies the Entity of nearby combat
+     */
+    void notifyCombatNearbyCustom(List combatants) override final;
+
+    /**
+     * Notifies the Entity that they were interacted with
+     */
+    void notifyInteractedCustom(Ptr user) override final;
+
+    /**
+	 * Notifies the Entity that they were attacked by another Entity. For derived to override
+	 */
+    virtual void notifyAiAttacked(Ptr attacker, CombatAttack::ConstPtr attack) = 0;
+
+    /**
+     * Notifies the Entity of nearby combat. For derived to override
+     */
+    virtual void notifyAiCombatNearby(List combatants) = 0;
+
+    /**
+     * Notifies the Entity that they were interacted with. For derived to override
+     */
+    virtual void notifyAiInteracted(Ptr user) = 0;
+
 public:
     /**
      * Basic constructor
@@ -53,21 +83,6 @@ public:
      * Pure virtual
      */
     virtual const std::string getType() const = 0;
-
-	/**
-	 * Notifies the Entity that they were attacked by another Entity
-	 */
-    virtual void notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack);
-
-    /**
-     * Notifies the Entity of nearby combat
-     */
-    virtual void notifyCombatNearby(List combatants);
-
-    /**
-     * Notifies the Entity that they were interacted with
-     */
-    virtual void notifyInteracted(Ptr user);
 };
 
 #endif // AIENTITY_HPP

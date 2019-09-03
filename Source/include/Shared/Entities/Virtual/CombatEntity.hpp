@@ -59,26 +59,31 @@ protected:
      */
     virtual void afterTimerUpdate() override = 0;
 
+    /**
+	 * Notifies the Entity that they were attacked by another Entity
+	 */
+    void notifyAttackedCustom(Ptr attacker, CombatAttack::ConstPtr attack) override final;
+
+    /**
+     * Notifies the Entity that they were attacked. For derived to override
+     */
+    virtual void notifyCombatAttacked(Ptr attcker, CombatAttack::ConstPtr attack) {}
+
+    /**
+     * Notifies the Entity of nearby combat. For derived to override
+     */
+    virtual void notifyCombatNearbyCustom(List combatants) override {}
+
+    /**
+     * Notifies the Entity that they were interacted with. For derived to override
+     */
+    virtual void notifyInteractedCustom(Ptr user) override {}
+
 public:
     /**
 	 * Pure virtual
 	 */
 	virtual const std::string getType() const = 0;
-
-	/**
-	 * Notifies the Entity that they were attacked by another Entity
-	 */
-    virtual void notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack);
-
-    /**
-     * Notifies the Entity of nearby combat
-     */
-    virtual void notifyCombatNearby(List combatants);
-
-    /**
-     * Notifies the Entity that they were interacted with
-     */
-    virtual void notifyInteracted(Ptr user);
 
     /**
      * Returns the stats of the Entity

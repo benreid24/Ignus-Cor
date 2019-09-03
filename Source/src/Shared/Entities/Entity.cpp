@@ -109,16 +109,19 @@ const string& Entity::getName() const {
 void Entity::notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack) {
     if (DebugOverlays::isOverlayActive(DebugOverlays::EntityInfo))
         cout << getIdString() << " ATTACKED BY " << attacker->getIdString() << endl;
+    notifyAttackedCustom(attacker, attack);
 }
 
 void Entity::notifyInteracted(Ptr user) {
     if (DebugOverlays::isOverlayActive(DebugOverlays::EntityInfo))
         cout << getIdString() << " INTERACTED BY " << user->getIdString() << endl;
+    notifyInteractedCustom(user);
 }
 
 void Entity::notifyCombatNearby(List combatants) {
     if (DebugOverlays::isOverlayActive(DebugOverlays::EntityInfo))
         cout << getIdString() << " notified of nearby combat\n";
+    notifyCombatNearbyCustom(combatants);
 }
 
 string Entity::getIdString() const {

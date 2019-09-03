@@ -12,9 +12,7 @@ CombatEntity::CombatEntity(string nm, EntityPosition pos, string gfx1, string gf
     lastAttackTime = 0;
 }
 
-void CombatEntity::notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr atk) {
-    Entity::notifyAttacked(attacker, atk);
-
+void CombatEntity::notifyAttackedCustom(Entity::Ptr attacker, CombatAttack::ConstPtr atk) {
     CombatEntity* atkr = dynamic_cast<CombatEntity*>(attacker.get());
     if (atkr!=nullptr) {
         double ld = atkr->stats.level - stats.level;
@@ -44,6 +42,8 @@ void CombatEntity::notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr a
     }
     else
         cout << "Warning: " << getIdString() << " attacked by non CombatEntity " << attacker->getIdString() << endl;
+
+    notifyCombatAttacked(attacker, atk);
 }
 
 void CombatEntity::doAttack(int atkDir) {
@@ -52,14 +52,6 @@ void CombatEntity::doAttack(int atkDir) {
         EntityManager::get()->add(atkEnt);
         lastAttackTime = Entity::timer().getElapsedTime().asSeconds();
     }
-}
-
-void CombatEntity::notifyCombatNearby(Entity::List combatants) {
-    Entity::notifyCombatNearby(combatants);
-}
-
-void CombatEntity::notifyInteracted(Entity::Ptr user) {
-    Entity::notifyInteracted(user);
 }
 
 EntityStats& CombatEntity::getStats() {

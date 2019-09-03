@@ -53,19 +53,19 @@ public:
     const std::string getType() const;
 
 	/**
-	 * Notifies the Entity that they were attacked by another Entity
+	 * Notifies the Entity that they were attacked by another Entity. For derived to override
 	 */
-    void notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack);
+    void notifyAiAttacked(Ptr attacker, CombatAttack::ConstPtr attack) override {}
 
     /**
-     * Notifies the Entity of nearby combat
+     * Notifies the Entity of nearby combat. For derived to override
      */
-    void notifyCombatNearby(List combatants);
+    void notifyAiCombatNearby(List combatants) override {}
 
     /**
-     * Notifies the Entity that they were interacted with
+     * Notifies the Entity that they were interacted with. For derived to override
      */
-    void notifyInteracted(Ptr user);
+    void notifyAiInteracted(Ptr user) override {}
 };
 
 #endif // NPCENTITY_HPP

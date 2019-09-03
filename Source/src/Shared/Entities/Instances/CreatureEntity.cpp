@@ -13,16 +13,3 @@ Entity::Ptr CreatureEntity::create(string dataFile) {
 const string CreatureEntity::getType() const {
     return "CreatureEntity";
 }
-
-void CreatureEntity::notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr attack) {
-    AiEntity::notifyAttacked(attacker, attack);
-}
-
-void CreatureEntity::notifyInteracted(Entity::Ptr user) {
-    AiEntity::notifyInteracted(user);
-}
-
-void CreatureEntity::notifyCombatNearby(Entity::List combatants) {
-    AiEntity::notifyCombatNearby(combatants);
-}
-
