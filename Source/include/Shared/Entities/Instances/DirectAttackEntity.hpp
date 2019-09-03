@@ -32,12 +32,17 @@ public:
     /**
      * Returns "DirectAttackEntity"
      */
-    const std::string getType();
+    const std::string getType() const;
 
     /**
-     * Updates the attack and damages Entities that get hit
+     * Update logic to be applied before the time variable is updated
      */
-    void update();
+    void beforeTimerUpdate() override;
+
+    /**
+     * Update logic to be applied by derived classes after the timer is updated
+     */
+    void afterTimerUpdated() override;
 };
 
 #endif // MELEEATTACKENTITY_HPP

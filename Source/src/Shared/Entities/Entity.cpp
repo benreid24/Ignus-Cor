@@ -8,8 +8,12 @@
 using namespace std;
 using namespace sf;
 
-Clock Entity::timer;
 int UUID::nextUuid = 1;
+
+const Clock& Entity::timer() {
+    static Clock timer;
+    return timer;
+}
 
 EntityPosition::EntityPosition(Vector2f pos, Direction d) {
     coords = pos;
@@ -22,7 +26,7 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	position = pos;
 	name = nm;
 	uuid = UUID::create();
-	lTime = Entity::timer.getElapsedTime().asSeconds();
+	timeLastUpdated = Entity::timer().getElapsedTime().asSeconds();
 	speed[0] = 64;
 	speed[1] = 128;
 	boundingBox = FloatRect(0, 0, graphics.getSize().x, graphics.getSize().y);
@@ -38,11 +42,11 @@ Entity::~Entity() {
         cout << "Entity '" << name << "'(uuid: " << uuid << ") deleted\n";
 }
 
-EntityPosition Entity::getPosition() {
+EntityPosition Entity::getPosition() const {
 	return position;
 }
 
-FloatRect Entity::getBoundingBox() {
+FloatRect Entity::getBoundingBox() const {
 	return FloatRect(
                   position.coords.x+boundingBox.left,
                   position.coords.y+boundingBox.top,
@@ -50,12 +54,12 @@ FloatRect Entity::getBoundingBox() {
                   boundingBox.height);
 }
 
-Vector2f Entity::getCenter() {
+Vector2f Entity::getCenter() const {
     FloatRect box = getBoundingBox();
     return Vector2f(box.left+box.width/2, box.top+box.height/2);
 }
 
-FloatRect Entity::getInteractBox() {
+FloatRect Entity::getInteractBox() const {
     FloatRect box = FloatRect(position.coords, graphics.getSize());
 
     switch (position.dir) {
@@ -98,7 +102,7 @@ void Entity::shift(sf::Vector2f amount, const string& newMap) {
 	EntityManager::get()->updatePosition(this, oldPos);
 }
 
-string Entity::getName() {
+const string& Entity::getName() const {
 	return name;
 }
 
@@ -117,7 +121,7 @@ void Entity::notifyCombatNearby(List combatants) {
         cout << getIdString() << " notified of nearby combat\n";
 }
 
-string Entity::getIdString() {
+string Entity::getIdString() const {
     stringstream ss;
     ss << "<" << getType() << ": '" << getName() << "'(uuid: " << uuid << ")>";
     return ss.str();
@@ -151,7 +155,7 @@ bool Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
 	Vector2f newPos = position.coords;
 	position.dir = dir;
 
-	elapsedTime = (elapsedTime==0)?(Entity::timer.getElapsedTime().asSeconds()-lTime):(elapsedTime);
+	elapsedTime = (elapsedTime==0)?(timeSinceLastUpdate()):(elapsedTime);
 	int i = int(fast);
 	float dist = speed[i]*elapsedTime;
 
@@ -197,7 +201,9 @@ bool Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
 }
 
 void Entity::update() {
-	lTime = Entity::timer.getElapsedTime().asSeconds();
+    beforeTimerUpdate();
+	timeLastUpdated = Entity::timer().getElapsedTime().asSeconds();
+	afterTimerUpdate();
 	graphics.update();
 	bubble.update();
 }
@@ -214,14 +220,18 @@ Entity::Ptr Entity::interact() {
     return Ptr(nullptr);
 }
 
-bool Entity::collidesWithOtherEntities() {
+bool Entity::collidesWithOtherEntities() const {
     return collisionsEnabled;
 }
 
-bool Entity::isYSortRendered() {
+bool Entity::isYSortRendered() const {
     return isYSorted;
 }
 
 EntityBubble& Entity::getBubble() {
     return bubble;
+}
+
+double Entity::timeSinceLastUpdate() const {
+    return Entity::timer().getElapsedTime().asSeconds() - timeLastUpdated;
 }

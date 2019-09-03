@@ -13,9 +13,7 @@ GraphicalEffectEntity::GraphicalEffectEntity(Entity::Ptr bindTo, EntityPosition 
         offset = position.coords - bindTo->getPosition().coords;
 }
 
-void GraphicalEffectEntity::update() {
-    Entity::update();
-
+void GraphicalEffectEntity::afterTimerUpdate() {
     if (!boundTo.expired()) {
         sf::Vector2f shiftAmt = (boundTo.lock()->getPosition().coords + offset) - position.coords;
         Entity::shift(shiftAmt, boundTo.lock()->getPosition().mapName);
@@ -26,10 +24,6 @@ void GraphicalEffectEntity::update() {
 
 void GraphicalEffectEntity::render(sf::RenderTarget& target, sf::Vector2f camPos) {
     Entity::render(target, camPos);
-}
-
-const string GraphicalEffectEntity::getType() {
-    return "GraphicalEffectEntity";
 }
 
 bool GraphicalEffectEntity::canDestroy() {

@@ -28,6 +28,21 @@ protected:
      */
     AttackEntity(Entity::Ptr attacker, CombatAttack::ConstPtr atk);
 
+    /**
+     * Update logic to be applied before the time variable is updated
+     */
+    virtual void beforeTimerUpdate() = 0;
+
+    /**
+     * Update logic to be applied after the timer variable is updated
+     */
+    void afterTimerUpdate() override final;
+
+    /**
+     * Update logic to be applied by derived classes after the timer is updated
+     */
+    virtual void afterTimerUpdated() = 0;
+
 public:
     /**
      * vtable
@@ -46,12 +61,7 @@ public:
     /**
      * Pure virtual
      */
-    const virtual std::string getType() = 0;
-
-    /**
-	 * Calls Entity::update()
-	 */
-	virtual void update();
+    const virtual std::string getType() const = 0;
 };
 
 #endif // RANGEDATTACK

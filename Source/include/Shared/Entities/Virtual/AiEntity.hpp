@@ -16,6 +16,28 @@ protected:
     EntityBehavior* behavior;
     EntityConversation conversation;
 
+    /**
+     * Update logic to be applied before the time variable is updated
+     */
+    void beforeTimerUpdate() override final;
+
+    /**
+     * Update logic to be applied before the Behavior
+     * Applied before the time is updated
+     */
+    virtual void beforeBehaviorUpdate() = 0;
+
+    /**
+     * Update logic to be applied after the Behavior
+     * Applied before the timer is updated
+     */
+    virtual void afterBehaviorUpdate() = 0;
+
+    /**
+     * Update logic to be applied after the timer variable is updated
+     */
+    virtual void afterTimerUpdate() override = 0;
+
 public:
     /**
      * Basic constructor
@@ -30,12 +52,7 @@ public:
     /**
      * Pure virtual
      */
-    virtual const std::string getType() = 0;
-
-    /**
-	 * Updates the Entity. Just calls behavior if present
-	 */
-	virtual void update();
+    virtual const std::string getType() const = 0;
 
 	/**
 	 * Notifies the Entity that they were attacked by another Entity

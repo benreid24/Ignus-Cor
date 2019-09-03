@@ -31,7 +31,7 @@ public:
     /**
      * Returns "ParticleGeneratorEntity"
      */
-    const std::string getType();
+    const std::string getType() const;
 
     /**
      * Renders the particles
@@ -39,9 +39,9 @@ public:
     virtual void render(sf::RenderTarget& target, sf::Vector2f camPos);
 
     /**
-     * Updates the generator
+     * Update logic to be applied before the time variable is updated
      */
-    virtual void update();
+    virtual void beforeTimerUpdate() override;
 };
 
 #endif // PARTICLEGENERATORENTITY_HPP

@@ -12,10 +12,6 @@ CombatEntity::CombatEntity(string nm, EntityPosition pos, string gfx1, string gf
     lastAttackTime = 0;
 }
 
-void CombatEntity::update() {
-    Entity::update();
-}
-
 void CombatEntity::notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr atk) {
     Entity::notifyAttacked(attacker, atk);
 
@@ -51,10 +47,10 @@ void CombatEntity::notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr a
 }
 
 void CombatEntity::doAttack(int atkDir) {
-    if (Entity::timer.getElapsedTime().asSeconds()-lastAttackTime >= weapon->getAttackDelay()) {
+    if (Entity::timer().getElapsedTime().asSeconds()-lastAttackTime >= weapon->getAttackDelay()) {
         Entity::Ptr atkEnt = AttackEntity::create(EntityManager::get()->getEntityPtr(this), weapon, atkDir);
         EntityManager::get()->add(atkEnt);
-        lastAttackTime = Entity::timer.getElapsedTime().asSeconds();
+        lastAttackTime = Entity::timer().getElapsedTime().asSeconds();
     }
 }
 

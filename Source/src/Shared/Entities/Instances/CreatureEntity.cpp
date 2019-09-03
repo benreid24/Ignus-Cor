@@ -10,12 +10,8 @@ Entity::Ptr CreatureEntity::create(string dataFile) {
     return Entity::Ptr(new CreatureEntity("dummy", EntityPosition(), "", "", file)); //TODO - load data from file
 }
 
-const string CreatureEntity::getType() {
+const string CreatureEntity::getType() const {
     return "CreatureEntity";
-}
-
-void CreatureEntity::update() {
-    AiEntity::update();
 }
 
 void CreatureEntity::notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr attack) {

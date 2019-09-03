@@ -14,11 +14,11 @@ Entity::Ptr DirectAttackEntity::create(Entity::Ptr attacker, CombatAttack::Const
     return Entity::Ptr(new DirectAttackEntity(attacker, atk, follow));
 }
 
-const string DirectAttackEntity::getType() {
+const string DirectAttackEntity::getType() const {
     return "DirectAttackEntity";
 }
 
-void DirectAttackEntity::update() {
+void DirectAttackEntity::beforeTimerUpdate() {
     if (follow) {
         sf::Vector2f shiftAmount = attacker->getPosition().coords + offset - position.coords;
         Entity::shift(shiftAmount);
@@ -30,8 +30,9 @@ void DirectAttackEntity::update() {
             (*i)->notifyAttacked(attacker, attack);
         }
     }
+}
 
-    AttackEntity::update();
+void DirectAttackEntity::afterTimerUpdated() {
     if (graphics.animationDone())
         EntityManager::get()->remove(this);
 

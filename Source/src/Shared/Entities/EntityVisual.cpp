@@ -75,7 +75,7 @@ void EntityVisual::setMoving(int d, bool f) {
         slow[0].play();
 }
 
-Vector2f EntityVisual::getSize() {
+Vector2f EntityVisual::getSize() const {
 	switch (type) {
 	case StaticImage:
 		return Vector2f(image.getGlobalBounds().width, image.getGlobalBounds().height);
@@ -123,7 +123,7 @@ void EntityVisual::render(sf::RenderTarget& target, sf::Vector2f position) {
     }
 }
 
-bool EntityVisual::animationDone() {
+bool EntityVisual::animationDone() const {
     switch (type) {
         case MoveAnim:
         case SpeedAnim:

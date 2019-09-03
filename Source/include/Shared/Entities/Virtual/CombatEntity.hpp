@@ -49,17 +49,21 @@ protected:
      */
     void doAttack(int atkDir = 0);
 
+    /**
+     * Update logic to be applied before the time variable is updated
+     */
+    virtual void beforeTimerUpdate() override = 0;
+
+    /**
+     * Update logic to be applied after the timer variable is updated
+     */
+    virtual void afterTimerUpdate() override = 0;
+
 public:
     /**
 	 * Pure virtual
 	 */
-	virtual const std::string getType() = 0;
-
-	/**
-	 * Updates the Entity. Base function just updates last update time
-	 * Child overloads should call this when finished
-	 */
-	virtual void update();
+	virtual const std::string getType() const = 0;
 
 	/**
 	 * Notifies the Entity that they were attacked by another Entity

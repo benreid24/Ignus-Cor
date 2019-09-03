@@ -9,14 +9,15 @@ AiEntity::AiEntity(string nm, EntityPosition pos, string gfx1, string gfx2)
 
 AiEntity::~AiEntity() {
     if (behavior != nullptr)
-        delete behavior;
+        delete behavior; //TODO - either make the base responsible for allocation or make the children responsible for deletion
 }
 
-void AiEntity::update() {
+void AiEntity::beforeTimerUpdate() {
+    beforeBehaviorUpdate();
     conversation.update();
     if (behavior != nullptr)
         behavior->update();
-    CombatEntity::update();
+    afterBehaviorUpdate();
 }
 
 void AiEntity::notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack) {

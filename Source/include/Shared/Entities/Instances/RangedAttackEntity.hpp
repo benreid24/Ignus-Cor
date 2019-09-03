@@ -32,12 +32,17 @@ public:
     /**
      * Returns "RangedAttackEntity"
      */
-    const std::string getType();
+    const std::string getType() const;
 
     /**
-	 * Updates the Entity. Moves in same direction. Applies damage and deletes if it hits another Entity
-	 */
-	void update();
+     * Update logic to be applied before the time variable is updated
+     */
+    void beforeTimerUpdate() override;
+
+    /**
+     * Update logic to be applied by derived classes after the timer is updated
+     */
+    void afterTimerUpdated() override {};
 };
 
 #endif // RANGEDATTACK

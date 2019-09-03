@@ -21,6 +21,16 @@ protected:
      */
     virtual bool canDestroy();
 
+    /**
+     * Update logic to be applied before the time variable is updated
+     */
+    virtual void beforeTimerUpdate() override = 0;
+
+    /**
+     * Update logic to be applied after the timer variable is updated
+     */
+    void afterTimerUpdate() override final;
+
 public:
     /**
      * Creates the graphical Entity and optionally binds to the given Entity
@@ -35,12 +45,7 @@ public:
     /**
      * Returns "GraphicalEffectEntity"
      */
-    virtual const std::string getType();
-
-    /**
-     * If bound, updates the position based on the bound Entity. Deletes if bound Entity no longer exists
-     */
-    virtual void update();
+    virtual const std::string getType() const = 0;
 
     /**
      * Just calls Entity::render. Virtual to allow subclasses to override

@@ -64,7 +64,7 @@ public:
 	/**
 	 * Returns the size of the visual. Used for bounding box calculation
 	 */
-	sf::Vector2f getSize();
+	sf::Vector2f getSize() const;
 
 	/**
 	 * Updates the animations and internal state
@@ -83,7 +83,7 @@ public:
 	 * Returns whether or not the animation is done. Useful for Entities that play non looping
 	 * animation once
 	 */
-    bool animationDone();
+    bool animationDone() const;
 };
 
 #endif // ENTITYVISUAL_HPP

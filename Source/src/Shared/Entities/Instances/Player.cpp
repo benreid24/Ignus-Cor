@@ -24,7 +24,7 @@ Player::Ptr Player::create() {
 	return player;
 }
 
-void Player::update() {
+void Player::beforeTimerUpdate() {
 	bool running = Keyboard::isKeyPressed(Keyboard::LShift);
 	if (Keyboard::isKeyPressed(Keyboard::W))
 		move(EntityPosition::Up, running);
@@ -47,15 +47,13 @@ void Player::update() {
         interact();
 
 	MapManager::get()->updateRenderPosition(position.coords);
-
-	CombatEntity::update();
 }
 
-const string Player::getType() {
+const string Player::getType() const {
 	return "Player";
 }
 
-int Player::getAttackDirection() {
+int Player::getAttackDirection() const {
     #ifdef GAME
     Vector2f scrnCenter(Properties::ScreenWidth/2, Properties::ScreenHeight/2);
     Vector2f mousePos = Vector2f(Mouse::getPosition(Game::get().window));

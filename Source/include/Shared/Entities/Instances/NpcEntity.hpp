@@ -16,6 +16,21 @@ class NpcEntity : public AiEntity {
      */
     NpcEntity(std::string nm, EntityPosition pos, std::string gfx1, std::string gfx2);
 
+    /**
+     * Update logic to be applied before the Behavior is applied
+     */
+    virtual void beforeBehaviorUpdate() override {}
+
+    /**
+     * Update logic to be applied after the Behavior is applied
+     */
+    virtual void afterBehaviorUpdate() override {}
+
+    /**
+     * Update logic to be applied after the timer variable is updated
+     */
+    virtual void afterTimerUpdate() override {}
+
 public:
     /**
      * Loads the NPC from the data file and returns a Ptr to the created object
@@ -35,12 +50,7 @@ public:
     /**
      * Returns "NpcEntity"
      */
-    const std::string getType();
-
-    /**
-	 * Updates the Entity. Just calls behavior if present
-	 */
-	void update();
+    const std::string getType() const;
 
 	/**
 	 * Notifies the Entity that they were attacked by another Entity

@@ -17,7 +17,7 @@ class Player : public CombatEntity {
 	/**
 	 * Helper function to get attack direction based on mouse position
 	 */
-    int getAttackDirection();
+    int getAttackDirection() const;
 
 public:
 	typedef std::shared_ptr<Player> Ptr;
@@ -33,14 +33,19 @@ public:
 	static Ptr create();
 
 	/**
-	 * Listens for player input and moves/acts accordingly
-	 */
-	virtual void update();
+     * Update logic to be applied before the time variable is updated
+     */
+    void beforeTimerUpdate() override final;
+
+    /**
+     * Update logic to be applied after the timer variable is updated
+     */
+    void afterTimerUpdate() override final {}
 
 	/**
 	 * Returns "Player"
 	 */
-	const std::string getType();
+	const std::string getType() const;
 };
 
 #endif // PLAYER_HPP

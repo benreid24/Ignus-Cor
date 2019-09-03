@@ -13,7 +13,7 @@ AnimationSource::AnimationSource()
     loop = true;
 }
 
-AnimationSource::AnimationSource(string file)
+AnimationSource::AnimationSource(const string& file)
 {
     load(file);
 }
@@ -23,20 +23,19 @@ AnimationSource::~AnimationSource()
     //dtor
 }
 
-void AnimationSource::load(string file)
+void AnimationSource::load(const string& file)
 {
     File input(file);
     AnimationFrame temp;
     int maxL = 0;
-    string tempStr = File::getPath(file);
+    string path = File::getPath(file);
 
-    file = input.getString();
-    spriteSheetFile = file;
-    if (FileExists(Properties::SpriteSheetPath+file))
-		tempStr = Properties::SpriteSheetPath+file;
+    spriteSheetFile = input.getString();
+    if (FileExists(path+spriteSheetFile))
+		path += spriteSheetFile;
 	else
-		tempStr += file;
-    sheet = imagePool.loadResource(tempStr);
+		path = Properties::SpriteSheetPath+spriteSheetFile;
+    sheet = imagePool.loadResource(path);
     loop = bool(input.get<uint8_t>());
     int numFrames = input.get<uint16_t>();
     frames.resize(numFrames);
@@ -64,7 +63,7 @@ void AnimationSource::load(string file)
     sprites.reserve(maxL);
 }
 
-bool AnimationSource::isLooping()
+bool AnimationSource::isLooping() const
 {
     return loop;
 }
@@ -120,7 +119,7 @@ int AnimationSource::incFrame(int cFrm, int lTime)
     return cFrm;
 }
 
-int AnimationSource::numFrames()
+int AnimationSource::numFrames() const
 {
     return frames.size();
 }
@@ -181,7 +180,7 @@ void Animation::setFrame(int frm)
     playing = false;
 }
 
-bool Animation::finished()
+bool Animation::finished() const
 {
     if (!animSrc)
         return false;
@@ -189,7 +188,7 @@ bool Animation::finished()
     return (!animSrc->isLooping() && curFrm==animSrc->numFrames()-1) || animSrc->numFrames()==1;
 }
 
-Vector2f Animation::getSize() {
+Vector2f Animation::getSize() const {
 	Vector2f zero(0,0);
 	if (!animSrc)
         return zero;
@@ -199,7 +198,7 @@ Vector2f Animation::getSize() {
 	return Vector2f(frames[0].getGlobalBounds().width, frames[0].getGlobalBounds().height);
 }
 
-bool Animation::isLooping()
+bool Animation::isLooping() const
 {
     if (!animSrc)
         return false;
@@ -235,6 +234,6 @@ void Animation::draw(sf::RenderTarget& window)
 		window.draw(t[i]);
 }
 
-bool Animation::isPlaying() {
+bool Animation::isPlaying() const {
     return playing;
 }

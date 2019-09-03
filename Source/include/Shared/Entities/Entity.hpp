@@ -74,7 +74,6 @@ protected:
 	bool collisionsEnabled; //if it blocks other Entities
 	bool isYSorted; //true to render in y sort, false to render on top
 
-	double lTime;
 	float speed[2]; //speed in pixels/second for [slow,fast]. Will be set by child classes
 
 	/**
@@ -82,9 +81,19 @@ protected:
 	 */
 	Ptr interact();
 
-	static sf::Clock timer; //for doing movement based on time
+	/**
+     * Update logic to be applied before the time variable is updated
+     */
+    virtual void beforeTimerUpdate() {};
+
+    /**
+     * Update logic to be applied after the timer variable is updated
+     */
+    virtual void afterTimerUpdate() {};
 
 public:
+    static const sf::Clock& timer();
+
 	/**
 	 * Creates the Entity with the given name, position, and graphics
 	 */
@@ -98,13 +107,13 @@ public:
 	/**
 	 * Returns the type of the Entity. To be defined by children
 	 */
-	virtual const std::string getType() = 0;
+	virtual const std::string getType() const = 0;
 
 	/**
-	 * Updates the Entity. Base function just updates last update time
-	 * Child overloads should call this when finished
+	 * Updates the Entity. Derived classes should overload beforeTimerUpdate() and afterTimerUpdate()
+	 * to provide custom functionality
 	 */
-	virtual void update();
+	void update();
 
 	/**
 	 * Notifies the Entity that they were attacked by another Entity
@@ -124,17 +133,17 @@ public:
     /**
 	 * Returns the bounding box for the Entity
 	 */
-	sf::FloatRect getBoundingBox();
+	sf::FloatRect getBoundingBox() const;
 
 	/**
 	 * Returns the bounding box of the interaction zone
 	 */
-    sf::FloatRect getInteractBox();
+    sf::FloatRect getInteractBox() const;
 
     /**
      * Returns the coordinates of the center of the Entity
      */
-    sf::Vector2f getCenter();
+    sf::Vector2f getCenter() const;
 
 	/**
 	 * Sets the position and direction of the Entity. Leave direction empty to maintain it. Position is in pixels
@@ -149,17 +158,17 @@ public:
 	/**
 	 * Returns the name of the Entity
 	 */
-	std::string getName();
+	const std::string& getName() const;
 
 	/**
 	 * Generates a string to represent the Entity
 	 */
-    std::string getIdString();
+    std::string getIdString() const;
 
 	/**
 	 * Returns the position of the Entity
 	 */
-	EntityPosition getPosition();
+	EntityPosition getPosition() const;
 
 	/**
 	 * Returns a reference to the EntityBubble
@@ -184,12 +193,20 @@ public:
 	/**
 	 * Returns whether or not this Entity should be considered when doing collisions between other Entities
 	 */
-    bool collidesWithOtherEntities();
+    bool collidesWithOtherEntities() const;
 
     /**
      * Returns whether or not the Entity is y-sorted when rendering, or if it should render on top of other Entities
      */
-    bool isYSortRendered();
+    bool isYSortRendered() const;
+
+    /**
+     * Returns the elapsed time between calls to update()
+     */
+    double timeSinceLastUpdate() const;
+
+private:
+    double timeLastUpdated;
 };
 
 #endif // ENTITY_HPP

@@ -36,7 +36,7 @@ public:
 	    return Entity::Ptr(new ItemEntity(item, position));
     }
 
-    const std::string getType() { return "Item"; }
+    const std::string getType() const { return "Item"; }
 
     void notifyInteracted(Entity::Ptr user) {
         Entity::notifyInteracted(user);

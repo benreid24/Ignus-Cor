@@ -16,12 +16,8 @@ Entity::Ptr NpcEntity::create(string nm, EntityPosition pos, string gfx1, string
     return Entity::Ptr(new NpcEntity(nm, pos, gfx1, gfx2));
 }
 
-const string NpcEntity::getType() {
+const string NpcEntity::getType() const {
     return "NpcEntity";
-}
-
-void NpcEntity::update() {
-    AiEntity::update();
 }
 
 void NpcEntity::notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr attack) {

@@ -19,16 +19,15 @@ void ParticleGeneratorEntity::render(sf::RenderTarget& target, sf::Vector2f camP
     generator->render(target, position.coords, camPos);
 }
 
-void ParticleGeneratorEntity::update() {
+void ParticleGeneratorEntity::beforeTimerUpdate() {
     generator->update();
     if (boundTo.expired() && wasBound)
         generator->stop();
     if (generator->finished())
         EntityManager::get()->remove(this);
-    GraphicalEffectEntity::update();
 }
 
-const string ParticleGeneratorEntity::getType() {
+const string ParticleGeneratorEntity::getType() const {
     return "ParticleGeneratorEntity";
 }
 

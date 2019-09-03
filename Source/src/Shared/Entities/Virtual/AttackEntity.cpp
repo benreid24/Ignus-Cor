@@ -42,12 +42,11 @@ AttackEntity::AttackEntity(Entity::Ptr atk, CombatAttack::ConstPtr weapon)
     position.coords = sf::Vector2f(x,y);
 }
 
-const string AttackEntity::getType() {
+const string AttackEntity::getType() const {
     return "AttackEntity";
 }
 
-void AttackEntity::update() {
-    Entity::update();
+void AttackEntity::afterTimerUpdate() {
     if (!particlesCreated) {
         particlesCreated = true;
         ParticleGenerator::Ptr gen = ParticleGeneratorFactory::create(attack->getParticleType(),
@@ -58,6 +57,7 @@ void AttackEntity::update() {
         Entity::Ptr genEnt = ParticleGeneratorEntity::create(EntityManager::get()->getEntityPtr(this), pos, gen);
         EntityManager::get()->add(genEnt);
     }
+    afterTimerUpdated();
 }
 
 bool AttackEntity::shouldApplyDamage(Entity::Ptr ent) {

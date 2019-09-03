@@ -22,15 +22,15 @@ Entity::Ptr RangedAttackEntity::create(Entity::Ptr attacker, CombatAttack::Const
     return Entity::Ptr(new RangedAttackEntity(attacker, atk, atkDir));
 }
 
-const string RangedAttackEntity::getType() {
+const string RangedAttackEntity::getType() const {
     return "RangedAttackEntity";
 }
 
-void RangedAttackEntity::update() {
+void RangedAttackEntity::beforeTimerUpdate() {
     bool done = false;
 
     EntityPosition oldPos = position;
-    float displacement = speed[0] * (Entity::timer.getElapsedTime().asSeconds()-lTime);
+    float displacement = speed[0] * timeSinceLastUpdate();
     sf::Vector2f movedist(displacement*cosDir, displacement*sinDir);
     Entity::shift(movedist);
     distanceTraveled += displacement;
@@ -64,6 +64,4 @@ void RangedAttackEntity::update() {
         }
         EntityManager::get()->remove(this);
     }
-
-    AttackEntity::update();
 }

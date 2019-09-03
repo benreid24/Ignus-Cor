@@ -44,7 +44,7 @@ public:
      *
      * \param file The full path of the file to load
      */
-    AnimationSource(std::string file);
+    AnimationSource(const std::string& file);
 
     /**
      * Frees loaded resources
@@ -56,14 +56,14 @@ public:
      *
      * \param file The full path of the file to load
      */
-    void load(std::string file);
+    void load(const std::string& file);
 
     /**
      * Tells whether or not the animation automatically repeats when it finishes playing
      *
      * \return True if the animation replays by itself
      */
-    bool isLooping();
+    bool isLooping() const;
 
     /**
      * Returns a Sprite object that is clipped, oriented and positioned where it needs to be according to the
@@ -90,7 +90,7 @@ public:
      *
      * \return The total number of frames in the animation
      */
-    int numFrames();
+    int numFrames() const;
 
     /**
      * Returns the base filename of the spritesheet
@@ -153,14 +153,14 @@ public:
      *
      * \return Whether or not the animation finished
      */
-    bool finished();
+    bool finished() const;
 
     /**
      * Tells whether or not the animation is set to loop
      *
      * \return Whether or not the animation is set to repeat automatically when finished
      */
-    bool isLooping();
+    bool isLooping() const;
 
     /**
      * Starts playing the animation. This sets the current frame to 0 and resets the internal timer
@@ -170,7 +170,7 @@ public:
     /**
      * Tells whether or not the Animation is currently playing
      */
-    bool isPlaying();
+    bool isPlaying() const;
 
     /**
      * Sets the desired position of the animation on screen. Individual frames are offset from this position
@@ -182,7 +182,7 @@ public:
     /**
      * Returns the size of the first frame
      */
-	sf::Vector2f getSize();
+	sf::Vector2f getSize() const;
 
     /**
      * Renders the animation to the given window
