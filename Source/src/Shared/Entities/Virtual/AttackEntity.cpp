@@ -57,7 +57,7 @@ void AttackEntity::afterTimerUpdate() {
         Entity::Ptr genEnt = ParticleGeneratorEntity::create(EntityManager::get()->getEntityPtr(this), pos, gen);
         EntityManager::get()->add(genEnt);
     }
-    afterTimerUpdated();
+    p_afterTimerUpdate();
 }
 
 bool AttackEntity::shouldApplyDamage(Entity::Ptr ent) {

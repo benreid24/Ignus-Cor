@@ -18,6 +18,11 @@ class RangedAttackEntity : public AttackEntity {
      */
     RangedAttackEntity(Entity::Ptr attacker, CombatAttack::ConstPtr attack, int atkDir);
 
+    /**
+     * Update logic to be applied before the time variable is updated
+     */
+    virtual void beforeTimerUpdate() override;
+
 public:
     /**
      * Creates the projectile from the weapon/spell and source Entity
@@ -32,17 +37,7 @@ public:
     /**
      * Returns "RangedAttackEntity"
      */
-    const std::string getType() const;
-
-    /**
-     * Update logic to be applied before the time variable is updated
-     */
-    void beforeTimerUpdate() override;
-
-    /**
-     * Update logic to be applied by derived classes after the timer is updated
-     */
-    void afterTimerUpdated() override {}
+    virtual const std::string getType() const override;
 };
 
 #endif // RANGEDATTACK

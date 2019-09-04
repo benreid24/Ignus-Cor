@@ -18,6 +18,18 @@ class ItemEntity : public Entity {
 	ItemEntity(Item::ConstPtr item, EntityPosition position) :
 	    Entity(item->getName(), position, item->getMapImageFile()) { }
 
+    /**
+     * Checks if the interacting Entity is a Player. If yes, gives itself to player then
+     * removes itself from the world
+     */
+    virtual void p_notifyInteracted(Entity::Ptr user) override {
+        Entity::notifyInteracted(user);
+        if (user->getType()=="Player") {
+            //TODO - add to inventory
+            EntityManager::get()->remove(this);
+        }
+    }
+
 public:
     /**
      * Destructor
@@ -36,15 +48,10 @@ public:
 	    return Entity::Ptr(new ItemEntity(item, position));
     }
 
-    const std::string getType() const { return "Item"; }
-
-    void notifyInteracted(Entity::Ptr user) {
-        Entity::notifyInteracted(user);
-        if (user->getType()=="Player") {
-            //TODO - add to inventory
-            EntityManager::get()->remove(this);
-        }
-    }
+    /**
+     * Returns "Item"
+     */
+    virtual const std::string getType() const override { return "Item"; }
 };
 
 #endif // ITEMENTITY_HPP

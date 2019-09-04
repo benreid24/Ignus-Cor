@@ -18,6 +18,16 @@ class DirectAttackEntity : public AttackEntity {
      */
     DirectAttackEntity(Entity::Ptr attacker, CombatAttack::ConstPtr attack, bool followAttacker = true);
 
+    /**
+     * Update logic to be applied before the time variable is updated
+     */
+    virtual void beforeTimerUpdate() override;
+
+    /**
+     * Update logic to be applied by derived classes after the timer is updated
+     */
+    virtual void p_afterTimerUpdate() override;
+
 public:
     /**
      * Creates a Ptr to a DirectAttackEntity
@@ -32,17 +42,7 @@ public:
     /**
      * Returns "DirectAttackEntity"
      */
-    const std::string getType() const;
-
-    /**
-     * Update logic to be applied before the time variable is updated
-     */
-    void beforeTimerUpdate() override;
-
-    /**
-     * Update logic to be applied by derived classes after the timer is updated
-     */
-    void afterTimerUpdated() override;
+    virtual const std::string getType() const override;
 };
 
 #endif // MELEEATTACKENTITY_HPP

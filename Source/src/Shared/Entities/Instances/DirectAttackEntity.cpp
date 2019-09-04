@@ -32,7 +32,7 @@ void DirectAttackEntity::beforeTimerUpdate() {
     }
 }
 
-void DirectAttackEntity::afterTimerUpdated() {
+void DirectAttackEntity::p_afterTimerUpdate() {
     if (graphics.animationDone())
         EntityManager::get()->remove(this);
 

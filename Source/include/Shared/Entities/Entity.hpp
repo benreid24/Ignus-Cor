@@ -94,27 +94,27 @@ protected:
     /**
      * Allows derived classes to provide custom rendering below the graphics
      */
-    virtual void customRenderBelow(sf::RenderTarget& target, sf::Vector2f camPos) {}
+    virtual void p_renderBelow(sf::RenderTarget& target, sf::Vector2f camPos) {}
 
     /**
      * Allows derived classes to provide custom rendering above the graphics
      */
-    virtual void customRenderAbove(sf::RenderTarget& target, sf::Vector2f camPos) {}
+    virtual void p_renderAbove(sf::RenderTarget& target, sf::Vector2f camPos) {}
 
     /**
 	 * Notifies the Entity that they were attacked by another Entity. For derived to override
 	 */
-    virtual void notifyAttackedCustom(Ptr attacker, CombatAttack::ConstPtr attack) {}
+    virtual void p_notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack) {}
 
     /**
      * Notifies the Entity of nearby combat. For derived to override
      */
-    virtual void notifyCombatNearbyCustom(List combatants) {}
+    virtual void p_notifyCombatNearby(List combatants) {}
 
     /**
      * Notifies the Entity that they were interacted with. For derived to override
      */
-    virtual void notifyInteractedCustom(Ptr user) {}
+    virtual void p_notifyInteracted(Ptr user) {}
 
 public:
     static const sf::Clock& timer();

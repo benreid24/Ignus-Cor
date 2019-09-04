@@ -24,7 +24,7 @@ protected:
     /**
      * Update logic to be applied before the time variable is updated
      */
-    virtual void beforeTimerUpdate() override = 0;
+    virtual void beforeTimerUpdate() override {}
 
     /**
      * Update logic to be applied after the timer variable is updated
@@ -34,12 +34,12 @@ protected:
     /**
      * Allows derived classes to provide custom rendering below the graphics
      */
-    virtual void customRenderBelow(sf::RenderTarget& target, sf::Vector2f camPos) override {}
+    virtual void p_renderBelow(sf::RenderTarget& target, sf::Vector2f camPos) override {}
 
     /**
      * Allows derived classes to provide custom rendering above the graphics
      */
-    virtual void customRenderAbove(sf::RenderTarget& target, sf::Vector2f camPos) override {}
+    virtual void p_renderAbove(sf::RenderTarget& target, sf::Vector2f camPos) override {}
 
 public:
     /**
@@ -55,7 +55,7 @@ public:
     /**
      * Returns "GraphicalEffectEntity"
      */
-    virtual const std::string getType() const = 0;
+    virtual const std::string getType() const override = 0;
 };
 
 #endif // GRAPHICALEFFECTENTITY_HPP

@@ -15,7 +15,17 @@ class ParticleGeneratorEntity : public GraphicalEffectEntity {
     /**
      * Returns generator->finished()
      */
-    bool canDestroy();
+    virtual bool canDestroy() override;
+
+    /**
+     * Allows derived classes to provide custom rendering above the graphics
+     */
+    virtual void p_renderAbove(sf::RenderTarget& target, sf::Vector2f camPos) override;
+
+    /**
+     * Update logic to be applied before the time variable is updated
+     */
+    virtual void beforeTimerUpdate() override;
 
 public:
     /**
@@ -31,22 +41,7 @@ public:
     /**
      * Returns "ParticleGeneratorEntity"
      */
-    const std::string getType() const;
-
-    /**
-     * Allows derived classes to provide custom rendering below the graphics
-     */
-    virtual void customRenderBelow(sf::RenderTarget& target, sf::Vector2f camPos) {}
-
-    /**
-     * Allows derived classes to provide custom rendering above the graphics
-     */
-    virtual void customRenderAbove(sf::RenderTarget& target, sf::Vector2f camPos);
-
-    /**
-     * Update logic to be applied before the time variable is updated
-     */
-    virtual void beforeTimerUpdate() override;
+    virtual const std::string getType() const override;
 };
 
 #endif // PARTICLEGENERATORENTITY_HPP

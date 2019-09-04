@@ -52,32 +52,32 @@ protected:
     /**
      * Update logic to be applied before the time variable is updated
      */
-    virtual void beforeTimerUpdate() override = 0;
+    virtual void beforeTimerUpdate() override {}
 
     /**
      * Update logic to be applied after the timer variable is updated
      */
-    virtual void afterTimerUpdate() override = 0;
+    virtual void afterTimerUpdate() override {}
 
     /**
 	 * Notifies the Entity that they were attacked by another Entity
 	 */
-    void notifyAttackedCustom(Ptr attacker, CombatAttack::ConstPtr attack) override final;
+    void p_notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack) override final;
 
     /**
      * Notifies the Entity that they were attacked. For derived to override
      */
-    virtual void notifyCombatAttacked(Ptr attcker, CombatAttack::ConstPtr attack) {}
+    virtual void p_notifyWasAttacked(Ptr attcker, CombatAttack::ConstPtr attack) {}
 
     /**
      * Notifies the Entity of nearby combat. For derived to override
      */
-    virtual void notifyCombatNearbyCustom(List combatants) override {}
+    virtual void p_notifyCombatNearby(List combatants) override {}
 
     /**
      * Notifies the Entity that they were interacted with. For derived to override
      */
-    virtual void notifyInteractedCustom(Ptr user) override {}
+    virtual void p_notifyInteracted(Ptr user) override {}
 
 public:
     /**

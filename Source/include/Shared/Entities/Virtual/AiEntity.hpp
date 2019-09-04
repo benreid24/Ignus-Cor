@@ -25,48 +25,48 @@ protected:
      * Update logic to be applied before the Behavior
      * Applied before the time is updated
      */
-    virtual void beforeBehaviorUpdate() = 0;
+    virtual void beforeBehaviorUpdate() {}
 
     /**
      * Update logic to be applied after the Behavior
      * Applied before the timer is updated
      */
-    virtual void afterBehaviorUpdate() = 0;
+    virtual void afterBehaviorUpdate() {}
 
     /**
      * Update logic to be applied after the timer variable is updated
      */
-    virtual void afterTimerUpdate() override = 0;
+    virtual void afterTimerUpdate() override {}
 
     /**
 	 * Notifies the Entity that they were attacked by another Entity
 	 */
-    void notifyCombatAttacked(Ptr attacker, CombatAttack::ConstPtr attack) override final;
+    void p_notifyWasAttacked(Ptr attacker, CombatAttack::ConstPtr attack) override final;
 
     /**
      * Notifies the Entity of nearby combat
      */
-    void notifyCombatNearbyCustom(List combatants) override final;
+    void p_notifyCombatNearby(List combatants) override final;
 
     /**
      * Notifies the Entity that they were interacted with
      */
-    void notifyInteractedCustom(Ptr user) override final;
+    void p_notifyInteracted(Ptr user) override final;
 
     /**
 	 * Notifies the Entity that they were attacked by another Entity. For derived to override
 	 */
-    virtual void notifyAiAttacked(Ptr attacker, CombatAttack::ConstPtr attack) = 0;
+    virtual void p_notifyAiAttacked(Ptr attacker, CombatAttack::ConstPtr attack) {}
 
     /**
      * Notifies the Entity of nearby combat. For derived to override
      */
-    virtual void notifyAiCombatNearby(List combatants) = 0;
+    virtual void p_notifyAiCombatNearby(List combatants) {}
 
     /**
      * Notifies the Entity that they were interacted with. For derived to override
      */
-    virtual void notifyAiInteracted(Ptr user) = 0;
+    virtual void p_notifyAiInteracted(Ptr user) {}
 
 public:
     /**

@@ -19,6 +19,16 @@ class Player : public CombatEntity {
 	 */
     int getAttackDirection() const;
 
+    /**
+     * Update logic to be applied before the time variable is updated
+     */
+    virtual void beforeTimerUpdate() override final;
+
+	/**
+	 * Returns "Player"
+	 */
+	virtual const std::string getType() const override;
+
 public:
 	typedef std::shared_ptr<Player> Ptr;
 
@@ -31,21 +41,6 @@ public:
 	 * Creates a Player and returns a pointer
 	 */
 	static Ptr create();
-
-	/**
-     * Update logic to be applied before the time variable is updated
-     */
-    void beforeTimerUpdate() override final;
-
-    /**
-     * Update logic to be applied after the timer variable is updated
-     */
-    void afterTimerUpdate() override final {}
-
-	/**
-	 * Returns "Player"
-	 */
-	const std::string getType() const;
 };
 
 #endif // PLAYER_HPP

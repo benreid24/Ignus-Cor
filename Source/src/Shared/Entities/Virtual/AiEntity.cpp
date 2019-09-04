@@ -20,20 +20,20 @@ void AiEntity::beforeTimerUpdate() {
     afterBehaviorUpdate();
 }
 
-void AiEntity::notifyCombatAttacked(Ptr attacker, CombatAttack::ConstPtr attack) {
+void AiEntity::p_notifyWasAttacked(Ptr attacker, CombatAttack::ConstPtr attack) {
     if (behavior != nullptr)
         behavior->notifyAttacked(attacker, attack);
-    notifyAiAttacked(attacker, attack);
+    p_notifyAiAttacked(attacker, attack);
 }
 
-void AiEntity::notifyInteractedCustom(Ptr user) {
+void AiEntity::p_notifyInteracted(Ptr user) {
     if (behavior != nullptr)
         behavior->notifyInteracted(user);
-    notifyAiInteracted(user);
+    p_notifyAiInteracted(user);
 }
 
-void AiEntity::notifyCombatNearbyCustom(List combatants) {
+void AiEntity::p_notifyCombatNearby(List combatants) {
     if (behavior != nullptr)
         behavior->notifyCombatNearby(combatants);
-    notifyAiCombatNearby(combatants);
+    p_notifyAiCombatNearby(combatants);
 }
