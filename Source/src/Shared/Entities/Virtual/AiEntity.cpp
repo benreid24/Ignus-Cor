@@ -1,9 +1,23 @@
 #include "Shared/Entities/Virtual/AiEntity.hpp"
 #include "Shared/Entities/EntityBehavior.hpp"
+
+#ifdef GAME
+#include <Game/Core/Game.hpp>
+#endif // GAME
 using namespace std;
 
+namespace {
+Entity* getPlayer(Entity* fallback) {
+    #ifdef GAME
+    return Game::get().player.get();
+    #else
+    return fallback;
+    #endif // GAME
+}
+}
+
 AiEntity::AiEntity(string nm, EntityPosition pos, string gfx1, string gfx2)
-: CombatEntity(nm, pos, gfx1, gfx2), conversation(this) {
+: CombatEntity(nm, pos, gfx1, gfx2), conversation(getPlayer(this), this) {
     behavior = nullptr;
 }
 

@@ -91,6 +91,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/include/Shared/Entities/EntityBehavior.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityBubble.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityConversation.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/EntityConversationNodeFactory.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityManager.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityVisual.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/CreatureEntity.hpp" />

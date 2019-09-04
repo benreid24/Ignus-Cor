@@ -8,6 +8,7 @@
 #include "Shared/Util/Util.hpp"
 
 class EntityBubble;
+class EntityConversationNodeFactory;
 
 /**
  * Conversation tree for AI entities to converse with the player
@@ -19,13 +20,25 @@ class EntityConversation {
      * Base node for a conversation node. Provides the interface
      */
     class Node {
+        std::string name;
+
     public:
         typedef std::shared_ptr<Node> Ptr;
+
+        /**
+         * Constructs the node with the given name
+         */
+        Node(const std::string& nm) : name(nm) {}
 
         /**
          * Destructor
          */
         virtual ~Node() = default;
+
+        /**
+         * Returns the name of the Node
+         */
+        const std::string& getName() const { return name; }
 
         /**
          * Updates the proper EntityBubble's as need be with node specific details
@@ -37,17 +50,14 @@ class EntityConversation {
          */
         virtual Node* getNext() = 0;
     };
-    class TalkNode;
-    class ActionNode;
-    class ScriptNode;
-    class CheckNode;
-    class ChoiceNode;
+
+    friend class EntityConversationNodeFactory;
 
 public:
     /**
      * Creates an empty conversation
      */
-    EntityConversation(Entity* owner);
+    EntityConversation(Entity* player, Entity* owner);
 
     /**
      * Loads the conversation from the given file
@@ -71,7 +81,10 @@ public:
 
 private:
     Entity* owner;
-    std::map<std::string, Node::Ptr> nodes;
+    Entity* player;
+    std::list<Node::Ptr> nodes;
+    std::map<std::string, Node::Ptr> nodeMap;
+    Node::Ptr exitNode;
     Node* currentNode;
 };
 
