@@ -112,5 +112,7 @@ void EntityConversationNodeFactory::ScriptNode::apply(EntityConversation* conv, 
 }
 
 EntityConversation::Node* EntityConversationNodeFactory::ScriptNode::getNext(EntityConversation* conv) {
-    return (started && !script->isRunning()) ? conv->getNode(truthyNode) : nullptr; //TODO - get script result
+    if (started && !script->isRunning())
+        return conv->getNode(script->result().nonZero() ? truthyNode : falsyNode);
+    return nullptr;
 }

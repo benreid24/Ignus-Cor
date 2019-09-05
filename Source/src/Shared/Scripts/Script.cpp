@@ -767,7 +767,7 @@ void Script::run()
 	stopping = false;
 	try
 	{
-		runTokens(0);
+		runResult = runTokens(0);
 	}
 	catch (const out_of_range& e)
 	{
@@ -796,4 +796,8 @@ bool Script::isRunning()
 
 bool Script::isStopping() {
     return stopping;
+}
+
+Value Script::result() {
+    return runResult;
 }

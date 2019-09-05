@@ -27,6 +27,7 @@ protected:
     std::map<std::string,LibraryFunction> libraryFunctions;
 
 private:
+    Value runResult;
 	std::string original;
 	bool stopping, stopped;
 	std::deque<Frame> stackFrames;
@@ -114,6 +115,11 @@ public:
 	 * Tells whether or not the script is currently running
 	 */
 	bool isRunning();
+
+	/**
+	 * Returns the result of running the script
+	 */
+    Value result();
 };
 
 #endif // SCRIPTINTERPRETER_HPP

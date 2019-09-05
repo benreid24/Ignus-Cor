@@ -165,6 +165,7 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/src/Shared/Entities/EntityBehavior.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityBubble.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityConversation.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/EntityConversationNodeFactory.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityManager.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityVisual.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Instances/CreatureEntity.cpp" />

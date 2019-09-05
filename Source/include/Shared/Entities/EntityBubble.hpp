@@ -42,10 +42,10 @@ public:
      * Adds the given content to the bubble
      *
      * \param content String representation of content. Can be animation, image, or text
-     * \param length Length of time to display content in ms. 0 = ghost writer/anim length. -1 = forever
+     * \param length Length of time to display content in seconds. 0 = ghost writer/anim length. -1 = forever
      * \return An id that can be used to track the status of the content
      */
-	int addContent(const std::string& content, int length = 0);
+	int addContent(const std::string& content, double length = 0);
 
 	/**
 	 * Terminates the content with the given id
@@ -84,43 +84,77 @@ public:
 
 private:
     /**
-     * Helper struct for EntityBubble to store content
+     * Returns a reference to a timer object for bubbles to share
      */
-    struct EntityBubbleContent { //TODO - convert to base class and provide manipulators for bubble
-        enum Type {
-            Text,
-            Image,
-            Anim
-        }type;
+    static const sf::Clock& timer();
 
-        TextureReference txtr;
-        AnimationReference animSrc;
-
-        sf::Sprite spr;
-        Animation anim;
-        std::string text;
-
+    /**
+     * Base class for representing content
+     */
+    class Content {
         int id;
-        int length;
+        double length;
+
+    public:
+        typedef std::shared_ptr<Content> Ptr;
 
         /**
-         * Creates the bubble content from the given string. This function will determine if the
-         * string is an image file, animation file, or just text
-         *
-         * \param init The string to load from
-         * \param length How long, in milliseconds, to display. Pass 0 to stop when animation finishes or wait for ghost writer, or -1 to persist forever
+         * Creates an appropriate content sub class and returns pointer to base
          */
-        EntityBubbleContent(const std::string& init, int length);
+        static Ptr create(int id, const std::string& content, double length);
+
+        /**
+         * Creates the content with the given id and length
+         */
+        Content(int i, double l) : id(i), length(l) {}
+
+        /**
+         * Destructor
+         */
+        virtual ~Content() = default;
+
+        /**
+         * Returns the id
+         */
+        int getId() { return id; }
+
+        /**
+         * Returns the length
+         */
+        double getLength() { return length; }
+
+        /**
+         * Returns true when finished displaying. Does not account for specified display time
+         */
+        virtual bool finished() = 0;
+
+        /**
+         * Returns type specific status info
+         */
+        virtual int getStatus() { return -1; }
+
+        /**
+         * Updates internal content
+         */
+        virtual void update() = 0;
+
+        /**
+         * Renders to an internal RenderTexture and returns a reference to it
+         */
+        virtual sf::RenderTexture& render() = 0;
     };
+    class TextContent;
+    class ImageContent;
+    class AnimConmtent;
+    class OptionContent;
 
 private:
 	sf::RenderTexture txtr;
 	sf::Sprite spr;
 
-	static sf::Clock timer;
-	std::list<EntityBubbleContent> contentQueue;
+	std::list<Content::Ptr> contentQueue;
+	double startTime;
 	int nextId;
-	int startTime;
 
 	enum State {
 		Inactive,
