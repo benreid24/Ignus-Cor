@@ -283,7 +283,7 @@ Map::Map(string file, Tileset& tlst, Entity::Ptr player) : Map(tlst) {
             evt.script->load(evt.scriptStr);
 
         if (evt.trigger==0)
-            ScriptManager::get()->runScript(makeMapScript(evt.script, evt, nullptr));
+            ScriptManager::get().runScript(makeMapScript(evt.script, evt, nullptr));
 
         events.push_back(evt);
     }
@@ -892,7 +892,7 @@ void Map::moveOntoTile(Entity::Ptr ent, sf::FloatRect oldBox) {
         bool wasIn = oldBox.intersects(eventBox);
         if ((events[i].trigger==1 && inNow && !wasIn) || (events[i].trigger==2 && !inNow && wasIn) || (events[i].trigger==3 && inNow!=wasIn) || (events[i].trigger==4 && inNow)) {
             if (events[i].runs<events[i].maxRuns || events[i].maxRuns==0)
-                ScriptManager::get()->runScript(makeMapScript(events[i].script, events[i], ent));
+                ScriptManager::get().runScript(makeMapScript(events[i].script, events[i], ent));
             events[i].runs++;
         }
     }

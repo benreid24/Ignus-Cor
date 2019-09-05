@@ -2,6 +2,7 @@
 #define ENTITYCONVERSATIONNODEFACTORY_HPP
 
 #include <Shared/Entities/EntityConversation.hpp>
+#include <Shared/Scripts/Script.hpp>
 
 /**
  * Factory class to parse and load nodes for EntityConversation
@@ -28,6 +29,8 @@ private:
     class TalkNode : public EntityConversation::Node {
         std::string say;
         std::string nextNode;
+        int bubbleId;
+        bool done;
 
     public:
         /**
@@ -43,12 +46,12 @@ private:
         /**
          * Outputs the text to the given bubble
          */
-        virtual void apply(EntityBubble& playerbubble, EntityBubble& owner) override;
+        virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override;
 
         /**
          * Returns a pointer to the next node, or nullptr if the node is not finished
          */
-        virtual Node* getNext() override;
+        virtual Node* getNext(EntityConversation* conv) override;
     };
 
     /**
@@ -56,7 +59,9 @@ private:
      */
     class OptionNode : public EntityConversation::Node {
         std::string prompt;
-        std::list<std::pair<std::string,std::string> > options;
+        std::vector<std::pair<std::string,std::string> > options;
+        int promptId, optionsId;
+        int chosenOption;
 
     public:
         /**
@@ -72,12 +77,12 @@ private:
         /**
          * Outputs the text to the given bubble
          */
-        virtual void apply(EntityBubble& playerbubble, EntityBubble& owner) override;
+        virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override;
 
         /**
          * Returns a pointer to the next node, or nullptr if the node is not finished
          */
-        virtual Node* getNext() override;
+        virtual Node* getNext(EntityConversation* conv) override;
     };
 
     /**
@@ -100,20 +105,21 @@ private:
         /**
          * Outputs the text to the given bubble
          */
-        virtual void apply(EntityBubble& playerbubble, EntityBubble& owner) override;
+        virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override {}
 
         /**
          * Returns a pointer to the next node, or nullptr if the node is not finished
          */
-        virtual Node* getNext() override;
+        virtual Node* getNext(EntityConversation* conv) override;
     };
 
     /**
      * Runs a script and jumps based on return value
      */
     class ScriptNode : public EntityConversation::Node {
-        std::string script;
+        Script::Ptr script;
         std::string truthyNode, falsyNode;
+        bool started;
 
     public:
         /**
@@ -129,12 +135,12 @@ private:
         /**
          * Outputs the text to the given bubble
          */
-        virtual void apply(EntityBubble& playerbubble, EntityBubble& owner) override;
+        virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override;
 
         /**
          * Returns a pointer to the next node, or nullptr if the node is not finished
          */
-        virtual Node* getNext() override;
+        virtual Node* getNext(EntityConversation* conv) override;
     };
 
     /**
@@ -155,12 +161,12 @@ private:
         /**
          * Outputs the text to the given bubble
          */
-        virtual void apply(EntityBubble& playerbubble, EntityBubble& owner) override {}
+        virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override {}
 
         /**
          * Returns a pointer to the next node, or nullptr if the node is not finished
          */
-        virtual Node* getNext() override { return this; }
+        virtual Node* getNext(EntityConversation* conv) override { return this; }
     };
 };
 

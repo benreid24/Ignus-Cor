@@ -6,9 +6,9 @@ EntityConversation::EntityConversation(Entity* p, Entity* o)
 : owner(o), player(p), currentNode(nullptr) {}
 
 void EntityConversation::update() {
-    while (currentNode->getNext() != nullptr && currentNode != currentNode->getNext())
-        currentNode = currentNode->getNext();
-    currentNode->apply(player->getBubble(), owner->getBubble());
+    while (currentNode->getNext(this) != nullptr && currentNode != currentNode->getNext(this))
+        currentNode = currentNode->getNext(this);
+    currentNode->apply(this, player->getBubble(), owner->getBubble());
 }
 
 void EntityConversation::load(File& file) {
@@ -25,4 +25,11 @@ void EntityConversation::load(File& file) {
 
 void EntityConversation::save(File& file) {
     //TODO - save
+}
+
+EntityConversation::Node* EntityConversation::getNode(const string& name) {
+    auto i = nodeMap.find(name);
+    if (nodeMap.end() == i)
+        return nullptr;
+    return i->second.get();
 }

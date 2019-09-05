@@ -16,43 +16,6 @@ class EntityConversationNodeFactory;
  * \ingroup Entity
  */
 class EntityConversation {
-    /**
-     * Base node for a conversation node. Provides the interface
-     */
-    class Node {
-        std::string name;
-
-    public:
-        typedef std::shared_ptr<Node> Ptr;
-
-        /**
-         * Constructs the node with the given name
-         */
-        Node(const std::string& nm) : name(nm) {}
-
-        /**
-         * Destructor
-         */
-        virtual ~Node() = default;
-
-        /**
-         * Returns the name of the Node
-         */
-        const std::string& getName() const { return name; }
-
-        /**
-         * Updates the proper EntityBubble's as need be with node specific details
-         */
-        virtual void apply(EntityBubble& playerbubble, EntityBubble& owner) = 0;
-
-        /**
-         * Returns a pointer to the next node, or nullptr if the node is not finished
-         */
-        virtual Node* getNext() = 0;
-    };
-
-    friend class EntityConversationNodeFactory;
-
 public:
     /**
      * Creates an empty conversation
@@ -78,6 +41,60 @@ public:
      * Updates the conversation if it is in progress
      */
     void update();
+
+private:
+    class Node;
+
+    /**
+     * Returns a pointer to the node with the given name, or nullptr if none found
+     */
+    Node* getNode(const std::string& name);
+
+    /**
+     * Base node for a conversation node. Provides the interface
+     */
+    class Node {
+        std::string name;
+
+    protected:
+        Node* getNode(EntityConversation* conv, const std::string& nm) { return conv->getNode(nm); }
+
+    public:
+        typedef std::shared_ptr<Node> Ptr;
+
+        /**
+         * Constructs the node with the given name
+         */
+        Node(const std::string& nm) : name(nm) {}
+
+        /**
+         * Constructs the node by loading the name from the input file
+         */
+        Node(File& input) : name(input.getString()) {}
+
+        /**
+         * Destructor
+         */
+        virtual ~Node() = default;
+
+        /**
+         * Returns the name of the Node
+         */
+        const std::string& getName() const { return name; }
+
+        /**
+         * Updates the proper EntityBubble's as need be with node specific details
+         */
+        virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) = 0;
+
+        /**
+         * Returns a pointer to the next node, or nullptr if the node is not finished
+         */
+        virtual Node* getNext(EntityConversation* conv) = 0;
+    };
+
+    friend class Node;
+    friend class EntityConversationNodeFactory;
 
 private:
     Entity* owner;

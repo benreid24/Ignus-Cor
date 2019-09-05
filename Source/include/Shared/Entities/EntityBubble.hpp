@@ -3,46 +3,16 @@
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
-#include <vector>
+#include <list>
 #include <string>
 #include "Shared/Util/ResourcePool.hpp"
 #include "Shared/Media/Animation.hpp"
 
-class EntityBubble;
-
-/**
- * Helper class for EntityBubble to store content
- */
-class EntityBubbleContent {
-	enum Type {
-		Text,
-		Image,
-		Anim
-	}type;
-
-	TextureReference txtr;
-	AnimationSource animSrc;
-
-	sf::Sprite spr;
-	Animation anim;
-	std::string text;
-
-	friend class EntityBubble;
-
-public:
-	/**
-	 * Creates the bubble content from the given string. This function will determine if the
-	 * string is an image file, animation file, or just text
-	 *
-	 * \param init The string to load from
-	 * \param length How long, in milliseconds, to display. Pass 0 to stop when animation finishes, or -1 to persist forever
-	 */
-	EntityBubbleContent(std::string init, int length);
-};
-
 /**
  * Helper class for displaying thought bubbles near entities. Bubbles can contain text, images,
  * and animations. Content can be
+ *
+ * \ingroup Entity
  */
 class EntityBubble {
 public:
@@ -54,23 +24,15 @@ public:
 		Loop
 	};
 
-private:
-	sf::RenderTexture txtr;
-	sf::Sprite spr;
+	/**
+	 * Helper enum for querying content status
+	 */
+	enum ContentStatus {
+        Queued,
+        Displaying,
+        Finished
+	};
 
-	static sf::Clock timer;
-	std::vector<EntityBubbleContent> content;
-	int startTime;
-
-	enum State {
-		Inactive,
-		DisplayingContent,
-		FadingIn,
-		FadingOut
-	}state;
-	Mode mode;
-
-public:
 	/**
 	 * Basic constructor
 	 */
@@ -78,8 +40,29 @@ public:
 
     /**
      * Adds the given content to the bubble
+     *
+     * \param content String representation of content. Can be animation, image, or text
+     * \param length Length of time to display content in ms. 0 = ghost writer/anim length. -1 = forever
+     * \return An id that can be used to track the status of the content
      */
-	void addContent(std::string content, int length);
+	int addContent(const std::string& content, int length = 0);
+
+	/**
+	 * Terminates the content with the given id
+	 *
+	 * \return True if content was removed, false otherwise
+	 */
+    bool removeContent(int id);
+
+	/**
+	 * Returns the status of the content with the given id. Returns Finished if the id is invalid
+	 */
+    ContentStatus queryContent(int id);
+
+    /**
+     * Returns content type specific status. Used mainly for returning the chosen choice of a prompt
+     */
+    int queryContentSpecificStatus(int id);
 
 	/**
 	 * Sets the mode
@@ -98,6 +81,54 @@ public:
 	 * \param position The on screen position of the Entity it is associated with
 	 */
 	void render(sf::RenderTarget& target, sf::Vector2f position); //note, scale vertical down for visual effect
+
+private:
+    /**
+     * Helper struct for EntityBubble to store content
+     */
+    struct EntityBubbleContent { //TODO - convert to base class and provide manipulators for bubble
+        enum Type {
+            Text,
+            Image,
+            Anim
+        }type;
+
+        TextureReference txtr;
+        AnimationReference animSrc;
+
+        sf::Sprite spr;
+        Animation anim;
+        std::string text;
+
+        int id;
+        int length;
+
+        /**
+         * Creates the bubble content from the given string. This function will determine if the
+         * string is an image file, animation file, or just text
+         *
+         * \param init The string to load from
+         * \param length How long, in milliseconds, to display. Pass 0 to stop when animation finishes or wait for ghost writer, or -1 to persist forever
+         */
+        EntityBubbleContent(const std::string& init, int length);
+    };
+
+private:
+	sf::RenderTexture txtr;
+	sf::Sprite spr;
+
+	static sf::Clock timer;
+	std::list<EntityBubbleContent> contentQueue;
+	int nextId;
+	int startTime;
+
+	enum State {
+		Inactive,
+		DisplayingContent,
+		FadingIn,
+		FadingOut
+	}state;
+	Mode mode;
 };
 
 #endif

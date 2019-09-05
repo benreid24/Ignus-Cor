@@ -62,7 +62,7 @@ private:
     ~ScriptManager();
 
 public:
-    static ScriptManager* get();
+    static ScriptManager& get();
 
     /**
      * Runs a script from the map. Will not run the script if it is already running in parallel

@@ -22,9 +22,9 @@ ScriptManager::~ScriptManager()
     stop();
 }
 
-ScriptManager* ScriptManager::get() {
+ScriptManager& ScriptManager::get() {
     static ScriptManager manager;
-    return &manager;
+    return manager;
 }
 
 void ScriptManager::runScript(Script::Ptr scr, bool concurrent)
