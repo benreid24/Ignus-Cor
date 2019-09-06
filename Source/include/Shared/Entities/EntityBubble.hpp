@@ -136,21 +136,21 @@ private:
         /**
          * Updates internal content
          */
-        virtual void update() = 0;
+        virtual void update(double timeAlive) = 0;
 
         /**
          * Renders to an internal RenderTexture and returns a reference to it
          */
-        virtual sf::RenderTexture& render() = 0;
+        virtual const sf::RenderTexture& render() = 0;
     };
     class TextContent;
     class ImageContent;
-    class AnimConmtent;
+    class AnimContent;
     class OptionContent;
 
 private:
-	sf::RenderTexture txtr;
-	sf::Sprite spr;
+	TextureReference bubbleTxtr;
+	sf::Sprite bubble;
 
 	std::list<Content::Ptr> contentQueue;
 	double startTime;

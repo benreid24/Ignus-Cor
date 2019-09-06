@@ -43,10 +43,17 @@ EntityConversation::Node::Ptr EntityConversationNodeFactory::getExitNode() {
     return EntityConversation::Node::Ptr(new ExitNode());
 }
 
+EntityConversation::Node::Ptr EntityConversationNodeFactory::getTestNode(const string& say) {
+    return EntityConversation::Node::Ptr(new TalkNode(say));
+}
+
 EntityConversationNodeFactory::TalkNode::TalkNode(File& input)
 : EntityConversation::Node(input), bubbleId(-1), done(false) {
     say = input.getString();
-    nextNode = input.getString();
+}
+
+EntityConversationNodeFactory::TalkNode::TalkNode(const string& line)
+: say(line), bubbleId(-1), done(false) {
 }
 
 void EntityConversationNodeFactory::TalkNode::apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) {
@@ -56,8 +63,13 @@ void EntityConversationNodeFactory::TalkNode::apply(EntityConversation* conv, En
         done = owner.queryContent(bubbleId) == EntityBubble::Finished;
 }
 
+void EntityConversationNodeFactory::TalkNode::reset() {
+    bubbleId = -1;
+    done = false;
+}
+
 EntityConversation::Node* EntityConversationNodeFactory::TalkNode::getNext(EntityConversation* conv) {
-    return done ? conv->getNode(nextNode) : nullptr;
+    return done ? getNode(conv, "") : nullptr;
 }
 
 EntityConversationNodeFactory::JumpNode::JumpNode(File& input)
@@ -66,7 +78,7 @@ EntityConversationNodeFactory::JumpNode::JumpNode(File& input)
 }
 
 EntityConversation::Node* EntityConversationNodeFactory::JumpNode::getNext(EntityConversation* conv) {
-    return conv->getNode(nextNode);
+    return getNode(conv, nextNode);
 }
 
 EntityConversationNodeFactory::OptionNode::OptionNode(File& input)
@@ -85,7 +97,7 @@ void EntityConversationNodeFactory::OptionNode::apply(EntityConversation* conv, 
     if (promptId < 0)
         promptId = owner.addContent(prompt, -1);
     if (optionsId < 0)
-        optionsId = playerbubble.addContent("TODO", -1);
+        optionsId = playerbubble.addContent("TODO", -1); //TODO - add options to speech bubbles
     chosenOption = playerbubble.queryContentSpecificStatus(optionsId);
     if (chosenOption >= 0) {
         owner.removeContent(promptId);
@@ -93,8 +105,13 @@ void EntityConversationNodeFactory::OptionNode::apply(EntityConversation* conv, 
     }
 }
 
+void EntityConversationNodeFactory::OptionNode::reset() {
+    promptId = optionsId = -1;
+    chosenOption = -1;
+}
+
 EntityConversation::Node* EntityConversationNodeFactory::OptionNode::getNext(EntityConversation* conv) {
-    return chosenOption>=0 ? conv->getNode(options[chosenOption].second) : nullptr;
+    return chosenOption>=0 ? getNode(conv, options[chosenOption].second) : nullptr;
 }
 
 EntityConversationNodeFactory::ScriptNode::ScriptNode(File& input)
@@ -111,8 +128,12 @@ void EntityConversationNodeFactory::ScriptNode::apply(EntityConversation* conv, 
     }
 }
 
+void EntityConversationNodeFactory::ScriptNode::reset() {
+    started = false;
+}
+
 EntityConversation::Node* EntityConversationNodeFactory::ScriptNode::getNext(EntityConversation* conv) {
     if (started && !script->isRunning())
-        return conv->getNode(script->result().nonZero() ? truthyNode : falsyNode);
+        return getNode(conv, script->result().nonZero() ? truthyNode : falsyNode);
     return nullptr;
 }

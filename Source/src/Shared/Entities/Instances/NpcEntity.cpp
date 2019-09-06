@@ -19,3 +19,7 @@ Entity::Ptr NpcEntity::create(string nm, EntityPosition pos, string gfx1, string
 const string NpcEntity::getType() const {
     return "NpcEntity";
 }
+
+void NpcEntity::p_notifyAiInteracted(Entity::Ptr user) {
+    conversation.activate();
+}

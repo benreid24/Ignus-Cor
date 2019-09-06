@@ -38,6 +38,11 @@ public:
     void activate();
 
     /**
+     * Stops the conversation
+     */
+    void stop();
+
+    /**
      * Updates the conversation if it is in progress
      */
     void update();
@@ -48,7 +53,12 @@ private:
     /**
      * Returns a pointer to the node with the given name, or nullptr if none found
      */
-    Node* getNode(const std::string& name);
+    Node* getNode(Node* node, const std::string& name);
+
+    /**
+     * Returns a pointer to the node after the given node
+     */
+    Node* getFollowingNode(Node* node);
 
     /**
      * Base node for a conversation node. Provides the interface
@@ -57,10 +67,15 @@ private:
         std::string name;
 
     protected:
-        Node* getNode(EntityConversation* conv, const std::string& nm) { return conv->getNode(nm); }
+        Node* getNode(EntityConversation* conv, const std::string& nm) { return conv->getNode(this, nm); }
 
     public:
         typedef std::shared_ptr<Node> Ptr;
+
+        /**
+         * Constructs an empty node
+         */
+        Node() : name("TEST") {}
 
         /**
          * Constructs the node with the given name
@@ -88,6 +103,11 @@ private:
         virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) = 0;
 
         /**
+         * Reset internal state for new conversation
+         */
+        virtual void reset() = 0;
+
+        /**
          * Returns a pointer to the next node, or nullptr if the node is not finished
          */
         virtual Node* getNext(EntityConversation* conv) = 0;
@@ -103,6 +123,7 @@ private:
     std::map<std::string, Node::Ptr> nodeMap;
     Node::Ptr exitNode;
     Node* currentNode;
+    bool active;
 };
 
 #endif // ENTITYCONVERSATION_HPP

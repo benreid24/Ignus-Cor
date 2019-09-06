@@ -49,6 +49,10 @@ public:
     const static std::string NpcPath;
     const static std::string ConversationPath;
 
+    const static std::string EntityBubbleImageFile;
+    const static std::string EntityBubbleImagePath;
+    const static std::string EntityBubbleAnimPath;
+
     const static std::string MenuImagePath;
     const static std::string MiscImagePath;
 

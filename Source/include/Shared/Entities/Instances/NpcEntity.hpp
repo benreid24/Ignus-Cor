@@ -16,6 +16,11 @@ class NpcEntity : public AiEntity {
      */
     NpcEntity(std::string nm, EntityPosition pos, std::string gfx1, std::string gfx2);
 
+    /**
+     * Triggers the conversation. May want to move down to AiEntity
+     */
+    virtual void p_notifyAiInteracted(Ptr user);
+
 public:
     /**
      * Loads the NPC from the data file and returns a Ptr to the created object

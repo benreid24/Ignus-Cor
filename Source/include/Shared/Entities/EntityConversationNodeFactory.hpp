@@ -22,13 +22,17 @@ public:
      */
     static EntityConversation::Node::Ptr getExitNode();
 
+    /**
+     * Creates and returns a test node
+     */
+    static EntityConversation::Node::Ptr getTestNode(const std::string& say);
+
 private:
     /**
      * Simply says a single line
      */
     class TalkNode : public EntityConversation::Node {
         std::string say;
-        std::string nextNode;
         int bubbleId;
         bool done;
 
@@ -39,6 +43,11 @@ private:
         TalkNode(File& input);
 
         /**
+         * Constructs the node from the given string
+         */
+        TalkNode(const std::string& say);
+
+        /**
          * Destructor
          */
         virtual ~TalkNode() = default;
@@ -47,6 +56,11 @@ private:
          * Outputs the text to the given bubble
          */
         virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override;
+
+        /**
+         * Resets internal state
+         */
+        virtual void reset() override;
 
         /**
          * Returns a pointer to the next node, or nullptr if the node is not finished
@@ -80,6 +94,11 @@ private:
         virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override;
 
         /**
+         * Resets internal state
+         */
+        virtual void reset() override;
+
+        /**
          * Returns a pointer to the next node, or nullptr if the node is not finished
          */
         virtual Node* getNext(EntityConversation* conv) override;
@@ -106,6 +125,11 @@ private:
          * Outputs the text to the given bubble
          */
         virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override {}
+
+        /**
+         * Resets internal state
+         */
+        virtual void reset() override {}
 
         /**
          * Returns a pointer to the next node, or nullptr if the node is not finished
@@ -138,6 +162,11 @@ private:
         virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override;
 
         /**
+         * Resets internal state
+         */
+        virtual void reset() override;
+
+        /**
          * Returns a pointer to the next node, or nullptr if the node is not finished
          */
         virtual Node* getNext(EntityConversation* conv) override;
@@ -161,7 +190,12 @@ private:
         /**
          * Outputs the text to the given bubble
          */
-        virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override {}
+        virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override { conv->stop(); }
+
+        /**
+         * Resets internal state
+         */
+        virtual void reset() override {}
 
         /**
          * Returns a pointer to the next node, or nullptr if the node is not finished

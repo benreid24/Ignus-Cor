@@ -68,9 +68,9 @@ bool AnimationSource::isLooping() const
     return loop;
 }
 
-std::vector<sf::Sprite>& AnimationSource::getFrame(int i, Vector2f pos, bool centerOrigin)
+const std::vector<sf::Sprite>& AnimationSource::getFrame(unsigned int i, Vector2f pos, bool centerOrigin)
 {
-    if (i<0 || unsigned(i)>=frames.size()) {
+    if (i>=frames.size()) {
         return sprites;
     }
 
@@ -93,22 +93,44 @@ std::vector<sf::Sprite>& AnimationSource::getFrame(int i, Vector2f pos, bool cen
     return sprites;
 }
 
-int AnimationSource::incFrame(int cFrm, int lTime)
+sf::Vector2f AnimationSource::getFrameSize(unsigned int n) {
+    if (n>=frames.size())
+        return Vector2f(0,0);
+
+    sf::FloatRect bounds(0, 0, 0, 0); //width/height = right/bottom
+    const vector<Sprite>& pieces = getFrame(n, Vector2f(0,0), false);
+
+    for (unsigned int i = 0; i<pieces.size(); ++i) {
+        FloatRect pb = pieces[i].getGlobalBounds();
+        if (pb.left < bounds.left)
+            bounds.left = pb.left;
+        if (pb.top < bounds.top)
+            bounds.top = pb.top;
+        if (pb.left + pb.width > bounds.width)
+            bounds.width = pb.left + pb.width;
+        if (pb.top + pb.height > bounds.height)
+            bounds.height = pb.top + pb.height;
+    }
+
+    return sf::Vector2f(bounds.width - bounds.left, bounds.height - bounds.top);
+}
+
+unsigned int AnimationSource::incFrame(unsigned int cFrm, int lTime)
 {
-    if (cFrm<0 || unsigned(cFrm)>=frames.size()) {
+    if (cFrm>=frames.size()) {
         return 0;
     }
 
 	if (frames[cFrm].size()==0) //current frame is empty, go to next
 	{
-		if (unsigned(cFrm+1)<frames.size())
+		if (cFrm+1<frames.size())
 			return cFrm+1;
 		return cFrm;
 	}
 
     if (Animation::clock.getElapsedTime().asMilliseconds()-lTime>=frames[cFrm][0].length)
     {
-        if (unsigned(cFrm+1)<frames.size())
+        if (cFrm+1<frames.size())
             return cFrm+1;
         else if (loop)
             return 0;
@@ -119,7 +141,7 @@ int AnimationSource::incFrame(int cFrm, int lTime)
     return cFrm;
 }
 
-int AnimationSource::numFrames() const
+unsigned int AnimationSource::numFrames() const
 {
     return frames.size();
 }
@@ -133,12 +155,14 @@ Animation::Animation()
     curFrm = lastFrmChangeTime = 0;
     playing = false;
     isCenterOrigin = false;
+    looping = false;
 }
 
 Animation::Animation(AnimationReference ref, bool centerOrigin) : Animation()
 {
     isCenterOrigin = centerOrigin;
     animSrc = ref;
+    looping = ref->isLooping();
 }
 
 Animation::~Animation()
@@ -151,6 +175,7 @@ void Animation::setSource(AnimationReference src)
     animSrc = src;
     curFrm = 0;
     lastFrmChangeTime = Animation::clock.getElapsedTime().asMilliseconds();
+    looping = animSrc->isLooping();
 }
 
 void Animation::update()
@@ -158,8 +183,8 @@ void Animation::update()
     if (!animSrc)
         return;
 
-    int t = curFrm;
-    if (playing || animSrc->isLooping())
+    unsigned int t = curFrm;
+    if (playing || isLooping())
         curFrm = animSrc->incFrame(curFrm,lastFrmChangeTime);
     if (t!=curFrm)
         lastFrmChangeTime = Animation::clock.getElapsedTime().asMilliseconds();
@@ -173,11 +198,15 @@ void Animation::update()
     }
 }
 
-void Animation::setFrame(int frm)
+void Animation::setFrame(unsigned int frm)
 {
     curFrm = frm;
     lastFrmChangeTime = Animation::clock.getElapsedTime().asMilliseconds();
     playing = false;
+}
+
+unsigned int Animation::getCurrentFrame() const {
+    return curFrm;
 }
 
 bool Animation::finished() const
@@ -185,7 +214,7 @@ bool Animation::finished() const
     if (!animSrc)
         return false;
 
-    return (!animSrc->isLooping() && curFrm==animSrc->numFrames()-1) || animSrc->numFrames()==1;
+    return (!isLooping() && curFrm==animSrc->numFrames()-1) || animSrc->numFrames()==1;
 }
 
 Vector2f Animation::getSize() const {
@@ -200,10 +229,11 @@ Vector2f Animation::getSize() const {
 
 bool Animation::isLooping() const
 {
-    if (!animSrc)
-        return false;
+    return looping;
+}
 
-    return animSrc->isLooping();
+void Animation::setLooping(bool loop) {
+    looping = loop;
 }
 
 void Animation::play()
@@ -211,7 +241,7 @@ void Animation::play()
     if (!animSrc)
         return;
 
-    if (!animSrc->isLooping())
+    if (!isLooping())
     {
         setFrame(0);
         playing = true;
@@ -229,7 +259,7 @@ void Animation::draw(sf::RenderTarget& window)
         return;
 
     update();
-    std::vector<Sprite>& t = animSrc->getFrame(curFrm, position, isCenterOrigin);
+    const std::vector<Sprite>& t = animSrc->getFrame(curFrm, position, isCenterOrigin);
     for (unsigned int i = 0; i<t.size(); ++i)
 		window.draw(t[i]);
 }

@@ -16,6 +16,9 @@ const std::string Properties::MusicPath = "Resources/Media/Music/";
 const std::string Properties::AudioPath = "Resources/Media/Audio/";
 const std::string Properties::NpcPath;
 const std::string Properties::ConversationPath;
+const std::string Properties::EntityBubbleImageFile = "Resources/Media/Images/Entities/Bubbles/bubble.png";
+const std::string Properties::EntityBubbleImagePath = "Resources/Media/Images/Entities/Bubbles/";
+const std::string Properties::EntityBubbleAnimPath = "Resources/Media/Animations/Entities/Bubbles/";
 const std::string Properties::MenuImagePath = "Resources/Media/Images/Menu/";
 const std::string Properties::MiscImagePath = "Resources/Media/Images/Misc/";
 const std::string Properties::ItemDbFile = "Resources/Data/DB/items.db";
@@ -25,6 +28,7 @@ const std::string Properties::ParticleAnimPath = "Resources/Media/Animations/Par
 const std::string Properties::ParticleImagePath = "Resources/Media/Images/Particles/";
 
 sf::Font Properties::PrimaryMenuFont;
+sf::Font Properties::ConversationFont;
 
 #ifdef EDITOR
 const std::string Properties::EditorResources = "Editor/";

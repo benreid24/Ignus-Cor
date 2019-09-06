@@ -163,7 +163,7 @@ class File : private sf::NonCopyable
 	}
 
     /**
-     * Returns the extension of a filename
+     * Returns the extension of a filename without the period
      *
      * \param file The filename to parse for the extension
      * \return The extension of the file

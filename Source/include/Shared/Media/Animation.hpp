@@ -74,7 +74,7 @@ public:
      * \param centerOrigin Whether or not to center the origin when offsetting
      * \return A vector of Sprite objects that are ready to be rendered
      */
-    std::vector<sf::Sprite>& getFrame(int i, sf::Vector2f pos, bool centerOrigin);
+    const std::vector<sf::Sprite>& getFrame(unsigned int i, sf::Vector2f pos, bool centerOrigin);
 
     /**
      * Given the current frame and elapsed time, combined with internal animation data, returns the new frame
@@ -83,14 +83,19 @@ public:
      * \param lTime The time elapsed since the last update
      * \return The index of the new animation frame that should be rendered
      */
-    int incFrame(int cFrm, int lTime);
+    unsigned int incFrame(unsigned int cFrm, int lTime);
 
     /**
      * Tells the total number of frames in the loaded animation
      *
      * \return The total number of frames in the animation
      */
-    int numFrames() const;
+    unsigned int numFrames() const;
+
+    /**
+	 * Returns the bounding size of the given frame
+	 */
+    sf::Vector2f getFrameSize(unsigned int i);
 
     /**
      * Returns the base filename of the spritesheet
@@ -104,8 +109,8 @@ class Animation
 {
     AnimationReference animSrc;
     sf::Vector2f position;
-    int curFrm, lastFrmChangeTime;
-    bool playing, isCenterOrigin;
+    unsigned int curFrm, lastFrmChangeTime;
+    bool playing, looping, isCenterOrigin;
 
 public:
     /**
@@ -143,7 +148,7 @@ public:
      *
      * \param frm The index of the frame to make current
      */
-    void setFrame(int frm);
+    void setFrame(unsigned int frm);
 
     /**
      * Tells whether or not the animation has finished playing
@@ -163,6 +168,13 @@ public:
     bool isLooping() const;
 
     /**
+     * Sets whether or not the animation should loop
+     *
+     * \param loop True to loop, false otherwise
+     */
+    void setLooping(bool loop);
+
+    /**
      * Starts playing the animation. This sets the current frame to 0 and resets the internal timer
      */
     void play();
@@ -171,6 +183,11 @@ public:
      * Tells whether or not the Animation is currently playing
      */
     bool isPlaying() const;
+
+    /**
+     * Returns the current frame
+     */
+    unsigned int getCurrentFrame() const;
 
     /**
      * Sets the desired position of the animation on screen. Individual frames are offset from this position

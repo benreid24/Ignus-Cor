@@ -13,7 +13,7 @@ class Game;
  */
 class EntityManager {
     sf::Mutex entityLock;
-    std::list<Entity::Ptr> entityDeleteQueue, entityAddQueue;
+    Entity::List entityDeleteQueue, entityAddQueue;
 
 	std::vector<Entity::Ptr> entities;
 	std::unordered_map<Entity*, Entity::WeakPtr> entityPointerMap;

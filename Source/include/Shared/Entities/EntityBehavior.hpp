@@ -63,17 +63,6 @@ protected:
     Entity* owner;
     int state;
 
-    /**
-     * Accessor function for Entity interactor. Returns nullptr if none or expired
-     */
-    Entity::Ptr getInteractor();
-
-    /**
-     * Accessor function for attackers
-     */
-    std::list<Entity::Ptr> getAttackers();
-
-
 public:
     /**
      * Construct the behavior with an owner
@@ -104,6 +93,16 @@ public:
      * Notify of being interacted with. Child classes should call this to update the interactor WeakPtr
      */
     virtual void notifyInteracted(Entity::Ptr interactor);
+
+    /**
+     * Accessor function for Entity interactor. Returns nullptr if none or expired
+     */
+    Entity::Ptr getInteractor();
+
+    /**
+     * Accessor function for attackers
+     */
+    Entity::List getAttackers();
 };
 
 #endif // BEHAVIOR_HPP

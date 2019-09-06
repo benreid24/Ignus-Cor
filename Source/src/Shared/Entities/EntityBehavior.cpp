@@ -14,8 +14,8 @@ Entity::Ptr EntityBehavior::getInteractor() {
     return Entity::Ptr(nullptr);
 }
 
-list<Entity::Ptr> EntityBehavior::getAttackers() {
-    list<Entity::Ptr> ret;
+Entity::List EntityBehavior::getAttackers() {
+    Entity::List ret;
     for (list<Entity::WeakPtr>::iterator i = attackers.begin(); i!=attackers.end(); ++i) {
         if (!i->expired())
             ret.push_back(i->lock());
@@ -36,7 +36,8 @@ void EntityBehavior::notifyInteracted(Entity::Ptr user) {
         cout << "Warning: " << owner->getIdString() << " interacted with by " << user->getIdString()
              << " but has interactor " << interactor.lock()->getIdString() << " active still\n";
     }
-    interactor = user;
+    else
+        interactor = user;
 }
 
 void EntityBehavior::notifyCombatNearby(Entity::List combatants) {
