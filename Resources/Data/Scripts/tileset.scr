@@ -1,0 +1,13 @@
+u16               numTiles
+for (numTiles)
+{
+    u16           index
+    string        textureFile
+}
+
+u16               numAnims
+for (numAnims)
+{
+    u16           index
+    string        animFile //animations that loop are always played, animations that don't loop are only played when stepped on
+}

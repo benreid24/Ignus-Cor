@@ -31,6 +31,7 @@ class AnimationSource
     std::vector<std::vector<AnimationFrame> > frames;
     bool loop;
     std::vector<sf::Sprite> sprites;
+    std::string spriteSheetFile;
 
 public:
     /**
@@ -43,7 +44,7 @@ public:
      *
      * \param file The full path of the file to load
      */
-    AnimationSource(std::string file);
+    AnimationSource(const std::string& file);
 
     /**
      * Frees loaded resources
@@ -55,14 +56,14 @@ public:
      *
      * \param file The full path of the file to load
      */
-    void load(std::string file);
+    void load(const std::string& file);
 
     /**
      * Tells whether or not the animation automatically repeats when it finishes playing
      *
      * \return True if the animation replays by itself
      */
-    bool isLooping();
+    bool isLooping() const;
 
     /**
      * Returns a Sprite object that is clipped, oriented and positioned where it needs to be according to the
@@ -70,9 +71,10 @@ public:
      *
      * \param i The index of the frame to return
      * \param pos The desired on screen position of the animation
+     * \param centerOrigin Whether or not to center the origin when offsetting
      * \return A vector of Sprite objects that are ready to be rendered
      */
-    std::vector<sf::Sprite>& getFrame(int i, sf::Vector2f pos);
+    const std::vector<sf::Sprite>& getFrame(unsigned int i, sf::Vector2f pos, bool centerOrigin);
 
     /**
      * Given the current frame and elapsed time, combined with internal animation data, returns the new frame
@@ -81,14 +83,24 @@ public:
      * \param lTime The time elapsed since the last update
      * \return The index of the new animation frame that should be rendered
      */
-    int incFrame(int cFrm, int lTime);
+    unsigned int incFrame(unsigned int cFrm, int lTime);
 
     /**
      * Tells the total number of frames in the loaded animation
      *
      * \return The total number of frames in the animation
      */
-    int numFrames();
+    unsigned int numFrames() const;
+
+    /**
+	 * Returns the bounding size of the given frame
+	 */
+    sf::Vector2f getFrameSize(unsigned int i);
+
+    /**
+     * Returns the base filename of the spritesheet
+     */
+	std::string getSpritesheetFilename();
 };
 
 typedef std::shared_ptr<AnimationSource> AnimationReference;
@@ -97,8 +109,8 @@ class Animation
 {
     AnimationReference animSrc;
     sf::Vector2f position;
-    int curFrm, lastFrmChangeTime;
-    bool playing;
+    unsigned int curFrm, lastFrmChangeTime;
+    bool playing, looping, isCenterOrigin;
 
 public:
     /**
@@ -110,8 +122,9 @@ public:
      * Sets the source data to the given AnimationSource
      *
      * \param src The AnimationSource to use
+     * \param isMapAnim Whether or not this is a map animation. Determines origin
      */
-    Animation(AnimationReference src);
+    Animation(AnimationReference src, bool centerOrigin = false);
 
     /**
      * Frees allotted resources
@@ -135,7 +148,7 @@ public:
      *
      * \param frm The index of the frame to make current
      */
-    void setFrame(int frm);
+    void setFrame(unsigned int frm);
 
     /**
      * Tells whether or not the animation has finished playing
@@ -145,19 +158,36 @@ public:
      *
      * \return Whether or not the animation finished
      */
-    bool finished();
+    bool finished() const;
 
     /**
      * Tells whether or not the animation is set to loop
      *
      * \return Whether or not the animation is set to repeat automatically when finished
      */
-    bool isLooping();
+    bool isLooping() const;
+
+    /**
+     * Sets whether or not the animation should loop
+     *
+     * \param loop True to loop, false otherwise
+     */
+    void setLooping(bool loop);
 
     /**
      * Starts playing the animation. This sets the current frame to 0 and resets the internal timer
      */
     void play();
+
+    /**
+     * Tells whether or not the Animation is currently playing
+     */
+    bool isPlaying() const;
+
+    /**
+     * Returns the current frame
+     */
+    unsigned int getCurrentFrame() const;
 
     /**
      * Sets the desired position of the animation on screen. Individual frames are offset from this position
@@ -167,11 +197,16 @@ public:
     void setPosition(sf::Vector2f pos);
 
     /**
+     * Returns the size of the first frame
+     */
+	sf::Vector2f getSize() const;
+
+    /**
      * Renders the animation to the given window
      *
      * \param window A pointer to the window to render to
      */
-    void draw(sf::RenderWindow* window);
+    void draw(sf::RenderTarget& window);
 
     static sf::Clock clock;
 };

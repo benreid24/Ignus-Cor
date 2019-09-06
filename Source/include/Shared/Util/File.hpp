@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 /**
  * Utility class to load and read binary data files
@@ -162,7 +163,7 @@ class File : private sf::NonCopyable
 	}
 
     /**
-     * Returns the extension of a filename
+     * Returns the extension of a filename without the period
      *
      * \param file The filename to parse for the extension
      * \return The extension of the file
@@ -195,5 +196,43 @@ class File : private sf::NonCopyable
  * \ingroup Utilities
  */
 bool FileExists(std::string filename);
+
+/**
+ * Copies the given file to the given destination
+ *
+ * \param src The file to copy from
+ * \param dest The file to copy to
+ */
+void copyFile(std::string src, std::string dest);
+
+/**
+ * Returns a file listing of the given directory
+ *
+ * \param dir The directory to search
+ * \param ext The file extension
+ * \param inclSubdirs Whether or not to recursively search
+ * \return A vector containing the filenames of all the files that matched
+ */
+std::vector<std::string> listDirectory(std::string dir, std::string ext, bool inclSubdirs);
+
+#ifdef EDITOR
+/**
+ * Helper function to open the Window file dialogue window to get a file
+ *
+ * \param f The file extension to look for
+ * \param s True if this is a file being saved
+ * \param c True if this is a file being created
+ */
+std::string getFilename(const char* f, bool s, bool c);
+
+/**
+ * Helper function to open the Window file dialogue window to get a folder
+ *
+ * \param f The file extension to look for
+ * \param s True if this is a file being saved
+ * \param c True if this is a file being created
+ */
+std::string getFoldername();
+#endif
 
 #endif

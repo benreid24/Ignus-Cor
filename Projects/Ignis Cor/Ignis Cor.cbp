@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Ignis Cor" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Option show_notes="0">
+			<notes>
+				<![CDATA[Ensure spawn space is free, dynamically shift spawn pos if not
+
+New Event type, or something else completely new, for moving between maps (no longer script based, engine will do it). Needs new map and spawn name
+
+Playlist manages music based on game state. Fall back to current map music if nothing else
+
+Use scripts for ai (movement and everything). Scripts can also access speech bubble. Have multiple behavior scripts. Default, combat, time based etc. Power of time based is going home at night, etc]]>
+			</notes>
+		</Option>
+		<Build>
+			<Target title="Debug">
+				<Option output="../../IgnisCorDebug" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../Development" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add option="-Wno-misleading-indentation" />
+					<Add option="-Wno-reorder" />
+					<Add option="-Wno-switch" />
+					<Add option="-DGAME" />
+					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
+					<Add directory="../../Source/include" />
+					<Add directory="C:/Users/Ben/SFGUI/include" />
+				</Compiler>
+				<Linker>
+					<Add library="C:/Users/Ben/SFGUI/lib/libsfgui.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-audio.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-graphics.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-network.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-window.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-system.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-main.a" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="../../IgnisCor" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../Development" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wno-misleading-indentation" />
+					<Add option="-Wno-reorder" />
+					<Add option="-Wno-switch" />
+					<Add option="-DGAME" />
+					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
+					<Add directory="../../Source/include" />
+					<Add directory="C:/Users/Ben/SFGUI/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-audio.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-graphics.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-network.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-window.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-system.a" />
+					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-main.a" />
+					<Add library="C:/Users/Ben/SFGUI/lib/libsfgui.a" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="../../Source/include/Game/Core/BaseState.hpp" />
+		<Unit filename="../../Source/include/Game/Core/Game.hpp" />
+		<Unit filename="../../Source/include/Game/Core/States/MainState.hpp" />
+		<Unit filename="../../Source/include/Shared/Combat/CombatArmor.hpp" />
+		<Unit filename="../../Source/include/Shared/Combat/CombatAttack.hpp" />
+		<Unit filename="../../Source/include/Shared/Combat/CombatEffect.hpp" />
+		<Unit filename="../../Source/include/Shared/Data/AttackDB.hpp" />
+		<Unit filename="../../Source/include/Shared/Data/EffectDB.hpp" />
+		<Unit filename="../../Source/include/Shared/Data/ItemDB.hpp" />
+		<Unit filename="../../Source/include/Shared/DebugOverlays.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Behaviors/WanderingBehavior.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Entity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/EntityBehavior.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/EntityBubble.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/EntityConversation.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/EntityConversationNodeFactory.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/EntityManager.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/EntityVisual.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/CreatureEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/DirectAttackEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/ItemEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/NpcEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/ParticleGeneratorEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/Player.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Instances/RangedAttackEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Virtual/AiEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Virtual/AttackEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Virtual/CombatEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Virtual/GraphicalEffectEntity.hpp" />
+		<Unit filename="../../Source/include/Shared/GUI/CellTable.hpp" />
+		<Unit filename="../../Source/include/Shared/GUI/Form.hpp" />
+		<Unit filename="../../Source/include/Shared/GUI/ResizableImage.hpp" />
+		<Unit filename="../../Source/include/Shared/GUI/WrappingBox.hpp" />
+		<Unit filename="../../Source/include/Shared/Maps/Map.hpp" />
+		<Unit filename="../../Source/include/Shared/Maps/MapManager.hpp" />
+		<Unit filename="../../Source/include/Shared/Maps/Map_priv.hpp" />
+		<Unit filename="../../Source/include/Shared/Maps/Tileset.hpp" />
+		<Unit filename="../../Source/include/Shared/Maps/Weather.hpp" />
+		<Unit filename="../../Source/include/Shared/Media/Animation.hpp" />
+		<Unit filename="../../Source/include/Shared/Media/Playlist.hpp" />
+		<Unit filename="../../Source/include/Shared/Media/SoundEngine.hpp" />
+		<Unit filename="../../Source/include/Shared/Objects/Item.hpp" />
+		<Unit filename="../../Source/include/Shared/Objects/ItemEffect.hpp" />
+		<Unit filename="../../Source/include/Shared/Particles/Particle.hpp" />
+		<Unit filename="../../Source/include/Shared/Particles/ParticleGenerator.hpp" />
+		<Unit filename="../../Source/include/Shared/Particles/ParticleGeneratorFactory.hpp" />
+		<Unit filename="../../Source/include/Shared/Particles/ParticleGraphics.hpp" />
+		<Unit filename="../../Source/include/Shared/Properties.hpp" />
+		<Unit filename="../../Source/include/Shared/Scripts/Script.hpp" />
+		<Unit filename="../../Source/include/Shared/Scripts/ScriptManager.hpp" />
+		<Unit filename="../../Source/include/Shared/Scripts/Specialized/AiScript.hpp" />
+		<Unit filename="../../Source/include/Shared/Scripts/Specialized/MapScript.hpp" />
+		<Unit filename="../../Source/include/Shared/Scripts/Util/Frame.hpp" />
+		<Unit filename="../../Source/include/Shared/Scripts/Util/FunctionEntry.hpp" />
+		<Unit filename="../../Source/include/Shared/Scripts/Util/Parser.hpp" />
+		<Unit filename="../../Source/include/Shared/Scripts/Util/Token.hpp" />
+		<Unit filename="../../Source/include/Shared/Scripts/Util/Traverser.hpp" />
+		<Unit filename="../../Source/include/Shared/Scripts/Util/Value.hpp" />
+		<Unit filename="../../Source/include/Shared/Util/File.hpp" />
+		<Unit filename="../../Source/include/Shared/Util/GameClock.hpp" />
+		<Unit filename="../../Source/include/Shared/Util/ResourcePool.hpp" />
+		<Unit filename="../../Source/include/Shared/Util/ResourceTypes.hpp" />
+		<Unit filename="../../Source/include/Shared/Util/UUID.hpp" />
+		<Unit filename="../../Source/include/Shared/Util/Util.hpp" />
+		<Unit filename="../../Source/include/Shared/Util/Vector2d.hpp" />
+		<Unit filename="../../Source/src/Game/Core/BaseState.cpp" />
+		<Unit filename="../../Source/src/Game/Core/Game.cpp" />
+		<Unit filename="../../Source/src/Game/Core/States/MainState.cpp" />
+		<Unit filename="../../Source/src/Game/main.cpp" />
+		<Unit filename="../../Source/src/Shared/Combat/CombatArmor.cpp" />
+		<Unit filename="../../Source/src/Shared/Combat/CombatAttack.cpp" />
+		<Unit filename="../../Source/src/Shared/Data/AttackDB.cpp" />
+		<Unit filename="../../Source/src/Shared/Data/EffectDB.cpp" />
+		<Unit filename="../../Source/src/Shared/Data/ItemDB.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Behaviors/WanderingBehavior.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Entity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/EntityBehavior.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/EntityBubble.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/EntityConversation.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/EntityConversationNodeFactory.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/EntityManager.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/EntityVisual.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Instances/CreatureEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Instances/DirectAttackEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Instances/NpcEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Instances/ParticleGeneratorEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Instances/Player.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Instances/RangedAttackEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Virtual/AiEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Virtual/AttackEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Virtual/CombatEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Virtual/GraphicalEffectEntity.cpp" />
+		<Unit filename="../../Source/src/Shared/GUI/CellTable.cpp" />
+		<Unit filename="../../Source/src/Shared/GUI/Form.cpp" />
+		<Unit filename="../../Source/src/Shared/GUI/WrappingBox.cpp" />
+		<Unit filename="../../Source/src/Shared/Maps/Map.cpp" />
+		<Unit filename="../../Source/src/Shared/Maps/MapManager.cpp" />
+		<Unit filename="../../Source/src/Shared/Maps/Tileset.cpp" />
+		<Unit filename="../../Source/src/Shared/Maps/Weather.cpp" />
+		<Unit filename="../../Source/src/Shared/Media/Animation.cpp" />
+		<Unit filename="../../Source/src/Shared/Media/Playlist.cpp" />
+		<Unit filename="../../Source/src/Shared/Media/SoundEngine.cpp" />
+		<Unit filename="../../Source/src/Shared/Objects/Item.cpp" />
+		<Unit filename="../../Source/src/Shared/Objects/ItemEffect.cpp" />
+		<Unit filename="../../Source/src/Shared/Particles/Particle.cpp" />
+		<Unit filename="../../Source/src/Shared/Particles/ParticleGenerator.cpp" />
+		<Unit filename="../../Source/src/Shared/Particles/ParticleGeneratorFactory.cpp" />
+		<Unit filename="../../Source/src/Shared/Particles/ParticleGraphics.cpp" />
+		<Unit filename="../../Source/src/Shared/Properties.cpp" />
+		<Unit filename="../../Source/src/Shared/Scripts/Script.cpp" />
+		<Unit filename="../../Source/src/Shared/Scripts/ScriptManager.cpp" />
+		<Unit filename="../../Source/src/Shared/Scripts/Specialized/MapScript.cpp" />
+		<Unit filename="../../Source/src/Shared/Scripts/Util/Parser.cpp" />
+		<Unit filename="../../Source/src/Shared/Scripts/Util/ScriptLibrary.cpp" />
+		<Unit filename="../../Source/src/Shared/Scripts/Util/Traverser.cpp" />
+		<Unit filename="../../Source/src/Shared/Util/File.cpp" />
+		<Unit filename="../../Source/src/Shared/Util/ResourcePool.cpp" />
+		<Unit filename="../../Source/src/Shared/Util/Util.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

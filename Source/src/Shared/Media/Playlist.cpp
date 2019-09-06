@@ -1,7 +1,7 @@
 #include "Shared/Media/Playlist.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Properties.hpp"
-#include "Shared/Util/Math.hpp"
+#include "Shared/Util/Util.hpp"
 using namespace sf;
 using namespace std;
 
@@ -18,7 +18,6 @@ namespace {
 
 Playlist::Playlist() : updater(&playlistUpdater,this)
 {
-//	game = g;
     curSong = 0;
     started = false;
     //wasMutedLast = game->data.gameMuted;
@@ -70,7 +69,7 @@ void Playlist::load(string file, bool savePrev)
     order.clear();
     while (temp.size()!=0)
     {
-        int i = Random(0,temp.size()-1);
+        int i = randomInt(0,temp.size()-1);
         order.push_back(temp[i]);
         temp.erase(temp.begin()+i);
     }

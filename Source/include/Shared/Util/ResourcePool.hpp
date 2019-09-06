@@ -15,6 +15,7 @@
  */
 
 class AnimationSource;
+class Script;
 
 /**
  * This function provides a generic interface for the ResourceManager to load resources. It must be specialized for any resource types whose constructor doesn't take a single string argument
@@ -135,5 +136,7 @@ public:
 };
 
 extern ResourcePool<sf::Texture> imagePool;
+extern ResourcePool<AnimationSource> animPool;
+extern ResourcePool<sf::SoundBuffer> audioPool;
 
 #endif // RESOURCEPOOL_HPP
