@@ -144,6 +144,7 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/include/Shared/Util/GameClock.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/ResourcePool.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/ResourceTypes.hpp" />
+		<Unit filename="../../Source/include/Shared/Util/Timer.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/UUID.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/Util.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/Vector2d.hpp" />
@@ -204,6 +205,7 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/src/Shared/Util/Directory.cpp" />
 		<Unit filename="../../Source/src/Shared/Util/File.cpp" />
 		<Unit filename="../../Source/src/Shared/Util/ResourcePool.cpp" />
+		<Unit filename="../../Source/src/Shared/Util/Timer.cpp" />
 		<Unit filename="../../Source/src/Shared/Util/Util.cpp" />
 		<Extensions>
 			<code_completion />
