@@ -1,5 +1,6 @@
 #include "Game/Core/BaseState.hpp"
 #include "Game/Core/Game.hpp"
+#include "Game/Core/PlayerInput.hpp"
 #include "Shared/Properties.hpp"
 #include "Shared/DebugOverlays.hpp"
 #include "Shared/Util/Timer.hpp"
@@ -78,6 +79,7 @@ void BaseState::ensureFps() {
 
 bool BaseState::handleWindow() {
     Event event;
+    PlayerInput::get().reset();
     while (Game::get().window.pollEvent(event)) {
         if (event.type==Event::Closed) {
             return true;
@@ -90,6 +92,8 @@ bool BaseState::handleWindow() {
 			Game::get().inFocus = true;
 		if (event.type==Event::LostFocus)
 			Game::get().inFocus = false;
+
+        PlayerInput::get().process(Game::get().window, event);
     }
 
     if (Keyboard::isKeyPressed(Keyboard::Numpad1))

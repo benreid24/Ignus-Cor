@@ -3,6 +3,7 @@
 #include "Shared/Maps/MapManager.hpp"
 #include "Shared/Properties.hpp"
 #include "Game/Core/Game.hpp"
+#include "Game/Core/PlayerInput.hpp"
 #include "Shared/Data/AttackDB.hpp"
 #include <cmath>
 using namespace std;
@@ -25,26 +26,28 @@ Player::Ptr Player::create() {
 }
 
 void Player::beforeTimerUpdate() {
-	bool running = Keyboard::isKeyPressed(Keyboard::LShift);
-	if (Keyboard::isKeyPressed(Keyboard::W))
+    #ifdef GAME
+	bool running = PlayerInput::get().inputActive(PlayerInput::Sprint);
+	if (PlayerInput::get().inputActive(PlayerInput::Up))
 		move(EntityPosition::Up, running);
-	if (Keyboard::isKeyPressed(Keyboard::A))
+	if (PlayerInput::get().inputActive(PlayerInput::Left))
 		move(EntityPosition::Left, running);
-	if (Keyboard::isKeyPressed(Keyboard::S))
+	if (PlayerInput::get().inputActive(PlayerInput::Down))
 		move(EntityPosition::Down, running);
-	if (Keyboard::isKeyPressed(Keyboard::D))
+	if (PlayerInput::get().inputActive(PlayerInput::Right))
 		move(EntityPosition::Right, running);
 
-    if (Keyboard::isKeyPressed(Keyboard::Num1))
+    if (Keyboard::isKeyPressed(Keyboard::Num1)) //TODO - switch weapon controls in player input
         weapon = AttackDB::get().getAttack(-1);
 	if (Keyboard::isKeyPressed(Keyboard::Num2))
         weapon = AttackDB::get().getAttack(-2);
 
-    if (Mouse::isButtonPressed(Mouse::Left))
+    if (PlayerInput::get().inputActive(PlayerInput::Attack))
         doAttack(getAttackDirection());
 
-	if (Keyboard::isKeyPressed(Keyboard::E))
+	if (PlayerInput::get().inputActive(PlayerInput::Interact))
         interact();
+    #endif
 
 	MapManager::get()->updateRenderPosition(position.coords);
 }

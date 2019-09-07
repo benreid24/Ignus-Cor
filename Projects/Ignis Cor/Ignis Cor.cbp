@@ -78,6 +78,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		</Compiler>
 		<Unit filename="../../Source/include/Game/Core/BaseState.hpp" />
 		<Unit filename="../../Source/include/Game/Core/Game.hpp" />
+		<Unit filename="../../Source/include/Game/Core/PlayerInput.hpp" />
 		<Unit filename="../../Source/include/Game/Core/States/MainState.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatArmor.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatAttack.hpp" />
@@ -144,6 +145,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/include/Shared/Util/Vector2d.hpp" />
 		<Unit filename="../../Source/src/Game/Core/BaseState.cpp" />
 		<Unit filename="../../Source/src/Game/Core/Game.cpp" />
+		<Unit filename="../../Source/src/Game/Core/PlayerInput.cpp" />
 		<Unit filename="../../Source/src/Game/Core/States/MainState.cpp" />
 		<Unit filename="../../Source/src/Game/main.cpp" />
 		<Unit filename="../../Source/src/Shared/Combat/CombatArmor.cpp" />
