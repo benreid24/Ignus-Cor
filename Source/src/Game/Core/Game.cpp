@@ -1,5 +1,6 @@
 #include "Game/Core/Game.hpp"
 #include "Game/Core/States/MainState.hpp"
+#include "Game/Core/PlayerInput.hpp"
 #include "Shared/Properties.hpp"
 #include "Shared/Entities/Instances/Player.hpp"
 using namespace std;
@@ -11,6 +12,8 @@ Game::Game() {
 
 	player = Player::create();
 	MapManager::get()->setPlayer(player);
+
+	eventDispatcher.addGlobalObserver(&PlayerInput::get());
 }
 
 Game::~Game() {

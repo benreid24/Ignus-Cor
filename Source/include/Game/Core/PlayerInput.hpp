@@ -3,6 +3,7 @@
 
 #include <SFGUI/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include "Game/Core/EventObserver.hpp"
 #include "Shared/Util/File.hpp"
 
 class BaseState;
@@ -12,7 +13,7 @@ class BaseState;
  *
  * \ingroup Player
  */
-class PlayerInput {
+class PlayerInput : public EventObserver {
 public:
     /**
      * Helper struct representing an assigned control
@@ -93,14 +94,12 @@ private:
     /**
      * Processes a window event. Listens for clicks
      */
-    void process(const sf::RenderWindow& window, const sf::Event& event);
+    virtual void observe(const sf::Event& event) override;
 
     /**
      * Resets the internal state before processing window events
      */
-    void reset();
-
-    friend class BaseState;
+    virtual void notifyFrameStart() override;
 };
 
 #endif // PLAYERINPUT_HPP

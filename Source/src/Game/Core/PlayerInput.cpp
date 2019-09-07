@@ -48,12 +48,12 @@ Vector2f PlayerInput::clickPosition() {
     return clickPos;
 }
 
-void PlayerInput::reset() {
+void PlayerInput::notifyFrameStart() {
     clicked = false;
     clickPos = Vector2f(-1,-1);
 }
 
-void PlayerInput::process(const RenderWindow& window, const Event& event) {
+void PlayerInput::observe(const Event& event) {
     if (event.type == Event::MouseButtonPressed) {
         if (event.mouseButton.button == Mouse::Right) {
             clicked = true;

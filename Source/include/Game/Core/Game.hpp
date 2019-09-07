@@ -7,6 +7,7 @@
 #include "Shared/Media/SoundEngine.hpp"
 #include "Shared/Entities/EntityManager.hpp"
 #include "Shared/Maps/MapManager.hpp"
+#include "Game/Core/EventDispatcher.hpp"
 #include "BaseState.hpp"
 
 /**
@@ -23,6 +24,9 @@ class Game {
 	 * Initializes core game data structures
 	 */
 	Game();
+
+	Game(const Game&) = delete;
+	Game& operator=(const Game&) = delete;
 
 public:
 	/**
@@ -41,6 +45,7 @@ public:
 	 void run();
 
 	 sf::RenderWindow window;
+	 EventDispatcher eventDispatcher;
 	 bool inFocus;
 
 	 std::stack<BaseState*> states;

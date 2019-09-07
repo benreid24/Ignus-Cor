@@ -78,8 +78,9 @@ void BaseState::ensureFps() {
 }
 
 bool BaseState::handleWindow() {
+    Game::get().eventDispatcher.notifyFrameStart();
+
     Event event;
-    PlayerInput::get().reset();
     while (Game::get().window.pollEvent(event)) {
         if (event.type==Event::Closed) {
             return true;
@@ -93,7 +94,7 @@ bool BaseState::handleWindow() {
 		if (event.type==Event::LostFocus)
 			Game::get().inFocus = false;
 
-        PlayerInput::get().process(Game::get().window, event);
+        Game::get().eventDispatcher.dispatch(event);
     }
 
     if (Keyboard::isKeyPressed(Keyboard::Numpad1))
