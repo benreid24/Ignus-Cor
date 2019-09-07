@@ -1,5 +1,5 @@
-#ifndef WANDERINGBEHAVIOR_HPP
-#define WANDERINGBEHAVIOR_HPP
+#ifndef NPCWANDERINGBEHAVIOR_HPP
+#define NPCWANDERINGBEHAVIOR_HPP
 
 #include "Shared/Entities/EntityBehavior.hpp"
 
@@ -8,13 +8,13 @@
  *
  * \ingroup Entity
  */
-class WanderingBehavior : public EntityBehavior {
+class NpcWanderingBehavior : public EntityBehavior { //TODO - make another layer of behavior classes. Npc base, enemy base, creature base, etc
     int radius;
     double sqrdRad;
     EntityPosition::Direction movementDirection;
     unsigned long timeOfNextStep, lastStepTime;
 
-    static const int Standing = 50; //this is how sub-behaviors can define custom states
+    static constexpr int Standing = 50; //this is how sub-behaviors can define custom states
 
     /**
      * Helper function to determine direction to walk in
@@ -34,11 +34,16 @@ class WanderingBehavior : public EntityBehavior {
      */
     virtual void p_update() override;
 
+    /**
+     * Enters interaction state
+     */
+    virtual void p_notifyInteracted(Entity::Ptr interactor) override;
+
 public:
     /**
-     * Creates the WanderingBehavior with the given owner and radius
+     * Creates the NpcWanderingBehavior with the given owner and radius
      */
-    WanderingBehavior(Entity* owner, int radius = 600);
+    NpcWanderingBehavior(Entity* owner, int radius = 600);
 };
 
-#endif // WANDERINGBEHAVIOR_HPP
+#endif // NPCWANDERINGBEHAVIOR_HPP

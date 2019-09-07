@@ -63,6 +63,11 @@ void EntityConversationNodeFactory::TalkNode::apply(EntityConversation* conv, En
         done = owner.queryContent(bubbleId) == EntityBubble::Finished;
 }
 
+void EntityConversationNodeFactory::TalkNode::cleanup(EntityBubble& playerbubble, EntityBubble& owner) {
+    if (bubbleId >= 0)
+        owner.removeContent(bubbleId);
+}
+
 void EntityConversationNodeFactory::TalkNode::reset() {
     bubbleId = -1;
     done = false;
@@ -103,6 +108,13 @@ void EntityConversationNodeFactory::OptionNode::apply(EntityConversation* conv, 
         owner.removeContent(promptId);
         playerbubble.removeContent(optionsId);
     }
+}
+
+void EntityConversationNodeFactory::OptionNode::cleanup(EntityBubble& playerbubble, EntityBubble& owner) {
+    if (promptId >= 0)
+        owner.removeContent(promptId);
+    if (optionsId >= 0)
+        playerbubble.removeContent(optionsId);
 }
 
 void EntityConversationNodeFactory::OptionNode::reset() {

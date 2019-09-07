@@ -1,10 +1,10 @@
 #include "Shared/Entities/Instances/NpcEntity.hpp"
-#include "Shared/Entities/Behaviors/WanderingBehavior.hpp"
+#include "Shared/Entities/Behaviors/NpcWanderingBehavior.hpp"
 using namespace std;
 
 NpcEntity::NpcEntity(string nm, EntityPosition pos, string gfx1, string gfx2) : AiEntity(nm, pos, gfx1, gfx2) {
     //TODO - add other data like conversation
-    behavior = new WanderingBehavior(this);
+    behavior = new NpcWanderingBehavior(this);
 }
 
 Entity::Ptr NpcEntity::create(string dataFile) {
@@ -22,4 +22,9 @@ const string NpcEntity::getType() const {
 
 void NpcEntity::p_notifyAiInteracted(Entity::Ptr user) {
     conversation.activate();
+}
+
+void NpcEntity::afterBehaviorUpdate() {
+    if (conversation.isActive() && !behavior->getInteractor())
+        conversation.stop();
 }

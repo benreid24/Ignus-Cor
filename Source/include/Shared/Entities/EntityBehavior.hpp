@@ -61,7 +61,18 @@ private:
 protected:
     EntityPosition startPosition;
     Entity* owner;
-    int state;
+
+    struct StateValue {
+        int lastState;
+
+        StateValue() { state = lastState = EntityBehavior::Default; }
+        StateValue(const int s) { state = lastState = s; }
+        StateValue& operator=(const int s) { lastState = state; state = s; return *this; }
+        operator int() { return state; }
+
+    private:
+        int state;
+    }state;
 
     /**
      * For derived classes to implement custom update behavior
@@ -113,6 +124,11 @@ public:
      * Notify of being interacted with
      */
     void notifyInteracted(Entity::Ptr interactor);
+
+    /**
+     * Terminates the interaction
+     */
+    void terminateInteraction();
 
     /**
      * Accessor function for Entity interactor. Returns nullptr if none or expired

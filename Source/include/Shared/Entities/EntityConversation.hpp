@@ -38,6 +38,11 @@ public:
     void activate();
 
     /**
+     * Returns whether or not the conversation is active
+     */
+    bool isActive();
+
+    /**
      * Stops the conversation
      */
     void stop();
@@ -101,6 +106,11 @@ private:
          * Updates the proper EntityBubble's as need be with node specific details
          */
         virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) = 0;
+
+        /**
+         * Cleans up anything the node has modified externally
+         */
+        virtual void cleanup(EntityBubble& playerbubble, EntityBubble& owner) = 0;
 
         /**
          * Reset internal state for new conversation

@@ -1,15 +1,15 @@
-#include "Shared/Entities/Behaviors/WanderingBehavior.hpp"
+#include "Shared/Entities/Behaviors/NpcWanderingBehavior.hpp"
 #include "Shared/Util/Util.hpp"
 #include "Shared/Util/Timer.hpp"
 using namespace std;
 
-WanderingBehavior::WanderingBehavior(Entity* ent, int rad) : EntityBehavior(ent) {
+NpcWanderingBehavior::NpcWanderingBehavior(Entity* ent, int rad) : EntityBehavior(ent) {
     radius = rad;
     sqrdRad = rad*rad;
     timeOfNextStep = 0;
 }
 
-void WanderingBehavior::p_update() {
+void NpcWanderingBehavior::p_update() {
     switch (state) {
         case Default:
             if (Timer::get().timeElapsedMilliseconds()-lastStepTime<=timeOfNextStep) {
@@ -46,7 +46,11 @@ void WanderingBehavior::p_update() {
     }
 }
 
-EntityPosition::Direction WanderingBehavior::getMovementDirection() {
+void NpcWanderingBehavior::p_notifyInteracted(Entity::Ptr interactor) {
+    state = Interacting;
+}
+
+EntityPosition::Direction NpcWanderingBehavior::getMovementDirection() {
     if (radius==0)
         return EntityPosition::Direction(randomInt(0,3));
 
@@ -88,7 +92,7 @@ EntityPosition::Direction WanderingBehavior::getMovementDirection() {
     }
 }
 
-int WanderingBehavior::magnitudeSquared(sf::Vector2i v)
+int NpcWanderingBehavior::magnitudeSquared(sf::Vector2i v)
 {
     return v.x*v.x + v.y*v.y;
 }

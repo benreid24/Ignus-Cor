@@ -13,7 +13,11 @@ New Event type, or something else completely new, for moving between maps (no lo
 
 Playlist manages music based on game state. Fall back to current map music if nothing else
 
-Use scripts for ai (movement and everything). Scripts can also access speech bubble. Have multiple behavior scripts. Default, combat, time based etc. Power of time based is going home at night, etc]]>
+Use scripts for ai (movement and everything). Scripts can also access speech bubble. Have multiple behavior scripts. Default, combat, time based etc. Power of time based is going home at night, etc
+
+Item on pickup action, give item/weapon/armor. Generic portable editor list. Support random.
+
+Check window focus on main loop to pause. pause timer]]>
 			</notes>
 		</Option>
 		<Build>
@@ -87,7 +91,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/include/Shared/Data/EffectDB.hpp" />
 		<Unit filename="../../Source/include/Shared/Data/ItemDB.hpp" />
 		<Unit filename="../../Source/include/Shared/DebugOverlays.hpp" />
-		<Unit filename="../../Source/include/Shared/Entities/Behaviors/WanderingBehavior.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Behaviors/NpcWanderingBehavior.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Entity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityBehavior.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityBubble.hpp" />
@@ -153,7 +157,7 @@ Use scripts for ai (movement and everything). Scripts can also access speech bub
 		<Unit filename="../../Source/src/Shared/Data/AttackDB.cpp" />
 		<Unit filename="../../Source/src/Shared/Data/EffectDB.cpp" />
 		<Unit filename="../../Source/src/Shared/Data/ItemDB.cpp" />
-		<Unit filename="../../Source/src/Shared/Entities/Behaviors/WanderingBehavior.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Behaviors/NpcWanderingBehavior.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Entity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityBehavior.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityBubble.cpp" />

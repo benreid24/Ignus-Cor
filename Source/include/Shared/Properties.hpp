@@ -48,6 +48,7 @@ public:
 
     const static std::string NpcPath;
     const static std::string ConversationPath;
+    constexpr static float ConversationTerminationDistance = 75;
 
     const static std::string EntityBubbleImageFile;
     const static std::string EntityBubbleImagePath;
@@ -67,14 +68,6 @@ public:
     static sf::Font SecondaryMenuFont;
     static sf::Font ConversationFont;
     static sf::Font BattleFont;
-
-    static sf::Keyboard::Key upKey;
-    static sf::Keyboard::Key rightKey;
-    static sf::Keyboard::Key downKey;
-    static sf::Keyboard::Key leftKey;
-    static sf::Keyboard::Key runKey;
-    static sf::Keyboard::Key interactKey;
-    static sf::Keyboard::Key pauseKey;
 };
 
 #endif // PROPERTIES_HPP

@@ -19,7 +19,12 @@ class NpcEntity : public AiEntity {
     /**
      * Triggers the conversation. May want to move down to AiEntity
      */
-    virtual void p_notifyAiInteracted(Ptr user);
+    virtual void p_notifyAiInteracted(Ptr user) override;
+
+    /**
+     * Terminates conversation if interactor left
+     */
+    virtual void afterBehaviorUpdate() override;
 
 public:
     /**

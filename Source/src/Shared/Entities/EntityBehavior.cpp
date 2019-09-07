@@ -1,4 +1,5 @@
 #include "Shared/Entities/EntityBehavior.hpp"
+#include "Shared/Properties.hpp"
 using namespace std;
 
 EntityBehavior::EntityBehavior(Entity* ent) {
@@ -37,9 +38,16 @@ void EntityBehavior::notifyInteracted(Entity::Ptr user) {
         cout << "Warning: " << owner->getIdString() << " interacted with by " << user->getIdString()
              << " but has interactor " << interactor.lock()->getIdString() << " active still\n";
     }
-    else
+    else {
         interactor = user;
-    p_notifyInteracted(user);
+        p_notifyInteracted(user);
+    }
+}
+
+void EntityBehavior::terminateInteraction() {
+    if (state == Interacting)
+        state = state.lastState;
+    interactor.reset();
 }
 
 void EntityBehavior::notifyCombatNearby(Entity::List combatants) {
@@ -48,6 +56,16 @@ void EntityBehavior::notifyCombatNearby(Entity::List combatants) {
 }
 
 void EntityBehavior::update() {
+    if (!interactor.expired()) {
+        Entity::Ptr user = interactor.lock();
+        sf::Vector2f dist = owner->getPosition().coords - user->getPosition().coords;
+        if (abs(dist.x) >= Properties::ConversationTerminationDistance ||
+            abs(dist.y) >= Properties::ConversationTerminationDistance ||
+            user->getPosition().mapName != owner->getPosition().mapName) {
+                terminateInteraction();
+            }
+    }
+
     p_update(); //derived class sets state. Can set to the below states to get shared behavior
 
     switch (state) {
@@ -86,6 +104,22 @@ void EntityBehavior::doFlee() {
 void EntityBehavior::doInteract() {
     Entity::Ptr user = getInteractor();
     if (user) {
-        //TODO - face them. Walk next to them?
+        EntityPosition::Direction dir;
+        sf::Vector2f myPos = owner->getPosition().coords;
+        sf::Vector2f iPos = user->getPosition().coords;
+        if (abs(myPos.x-iPos.x) > abs(myPos.y-iPos.y)) {
+            if (myPos.x > iPos.x)
+                dir = EntityPosition::Left;
+            else
+                dir = EntityPosition::Right;
+        }
+        else if (myPos.y > iPos.y)
+            dir = EntityPosition::Up;
+        else
+            dir = EntityPosition::Down;
+        if (owner->getPosition().dir != dir)
+            owner->move(dir, false);
     }
+    else
+        terminateInteraction();
 }
