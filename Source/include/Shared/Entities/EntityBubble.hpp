@@ -34,6 +34,14 @@ public:
 	};
 
 	/**
+	 * Enum to represent if content should persist based on time or player input
+	 */
+    enum PersistType {
+        Input,
+        Time
+    };
+
+	/**
 	 * Basic constructor
 	 */
 	EntityBubble(Mode mode = DisplayOnce);
@@ -45,7 +53,7 @@ public:
      * \param length Length of time to display content in seconds. 0 = ghost writer/anim length. -1 = forever
      * \return An id that can be used to track the status of the content
      */
-	int addContent(const std::string& content, double length = 0);
+	int addContent(const std::string& content, PersistType type = Time, double length = 0);
 
 	/**
 	 * Terminates the content with the given id
@@ -88,6 +96,7 @@ private:
      */
     class Content {
         int id;
+        EntityBubble::PersistType pType;
         double length;
 
     public:
@@ -96,12 +105,12 @@ private:
         /**
          * Creates an appropriate content sub class and returns pointer to base
          */
-        static Ptr create(int id, const std::string& content, double length);
+        static Ptr create(int id, const std::string& content, EntityBubble::PersistType pt, double length);
 
         /**
          * Creates the content with the given id and length
          */
-        Content(int i, double l) : id(i), length(l) {}
+        Content(int i, EntityBubble::PersistType pt, double l) : id(i), pType(pt), length(l) {}
 
         /**
          * Destructor
@@ -119,6 +128,11 @@ private:
         double getLength() { return length; }
 
         /**
+         * Returns the persistence type
+         */
+        EntityBubble::PersistType persistType() { return pType; }
+
+        /**
          * Returns true when finished displaying. Does not account for specified display time
          */
         virtual bool finished() = 0;
@@ -132,6 +146,11 @@ private:
          * Updates internal content
          */
         virtual void update(double timeAlive) = 0;
+
+        /**
+         * Skip any slow displaying mechanism. Player clicked it
+         */
+        virtual void fastForward() = 0;
 
         /**
          * Renders to an internal RenderTexture and returns a reference to it
@@ -148,7 +167,7 @@ private:
 	sf::Sprite bubble;
 
 	std::list<Content::Ptr> contentQueue;
-	double startTime;
+	double startTime, finishTime;
 	int nextId;
 
 	enum State {
@@ -158,6 +177,11 @@ private:
 		FadingOut
 	}state;
 	Mode mode;
+
+	/**
+	 * Helper function to tell if the bubble was clicked
+	 */
+    bool clicked();
 };
 
 #endif
