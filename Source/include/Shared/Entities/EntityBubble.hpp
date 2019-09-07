@@ -84,11 +84,6 @@ public:
 
 private:
     /**
-     * Returns a reference to a timer object for bubbles to share
-     */
-    static const sf::Clock& timer();
-
-    /**
      * Base class for representing content
      */
     class Content {

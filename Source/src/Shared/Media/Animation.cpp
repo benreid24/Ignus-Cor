@@ -1,12 +1,11 @@
 #include "Shared/Media/Animation.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Util/ResourcePool.hpp"
+#include "Shared/Util/Timer.hpp"
 #include "Shared/Properties.hpp"
 #include <iostream>
 using namespace std;
 using namespace sf;
-
-Clock Animation::clock;
 
 AnimationSource::AnimationSource()
 {
@@ -115,7 +114,7 @@ sf::Vector2f AnimationSource::getFrameSize(unsigned int n) {
     return sf::Vector2f(bounds.width - bounds.left, bounds.height - bounds.top);
 }
 
-unsigned int AnimationSource::incFrame(unsigned int cFrm, int lTime)
+unsigned int AnimationSource::incFrame(unsigned int cFrm, unsigned long lTime)
 {
     if (cFrm>=frames.size()) {
         return 0;
@@ -128,7 +127,7 @@ unsigned int AnimationSource::incFrame(unsigned int cFrm, int lTime)
 		return cFrm;
 	}
 
-    if (Animation::clock.getElapsedTime().asMilliseconds()-lTime>=frames[cFrm][0].length)
+    if (Timer::get().timeElapsedMilliseconds()-lTime>=frames[cFrm][0].length)
     {
         if (cFrm+1<frames.size())
             return cFrm+1;
@@ -174,7 +173,7 @@ void Animation::setSource(AnimationReference src)
 {
     animSrc = src;
     curFrm = 0;
-    lastFrmChangeTime = Animation::clock.getElapsedTime().asMilliseconds();
+    lastFrmChangeTime = Timer::get().timeElapsedMilliseconds();
     looping = animSrc->isLooping();
 }
 
@@ -187,7 +186,7 @@ void Animation::update()
     if (playing || isLooping())
         curFrm = animSrc->incFrame(curFrm,lastFrmChangeTime);
     if (t!=curFrm)
-        lastFrmChangeTime = Animation::clock.getElapsedTime().asMilliseconds();
+        lastFrmChangeTime = Timer::get().timeElapsedMilliseconds();
 
     if (curFrm==animSrc->numFrames()-1 && playing)
     {
@@ -201,7 +200,7 @@ void Animation::update()
 void Animation::setFrame(unsigned int frm)
 {
     curFrm = frm;
-    lastFrmChangeTime = Animation::clock.getElapsedTime().asMilliseconds();
+    lastFrmChangeTime = Timer::get().timeElapsedMilliseconds();
     playing = false;
 }
 

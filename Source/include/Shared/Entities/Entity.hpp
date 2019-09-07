@@ -117,8 +117,6 @@ protected:
     virtual void p_notifyInteracted(Ptr user) {}
 
 public:
-    static const sf::Clock& timer();
-
 	/**
 	 * Creates the Entity with the given name, position, and graphics
 	 */

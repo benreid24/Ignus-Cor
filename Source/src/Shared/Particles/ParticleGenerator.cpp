@@ -1,5 +1,6 @@
 #include "Shared/Particles/ParticleGenerator.hpp"
 #include "Shared/Util/Util.hpp"
+#include "Shared/Util/Timer.hpp"
 using namespace std;
 using namespace sf;
 
@@ -14,10 +15,9 @@ ParticleGenerator::ParticleGenerator(ParticleGenerator::ValueWindow radius, Part
 : spawnRadius(radius), spawnAngle(angle), spawnVelocity(speed), spawnDirection(dir), spawnOpacity(255,255) {
     lifetimeType = UntilDestroyedLifetime;
     particlesPerSecond = 0;
-    lastSpawnTime = 0;
     totalCreated = 0;
     startRate = 0;
-    zeroTime = 0;
+    lastSpawnTime = startTime = zeroTime = Timer::get().timeElapsedSeconds();
 }
 
 ParticleGenerator::~ParticleGenerator() {
@@ -69,12 +69,12 @@ void ParticleGenerator::stop(float stopTime) {
         genChgMultiplier = 0;
         startRate = 0;
     }
-    zeroTime = timer.getElapsedTime().asSeconds();
+    zeroTime = Timer::get().timeElapsedSeconds();
 }
 
 bool ParticleGenerator::finished() {
     if (lifetimeType==TimeExistedLifetime)
-        return timer.getElapsedTime().asSeconds() >= lifetimeValue;
+        return Timer::get().timeElapsedSeconds()-startTime >= lifetimeValue;
     else if (lifetimeType==ParticlesGeneratedLifetime)
         return totalCreated >= lifetimeValue;
     else if (lifetimeType==UntilDestroyedLifetime) {
@@ -82,7 +82,7 @@ bool ParticleGenerator::finished() {
             return false; //make at least 1
 
         for (auto i = particles.begin(); i!=particles.end(); ++i) {
-            if (!(*i)->finished(timer.getElapsedTime().asSeconds()) && (*i)->blocksGeneratorDestruction())
+            if (!(*i)->finished(Timer::get().timeElapsedSeconds()) && (*i)->blocksGeneratorDestruction())
                 return false;
         }
         return true;
@@ -97,8 +97,8 @@ void ParticleGenerator::update() {
     updateSpawnRate();
     spawnParticles();
     for (auto i = particles.begin(); i!=particles.end(); ++i) {
-        (*i)->update(timer.getElapsedTime().asSeconds());
-        if ((*i)->finished(timer.getElapsedTime().asSeconds())) {
+        (*i)->update(Timer::get().timeElapsedSeconds());
+        if ((*i)->finished(Timer::get().timeElapsedSeconds())) {
             auto j = i--;
             delete *j;
             particles.erase(j);
@@ -113,12 +113,12 @@ void ParticleGenerator::render(RenderTarget& target, Vector2f pos, Vector2f camP
 }
 
 void ParticleGenerator::spawnParticles() {
-    float dt = timer.getElapsedTime().asSeconds() - lastSpawnTime;
+    float dt = Timer::get().timeElapsedSeconds() - lastSpawnTime;
     int spawnCount = particlesPerSecond * dt;
     ValueWindow lifetimeWindow(particleLifetimeValue-particleLifetimeFuzziness, particleLifetimeValue+particleLifetimeFuzziness);
 
     if (spawnCount>0) {
-        lastSpawnTime = timer.getElapsedTime().asSeconds();
+        lastSpawnTime = Timer::get().timeElapsedSeconds();
     }
 
     totalCreated += spawnCount;
@@ -127,7 +127,7 @@ void ParticleGenerator::spawnParticles() {
         float radius = spawnRadius.getValue();
         float x = radius*cos(angle), y = radius*sin(angle);
         Particle* p = new Particle(defaultParticleGraphics, Vector2f(x,y), spawnDirection.getValue(),
-                                   spawnVelocity.getValue(), spawnOpacity.getValue(), timer.getElapsedTime().asSeconds());
+                                   spawnVelocity.getValue(), spawnOpacity.getValue(), Timer::get().timeElapsedSeconds());
         p->setRotationBehavior(rotationBehavior);
         p->setVelocityBehavior(velocityBehavior);
         p->setOpacityBehavior(opacityBehavior);
@@ -137,7 +137,7 @@ void ParticleGenerator::spawnParticles() {
 }
 
 void ParticleGenerator::updateSpawnRate() {
-    float dt = timer.getElapsedTime().asSeconds() - zeroTime;
+    float dt = Timer::get().timeElapsedSeconds() - zeroTime;
     switch (genChgType) {
         case Constant:
             particlesPerSecond = genChgMultiplier * dt;

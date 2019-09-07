@@ -47,10 +47,10 @@ void CombatEntity::p_notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr
 }
 
 void CombatEntity::doAttack(int atkDir) {
-    if (Entity::timer().getElapsedTime().asSeconds()-lastAttackTime >= weapon->getAttackDelay()) {
+    if (Timer::get().timeElapsedSeconds()-lastAttackTime >= weapon->getAttackDelay()) {
         Entity::Ptr atkEnt = AttackEntity::create(EntityManager::get()->getEntityPtr(this), weapon, atkDir);
         EntityManager::get()->add(atkEnt);
-        lastAttackTime = Entity::timer().getElapsedTime().asSeconds();
+        lastAttackTime = Timer::get().timeElapsedSeconds();
     }
 }
 

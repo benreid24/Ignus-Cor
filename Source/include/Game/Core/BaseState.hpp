@@ -49,7 +49,6 @@ protected:
     static void ensureFps();
 
     static const float fpsLimit, frameLength;
-    static sf::Clock timer;
     static float lastUpdateTime;
 
 public:

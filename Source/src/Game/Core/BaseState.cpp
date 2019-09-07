@@ -2,13 +2,13 @@
 #include "Game/Core/Game.hpp"
 #include "Shared/Properties.hpp"
 #include "Shared/DebugOverlays.hpp"
+#include "Shared/Util/Timer.hpp"
 using namespace std;
 using namespace sf;
 
 const float BaseState::fpsLimit = 60;
 const float BaseState::frameLength = 1000.0/BaseState::fpsLimit;
 float BaseState::lastUpdateTime = 0;
-Clock BaseState::timer;
 
 namespace {
     View getView(float w, float h)
@@ -69,11 +69,11 @@ void BaseState::runImmediate() {
 }
 
 void BaseState::ensureFps() {
-    float dTime = timer.getElapsedTime().asSeconds()-lastUpdateTime;
+    float dTime = Timer::get().timeElapsedSeconds()-lastUpdateTime;
     int waitTime = frameLength-dTime*1000;
     if (waitTime>0)
         sleep(milliseconds(waitTime));
-    lastUpdateTime = timer.getElapsedTime().asSeconds();
+    lastUpdateTime = Timer::get().timeElapsedSeconds();
 }
 
 bool BaseState::handleWindow() {

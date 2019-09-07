@@ -12,9 +12,7 @@ class WanderingBehavior : public EntityBehavior {
     int radius;
     double sqrdRad;
     EntityPosition::Direction movementDirection;
-
-    sf::Clock timer;
-    int timeOfNextStep;
+    unsigned long timeOfNextStep, lastStepTime;
 
     static const int Standing = 50; //this is how sub-behaviors can define custom states
 
@@ -31,16 +29,16 @@ class WanderingBehavior : public EntityBehavior {
      */
     int magnitudeSquared(sf::Vector2i v);
 
+    /**
+     * Updates the owning Entity
+     */
+    virtual void p_update() override;
+
 public:
     /**
      * Creates the WanderingBehavior with the given owner and radius
      */
     WanderingBehavior(Entity* owner, int radius = 600);
-
-    /**
-     * Updates the owning Entity
-     */
-    virtual void update();
 };
 
 #endif // WANDERINGBEHAVIOR_HPP

@@ -29,6 +29,7 @@ Entity::List EntityBehavior::getAttackers() {
 
 void EntityBehavior::notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr attack) {
     attackers.push_back(Entity::WeakPtr(attacker));
+    p_notifyAttacked(attacker, attack);
 }
 
 void EntityBehavior::notifyInteracted(Entity::Ptr user) {
@@ -38,13 +39,17 @@ void EntityBehavior::notifyInteracted(Entity::Ptr user) {
     }
     else
         interactor = user;
+    p_notifyInteracted(user);
 }
 
 void EntityBehavior::notifyCombatNearby(Entity::List combatants) {
     cout << "Combat detected near " << owner->getIdString() << endl;
+    p_notifyCombatNearby(combatants);
 }
 
 void EntityBehavior::update() {
+    p_update(); //derived class sets state. Can set to the below states to get shared behavior
+
     switch (state) {
         case Fleeing:
             doFlee();
@@ -69,8 +74,6 @@ void EntityBehavior::doFight() {
     if (enemies.size()>0) {
         //TODO - figure out how to fight
     }
-    else
-        state = Default;
 }
 
 void EntityBehavior::doFlee() {
@@ -78,8 +81,6 @@ void EntityBehavior::doFlee() {
     if (enemies.size()>0) {
         //TODO - find best runaway path and run that way
     }
-    else
-        state = Default;
 }
 
 void EntityBehavior::doInteract() {
@@ -87,6 +88,4 @@ void EntityBehavior::doInteract() {
     if (user) {
         //TODO - face them. Walk next to them?
     }
-    else
-        state = Default;
 }

@@ -4,16 +4,12 @@
 #include "Shared/Maps/MapManager.hpp"
 #include "Shared/Util/UUID.hpp"
 #include "Shared/DebugOverlays.hpp"
+#include "Shared/Util/Timer.hpp"
 #include <sstream>
 using namespace std;
 using namespace sf;
 
 int UUID::nextUuid = 1;
-
-const Clock& Entity::timer() {
-    static Clock timer;
-    return timer;
-}
 
 EntityPosition::EntityPosition(Vector2f pos, Direction d) {
     coords = pos;
@@ -26,7 +22,7 @@ Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
 	position = pos;
 	name = nm;
 	uuid = UUID::create();
-	timeLastUpdated = Entity::timer().getElapsedTime().asSeconds();
+	timeLastUpdated = Timer::get().timeElapsedSeconds();
 	speed[0] = 64;
 	speed[1] = 128;
 	boundingBox = FloatRect(0, 0, graphics.getSize().x, graphics.getSize().y);
@@ -207,7 +203,7 @@ bool Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
 
 void Entity::update() {
     beforeTimerUpdate();
-	timeLastUpdated = Entity::timer().getElapsedTime().asSeconds();
+	timeLastUpdated = Timer::get().timeElapsedSeconds();
 	afterTimerUpdate();
 	graphics.update();
 	bubble.update();
@@ -238,5 +234,5 @@ EntityBubble& Entity::getBubble() {
 }
 
 double Entity::timeSinceLastUpdate() const {
-    return Entity::timer().getElapsedTime().asSeconds() - timeLastUpdated;
+    return Timer::get().timeElapsedSeconds() - timeLastUpdated;
 }

@@ -1,13 +1,9 @@
 #include "Shared/Entities/EntityBubble.hpp"
 #include "Shared/Util/File.hpp"
+#include "Shared/Util/Timer.hpp"
 #include "Shared/Properties.hpp"
 using namespace sf;
 using namespace std;
-
-const Clock& EntityBubble::timer() {
-    static Clock timer;
-    return timer;
-}
 
 EntityBubble::EntityBubble(Mode m) {
 	mode = m;
@@ -20,7 +16,7 @@ int EntityBubble::addContent(const string& content, double length) {
     Content::Ptr c = Content::create(nextId++, content, length);
     contentQueue.push_back(c); //TODO - queue content addition to ensure primary thread loads resources
     if (contentQueue.size() == 1)
-        startTime = EntityBubble::timer().getElapsedTime().asSeconds();
+        startTime = Timer::get().timeElapsedSeconds();
     return c->getId();
 }
 
@@ -73,13 +69,13 @@ void EntityBubble::render(sf::RenderTarget& target, sf::Vector2f position) {
 void EntityBubble::update() {
     if (contentQueue.size() > 0) {
         Content::Ptr c = *contentQueue.begin();
-        c->update(timer().getElapsedTime().asSeconds() - startTime);
+        c->update(Timer::get().timeElapsedSeconds() - startTime);
         if (c->finished()) {
-            if (timer().getElapsedTime().asSeconds() - startTime >= c->getLength() && c->getLength() >= 0) {
+            if (Timer::get().timeElapsedSeconds() - startTime >= c->getLength() && c->getLength() >= 0) {
                 if (mode == Loop)
                     contentQueue.push_back(c);
                 contentQueue.pop_front();
-                startTime = timer().getElapsedTime().asSeconds();
+                startTime = Timer::get().timeElapsedSeconds();
             }
         }
     }

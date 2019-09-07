@@ -1,5 +1,6 @@
 #include "Shared/Entities/Behaviors/WanderingBehavior.hpp"
 #include "Shared/Util/Util.hpp"
+#include "Shared/Util/Timer.hpp"
 using namespace std;
 
 WanderingBehavior::WanderingBehavior(Entity* ent, int rad) : EntityBehavior(ent) {
@@ -8,12 +9,10 @@ WanderingBehavior::WanderingBehavior(Entity* ent, int rad) : EntityBehavior(ent)
     timeOfNextStep = 0;
 }
 
-void WanderingBehavior::update() {
-    EntityBehavior::update();
-
+void WanderingBehavior::p_update() {
     switch (state) {
         case Default:
-            if (timer.getElapsedTime().asMilliseconds()<=timeOfNextStep) {
+            if (Timer::get().timeElapsedMilliseconds()-lastStepTime<=timeOfNextStep) {
                 if (!owner->move(movementDirection)) {
                     movementDirection = getMovementDirection();
                 }
@@ -26,17 +25,18 @@ void WanderingBehavior::update() {
                     movementDirection = getMovementDirection();
                     timeOfNextStep = 500 + randomInt(0, 1000);
                 }
-                timer.restart();
+                lastStepTime = Timer::get().timeElapsedMilliseconds();
             }
             break;
 
         case Standing:
-            if (timer.getElapsedTime().asMilliseconds()>2000) {
+            if (Timer::get().timeElapsedMilliseconds()-lastStepTime>2000) {
                 int chanceToStart = randomInt(0,100);
                 if (chanceToStart<=10) {
                     state = Default;
                     movementDirection = getMovementDirection();
                     timeOfNextStep = 500 + randomInt(0, 1000);
+                    lastStepTime = Timer::get().timeElapsedMilliseconds();
                 }
             }
             break;
