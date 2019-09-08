@@ -27,9 +27,14 @@ public:
     unsigned long int timeElapsedMilliseconds() const;
 
     /**
-     * Returns the raw SFML elapsed time
+     * Returns the elapsed time
      */
     sf::Time timeElapsed() const;
+
+    /**
+     * Returns the raw elapsed time. Does not compensate for pausing
+     */
+    sf::Time timeElapsedRaw() const;
 
     /**
      * Pauses the timer

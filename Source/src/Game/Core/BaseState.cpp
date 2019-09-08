@@ -8,7 +8,7 @@ using namespace std;
 using namespace sf;
 
 const float BaseState::fpsLimit = 60;
-const float BaseState::frameLength = 1000.0/BaseState::fpsLimit;
+const float BaseState::frameLength = 1.0/BaseState::fpsLimit;
 float BaseState::lastUpdateTime = 0;
 
 namespace {
@@ -59,22 +59,26 @@ bool BaseState::start() {
 }
 
 void BaseState::runState(BaseState::Ptr immediate) {
+	if (immediateState)
+        cout << "Warning: runState() called on state but another state already queued up\n";
 	immediateState = immediate;
 }
 
-void BaseState::runImmediate() {
+bool BaseState::runImmediate() {
 	if (immediateState) {
-		immediateState->start();
+		bool r = immediateState->start();
 		immediateState.reset();
+		return r;
 	}
+	return false;
 }
 
 void BaseState::ensureFps() {
-    float dTime = Timer::get().timeElapsedSeconds()-lastUpdateTime;
-    int waitTime = frameLength-dTime*1000;
+    float dTime = Timer::get().timeElapsedRaw().asSeconds()-lastUpdateTime;
+    int waitTime = frameLength-dTime;
     if (waitTime>0)
-        sleep(milliseconds(waitTime));
-    lastUpdateTime = Timer::get().timeElapsedSeconds();
+        sleep(seconds(waitTime));
+    lastUpdateTime = Timer::get().timeElapsedRaw().asSeconds();
 }
 
 bool BaseState::handleWindow() {

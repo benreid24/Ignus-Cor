@@ -25,6 +25,11 @@ void Game::run() {
     state->start();
 }
 
+void Game::runNewState(BaseState::Ptr state) {
+    if (states.size() > 0)
+        states.top()->runState(state);
+}
+
 Game& Game::get() {
     static Game game;
     return game;

@@ -8,6 +8,10 @@ Timer& Timer::get() {
     return timer;
 }
 
+Time Timer::timeElapsedRaw() const {
+    return clock.getElapsedTime();
+}
+
 Time Timer::timeElapsed() const {
     Time ret = clock.getElapsedTime() - offset;
     if (paused)

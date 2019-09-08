@@ -14,6 +14,9 @@ class Game;
 class BaseState {
     int debugToggledTime;
 
+    BaseState(const BaseState&) = delete;
+    BaseState& operator=(const BaseState&) = delete;
+
 public:
 	typedef std::shared_ptr<BaseState> Ptr;
 
@@ -31,7 +34,7 @@ protected:
 	/**
 	 * Checks the immediateState flag and executes it if present. Children states should call this once per loop
 	 */
-	void runImmediate();
+	bool runImmediate();
 
 	/**
 	 * Constructs the state and optionally sets the state to run after this state finishes

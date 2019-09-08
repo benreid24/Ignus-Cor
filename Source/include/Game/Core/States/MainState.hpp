@@ -18,7 +18,7 @@ private:
      *
      * \return True if the game should close, false otherwise
      */
-    bool doState();
+    virtual bool doState() override;
 
     /**
      * Creates the state and all necessary data

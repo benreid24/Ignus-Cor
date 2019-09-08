@@ -4,6 +4,7 @@
 #include "Shared/Properties.hpp"
 #include "Game/Core/Game.hpp"
 #include "Game/Core/PlayerInput.hpp"
+#include "Game/Core/States/PauseState.hpp"
 #include "Shared/Data/AttackDB.hpp"
 #include <cmath>
 using namespace std;
@@ -47,6 +48,9 @@ void Player::beforeTimerUpdate() {
 
 	if (PlayerInput::get().inputActive(PlayerInput::Interact))
         interact();
+
+    if (PlayerInput::get().inputActive(PlayerInput::Pause))
+        Game::get().runNewState(PauseState::create());
     #endif
 
 	MapManager::get()->updateRenderPosition(position.coords);
