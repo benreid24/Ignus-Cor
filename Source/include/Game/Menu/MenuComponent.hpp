@@ -83,4 +83,9 @@ private:
     virtual void p_observe(const sf::Event& event) {}
 };
 
+template<typename T>
+MenuComponent::Callback makeMethodCallback(T* obj, void (T::*method)(const std::string&)) {
+    return std::bind(method, obj, std::placeholders::_1);
+}
+
 #endif // MENUCOMPONENT_HPP

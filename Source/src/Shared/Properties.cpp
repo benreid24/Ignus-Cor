@@ -28,6 +28,7 @@ const std::string Properties::ParticleAnimPath = "Resources/Media/Animations/Par
 const std::string Properties::ParticleImagePath = "Resources/Media/Images/Particles/";
 
 sf::Font Properties::PrimaryMenuFont;
+sf::Font Properties::SecondaryMenuFont;
 sf::Font Properties::ConversationFont;
 
 #ifdef EDITOR

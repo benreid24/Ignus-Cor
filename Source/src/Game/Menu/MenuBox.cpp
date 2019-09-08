@@ -99,10 +99,19 @@ void MenuBox::p_render(RenderTarget& target, Vector2f pos) {
         boxTarget.draw(background);
 
     for (unsigned int i = 0; i<children.size(); ++i) {
-        float s = (packDir == Horizontal) ? (children[i]->getSize().x) : (children[i]->getSize().y);
+        float s = 0;
+        if (packDir == Horizontal) {
+            s = children[i]->getSize().x;
+            cpos.y = size.y/2 - children[i]->getSize().y/2;
+        }
+        else {
+            s = children[i]->getSize().y;
+            cpos.x = size.x/2 - children[i]->getSize().x/2;
+        }
         if (z+s >= scrollPos && z <= scrollPos+maxPos) {
             children[i]->render(boxTarget, cpos-offset, pos+cpos-offset);
         }
+        z += s + packBuffer;
     }
     if (totalSize > maxPos) {
         if (packDir == Horizontal) {
@@ -152,7 +161,7 @@ void MenuBox::p_render(RenderTarget& target, Vector2f pos) {
             );
         }
     }
-    box.setPosition(pos.x, pos.y - boxTarget.getSize().y);
+    box.setPosition(pos.x, pos.y + boxTarget.getSize().y);
     target.draw(box);
 }
 

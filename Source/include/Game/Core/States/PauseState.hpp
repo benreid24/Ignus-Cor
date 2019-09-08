@@ -24,6 +24,7 @@ public:
 
 private:
     float startTime;
+    bool resume, quit;
 
     /**
      * Actually create the state
@@ -34,6 +35,16 @@ private:
      * Runs the pause menu
      */
     virtual bool doState() override;
+
+    /**
+     * Callback for the resume button
+     */
+    void resumeCb(const std::string&);
+
+    /**
+     * Callback for the quit button
+     */
+    void quitCb(const std::string&);
 };
 
 #endif // PAUSESTATE_HPP

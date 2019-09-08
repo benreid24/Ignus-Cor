@@ -3,6 +3,7 @@
 
 #include "Game/Menu/MenuComponent.hpp"
 #include "Game/Menu/MenuBox.hpp"
+#include "Game/Menu/MenuButton.hpp"
 
 /**
  * \defgroup GameMenu Classes related to menus in the game itself
@@ -41,6 +42,11 @@ public:
      * Sets the position of the menu. Not required if a Type was specified
      */
     void setPosition(sf::Vector2f pos);
+
+    /**
+     * Sets the spacing between packed components
+     */
+    void setComponentSpacing(float spacing);
 
     /**
      * Adds the component to the menu

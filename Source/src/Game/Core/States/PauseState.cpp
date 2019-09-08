@@ -1,5 +1,6 @@
 #include "Game/Core/States/PauseState.hpp"
 #include "Game/Core/Game.hpp"
+#include "Game/Menu/GameMenu.hpp"
 #include "Shared/Util/Timer.hpp"
 #include <SFML/Graphics.hpp>
 using namespace std;
@@ -11,6 +12,7 @@ PauseState::Ptr PauseState::create() {
 
 PauseState::PauseState() : BaseState(nullptr) {
     startTime = Timer::get().timeElapsedRaw().asSeconds();
+    resume = quit = false;
 }
 
 PauseState::~PauseState() {
@@ -18,17 +20,19 @@ PauseState::~PauseState() {
 }
 
 bool PauseState::doState() {
-    //make the menu
-    Text text;
-    text.setFont(Properties::PrimaryMenuFont);
-    text.setString("PAUSED");
-    text.setFillColor(Color::Black);
-    text.setOutlineColor(Color::Red);
-    text.setOutlineThickness(2);
-    text.setCharacterSize(46);
-    text.setPosition(120,100);
-
     Timer::get().pause();
+
+    GameMenu menu(GameMenu::PauseMenu);
+    menu.setComponentSpacing(20);
+
+    MenuButton::Ptr resumeBut = MenuButton::create("Resume", MenuButton::Primary);
+    MenuButton::Ptr quitBut = MenuButton::create("Quit", MenuButton::Secondary);
+    menu.addComponent(resumeBut);
+    menu.addComponent(quitBut);
+
+    resumeBut->setClickedCallback(makeMethodCallback<PauseState>(this, &PauseState::resumeCb));
+    quitBut->setClickedCallback(makeMethodCallback<PauseState>(this, &PauseState::quitCb));
+
     while (true) {
         if (handleWindow())
             return true;
@@ -39,11 +43,23 @@ bool PauseState::doState() {
             sleep(milliseconds(300));
             return false;
         }
+        if (resume)
+            return false;
+        if (quit)
+            return true;
 
         Game::get().window.clear();
         MapManager::get()->render();
-        Game::get().window.draw(text);
+        menu.render(Game::get().window);
         Game::get().window.display();
         ensureFps();
     }
+}
+
+void PauseState::resumeCb(const string&) {
+    resume = true;
+}
+
+void PauseState::quitCb(const string&) {
+    quit = true;
 }

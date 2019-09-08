@@ -1,4 +1,5 @@
 #include "Game/Menu/GameMenu.hpp"
+#include "Game/Core/Game.hpp"
 #include "Shared/Properties.hpp"
 using namespace std;
 using namespace sf;
@@ -35,12 +36,19 @@ GameMenu::GameMenu(Vector2f size, MenuBox::PackDirection dir) {
 
 void GameMenu::addComponent(MenuComponent::Ptr component) {
     box->pack(component);
+    Game::get().eventDispatcher.addObserver(component);
 }
 
 void GameMenu::setPosition(Vector2f pos) {
     position = pos;
 }
 
+void GameMenu::setComponentSpacing(float spacing) {
+    box->setPackBuffer(spacing);
+}
+
 void GameMenu::render(RenderTarget& target) {
+    background.setPosition(position);
+    target.draw(background);
     box->render(target, position);
 }

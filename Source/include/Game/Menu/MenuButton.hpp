@@ -25,7 +25,12 @@ public:
     /**
      * Creates a button with the given text, style, and size
      */
-    static Ptr create(const std::string& text, Style style, sf::Vector2f size = sf::Vector2f(0,0), float fontSize = 0);
+    static Ptr create(const std::string& text, Style style, sf::Vector2f size = sf::Vector2f(0,0));
+
+    /**
+     * Sets the text properties
+     */
+    void setTextProperties(sf::Color color, float fontSize);
 
 private:
     TextureReference texture;
@@ -37,7 +42,7 @@ private:
     /**
      * Constructs from text, style, and size
      */
-    MenuButton(const std::string& text, Style style, sf::Vector2f size, float fontSize);
+    MenuButton(const std::string& text, Style style, sf::Vector2f size);
 
     /**
      * Renders the button to the given target
