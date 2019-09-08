@@ -81,9 +81,13 @@ Check window focus on main loop to pause. pause timer]]>
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="../../Source/include/Game/Core/BaseState.hpp" />
+		<Unit filename="../../Source/include/Game/Core/EventDispatcher.hpp" />
+		<Unit filename="../../Source/include/Game/Core/EventObserver.hpp" />
 		<Unit filename="../../Source/include/Game/Core/Game.hpp" />
 		<Unit filename="../../Source/include/Game/Core/PlayerInput.hpp" />
 		<Unit filename="../../Source/include/Game/Core/States/MainState.hpp" />
+		<Unit filename="../../Source/include/Game/Menu/GameButton.hpp" />
+		<Unit filename="../../Source/include/Game/Menu/MenuComponent.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatArmor.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatAttack.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatEffect.hpp" />
@@ -148,6 +152,7 @@ Check window focus on main loop to pause. pause timer]]>
 		<Unit filename="../../Source/include/Shared/Util/Util.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/Vector2d.hpp" />
 		<Unit filename="../../Source/src/Game/Core/BaseState.cpp" />
+		<Unit filename="../../Source/src/Game/Core/EventDispatcher.cpp" />
 		<Unit filename="../../Source/src/Game/Core/Game.cpp" />
 		<Unit filename="../../Source/src/Game/Core/PlayerInput.cpp" />
 		<Unit filename="../../Source/src/Game/Core/States/MainState.cpp" />

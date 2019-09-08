@@ -35,8 +35,9 @@ void EntityBehavior::notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr
 
 void EntityBehavior::notifyInteracted(Entity::Ptr user) {
     if (!interactor.expired()) {
-        cout << "Warning: " << owner->getIdString() << " interacted with by " << user->getIdString()
-             << " but has interactor " << interactor.lock()->getIdString() << " active still\n";
+        if (interactor.lock().get() != user.get())
+            cout << "Warning: " << owner->getIdString() << " interacted with by " << user->getIdString()
+                 << " but has interactor " << interactor.lock()->getIdString() << " active still\n";
     }
     else {
         interactor = user;
