@@ -14,10 +14,12 @@ class AnimationEditor {
 	sfg::Notebook::Ptr owner;
 	sfg::Box::Ptr container;
 	FilePicker* fileList;
-	bool refreshOnUpdate;
+	bool refreshOnUpdate, delOnUpdate;
 
     void openEditor();
     void refresh();
+    void delAnim();
+    void preview();
 
 public:
     /**

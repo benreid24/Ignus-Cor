@@ -71,6 +71,11 @@ public:
 	std::string getChoice();
 
 	/**
+	 * Clears the current choice
+	 */
+    void clear();
+
+	/**
 	 * Updates the GUI. Used for embedded mode
 	 */
     void update(bool refreshFiles = false);

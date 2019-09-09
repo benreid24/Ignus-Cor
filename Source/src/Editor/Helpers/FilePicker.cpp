@@ -110,6 +110,12 @@ void FilePicker::setChoice(string file) {
 	curFile->SetText("Selected "+dispName+": "+chosenFile);
 }
 
+void FilePicker::clear() {
+    chosenFile = "";
+    curFile->SetText("Selected "+dispName+":");
+    needsUpdate = true;
+}
+
 void FilePicker::setDirectory(string subDir) {
 	if (subDir == "~Up~") {
         if (folder->hasParent())

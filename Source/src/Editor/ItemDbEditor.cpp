@@ -67,16 +67,6 @@ void ItemDbEditor::doItem(int id) {
     addItemEffectsToForm(form, (item)?(item->effects):(ItemEffect::List()));
     form.addToParent(winBox);
 
-    /*
-    Box::Ptr box = Box::Create(Box::Orientation::HORIZONTAL,5);
-    ComboBox::Ptr effectEntry = ComboBox::Create();
-    for (unsigned int i = 0; i<ItemEffect::getAllEffects().size(); ++i)
-		effectEntry->AppendItem(ItemEffect::getAllEffects()[i]);
-    //effectEntry->SelectItem((item)?((item->effect.getEffect())):(0));
-    box->Pack(Label::Create("Effect: "),false,false);
-    box->Pack(effectEntry,false,false);
-    winBox->Pack(box,false,false);*/
-
     Box::Ptr butBox = Box::Create(Box::Orientation::HORIZONTAL,5);
     butBox->Pack(mapPathBut,false,false);
     butBox->Pack(menuPathBut,false,false);
@@ -160,8 +150,6 @@ void ItemDbEditor::updateGui() {
 			"Name: "+i->second->getName(),
 			"Description: "+desc,
 			"Value: "+intToString(i->second->getValue())
-			//"Effect: "+i->second->getEffect().getDescription(),
-			//"Effect Intensity: "+intToString(i->second->getIntensity())
 		};
 		Box::Ptr row = packRow(cols);
 		data->appendRow(i->first,row);
