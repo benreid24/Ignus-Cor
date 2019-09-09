@@ -15,9 +15,7 @@ Playlist manages music based on game state. Fall back to current map music if no
 
 Use scripts for ai (movement and everything). Scripts can also access speech bubble. Have multiple behavior scripts. Default, combat, time based etc. Power of time based is going home at night, etc
 
-Item on pickup action, give item/weapon/armor. Generic portable editor list. Support random.
-
-Check window focus on main loop to pause. pause timer]]>
+Item on pickup action, give item/weapon/armor. Generic portable editor list. Support random.]]>
 			</notes>
 		</Option>
 		<Build>
@@ -86,7 +84,10 @@ Check window focus on main loop to pause. pause timer]]>
 		<Unit filename="../../Source/include/Game/Core/Game.hpp" />
 		<Unit filename="../../Source/include/Game/Core/PlayerInput.hpp" />
 		<Unit filename="../../Source/include/Game/Core/States/MainState.hpp" />
-		<Unit filename="../../Source/include/Game/Menu/GameButton.hpp" />
+		<Unit filename="../../Source/include/Game/Core/States/PauseState.hpp" />
+		<Unit filename="../../Source/include/Game/Menu/GameMenu.hpp" />
+		<Unit filename="../../Source/include/Game/Menu/MenuBox.hpp" />
+		<Unit filename="../../Source/include/Game/Menu/MenuButton.hpp" />
 		<Unit filename="../../Source/include/Game/Menu/MenuComponent.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatArmor.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatAttack.hpp" />
@@ -156,6 +157,11 @@ Check window focus on main loop to pause. pause timer]]>
 		<Unit filename="../../Source/src/Game/Core/Game.cpp" />
 		<Unit filename="../../Source/src/Game/Core/PlayerInput.cpp" />
 		<Unit filename="../../Source/src/Game/Core/States/MainState.cpp" />
+		<Unit filename="../../Source/src/Game/Core/States/PauseState.cpp" />
+		<Unit filename="../../Source/src/Game/Menu/GameMenu.cpp" />
+		<Unit filename="../../Source/src/Game/Menu/MenuBox.cpp" />
+		<Unit filename="../../Source/src/Game/Menu/MenuButton.cpp" />
+		<Unit filename="../../Source/src/Game/Menu/MenuComponent.cpp" />
 		<Unit filename="../../Source/src/Game/main.cpp" />
 		<Unit filename="../../Source/src/Shared/Combat/CombatArmor.cpp" />
 		<Unit filename="../../Source/src/Shared/Combat/CombatAttack.cpp" />
