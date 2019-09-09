@@ -11,6 +11,7 @@ GameMenu::GameMenu(Type type) {
         txtr = imagePool.loadResource(Properties::MenuImagePath+"pauseBgnd.png");
         position.x = Properties::ScreenWidth/2 - txtr->getSize().x/2;
         position.y = Properties::ScreenHeight/2 - txtr->getSize().y/2;
+        componentOffset = Vector2f(0, 40);
         break;
 
     default:
@@ -43,6 +44,10 @@ void GameMenu::setPosition(Vector2f pos) {
     position = pos;
 }
 
+void GameMenu::setComponentOffset(Vector2f offset) {
+    componentOffset = offset;
+}
+
 void GameMenu::setComponentSpacing(float spacing) {
     box->setPackBuffer(spacing);
 }
@@ -50,5 +55,5 @@ void GameMenu::setComponentSpacing(float spacing) {
 void GameMenu::render(RenderTarget& target) {
     background.setPosition(position);
     target.draw(background);
-    box->render(target, position);
+    box->render(target, position + componentOffset);
 }

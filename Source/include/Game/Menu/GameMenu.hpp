@@ -49,6 +49,11 @@ public:
     void setComponentSpacing(float spacing);
 
     /**
+     * Sets an optional offset to all components
+     */
+    void setComponentOffset(sf::Vector2f offset);
+
+    /**
      * Adds the component to the menu
      */
     void addComponent(MenuComponent::Ptr component);
@@ -60,7 +65,7 @@ public:
 
 private:
     MenuBox::Ptr box;
-    sf::Vector2f position;
+    sf::Vector2f position, componentOffset;
     TextureReference txtr;
     sf::Sprite background;
 };

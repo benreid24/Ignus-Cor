@@ -27,11 +27,14 @@ bool PauseState::doState() {
 
     MenuButton::Ptr resumeBut = MenuButton::create("Resume", MenuButton::Primary);
     MenuButton::Ptr quitBut = MenuButton::create("Quit", MenuButton::Secondary);
-    menu.addComponent(resumeBut);
-    menu.addComponent(quitBut);
 
     resumeBut->setClickedCallback(makeMethodCallback<PauseState>(this, &PauseState::resumeCb));
+    resumeBut->setTextProperties(Color::Black, 16, true);
     quitBut->setClickedCallback(makeMethodCallback<PauseState>(this, &PauseState::quitCb));
+    quitBut->setTextProperties(Color::Black, 16, true);
+
+    menu.addComponent(resumeBut);
+    menu.addComponent(quitBut);
 
     while (true) {
         if (handleWindow())

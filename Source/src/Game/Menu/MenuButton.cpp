@@ -61,7 +61,13 @@ MenuButton::MenuButton(const string& txt, Style style, Vector2f sz)
     setTextProperties(Color::Black, 14);
 }
 
-void MenuButton::setTextProperties(Color color, float fontSize) {
+void MenuButton::setTextProperties(Color color, float fontSize, bool bold, bool italic) {
+    Uint32 style = Text::Regular;
+    if (bold)
+        style |= Text::Bold;
+    if (italic)
+        style |= Text::Italic;
+    text.setStyle(style);
     text.setFillColor(color);
     text.setCharacterSize(fontSize);
     textOffset.x = size.x/2 - text.getGlobalBounds().width/2;

@@ -30,7 +30,7 @@ public:
     /**
      * Sets the text properties
      */
-    void setTextProperties(sf::Color color, float fontSize);
+    void setTextProperties(sf::Color color, float fontSize, bool bold = false, bool italic = false);
 
 private:
     TextureReference texture;
