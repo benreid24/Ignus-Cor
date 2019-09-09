@@ -1,4 +1,5 @@
 #include "Game/Core/BaseState.hpp"
+#include "Game/Core/States/PauseState.hpp"
 #include "Game/Core/Game.hpp"
 #include "Game/Core/PlayerInput.hpp"
 #include "Shared/Properties.hpp"
@@ -95,8 +96,10 @@ bool BaseState::handleWindow() {
 		}
 		if (event.type==Event::GainedFocus)
 			Game::get().inFocus = true;
-		if (event.type==Event::LostFocus)
+		if (event.type==Event::LostFocus) {
 			Game::get().inFocus = false;
+			runState(PauseState::create());
+		}
 
         Game::get().eventDispatcher.dispatch(event);
     }
