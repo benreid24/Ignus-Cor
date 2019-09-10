@@ -1,5 +1,4 @@
 #include "Shared/Combat/CombatAttack.hpp"
-#include "Shared/Data/EffectDB.hpp"
 #include "Shared/Entities/Entity.hpp"
 using namespace std;
 
@@ -12,7 +11,7 @@ CombatAttack::CombatAttack() {
     animation = "Attacks/punch.anim";
 }
 
-CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, float del, const list<CombatEffect::Ref>& efx,
+CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, float del, const CombatEffect::List& efx,
                            const string& anim, ParticleGeneratorFactory::Preset parts, float ptime) {
     type = Melee;
     name = nm;
@@ -26,7 +25,7 @@ CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, flo
 }
 
 CombatAttack::CombatAttack(const string& nm, const string& desc, double pwr, float del,
-                           const list<CombatEffect::Ref>& efx, const string& anim, ParticleGeneratorFactory::Preset parts, float ptime,
+                           const CombatEffect::List& efx, const string& anim, ParticleGeneratorFactory::Preset parts, float ptime,
                            double rng, double spd, const string& impactAnim, ParticleGeneratorFactory::Preset impactParts, float iptime)
 : CombatAttack(nm, desc, pwr, del, efx, anim, parts, ptime) {
     type = Ranged;
@@ -49,10 +48,11 @@ CombatAttack::CombatAttack(File& file) {
 
     int numEffects = file.get<uint16_t>();
     for (int i = 0; i<numEffects; ++i) {
-        CombatEffect::Ref effect = EffectDB::get().getEffect(file.get<uint8_t>());
-        effect.intensity = double(file.get<uint16_t>()) / 100.0;
-        effect.chance = file.get<uint16_t>();
-        effects.push_back(effect);
+        int tp = file.get<uint8_t>();
+        double intense = double(file.get<uint16_t>()) / 100.0;
+        double chance = double(file.get<uint16_t>())/100.0;
+        double duration = double(file.get<uint32_t>())/1000.0;
+        effects.push_back(CombatEffect(tp, intense, chance, duration));
     }
 
     if (type == Ranged) {
@@ -76,9 +76,10 @@ void CombatAttack::save(File& file) const {
 
     file.write<uint16_t>(effects.size());
     for (auto i = effects.begin(); i!=effects.end(); ++i) {
-        file.write<uint8_t>((*i)->type);
-        file.write<uint16_t>(i->intensity * 100);
-        file.write<uint16_t>(i->chance);
+        file.write<uint8_t>(i->getType());
+        file.write<uint16_t>(i->getIntensity() * 100);
+        file.write<uint16_t>(i->getChance() * 100);
+        file.write<uint32_t>(i->getDuration() * 1000);
     }
 
     if (type == Ranged) {
@@ -110,7 +111,7 @@ float CombatAttack::getAttackDelay() const {
     return delaySeconds;
 }
 
-list<CombatEffect::Ref> CombatAttack::getEffects() const {
+const CombatEffect::List& CombatAttack::getEffects() const {
     return effects;
 }
 

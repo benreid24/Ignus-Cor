@@ -1,26 +1,27 @@
 #include "Shared/Objects/ItemEffect.hpp"
+using namespace std;
 
 namespace {
-
-std::string invalid = "INVALID";
-std::vector<std::string> effectStrings = {
-	"None",
-	"Damage Health",
-	"Restore Health",
-	"Restore Magic",
-	"Damage Magic"
+const string invalid = "INVALID";
+const vector<pair<string, string> > effects = {
+	make_pair("None", ""),
+	make_pair("Damage Health", "Damages the health of the user"),
+	make_pair("Restore Health", "Replenishes HP"),
+	make_pair("Restore Magic", "Restores magicka"),
+	make_pair("Damage Magic", "Depletes the magicka of the user")
 };
-
 }
 
-ItemEffect::ItemEffect(Type tp, int intense) : type(tp), intensity(intense) {}
+ItemEffect::ItemEffect(Type tp, int intense)
+: type(tp), intensity(intense) {}
 
-ItemEffect::ItemEffect(int effect) : ItemEffect(Type(effect)) {}
+ItemEffect::ItemEffect(int effect, int intense)
+: ItemEffect(Type(effect), intense) {}
 
-ItemEffect::ItemEffect(const std::string& desc, int intense) {
+ItemEffect::ItemEffect(const string& name, int intense) {
     intensity = intense;
-    for (unsigned int i = 0; i<effectStrings.size(); ++i) {
-        if (effectStrings[i] == desc) {
+    for (unsigned int i = 0; i<effects.size(); ++i) {
+        if (effects[i].first == name) {
             type = Type(i);
             return;
         }
@@ -28,13 +29,20 @@ ItemEffect::ItemEffect(const std::string& desc, int intense) {
     type = None;
 }
 
-const std::string& ItemEffect::getDescription() const {
+const string& ItemEffect::getDescription() const {
 	unsigned int t = type;
-	if (t<effectStrings.size())
-        return effectStrings[t];
+	if (t<effects.size())
+        return effects[t].second;
     return invalid;
 }
 
-const std::vector<std::string>& ItemEffect::getAllEffects() {
-    return effectStrings;
+const string& ItemEffect::getName() const {
+	unsigned int t = type;
+	if (t<effects.size())
+        return effects[t].first;
+    return invalid;
+}
+
+const vector<pair<string, string> >& ItemEffect::getAllEffects() {
+    return effects;
 }

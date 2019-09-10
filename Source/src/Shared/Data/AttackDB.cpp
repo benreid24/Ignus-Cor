@@ -15,7 +15,7 @@ AttackDB::AttackDB() {
                          "This is for testing",
                          30,
                          0.6,
-                         list<CombatEffect::Ref>(),
+                         CombatEffect::List(),
                          "Combat/Weapons/TestSword",
                          ParticleGeneratorFactory::None)
     );
@@ -24,7 +24,7 @@ AttackDB::AttackDB() {
                           "This is for testing",
                           30,
                           0.4,
-                          list<CombatEffect::Ref>(),
+                          CombatEffect::List(),
                           "Combat/Spells/fireball.anim",
                           ParticleGeneratorFactory::Smoke,
                           0,

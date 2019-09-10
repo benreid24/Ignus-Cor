@@ -43,12 +43,12 @@ public:
     /**
      * Implicit construction from int
      */
-    ItemEffect(int effect);
+    ItemEffect(int effect, int intensity = 0);
 
     /**
      * Helper ctor for editor
      */
-    ItemEffect(const std::string& desc, int intensity);
+    ItemEffect(const std::string& name, int intensity);
 
     /**
      * Implicitly cast to the raw enum value of the effect
@@ -59,6 +59,11 @@ public:
      * Cast to int for convenience
      */
     int asInt() const { return int(type); }
+
+    /**
+     * Returns the name of the effect
+     */
+    const std::string& getName() const;
 
     /**
      * Returns the string representation of the effect
@@ -75,7 +80,7 @@ public:
     /**
      * Returns a list of base effects as strings
      */
-    static const std::vector<std::string>& getAllEffects();
+    static const std::vector<std::pair<std::string, std::string> >& getAllEffects();
 };
 
 #endif // ITEMEFFECT_HPP

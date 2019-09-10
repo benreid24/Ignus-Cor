@@ -2,15 +2,18 @@
 #define COMBATEFFECT_HPP
 
 #include <string>
-
-class EffectDB;
+#include <list>
 
 /**
  * Describes effects that spells and weapons may apply in addition to damage
  *
  * \ingroup Combat
  */
-struct CombatEffect {
+class CombatEffect {
+public:
+    typedef std::list<CombatEffect> List;
+
+    ///Actual type of effect
     enum Type {
         None,
         Fire,
@@ -19,26 +22,55 @@ struct CombatEffect {
         Poison
     };
 
-    Type type;
-    std::string name, description;
-    //TODO - link to particle generator?
+    /**
+     * Construct from type and parameters
+     */
+    CombatEffect(Type type, double intense, double odds, double duration);
 
-    struct Ref {
-        const CombatEffect* operator->() const { return effect; }
-        Ref(const CombatEffect* ef, double ints, double chnc) : effect(ef), intensity(ints), chance(chnc) {}
+    /**
+     * Implicit cast
+     */
+    CombatEffect(int type, double intense, double odds, double duration);
 
-        double intensity, chance; //TODO - add duration
-        const CombatEffect* effect;
-    };
+    /**
+     * Implicit conversion
+     */
+    operator Type() const { return type; }
 
-    Ref makeRef() const { return Ref(this, 0, 0); }
+    /**
+     * Explicit conversion
+     */
+    Type getType() const;
+
+    /**
+     * Returns the name of the effect
+     */
+    const std::string& getName() const;
+
+    /**
+     * Returns the description of the effect
+     */
+    const std::string& getDescription() const;
+
+    /**
+     * Returns the intensity of the effect
+     */
+    double getIntensity() const;
+
+    /**
+     * Returns the chance of the effect happening
+     */
+    double getChance() const;
+
+    /**
+     * Returns the duration of the effect, in seconds
+     */
+    double getDuration() const;
 
 private:
-    CombatEffect() : type(None) {}
-    CombatEffect(Type type, const std::string name, const std::string description)
-        : type(type), name(name), description(description) {}
-
-    friend class EffectDB;
+    Type type;
+    double intensity, chance, duration;
+    //TODO - link to particle generator?
 };
 
 #endif // COMBATEFFECT_HPP

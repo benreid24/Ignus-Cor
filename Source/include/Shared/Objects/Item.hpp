@@ -16,22 +16,6 @@ class ItemDB;
  * Item instances will just be id's
  */
 class Item {
-	int id, value;
-	std::string name, description, mapImg, menuImg;
-	ItemEffect::List effects;
-
-	#ifdef EDITOR
-	friend class ItemDbEditor;
-	#endif
-
-	friend class ItemDB;
-
-	/**
-     * Constructs the item record from the given data
-     */
-	Item(int id, const std::string& name, const std::string& desc, const ItemEffect::List& effects,
-      int value, const std::string& mapImg, const std::string& menuImg);
-
 public:
     typedef std::shared_ptr<Item> Ptr;
     typedef std::shared_ptr<const Item> ConstPtr;
@@ -70,6 +54,23 @@ public:
      * Returns the image of the item in the menu
      */
     const std::string& getMenuImageFile() const;
+
+public:
+    int id, value;
+	std::string name, description, mapImg, menuImg;
+	ItemEffect::List effects;
+
+	#ifdef EDITOR
+	friend class ItemDbEditor;
+	#endif
+
+	friend class ItemDB;
+
+	/**
+     * Constructs the item record from the given data
+     */
+	Item(int id, const std::string& name, const std::string& desc, const ItemEffect::List& effects,
+      int value, const std::string& mapImg, const std::string& menuImg);
 };
 
 #endif // ITEM_HPP

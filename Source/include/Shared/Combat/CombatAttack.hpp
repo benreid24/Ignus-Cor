@@ -32,7 +32,7 @@ private:
     Type type;
     std::string name, description;
     double power;
-    std::list<CombatEffect::Ref> effects;
+    CombatEffect::List effects;
     float delaySeconds;
 
     std::string animation;
@@ -64,14 +64,14 @@ public:
     /**
      * Create the CombatAttack as a melee attack
      */
-    CombatAttack(const std::string& name, const std::string& description, double power, float AttackDelay, const std::list<CombatEffect::Ref>& effects,
+    CombatAttack(const std::string& name, const std::string& description, double power, float AttackDelay, const CombatEffect::List& effects,
                  const std::string& animation, ParticleGeneratorFactory::Preset particles, float partTime = 0);
 
     /**
      * Creates a ranged attack
      */
     CombatAttack(const std::string& name, const std::string& description, double power, float attackDelay,
-                 const std::list<CombatEffect::Ref>& effects, const std::string& animation, ParticleGeneratorFactory::Preset particles,
+                 const CombatEffect::List& effects, const std::string& animation, ParticleGeneratorFactory::Preset particles,
                  float partTime, double range, double speed, const std::string& impactAnimation = "",
                  ParticleGeneratorFactory::Preset impactParts = ParticleGeneratorFactory::None, float impactPartTime = 0);
 
@@ -108,7 +108,7 @@ public:
     /**
      * Returns the effects of the CombatAttack
      */
-    std::list<CombatEffect::Ref> getEffects() const;
+    const CombatEffect::List& getEffects() const;
 
     /**
      * Returns the animation file for the attack
