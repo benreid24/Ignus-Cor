@@ -1,0 +1,21 @@
+string                 texture
+u8                     loop
+u16                    numFrames
+for (numFrames)
+{
+      u32              length
+      u16              numPieces
+      for (numPieces)
+      {
+                u32    sourceX
+                u32    sourceY
+                u32    width
+                u32    height
+                u32    scaleX              //100 is full scale
+                u32    scaleY              //same
+                s32    xRenderOff
+                s32    yRenderOff
+                u32    rotation
+		u8     transparency	// 0 is invisible
+}
+                

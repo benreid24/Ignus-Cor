@@ -1,0 +1,24 @@
+u16                            numNodes
+for (numNode)
+{
+      char                     code //'e' = exit node. No additional data
+      string                   name
+
+      if (code=='t') //talk
+          string               line //use $PLAYERNAME to print the player name
+
+      if (code=='o') //option
+          string               line
+          u16                  numOptions
+          for (numOptions)
+                string         line
+                string         nodeIfPicked //"EXIT" to quit, "" for following node (in linear order). Applies to all nodes below
+
+       if (code=='j') //jump to node
+           string              nodeName
+
+       if (code=='s') //runs the script and uses the return value to determine the next node
+           string              script
+           string              nodeIfTruthy
+           string              nodeIfFalsy
+}

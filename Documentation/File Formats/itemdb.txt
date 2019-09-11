@@ -1,0 +1,35 @@
+u16               numItems
+for item:
+	u16       id
+	u8        category
+	string    name
+        u8        numEffects
+        for (numEffects):
+            u16   effect
+	    u32   intensity //rate/second or total amount if instant
+            u32   duration  // in ms. 0 = instant
+            u16   chance    //[0,1000]
+
+	u32       value
+	string    description
+        string    mapImg //relative to Properties::ItemMapImagePath
+        string    menuImg //relative to Properties::ItemMenuImagePath
+
+	if (category == 0): // armor
+            u32   damageResistence //actual = value/100
+
+
+	if (category == 1): //weapon
+	    u8     type // 0=direct, 1=ranged
+    	    u32    power
+            u16    attackDelay   // seconds = attackDelay/100
+            string animation
+            u8     particleGenId
+            u16    particlePersistTime  // seconds = time/100
+
+            if type==1:
+                string impactAnimation
+                u16    speed  // pixels/second
+                u16    range  //pixels
+                u8     impactParticleGenId
+                u16    impactParticleTime  // seconds = time/100

@@ -1,0 +1,85 @@
+string                   name
+string                   playlist
+string                   onLoadScript //can specify file or be embedded
+string                   onExitScript //same
+u32                      width
+u32                      height
+u16                      numLayers
+u16                      firstYSortLayer
+u16                      firstTopLayer
+u8                       weatherAllowed  //also controls clouds and foot prints. 0 = none, 1 = all random, 2 = light rain, 3 = light rain thunder, 4 = hard rain, 5 = hard rain thunder, 6 = light snow, 7 = light snow thunder, 8 = hard snow, 9 = hard snow thunder, 10 = light fog, 11 = thick fog, 12 = sunny, 13 = sandstorm, 14 = water random, 15 = snow random, 16 = desert random
+u8                       weatherFrequency //0-100 for how often weather occurs
+u16                      ambientLightOverride //0 to let day/night control, specifiy otherwise
+
+u8[width,height]         collisionTiles //0 = none, 1 = all, 2 = top, 3 = right, 4 = bottom, 5 = left, 6 = topRight, 7 = bottomRight, 8 = bottomLeft, 9 = topLeft, 10 = topBottom, 11 = rightLeft, 12 = noTop, 13 = noRight, 14 = noBottom, 15 = noLeft
+
+for (numLayers)
+{
+    for (width)
+    {
+        for (height)
+        {
+            u8           isAnim  //1=animation
+            u16          index   //in tileset, 0 = blank
+        }
+    }
+}
+
+u16                       numPlayerSpawns
+for (numSpawns)
+{
+    string               name
+    u32                  x
+    u32                  y
+    u8                   dir
+}
+
+u16                      numAIs
+for (numAIs)
+{
+    string               file //file will indicate type
+    u32                  x
+    u32                  y
+    u8                   dir
+}
+
+u16                      numSpawners
+for (numSpawners)
+{
+    u32                  x
+    u32                  y
+    u16                  coolDownTime //in seconds
+    u8                   spawnChance  //0-100 chance that they spawn per second
+    u16                  maxToSpawn // 0 for unlimited
+    u16                  maxAllowedActive //how many can be alive at once
+    string               templateEntity //can be regular entity file or template file
+
+u16                      numItems
+for (numItems)
+{
+    u16                  id           //in itemDB
+    u16                  mapUniqueID  //assigned automatically when placed, used to determine if it has already been picked up or not
+    u32                  x
+    u32                  y
+}
+
+u16                      numLights
+for (numLights)
+{
+    u32                  x
+    u32                  y
+    u16                  radius
+    u8                   darknessThresh
+}
+
+u16                      numEvents
+for (numEvents)
+{
+    string               script  //script can be put right into here, or reference a file
+    u32                  x
+    u32                  y
+    u16                  width
+    u16                  height
+    u8                   maxRuns //number of times it is allowed to run. 0 = infinite
+    u8                   trigger //0 = on load, 1 = step in range, 2 = step out of range, 3 = step in or out of range, 4 = in range
+}

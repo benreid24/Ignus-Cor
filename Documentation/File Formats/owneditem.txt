@@ -1,0 +1,9 @@
+u16       itemid
+u16       quantity
+
+u8        numEffects //added effects. probably for enchanting
+for (numEffects):
+    u16   effect
+    u32   intensity //rate/second or total amount if instant
+    u32   duration  // in ms. 0 = instant
+    u16   chance    //[0,1000]
