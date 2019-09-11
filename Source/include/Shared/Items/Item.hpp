@@ -2,7 +2,7 @@
 #define ITEM_HPP
 
 #include "Shared/Util/ResourcePool.hpp"
-#include "Shared/Objects/ItemEffect.hpp"
+#include "Shared/Items/ItemEffect.hpp"
 #include <string>
 
 #ifdef EDITOR
@@ -55,7 +55,7 @@ public:
      */
     const std::string& getMenuImageFile() const;
 
-public:
+private:
     int id, value;
 	std::string name, description, mapImg, menuImg;
 	ItemEffect::List effects;
@@ -71,6 +71,9 @@ public:
      */
 	Item(int id, const std::string& name, const std::string& desc, const ItemEffect::List& effects,
       int value, const std::string& mapImg, const std::string& menuImg);
+
+    Item(const Item&) = delete;
+    Item& operator=(const Item&) = delete;
 };
 
 #endif // ITEM_HPP

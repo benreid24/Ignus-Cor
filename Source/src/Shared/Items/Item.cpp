@@ -1,4 +1,4 @@
-#include "Shared/Objects/Item.hpp"
+#include "Shared/Items/Item.hpp"
 using namespace std;
 
 Item::Item(int i, const string& nm, const string& desc, const ItemEffect::List& eft, int v, const string& mp, const string& mn) {

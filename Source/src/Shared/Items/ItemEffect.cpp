@@ -1,4 +1,4 @@
-#include "Shared/Objects/ItemEffect.hpp"
+#include "Shared/Items/ItemEffect.hpp"
 using namespace std;
 
 namespace {

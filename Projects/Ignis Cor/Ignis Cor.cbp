@@ -15,7 +15,9 @@ Playlist manages music based on game state. Fall back to current map music if no
 
 Use scripts for ai (movement and everything). Scripts can also access speech bubble. Have multiple behavior scripts. Default, combat, time based etc. Power of time based is going home at night, etc
 
-Item on pickup action, give item/weapon/armor. Generic portable editor list. Support random.]]>
+Make item base class for armor and weapons. Can supply virtual method getCategory for sorting. base class can provde some basic stuff. armor, weapons, spells, potions, etc, can all provide their own id. All in one db to load. All in one list. Combines ItemEffect and CombatEffect. 
+
+Maybe have spell list be different for saving/loading purposes. ie a tomb teaches spell, then it is known although iten is consumed]]>
 			</notes>
 		</Option>
 		<Build>
@@ -118,6 +120,8 @@ Item on pickup action, give item/weapon/armor. Generic portable editor list. Sup
 		<Unit filename="../../Source/include/Shared/GUI/Form.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/ResizableImage.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/WrappingBox.hpp" />
+		<Unit filename="../../Source/include/Shared/Items/Item.hpp" />
+		<Unit filename="../../Source/include/Shared/Items/ItemEffect.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/Map.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/MapManager.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/Map_priv.hpp" />
@@ -126,8 +130,6 @@ Item on pickup action, give item/weapon/armor. Generic portable editor list. Sup
 		<Unit filename="../../Source/include/Shared/Media/Animation.hpp" />
 		<Unit filename="../../Source/include/Shared/Media/Playlist.hpp" />
 		<Unit filename="../../Source/include/Shared/Media/SoundEngine.hpp" />
-		<Unit filename="../../Source/include/Shared/Objects/Item.hpp" />
-		<Unit filename="../../Source/include/Shared/Objects/ItemEffect.hpp" />
 		<Unit filename="../../Source/include/Shared/Particles/Particle.hpp" />
 		<Unit filename="../../Source/include/Shared/Particles/ParticleGenerator.hpp" />
 		<Unit filename="../../Source/include/Shared/Particles/ParticleGeneratorFactory.hpp" />
@@ -188,6 +190,8 @@ Item on pickup action, give item/weapon/armor. Generic portable editor list. Sup
 		<Unit filename="../../Source/src/Shared/GUI/CellTable.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/Form.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/WrappingBox.cpp" />
+		<Unit filename="../../Source/src/Shared/Items/Item.cpp" />
+		<Unit filename="../../Source/src/Shared/Items/ItemEffect.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/Map.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/MapManager.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/Tileset.cpp" />
@@ -195,8 +199,6 @@ Item on pickup action, give item/weapon/armor. Generic portable editor list. Sup
 		<Unit filename="../../Source/src/Shared/Media/Animation.cpp" />
 		<Unit filename="../../Source/src/Shared/Media/Playlist.cpp" />
 		<Unit filename="../../Source/src/Shared/Media/SoundEngine.cpp" />
-		<Unit filename="../../Source/src/Shared/Objects/Item.cpp" />
-		<Unit filename="../../Source/src/Shared/Objects/ItemEffect.cpp" />
 		<Unit filename="../../Source/src/Shared/Particles/Particle.cpp" />
 		<Unit filename="../../Source/src/Shared/Particles/ParticleGenerator.cpp" />
 		<Unit filename="../../Source/src/Shared/Particles/ParticleGeneratorFactory.cpp" />

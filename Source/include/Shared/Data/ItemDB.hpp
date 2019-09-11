@@ -1,7 +1,7 @@
 #ifndef ITEMDB_HPP
 #define ITEMDB_HPP
 
-#include "Shared/Objects/Item.hpp"
+#include "Shared/Items/Item.hpp"
 #include <map>
 
 /**
