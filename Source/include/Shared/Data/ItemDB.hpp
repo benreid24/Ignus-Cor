@@ -7,7 +7,7 @@
 /**
  * Static class to store all data related to items
  *
- * \ingroup Objects
+ * \ingroup Items
  */
 class ItemDB {
 	std::map<int,Item::Ptr> items;

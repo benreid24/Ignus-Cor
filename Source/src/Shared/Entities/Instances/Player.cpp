@@ -5,7 +5,6 @@
 #include "Game/Core/Game.hpp"
 #include "Game/Core/PlayerInput.hpp"
 #include "Game/Core/States/PauseState.hpp"
-#include "Shared/Data/AttackDB.hpp"
 #include <cmath>
 using namespace std;
 using namespace sf;
@@ -18,7 +17,7 @@ Player::Player() :
 	speed[0] = 64;
 	speed[1] = 128;
 	boundingBox = FloatRect(0, 12, graphics.getSize().x, graphics.getSize().y-12);
-	weapon = AttackDB::get().getAttack(Item::DefaultWeapon);
+	weapon = CombatAttack::fromItem(ItemDB::get().getItem(Item::DefaultWeapon));
 }
 
 Player::Ptr Player::create() {
@@ -39,9 +38,9 @@ void Player::beforeTimerUpdate() {
 		move(EntityPosition::Right, running);
 
     if (Keyboard::isKeyPressed(Keyboard::Num1)) //TODO - switch weapon controls in player input
-        weapon = AttackDB::get().getAttack(-1);
+        weapon = CombatAttack::fromItem(ItemDB::get().getItem(Item::DefaultWeapon));
 	if (Keyboard::isKeyPressed(Keyboard::Num2))
-        weapon = AttackDB::get().getAttack(-2);
+        weapon = CombatAttack::fromItem(ItemDB::get().getItem(Item::DefaultSpell));
 
     if (PlayerInput::get().inputActive(PlayerInput::Attack))
         doAttack(getAttackDirection());

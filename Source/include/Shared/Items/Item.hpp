@@ -14,6 +14,8 @@ class ItemFactory;
 /**
  * Class to represent static data regarding items. This is used primarily for the global data store of item information
  * Item instances will just be id's
+ *
+ * \ingroup Items
  */
 class Item {
 public:

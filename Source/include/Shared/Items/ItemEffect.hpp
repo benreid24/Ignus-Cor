@@ -6,14 +6,14 @@
 #include <string>
 
 /**
- * \defgroup Objects
+ * \defgroup Items
  * \brief Group of classes wrapping objects, meaning Items, Weapons and Spells
  */
 
 /**
  * Helper class for Item effects
  *
- * \ingroup Objects
+ * \ingroup Items
  */
 class ItemEffect {
 public:
@@ -31,6 +31,7 @@ public:
 private:
     Type type;
     int intensity;
+    float chance;
 
 public:
     typedef std::list<ItemEffect> List;
@@ -38,17 +39,17 @@ public:
     /**
      * Constructs the ItemEffect from the given Type and intensity
      */
-    ItemEffect(Type type = None, int intensity = 0);
+    ItemEffect(Type type = None, int intensity = 0, float odds = 1);
 
     /**
      * Implicit construction from int
      */
-    ItemEffect(int effect, int intensity = 0);
+    ItemEffect(int effect, int intensity = 0, float odds = 1);
 
     /**
      * Helper ctor for editor
      */
-    ItemEffect(const std::string& name, int intensity);
+    ItemEffect(const std::string& name, int intensity, float odds = 1);
 
     /**
      * Implicitly cast to the raw enum value of the effect
@@ -74,6 +75,11 @@ public:
      * Returns the intensity of the effect
      */
     int getIntensity() const { return intensity; }
+
+    /**
+     * Returns the chance of the effect happening
+     */
+    float getOdds() const;
 
     //TODO - function to apply effects to people?
 

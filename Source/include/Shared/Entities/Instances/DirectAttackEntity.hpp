@@ -16,7 +16,7 @@ class DirectAttackEntity : public AttackEntity {
     /**
      * Creates the DirectAttackEntity instance from the attacking Entity and attack
      */
-    DirectAttackEntity(Entity::Ptr attacker, CombatAttack::ConstPtr attack, bool followAttacker = true);
+    DirectAttackEntity(Entity::Ptr attacker, CombatAttack::Ref attack, bool followAttacker = true);
 
     /**
      * Update logic to be applied before the time variable is updated
@@ -32,7 +32,7 @@ public:
     /**
      * Creates a Ptr to a DirectAttackEntity
      */
-    static Entity::Ptr create(Entity::Ptr attacker, CombatAttack::ConstPtr attack, bool followAttacker = true);
+    static Entity::Ptr create(Entity::Ptr attacker, CombatAttack::Ref attack, bool followAttacker = true);
 
     /**
      * vtable

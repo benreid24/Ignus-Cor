@@ -6,7 +6,7 @@
 #include <cmath>
 using namespace std;
 
-RangedAttackEntity::RangedAttackEntity(Entity::Ptr atk, CombatAttack::ConstPtr weapon, int atkDir)
+RangedAttackEntity::RangedAttackEntity(Entity::Ptr atk, CombatAttack::Ref weapon, int atkDir)
 : AttackEntity(atk, weapon) {
     position = atk->getPosition();
     position.coords.x += atk->getBoundingBox().width/2 - boundingBox.width/2;
@@ -18,7 +18,7 @@ RangedAttackEntity::RangedAttackEntity(Entity::Ptr atk, CombatAttack::ConstPtr w
     distanceTraveled = 0;
 }
 
-Entity::Ptr RangedAttackEntity::create(Entity::Ptr attacker, CombatAttack::ConstPtr atk, int atkDir) {
+Entity::Ptr RangedAttackEntity::create(Entity::Ptr attacker, CombatAttack::Ref atk, int atkDir) {
     return Entity::Ptr(new RangedAttackEntity(attacker, atk, atkDir));
 }
 

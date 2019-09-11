@@ -8,13 +8,6 @@ using namespace std;
 ItemDB::ItemDB() {
 	File file(Properties::ItemDbFile);
 	items = ItemFactory::getItems(file);
-
-	items[Item::DefaultArmor] = Item::Ptr(
-        new CombatArmor(
-            Item::DefaultArmor,
-            "Clothes",
-            "Default 'armor'. Provides zero protection. Should not be visible to player",
-            ItemEffect::List(), 0, "", "", 0));
 }
 
 ItemDB& ItemDB::get() {

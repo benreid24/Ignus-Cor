@@ -28,7 +28,7 @@ Entity::List EntityBehavior::getAttackers() {
     return ret;
 }
 
-void EntityBehavior::notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr attack) {
+void EntityBehavior::notifyAttacked(Entity::Ptr attacker, CombatAttack::Ref attack) {
     attackers.push_back(Entity::WeakPtr(attacker));
     p_notifyAttacked(attacker, attack);
 }

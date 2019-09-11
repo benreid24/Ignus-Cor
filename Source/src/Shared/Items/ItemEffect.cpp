@@ -12,14 +12,15 @@ const vector<pair<string, string> > effects = {
 };
 }
 
-ItemEffect::ItemEffect(Type tp, int intense)
-: type(tp), intensity(intense) {}
+ItemEffect::ItemEffect(Type tp, int intense, float odds)
+: type(tp), intensity(intense), chance(odds) {}
 
-ItemEffect::ItemEffect(int effect, int intense)
-: ItemEffect(Type(effect), intense) {}
+ItemEffect::ItemEffect(int effect, int intense, float odds)
+: ItemEffect(Type(effect), intense, odds) {}
 
-ItemEffect::ItemEffect(const string& name, int intense) {
+ItemEffect::ItemEffect(const string& name, int intense, float odds) {
     intensity = intense;
+    chance = odds;
     for (unsigned int i = 0; i<effects.size(); ++i) {
         if (effects[i].first == name) {
             type = Type(i);
@@ -41,6 +42,10 @@ const string& ItemEffect::getName() const {
 	if (t<effects.size())
         return effects[t].first;
     return invalid;
+}
+
+float ItemEffect::getOdds() const {
+    return chance;
 }
 
 const vector<pair<string, string> >& ItemEffect::getAllEffects() {

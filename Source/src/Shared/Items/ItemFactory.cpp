@@ -1,5 +1,6 @@
 #include "Shared/Items/ItemFactory.hpp"
 #include "Shared/Combat/CombatArmor.hpp"
+#include "Shared/Combat/CombatAttack.hpp"
 using namespace std;
 
 map<int, Item::Ptr> ItemFactory::getItems(File& file) {
@@ -35,6 +36,42 @@ map<int, Item::Ptr> ItemFactory::getItems(File& file) {
             items.emplace(id, Item::Ptr(new Item(id,cat,name,desc,effects,value,mp,mn)));
         }
 	}
+
+	items[Item::DefaultArmor] = Item::Ptr(
+        new CombatArmor(
+            Item::DefaultArmor,
+            "Clothes",
+            "Default 'armor'. Provides zero protection. Should not be visible to player",
+            ItemEffect::List(), 0, "", "", 0));
+
+    items[Item::DefaultWeapon] = CombatAttack::Ptr(
+        new CombatAttack(Item::DefaultWeapon,
+                         "TestSword",
+                         "This is for testing",
+                         ItemEffect::List(),
+                         0, "", "",
+                         30,
+                         0.6,
+                         "Combat/Weapons/TestSword",
+                         ParticleGeneratorFactory::None)
+    );
+	items[Item::DefaultSpell] = CombatAttack::Ptr(
+         new CombatAttack(Item::DefaultSpell,
+                          "TestSpell",
+                          "This is for testing",
+                          ItemEffect::List(),
+                          0, "", "",
+                          30,
+                          0.4,
+                          "Combat/Spells/fireball.anim",
+                          ParticleGeneratorFactory::Smoke,
+                          0,
+                          Item::SpellTomb,
+                          320,
+                          400,
+                          "Combat/Explosions/testexplosion.anim",
+                          ParticleGeneratorFactory::Smoke, 0.5)
+    );
 
     return items;
 }

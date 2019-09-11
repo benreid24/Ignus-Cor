@@ -82,7 +82,7 @@ protected:
     /**
      * Notify derived class of being attacked
      */
-    virtual void p_notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr attack) {}
+    virtual void p_notifyAttacked(Entity::Ptr attacker, CombatAttack::Ref attack) {}
 
     /**
      * Notify derived class of nearby combat
@@ -113,7 +113,7 @@ public:
     /**
      * Notify of being attacked
      */
-    void notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr attack);
+    void notifyAttacked(Entity::Ptr attacker, CombatAttack::Ref attack);
 
     /**
      * Notify of nearby combat

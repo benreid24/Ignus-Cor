@@ -4,12 +4,12 @@
 #include <string>
 #include <list>
 #include <memory>
+#include "Shared/Items/Item.hpp"
 #include "Shared/Util/File.hpp"
-#include "Shared/Combat/CombatEffect.hpp"
 #include "Shared/Particles/ParticleGeneratorFactory.hpp"
 
 class Entity;
-class AttackDB;
+class ItemFactory;
 
 /**
  * \defgroup Combat
@@ -17,11 +17,12 @@ class AttackDB;
  */
 
  /**
-  * Base class representing all Attacks in the game, both ranged, melee, and spells
+  * Class representing all Attacks in the game, both ranged, melee, and spells
   *
   * \ingroup Combat
+  * \ingroup Items
   */
-class CombatAttack {
+class CombatAttack : public Item {
 public:
     enum Type {
         Melee,
@@ -29,71 +30,45 @@ public:
     };
 
 private:
-    Type type;
-    std::string name, description;
-    double power;
-    CombatEffect::List effects;
-    float delaySeconds;
-
-    std::string animation;
-    ParticleGeneratorFactory::Preset particleGenerator;
-    float impactParticlePersistTime;
-
-    //ranged only
-    std::string impactAnimation;
-    double range, speed;
-    ParticleGeneratorFactory::Preset impactParticleGenerator;
-    float particlePersistTime;
-
-    friend class AttackDB;
-
-public:
-    typedef std::shared_ptr<CombatAttack> Ptr;
-    typedef std::shared_ptr<const CombatAttack> ConstPtr;
-
-    /**
-     * Creates the "empty" melee attack Punch
-     */
-    CombatAttack();
-
-    /**
-     * Loads the attack from the given file
-     */
-    CombatAttack(File& file);
-
     /**
      * Create the CombatAttack as a melee attack
      */
-    CombatAttack(const std::string& name, const std::string& description, double power, float AttackDelay, const CombatEffect::List& effects,
-                 const std::string& animation, ParticleGeneratorFactory::Preset particles, float partTime = 0);
+    CombatAttack(int id, const std::string& name, const std::string& desc,
+         const ItemEffect::List& effects, int value, const std::string& mapImg,
+         const std::string& menuImg, double power, float attackDelay, const std::string& animation,
+         ParticleGeneratorFactory::Preset particles, float partTime = 0);
 
     /**
      * Creates a ranged attack
      */
-    CombatAttack(const std::string& name, const std::string& description, double power, float attackDelay,
-                 const CombatEffect::List& effects, const std::string& animation, ParticleGeneratorFactory::Preset particles,
-                 float partTime, double range, double speed, const std::string& impactAnimation = "",
-                 ParticleGeneratorFactory::Preset impactParts = ParticleGeneratorFactory::None, float impactPartTime = 0);
+    CombatAttack(int id, const std::string& name, const std::string& desc,
+         const ItemEffect::List& effects, int value, const std::string& mapImg,
+         const std::string& menuImg, double power, float attackDelay,
+         const std::string& animation, ParticleGeneratorFactory::Preset particles,
+         float partTime, Item::Category cat, double range, double speed,
+         const std::string& impactAnimation = "",
+         ParticleGeneratorFactory::Preset impactParts = ParticleGeneratorFactory::None,
+         float impactPartTime = 0);
+
+public:
+    typedef std::shared_ptr<const CombatAttack> Ref;
+
+    virtual ~CombatAttack() = default;
+
+    /**
+     * Helper function to cast to correct pointer type
+     */
+    static Ref fromItem(Item::ConstPtr item);
 
     /**
      * Saves the attack to the given file
      */
-    void save(File& file) const;
+    void save(File& file) const; //TODO - make virtual
 
     /**
      * Returns the type of the attack, either Melee or Ranged
      */
     Type getType() const;
-
-    /**
-     * Returns the name of the CombatAttack
-     */
-    std::string getName() const;
-
-    /**
-     * Returns the description of the CombatAttack
-     */
-    std::string getDescription() const;
 
     /**
      * Returns the power of the CombatAttack
@@ -104,11 +79,6 @@ public:
      * Returns the delay between attacks, in seconds
      */
     float getAttackDelay() const;
-
-    /**
-     * Returns the effects of the CombatAttack
-     */
-    const CombatEffect::List& getEffects() const;
 
     /**
      * Returns the animation file for the attack
@@ -153,7 +123,25 @@ public:
     /**
      * Converts to a CombatAttack for the explosion. Ranged only
      */
-    CombatAttack::ConstPtr toExplosionAttack() const;
+    CombatAttack::Ref toExplosionAttack() const;
+
+private:
+    Type type;
+    std::string name, description;
+    double power;
+    float delaySeconds;
+
+    std::string animation;
+    ParticleGeneratorFactory::Preset particleGenerator;
+    float impactParticlePersistTime;
+
+    //ranged only
+    std::string impactAnimation;
+    double range, speed;
+    ParticleGeneratorFactory::Preset impactParticleGenerator;
+    float particlePersistTime;
+
+    friend class ItemFactory;
 };
 
 #endif // COMBATATTACK_HPP

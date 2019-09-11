@@ -14,7 +14,7 @@ CombatEntity::CombatEntity(string nm, EntityPosition pos, string gfx1, string gf
     lastAttackTime = 0;
 }
 
-void CombatEntity::p_notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr atk) {
+void CombatEntity::p_notifyAttacked(Entity::Ptr attacker, CombatAttack::Ref atk) {
     CombatEntity* atkr = dynamic_cast<CombatEntity*>(attacker.get());
     if (atkr!=nullptr) {
         double ld = atkr->stats.level - stats.level;

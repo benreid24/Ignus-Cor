@@ -104,7 +104,7 @@ protected:
     /**
 	 * Notifies the Entity that they were attacked by another Entity. For derived to override
 	 */
-    virtual void p_notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack) {}
+    virtual void p_notifyAttacked(Ptr attacker, CombatAttack::Ref attack) {}
 
     /**
      * Notifies the Entity of nearby combat. For derived to override
@@ -141,7 +141,7 @@ public:
 	/**
 	 * Notifies the Entity that they were attacked by another Entity
 	 */
-    void notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack);
+    void notifyAttacked(Ptr attacker, CombatAttack::Ref attack);
 
     /**
      * Notifies the Entity of nearby combat
