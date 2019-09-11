@@ -93,9 +93,6 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 		<Unit filename="../../Source/include/Game/Menu/MenuComponent.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatArmor.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatAttack.hpp" />
-		<Unit filename="../../Source/include/Shared/Combat/CombatEffect.hpp" />
-		<Unit filename="../../Source/include/Shared/Data/AttackDB.hpp" />
-		<Unit filename="../../Source/include/Shared/Data/ItemDB.hpp" />
 		<Unit filename="../../Source/include/Shared/DebugOverlays.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Behaviors/NpcWanderingBehavior.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Entity.hpp" />
@@ -121,8 +118,10 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 		<Unit filename="../../Source/include/Shared/GUI/ResizableImage.hpp" />
 		<Unit filename="../../Source/include/Shared/GUI/WrappingBox.hpp" />
 		<Unit filename="../../Source/include/Shared/Items/Item.hpp" />
+		<Unit filename="../../Source/include/Shared/Items/ItemDB.hpp" />
 		<Unit filename="../../Source/include/Shared/Items/ItemEffect.hpp" />
 		<Unit filename="../../Source/include/Shared/Items/ItemFactory.hpp" />
+		<Unit filename="../../Source/include/Shared/Items/OwnedItem.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/Map.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/MapManager.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/Map_priv.hpp" />
@@ -167,9 +166,6 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 		<Unit filename="../../Source/src/Game/main.cpp" />
 		<Unit filename="../../Source/src/Shared/Combat/CombatArmor.cpp" />
 		<Unit filename="../../Source/src/Shared/Combat/CombatAttack.cpp" />
-		<Unit filename="../../Source/src/Shared/Combat/CombatEffect.cpp" />
-		<Unit filename="../../Source/src/Shared/Data/AttackDB.cpp" />
-		<Unit filename="../../Source/src/Shared/Data/ItemDB.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Behaviors/NpcWanderingBehavior.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Entity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityBehavior.cpp" />
@@ -192,8 +188,10 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 		<Unit filename="../../Source/src/Shared/GUI/Form.cpp" />
 		<Unit filename="../../Source/src/Shared/GUI/WrappingBox.cpp" />
 		<Unit filename="../../Source/src/Shared/Items/Item.cpp" />
+		<Unit filename="../../Source/src/Shared/Items/ItemDB.cpp" />
 		<Unit filename="../../Source/src/Shared/Items/ItemEffect.cpp" />
 		<Unit filename="../../Source/src/Shared/Items/ItemFactory.cpp" />
+		<Unit filename="../../Source/src/Shared/Items/OwnedItem.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/Map.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/MapManager.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/Tileset.cpp" />

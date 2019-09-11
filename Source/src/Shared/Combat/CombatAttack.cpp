@@ -40,37 +40,7 @@ CombatAttack::CombatAttack(int id, const string& nm, const string& desc,
     impactParticlePersistTime = iptime;
 }
 
-/*CombatAttack::CombatAttack(File& file) {
-    type = Type(file.get<uint16_t>());
-    name = file.getString();
-    description = file.getString();
-    power = file.get<uint32_t>();
-    delaySeconds = double(file.get<uint16_t>()) / 100.0;
-    animation = file.getString();
-    particleGenerator = ParticleGeneratorFactory::Preset(file.get<uint8_t>());
-    particlePersistTime = double(file.get<uint16_t>()) / 100.0;
-
-    int numEffects = file.get<uint16_t>();
-    for (int i = 0; i<numEffects; ++i) {
-        int tp = file.get<uint8_t>();
-        double intense = double(file.get<uint16_t>()) / 100.0;
-        double chance = double(file.get<uint16_t>())/100.0;
-        double duration = double(file.get<uint32_t>())/1000.0;
-        effects.push_back(CombatEffect(tp, intense, chance, duration));
-    }
-
-    if (type == Ranged) {
-        impactAnimation = file.getString();
-        speed = file.get<uint16_t>();
-        range = file.get<uint16_t>();
-        impactParticleGenerator = ParticleGeneratorFactory::Preset(file.get<uint8_t>());
-        impactParticlePersistTime = double(file.get<uint16_t>()) / 100.0;
-    }
-}*/
-
-void CombatAttack::save(File& file) const {
-    //TODO - update
-
+void CombatAttack::p_save(File& file) const {
     file.write<uint16_t>(type);
     file.writeString(name);
     file.writeString(description);

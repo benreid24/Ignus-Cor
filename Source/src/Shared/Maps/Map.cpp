@@ -2,7 +2,7 @@
 #include "Shared/Properties.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Media/Playlist.hpp"
-#include "Shared/Data/ItemDB.hpp"
+#include "Shared/Items/ItemDB.hpp"
 #include "Shared/Scripts/ScriptManager.hpp"
 #include <cmath>
 using namespace sf;

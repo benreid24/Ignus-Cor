@@ -1,4 +1,4 @@
-#include "Shared/Data/ItemDB.hpp"
+#include "Shared/Items/ItemDB.hpp"
 #include "Shared/Items/ItemFactory.hpp"
 #include "Shared/Combat/CombatArmor.hpp"
 #include "Shared/Util/File.hpp"
@@ -41,18 +41,6 @@ void ItemDB::save() {
 
 	file.write<uint16_t>(items.size());
 	for (map<int,Item::Ptr>::iterator i = items.begin(); i!=items.end(); ++i) {
-        file.write<uint16_t>(i->second->getId());
-        file.writeString(i->second->getName());
-
-        file.write<uint8_t>(i->second->getEffects().size());
-        for (auto j = i->second->getEffects().begin(); j != i->second->getEffects().end(); ++j) {
-            file.write<uint32_t>(j->asInt());
-            file.write<uint32_t>(j->getIntensity());
-        }
-
-        file.write<uint32_t>(i->second->getValue());
-        file.writeString(i->second->getDescription());
-        file.writeString(i->second->getMapImageFile());
-        file.writeString(i->second->getMenuImageFile());
+        //
 	}
 }

@@ -24,6 +24,11 @@ class CombatArmor : public Item {
                 const ItemEffect::List& effects, int value, const std::string& mapImg,
                 const std::string& menuImg, double damageResistance);
 
+    /**
+     * Saves damage resistance to the file
+     */
+    virtual void p_save(File& file) const override;
+
     friend class ItemFactory;
 
 public:

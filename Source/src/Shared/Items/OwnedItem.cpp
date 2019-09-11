@@ -1,5 +1,5 @@
 #include "Shared/Items/OwnedItem.hpp"
-#include "Shared/Data/ItemDB.hpp"
+#include "Shared/Items/ItemDB.hpp"
 using namespace std;
 
 OwnedItem::OwnedItem(int id)

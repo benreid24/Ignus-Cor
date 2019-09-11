@@ -2,7 +2,7 @@
 #include "Shared/Entities/Virtual/AttackEntity.hpp"
 #include "Shared/Entities/EntityManager.hpp"
 #include "Shared/DebugOverlays.hpp"
-#include "Shared/Data/ItemDB.hpp"
+#include "Shared/Items/ItemDB.hpp"
 #include <iostream>
 #include <iomanip>
 using namespace std;

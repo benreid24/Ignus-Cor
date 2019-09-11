@@ -29,8 +29,35 @@ map<int, Item::Ptr> ItemFactory::getItems(File& file) {
             double dr = double(file.get<uint32_t>()) / 100.0;
             items.emplace(id, Item::Ptr(new CombatArmor(id,name,desc,effects,value,mp,mn,dr)));
         }
-        else if (cat == Item::Weapon) {
-            //TODO - load weapons as items
+        else if (cat == Item::Weapon || cat == Item::SpellTomb) {
+            CombatAttack::Type type = CombatAttack::Type(file.get<uint16_t>());
+            double power = file.get<uint32_t>();
+            double delaySeconds = double(file.get<uint16_t>()) / 100.0;
+            string animation = file.getString();
+            auto particleGenerator = ParticleGeneratorFactory::Preset(file.get<uint8_t>());
+            double particlePersistTime = double(file.get<uint16_t>()) / 100.0;
+
+            if (type == CombatAttack::Ranged) {
+                string impactAnimation = file.getString();
+                double speed = file.get<uint16_t>();
+                double range = file.get<uint16_t>();
+                auto impactParticleGenerator = ParticleGeneratorFactory::Preset(file.get<uint8_t>());
+                double impactParticlePersistTime = double(file.get<uint16_t>()) / 100.0;
+
+                items.emplace(id, Item::Ptr(new CombatAttack(id, name, desc, effects, value,
+                                                             mp, mn, power, delaySeconds,
+                                                             animation, particleGenerator,
+                                                             particlePersistTime, cat,
+                                                             range, speed, impactAnimation,
+                                                             impactParticleGenerator,
+                                                             impactParticlePersistTime)));
+            }
+            else {
+                items.emplace(id, Item::Ptr(new CombatAttack(id, name, desc, effects, value,
+                                                             mp, mn, power, delaySeconds,
+                                                             animation, particleGenerator,
+                                                             particlePersistTime)));
+            }
         }
         else {
             items.emplace(id, Item::Ptr(new Item(id,cat,name,desc,effects,value,mp,mn)));

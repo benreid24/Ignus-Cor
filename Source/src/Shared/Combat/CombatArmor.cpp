@@ -13,3 +13,7 @@ CombatArmor::CombatArmor(int id, const std::string& name, const std::string& des
 double CombatArmor::getDamageResist() const {
     return damageResist;
 }
+
+void CombatArmor::p_save(File& file) const {
+    file.write<uint32_t>(damageResist*100);
+}

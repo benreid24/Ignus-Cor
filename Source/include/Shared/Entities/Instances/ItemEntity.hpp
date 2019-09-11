@@ -4,7 +4,7 @@
 #include "Shared/Entities/Entity.hpp"
 #include "Shared/Entities/EntityManager.hpp"
 #include "Shared/Properties.hpp"
-#include "Shared/Data/ItemDB.hpp"
+#include "Shared/Items/ItemDB.hpp"
 
 /**
  * Entity class for items

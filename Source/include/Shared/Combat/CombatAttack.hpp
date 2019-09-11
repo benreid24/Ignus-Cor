@@ -50,6 +50,11 @@ private:
          ParticleGeneratorFactory::Preset impactParts = ParticleGeneratorFactory::None,
          float impactPartTime = 0);
 
+    /**
+     * Saves a metric fuck ton of data to the file
+     */
+    virtual void p_save(File& file) const override;
+
 public:
     typedef std::shared_ptr<const CombatAttack> Ref;
 

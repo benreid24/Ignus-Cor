@@ -3,6 +3,7 @@
 
 #include "Shared/Util/ResourcePool.hpp"
 #include "Shared/Items/ItemEffect.hpp"
+#include "Shared/Util/File.hpp"
 #include <string>
 
 #ifdef EDITOR
@@ -93,6 +94,11 @@ public:
      */
     const std::string& getMenuImageFile() const;
 
+    /**
+     * Saves the item to the given file
+     */
+    void save(File& file) const;
+
     static constexpr int DefaultWeapon = -1;
     static constexpr int DefaultSpell  = -2;
     static constexpr int DefaultArmor  = -3;
@@ -115,6 +121,11 @@ protected:
 	Item(int id, Category category, const std::string& name, const std::string& desc,
          const ItemEffect::List& effects, int value, const std::string& mapImg,
          const std::string& menuImg);
+
+    /**
+     * Saves derived class specific data to the file
+     */
+    virtual void p_save(File& file) const {}
 
     Item(const Item&) = delete;
     Item& operator=(const Item&) = delete;
