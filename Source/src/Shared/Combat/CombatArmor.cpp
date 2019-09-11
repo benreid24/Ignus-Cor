@@ -1,31 +1,11 @@
 #include "Shared/Combat/CombatArmor.hpp"
 using namespace std;
 
-CombatArmor::CombatArmor() {
-    name = "Clothing";
-    description = "Just barely a step above being naked. These thin garbs offer no protection whatsoever";
-    damageResist = 0;
-}
-
-CombatArmor::CombatArmor(const string& nm, const string& desc, double dr, const list<CombatArmorEffect>& efx) {
-    name = nm;
-    description = desc;
-    damageResist = dr;
-    effects = efx;
-}
-
-string CombatArmor::getName() const {
-    return name;
-}
-
-string CombatArmor::getDescription() const {
-    return description;
-}
+CombatArmor::CombatArmor(int id, const std::string& name, const std::string& desc,
+                         const ItemEffect::List& effects, int value, const std::string& mapImg,
+                         const std::string& menuImg, double damageResistance)
+: Item(id, Item::Armor, name, desc, effects, value, mapImg, menuImg), damageResist(damageResistance) {}
 
 double CombatArmor::getDamageResist() const {
     return damageResist;
-}
-
-list<CombatArmorEffect> CombatArmor::getEffects() const {
-    return effects;
 }

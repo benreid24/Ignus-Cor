@@ -1,30 +1,20 @@
 #include "Shared/Data/ItemDB.hpp"
+#include "Shared/Items/ItemFactory.hpp"
+#include "Shared/Combat/CombatArmor.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Properties.hpp"
 using namespace std;
 
 ItemDB::ItemDB() {
 	File file(Properties::ItemDbFile);
-	int count = file.get<uint16_t>();
+	items = ItemFactory::getItems(file);
 
-	for (int i = 0; i<count; ++i) {
-        int id = file.get<uint16_t>();
-        string name = file.getString();
-
-        ItemEffect::List effects;
-        int nEffects = file.get<uint8_t>();
-        for (int j = 0; j<nEffects; ++j) {
-            ItemEffect::Type t = ItemEffect::Type(file.get<uint32_t>());
-            int intensity = file.get<uint32_t>();
-            effects.emplace_back(t, intensity);
-        }
-
-        int value = file.get<uint32_t>();
-        string desc = file.getString();
-        string mp = file.getString();
-        string mn = file.getString();
-        items.emplace(id, Item::Ptr(new Item(id,name,desc,effects,value,mp,mn)));
-	}
+	items[Item::DefaultArmor] = Item::Ptr(
+        new CombatArmor(
+            Item::DefaultArmor,
+            "Clothes",
+            "Default 'armor'. Provides zero protection. Should not be visible to player",
+            ItemEffect::List(), 0, "", "", 0));
 }
 
 ItemDB& ItemDB::get() {

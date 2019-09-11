@@ -29,7 +29,7 @@ class CombatEntity : public Entity {
 protected:
     EntityStats stats;
     CombatAttack::ConstPtr weapon;
-	CombatArmor armor;
+	CombatArmor::Ref armor;
 	double xpRewardMultiplier; //xp reward = levelDiff^2 * xpRewardMultiplier + level
 
 	/**
@@ -93,7 +93,7 @@ public:
     /**
      * Returns the current armor of the Entity
      */
-    const CombatArmor& getArmor();
+    CombatArmor::Ref getArmor();
 };
 
 #endif // COMBATENTITY_HPP

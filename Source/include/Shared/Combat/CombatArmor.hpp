@@ -1,71 +1,38 @@
 #ifndef COMBATARMOR_HPP
 #define COMBATARMOR_HPP
 
-#include <list>
-#include <string>
-
-/**
- * Represents effects that armor can have
- *
- * \ingroup Combat
- */
-struct CombatArmorEffect {
-    enum Type {
-        None,
-        ResistFire,
-        ResistIce,
-        ResistElectricity,
-        ResistPoison
-    };
-    Type type;
-    double intensity, chance;
-
-    CombatArmorEffect() : type(None) {}
-
-    CombatArmorEffect(Type type, double intensity, double chance) : type(type), intensity(intensity), chance(chance) {}
-};
+#include "Shared/Items/Item.hpp"
 
 /**
  * Armor that Entities can wear to help negate combat damage
  *
  * \ingroup Combat
  */
-class CombatArmor {
+class CombatArmor : public Item {
     //TODO - graphics change?
-    std::string name, description;
     double damageResist;
-    std::list<CombatArmorEffect> effects;
+
+    CombatArmor() = delete;
 
 public:
+    typedef std::shared_ptr<const CombatArmor> Ref;
+
     /**
-     * Empty armor
+     * Helper function for pointer cast
      */
-    CombatArmor();
+    static Ref fromItem(Item::ConstPtr item) { return std::dynamic_pointer_cast<const CombatArmor, const Item>(item); }
 
     /**
      * Constructs from all parameters
      */
-    CombatArmor(const std::string& name, const std::string& description, double damageResistance, const std::list<CombatArmorEffect>& effects);
-
-    /**
-     * Returns the name
-     */
-    std::string getName() const;
-
-    /**
-     * Returns the description
-     */
-    std::string getDescription() const;
+    CombatArmor(int id, const std::string& name, const std::string& desc,
+                const ItemEffect::List& effects, int value, const std::string& mapImg,
+                const std::string& menuImg, double damageResistance);
 
     /**
      * Returns the damage resistance
      */
     double getDamageResist() const;
-
-    /**
-     * Returns the list of effects
-     */
-    std::list<CombatArmorEffect> getEffects() const;
 };
 
 #endif // COMBATARMOR_HPP

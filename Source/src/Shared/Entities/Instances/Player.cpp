@@ -18,7 +18,7 @@ Player::Player() :
 	speed[0] = 64;
 	speed[1] = 128;
 	boundingBox = FloatRect(0, 12, graphics.getSize().x, graphics.getSize().y-12);
-	weapon = AttackDB::get().getAttack(-1);
+	weapon = AttackDB::get().getAttack(Item::DefaultWeapon);
 }
 
 Player::Ptr Player::create() {

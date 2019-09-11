@@ -122,6 +122,7 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 		<Unit filename="../../Source/include/Shared/GUI/WrappingBox.hpp" />
 		<Unit filename="../../Source/include/Shared/Items/Item.hpp" />
 		<Unit filename="../../Source/include/Shared/Items/ItemEffect.hpp" />
+		<Unit filename="../../Source/include/Shared/Items/ItemFactory.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/Map.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/MapManager.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/Map_priv.hpp" />
@@ -192,6 +193,7 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 		<Unit filename="../../Source/src/Shared/GUI/WrappingBox.cpp" />
 		<Unit filename="../../Source/src/Shared/Items/Item.cpp" />
 		<Unit filename="../../Source/src/Shared/Items/ItemEffect.cpp" />
+		<Unit filename="../../Source/src/Shared/Items/ItemFactory.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/Map.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/MapManager.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/Tileset.cpp" />

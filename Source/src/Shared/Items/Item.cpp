@@ -1,8 +1,54 @@
 #include "Shared/Items/Item.hpp"
 using namespace std;
 
-Item::Item(int i, const string& nm, const string& desc, const ItemEffect::List& eft, int v, const string& mp, const string& mn) {
+constexpr int Item::DefaultArmor;
+constexpr int Item::DefaultSpell;
+constexpr int Item::DefaultWeapon;
+
+namespace {
+const string invalid = "~~INVALID~~";
+
+const vector<string> categories = {
+    "Armor",
+    "Weapons",
+    "Potions",
+    "Spell Tombs",
+    "Keys",
+    "Miscellaneous"
+};
+
+const vector<string> categoriesSingle = {
+    "Armor",
+    "Weapon",
+    "Potion",
+    "Spell Tomb",
+    "Key",
+    "Miscellaneous"
+};
+}
+
+const string& Item::getCategoryString(Category cat) {
+    unsigned int i = cat;
+    if (i<categories.size())
+        return categories[i];
+    return invalid;
+}
+
+const string& Item::getCategorySingular(Category cat) {
+    unsigned int i = cat;
+    if (i<categoriesSingle.size())
+        return categoriesSingle[i];
+    return invalid;
+}
+
+const vector<string>& Item::getAllCategories() {
+    return categories;
+}
+
+Item::Item(int i, Category cat, const string& nm, const string& desc,
+           const ItemEffect::List& eft, int v, const string& mp, const string& mn) {
 	id = i;
+	category = cat;
 	name = nm;
 	description = desc;
 	effects = eft;
