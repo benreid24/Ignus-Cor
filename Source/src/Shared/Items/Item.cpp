@@ -91,8 +91,10 @@ void Item::save(File& file) const {
 
     file.write<uint8_t>(getEffects().size());
     for (auto j = getEffects().begin(); j != getEffects().end(); ++j) {
-        file.write<uint32_t>(j->asInt());
+        file.write<uint16_t>(j->asInt());
         file.write<uint32_t>(j->getIntensity());
+        file.write<uint32_t>(j->getDurationMs());
+        file.write<uint16_t>(j->getOdds() * 1000);
     }
 
     file.write<uint32_t>(getValue());

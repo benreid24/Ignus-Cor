@@ -13,6 +13,11 @@ class OwnedItem {
 
 public:
     /**
+     * Create by loading from the given file
+     */
+    OwnedItem(File& file);
+
+    /**
      * Creates from an item id
      */
     OwnedItem(int id);
@@ -56,6 +61,11 @@ public:
      * Clears all added effects
      */
     void clearEffects();
+
+    /**
+     * Saves to the given file
+     */
+    void save(File& file) const;
 
 private:
     Item::ConstPtr item;

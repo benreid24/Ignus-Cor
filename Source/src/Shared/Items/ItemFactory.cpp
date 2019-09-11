@@ -15,9 +15,11 @@ map<int, Item::Ptr> ItemFactory::getItems(File& file) {
         ItemEffect::List effects;
         int nEffects = file.get<uint8_t>();
         for (int j = 0; j<nEffects; ++j) {
-            ItemEffect::Type t = ItemEffect::Type(file.get<uint32_t>());
+            ItemEffect::Type t = ItemEffect::Type(file.get<uint16_t>());
             int intensity = file.get<uint32_t>();
-            effects.emplace_back(t, intensity);
+            int ms = file.get<uint32_t>();
+            float odds = float(file.get<uint16_t>()) / 1000.0;
+            effects.emplace_back(t, intensity, ms);
         }
 
         int value = file.get<uint32_t>();
@@ -68,7 +70,7 @@ map<int, Item::Ptr> ItemFactory::getItems(File& file) {
         new CombatArmor(
             Item::DefaultArmor,
             "Clothes",
-            "Default 'armor'. Provides zero protection. Should not be visible to player",
+            "Default armor. Provides zero protection. Should not be visible to player",
             ItemEffect::List(), 0, "", "", 0));
 
     items[Item::DefaultWeapon] = CombatAttack::Ptr(

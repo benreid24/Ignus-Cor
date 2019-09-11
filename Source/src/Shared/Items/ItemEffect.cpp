@@ -12,14 +12,15 @@ const vector<pair<string, string> > effects = {
 };
 }
 
-ItemEffect::ItemEffect(Type tp, int intense, float odds)
-: type(tp), intensity(intense), chance(odds) {}
+ItemEffect::ItemEffect(Type tp, int intense, int dur, float odds)
+: type(tp), intensity(intense), duration(dur), chance(odds) {}
 
-ItemEffect::ItemEffect(int effect, int intense, float odds)
-: ItemEffect(Type(effect), intense, odds) {}
+ItemEffect::ItemEffect(int effect, int intense, int dur, float odds)
+: ItemEffect(Type(effect), intense, dur, odds) {}
 
-ItemEffect::ItemEffect(const string& name, int intense, float odds) {
+ItemEffect::ItemEffect(const string& name, int intense, int dur, float odds) {
     intensity = intense;
+    duration = dur;
     chance = odds;
     for (unsigned int i = 0; i<effects.size(); ++i) {
         if (effects[i].first == name) {

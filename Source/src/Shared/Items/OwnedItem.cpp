@@ -14,6 +14,19 @@ OwnedItem::OwnedItem(Item::ConstPtr i) : item(i) {
         quantity = 0;
 }
 
+OwnedItem::OwnedItem(File& file) {
+    item = ItemDB::get().getItem(file.get<uint16_t>());
+    quantity = file.get<uint16_t>();
+    int neffects = file.get<uint8_t>();
+    for (int i = 0; i<neffects; ++i) {
+        int effect = file.get<uint16_t>();
+        int intensity = file.get<uint32_t>();
+        int dur = file.get<uint32_t>();
+        float odds = float(file.get<uint16_t>()) / 1000.0;
+        effects.push_back(ItemEffect(effect, intensity, dur, odds));
+    }
+}
+
 Item::ConstPtr OwnedItem::getItem() const {
     return item;
 }

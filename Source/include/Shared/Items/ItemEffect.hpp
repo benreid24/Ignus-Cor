@@ -32,6 +32,7 @@ private:
     Type type;
     int intensity;
     float chance;
+    int duration;
 
 public:
     typedef std::list<ItemEffect> List;
@@ -39,17 +40,17 @@ public:
     /**
      * Constructs the ItemEffect from the given Type and intensity
      */
-    ItemEffect(Type type = None, int intensity = 0, float odds = 1);
+    ItemEffect(Type type = None, int intensity = 0, int dur = 0, float odds = 1);
 
     /**
      * Implicit construction from int
      */
-    ItemEffect(int effect, int intensity = 0, float odds = 1);
+    ItemEffect(int effect, int intensity = 0, int dur = 0, float odds = 1);
 
     /**
      * Helper ctor for editor
      */
-    ItemEffect(const std::string& name, int intensity, float odds = 1);
+    ItemEffect(const std::string& name, int intensity, int dur = 0, float odds = 1);
 
     /**
      * Implicitly cast to the raw enum value of the effect
@@ -75,6 +76,11 @@ public:
      * Returns the intensity of the effect
      */
     int getIntensity() const { return intensity; }
+
+    /**
+     * Returns the duration of the effect, in ms. 0 means instant
+     */
+    int getDurationMs() const { return duration; }
 
     /**
      * Returns the chance of the effect happening
