@@ -35,7 +35,7 @@ private:
      */
     CombatAttack(int id, const std::string& name, const std::string& desc,
          const ItemEffect::List& effects, int value, const std::string& mapImg,
-         const std::string& menuImg, double power, float attackDelay, const std::string& animation,
+         const std::string& menuImg, double power, float attackDelay,
          ParticleGeneratorFactory::Preset particles, float partTime = 0);
 
     /**
@@ -44,8 +44,8 @@ private:
     CombatAttack(int id, const std::string& name, const std::string& desc,
          const ItemEffect::List& effects, int value, const std::string& mapImg,
          const std::string& menuImg, double power, float attackDelay,
-         const std::string& animation, ParticleGeneratorFactory::Preset particles,
-         float partTime, Item::Category cat, double range, double speed,
+         ParticleGeneratorFactory::Preset particles, float partTime,
+         Item::Category cat, double range, double speed,
          const std::string& impactAnimation = "",
          ParticleGeneratorFactory::Preset impactParts = ParticleGeneratorFactory::None,
          float impactPartTime = 0);
@@ -66,11 +66,6 @@ public:
     static Ref fromItem(Item::ConstPtr item);
 
     /**
-     * Saves the attack to the given file
-     */
-    void save(File& file) const; //TODO - make virtual
-
-    /**
      * Returns the type of the attack, either Melee or Ranged
      */
     Type getType() const;
@@ -84,11 +79,6 @@ public:
      * Returns the delay between attacks, in seconds
      */
     float getAttackDelay() const;
-
-    /**
-     * Returns the animation file for the attack
-     */
-    std::string getAnimation() const;
 
     /**
      * Returns the type of ParticleGenerator the attack uses
@@ -132,11 +122,9 @@ public:
 
 private:
     Type type;
-    std::string name, description;
     double power;
     float delaySeconds;
 
-    std::string animation;
     ParticleGeneratorFactory::Preset particleGenerator;
     float impactParticlePersistTime;
 
@@ -147,6 +135,7 @@ private:
     float particlePersistTime;
 
     friend class ItemFactory;
+    friend class ItemDbEditor;
 };
 
 #endif // COMBATATTACK_HPP

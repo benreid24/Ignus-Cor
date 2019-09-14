@@ -8,13 +8,12 @@ CombatAttack::Ref CombatAttack::fromItem(Item::ConstPtr item) {
 
 CombatAttack::CombatAttack(int id, const string& nm, const string& desc,
          const ItemEffect::List& fx, int val, const string& mpImg,
-         const string& mnImg, double pwr, float dly, const string& anim,
+         const string& mnImg, double pwr, float dly,
          ParticleGeneratorFactory::Preset parts, float ptime)
 : Item (id, Item::Weapon, nm, desc, fx, val, mpImg, mnImg) {
     type = Melee;
     power = pwr;
     delaySeconds = dly;
-    animation = anim;
     particleGenerator = parts;
     particlePersistTime = ptime;
 }
@@ -22,15 +21,14 @@ CombatAttack::CombatAttack(int id, const string& nm, const string& desc,
 CombatAttack::CombatAttack(int id, const string& nm, const string& desc,
          const ItemEffect::List& fx, int val, const string& mpImg,
          const string& mnImg, double pwr, float dly,
-         const string& anim, ParticleGeneratorFactory::Preset parts,
-         float ptime, Item::Category cat, double rng, double spd,
+         ParticleGeneratorFactory::Preset parts, float ptime,
+         Item::Category cat, double rng, double spd,
          const string& impactAnim,
          ParticleGeneratorFactory::Preset impactParts, float iptime)
 : Item(id, cat, nm, desc, fx, val, mpImg, mnImg) {
     type = Ranged;
     power = pwr;
     delaySeconds = dly;
-    animation = anim;
     particleGenerator = parts;
     particlePersistTime = ptime;
     range = rng;
@@ -41,12 +39,9 @@ CombatAttack::CombatAttack(int id, const string& nm, const string& desc,
 }
 
 void CombatAttack::p_save(File& file) const {
-    file.write<uint16_t>(type);
-    file.writeString(name);
-    file.writeString(description);
+    file.write<uint8_t>(type);
     file.write<uint32_t>(power);
     file.write<uint16_t>(delaySeconds * 100);
-    file.writeString(animation);
     file.write<uint8_t>(particleGenerator);
     file.write<uint16_t>(particlePersistTime * 100);
 
@@ -69,10 +64,6 @@ double CombatAttack::getPower() const {
 
 float CombatAttack::getAttackDelay() const {
     return delaySeconds;
-}
-
-string CombatAttack::getAnimation() const {
-    return animation;
 }
 
 ParticleGeneratorFactory::Preset CombatAttack::getParticleType() const {
@@ -110,10 +101,9 @@ CombatAttack::Ref CombatAttack::toExplosionAttack() const {
             name+"-explosion",
             description,
             effects,
-            0, "", "",
+            0, impactAnimation, "",
             power, //TODO - separate power/effects for explosion?
             delaySeconds,
-            impactAnimation,
             impactParticleGenerator,
             impactParticlePersistTime
         )

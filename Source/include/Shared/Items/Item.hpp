@@ -6,10 +6,7 @@
 #include "Shared/Util/File.hpp"
 #include <string>
 
-#ifdef EDITOR
 class ItemDbEditor;
-#endif
-
 class ItemFactory;
 
 /**
@@ -109,10 +106,7 @@ protected:
 	std::string name, description, mapImg, menuImg;
 	ItemEffect::List effects;
 
-	#ifdef EDITOR
 	friend class ItemDbEditor;
-	#endif
-
 	friend class ItemFactory;
 
 	/**

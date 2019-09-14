@@ -69,7 +69,7 @@ void CellTable::reorder() {
 	parent->Remove(cellArea);
 	cellBox->RemoveAll();
 	for (map<int,Box::Ptr>::iterator i = rows.begin(); i!=rows.end(); ++i) {
-		cellBox->Pack(i->second,true,false);
+		cellBox->Pack(i->second,true,true);
 		cellBox->Pack(Separator::Create());
 	}
 	parent->Pack(cellArea,false,true);
@@ -93,7 +93,7 @@ Box::Ptr packRow(vector<string> cells) {
 	row->Pack(Label::Create(cells[0]),false,false);
 	for (unsigned int i = 1; i<cells.size(); ++i) {
         row->Pack(Separator::Create(Separator::Orientation::VERTICAL),false,false);
-        row->Pack(Label::Create(cells[i]),false,false);
+        row->Pack(Label::Create(cells[i]),true,true);
 	}
 	return row;
 }

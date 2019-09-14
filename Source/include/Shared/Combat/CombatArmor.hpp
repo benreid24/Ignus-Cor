@@ -30,6 +30,7 @@ class CombatArmor : public Item {
     virtual void p_save(File& file) const override;
 
     friend class ItemFactory;
+    friend class ItemDbEditor;
 
 public:
     typedef std::shared_ptr<const CombatArmor> Ref;

@@ -32,10 +32,9 @@ map<int, Item::Ptr> ItemFactory::getItems(File& file) {
             items.emplace(id, Item::Ptr(new CombatArmor(id,name,desc,effects,value,mp,mn,dr)));
         }
         else if (cat == Item::Weapon || cat == Item::SpellTomb) {
-            CombatAttack::Type type = CombatAttack::Type(file.get<uint16_t>());
+            CombatAttack::Type type = CombatAttack::Type(file.get<uint8_t>());
             double power = file.get<uint32_t>();
             double delaySeconds = double(file.get<uint16_t>()) / 100.0;
-            string animation = file.getString();
             auto particleGenerator = ParticleGeneratorFactory::Preset(file.get<uint8_t>());
             double particlePersistTime = double(file.get<uint16_t>()) / 100.0;
 
@@ -48,7 +47,7 @@ map<int, Item::Ptr> ItemFactory::getItems(File& file) {
 
                 items.emplace(id, Item::Ptr(new CombatAttack(id, name, desc, effects, value,
                                                              mp, mn, power, delaySeconds,
-                                                             animation, particleGenerator,
+                                                             particleGenerator,
                                                              particlePersistTime, cat,
                                                              range, speed, impactAnimation,
                                                              impactParticleGenerator,
@@ -57,7 +56,7 @@ map<int, Item::Ptr> ItemFactory::getItems(File& file) {
             else {
                 items.emplace(id, Item::Ptr(new CombatAttack(id, name, desc, effects, value,
                                                              mp, mn, power, delaySeconds,
-                                                             animation, particleGenerator,
+                                                             particleGenerator,
                                                              particlePersistTime)));
             }
         }
@@ -78,10 +77,9 @@ map<int, Item::Ptr> ItemFactory::getItems(File& file) {
                          "TestSword",
                          "This is for testing",
                          ItemEffect::List(),
-                         0, "", "",
+                         0, "Combat/Weapons/TestSword", "",
                          30,
                          0.6,
-                         "Combat/Weapons/TestSword",
                          ParticleGeneratorFactory::None)
     );
 	items[Item::DefaultSpell] = CombatAttack::Ptr(
@@ -89,10 +87,9 @@ map<int, Item::Ptr> ItemFactory::getItems(File& file) {
                           "TestSpell",
                           "This is for testing",
                           ItemEffect::List(),
-                          0, "", "",
+                          0, "Combat/Spells/fireball.anim", "",
                           30,
                           0.4,
-                          "Combat/Spells/fireball.anim",
                           ParticleGeneratorFactory::Smoke,
                           0,
                           Item::SpellTomb,

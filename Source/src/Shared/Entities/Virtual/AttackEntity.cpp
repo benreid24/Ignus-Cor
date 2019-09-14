@@ -6,7 +6,7 @@
 using namespace std;
 
 AttackEntity::AttackEntity(Entity::Ptr atk, CombatAttack::Ref weapon)
-: Entity(weapon->getName(), atk->getPosition(), weapon->getAnimation(), "") {
+: Entity(weapon->getName(), atk->getPosition(), weapon->getMapImageFile(), "") {
     attacker = atk;
     attack = weapon;
     particlesCreated = false;

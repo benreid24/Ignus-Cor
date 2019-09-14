@@ -39,8 +39,14 @@ bool ItemDB::itemExists(int id) {
 void ItemDB::save() {
 	File file(Properties::ItemDbFile,File::Out);
 
-	file.write<uint16_t>(items.size());
+	unsigned int sz = 0;
 	for (map<int,Item::Ptr>::iterator i = items.begin(); i!=items.end(); ++i) {
-        //
+        if (i->second->getId() >= 0)
+            sz += 1;
+	}
+	file.write<uint16_t>(sz);
+	for (map<int,Item::Ptr>::iterator i = items.begin(); i!=items.end(); ++i) {
+        if (i->second->getId() >= 0)
+            i->second->save(file);
 	}
 }

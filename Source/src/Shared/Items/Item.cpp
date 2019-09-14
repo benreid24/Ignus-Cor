@@ -12,6 +12,7 @@ const vector<string> categories = {
     "Armor",
     "Weapons",
     "Potions",
+    "Food",
     "Spell Tombs",
     "Keys",
     "Miscellaneous"
@@ -21,6 +22,7 @@ const vector<string> categoriesSingle = {
     "Armor",
     "Weapon",
     "Potion",
+    "Food",
     "Spell Tomb",
     "Key",
     "Miscellaneous"
@@ -61,6 +63,10 @@ int Item::getId() const {
 	return id;
 }
 
+Item::Category Item::getCategory() const {
+    return category;
+}
+
 const string& Item::getName() const {
 	return name;
 }
@@ -87,6 +93,7 @@ const string& Item::getMenuImageFile() const {
 
 void Item::save(File& file) const {
     file.write<uint16_t>(getId());
+    file.write<uint8_t>(getCategory());
     file.writeString(getName());
 
     file.write<uint8_t>(getEffects().size());
