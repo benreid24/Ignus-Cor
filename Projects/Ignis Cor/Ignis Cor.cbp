@@ -113,10 +113,6 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 		<Unit filename="../../Source/include/Shared/Entities/Virtual/AttackEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Virtual/CombatEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Virtual/GraphicalEffectEntity.hpp" />
-		<Unit filename="../../Source/include/Shared/GUI/CellTable.hpp" />
-		<Unit filename="../../Source/include/Shared/GUI/Form.hpp" />
-		<Unit filename="../../Source/include/Shared/GUI/ResizableImage.hpp" />
-		<Unit filename="../../Source/include/Shared/GUI/WrappingBox.hpp" />
 		<Unit filename="../../Source/include/Shared/Items/Item.hpp" />
 		<Unit filename="../../Source/include/Shared/Items/ItemDB.hpp" />
 		<Unit filename="../../Source/include/Shared/Items/ItemEffect.hpp" />
@@ -184,9 +180,6 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 		<Unit filename="../../Source/src/Shared/Entities/Virtual/AttackEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Virtual/CombatEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Virtual/GraphicalEffectEntity.cpp" />
-		<Unit filename="../../Source/src/Shared/GUI/CellTable.cpp" />
-		<Unit filename="../../Source/src/Shared/GUI/Form.cpp" />
-		<Unit filename="../../Source/src/Shared/GUI/WrappingBox.cpp" />
 		<Unit filename="../../Source/src/Shared/Items/Item.cpp" />
 		<Unit filename="../../Source/src/Shared/Items/ItemDB.cpp" />
 		<Unit filename="../../Source/src/Shared/Items/ItemEffect.cpp" />

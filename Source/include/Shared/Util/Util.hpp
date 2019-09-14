@@ -7,6 +7,10 @@ int randomInt(int mn, int mx);
 
 std::string intToString(int i);
 
-int stringToInt(std::string s);
+std::string doubleToString(double d);
+
+int stringToInt(const std::string& s);
+
+double stringToDouble(const std::string& s);
 
 #endif // MATH_HPP

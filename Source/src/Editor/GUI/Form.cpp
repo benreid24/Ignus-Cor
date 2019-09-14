@@ -52,7 +52,15 @@ void Form::addField(const string& name, string text, int width, string value) {
 }
 
 void Form::addField(const string& name, string text, int width, double value) {
+	addField(name, text, width, doubleToString(value));
+}
+
+void Form::addField(const string& name, string text, int width, int value) {
 	addField(name, text, width, intToString(value));
+}
+
+void Form::addLabel(const string& text) {
+    pack(text, Label::Create(text));
 }
 
 void Form::updateActive(string caller) {
@@ -68,7 +76,7 @@ int Form::getFieldAsInt(const string& name) {
 }
 
 double Form::getFieldAsDouble(const string& name) {
-	return stringToInt(getField(name));
+	return stringToDouble(getField(name));
 }
 
 void Form::setField(const string& name, string val) {
@@ -76,7 +84,18 @@ void Form::setField(const string& name, string val) {
 }
 
 void Form::setField(const string& name, double val) {
+	fields[name].second->SetText(doubleToString(val));
+}
+
+void Form::setField(const string& name, int val) {
 	fields[name].second->SetText(intToString(val));
+}
+
+void Form::addButton(const string& text, ButtonCb cb) {
+    Button::Ptr but = Button::Create(text);
+    if (cb)
+        but->GetSignal(Button::OnLeftClick).Connect( [cb] { cb(); } );
+    pack(text, but);
 }
 
 void Form::addSubform(const string& name, Form& form) {
@@ -143,6 +162,10 @@ void Form::addToParent(Box::Ptr parent) {
 
 void Form::removeFromParent(Box::Ptr parent) {
 	parent->Remove(container);
+}
+
+bool Form::isVisible() {
+    return container->IsLocallyVisible();
 }
 
 void Form::update() {

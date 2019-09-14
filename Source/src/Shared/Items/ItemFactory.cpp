@@ -19,7 +19,7 @@ map<int, Item::Ptr> ItemFactory::getItems(File& file) {
             int intensity = file.get<uint32_t>();
             int ms = file.get<uint32_t>();
             float odds = float(file.get<uint16_t>()) / 1000.0;
-            effects.emplace_back(t, intensity, ms);
+            effects.emplace_back(t, intensity, ms, odds);
         }
 
         int value = file.get<uint32_t>();

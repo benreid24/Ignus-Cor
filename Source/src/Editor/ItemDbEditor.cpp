@@ -126,7 +126,7 @@ void ItemDbEditor::doItem(int id) {
 	form.addSubform("armor", armorForm);
 	if (item && item->getCategory() == Item::Armor) {
         CombatArmor::Ref a = CombatArmor::fromItem(item);
-        armorForm.setField("dr", intToString(a->getDamageResist()));
+        armorForm.setField("dr", a->getDamageResist());
 	}
 	else
         form.hideInput("armor");
@@ -135,17 +135,17 @@ void ItemDbEditor::doItem(int id) {
 	weaponForm.addDropdown("type", "Type: ", {"Melee", "Ranged"});
 	weaponForm.setDropdownSelection("type", 0);
 	weaponForm.addField("pwr", "Power: ");
-	weaponForm.addField("cldn", "Cooldown: ", 160);
+	weaponForm.addField("cldn", "Cooldown(s): ", 160);
 	weaponForm.addField("pts", "Particle Generator: ");
-	weaponForm.addField("ptm", "Particle Gen Time: ");
+	weaponForm.addField("ptm", "Particle Gen Time(s): ");
 	form.addSubform("weapon", weaponForm);
 
 	Form rangedForm;
 	rangedForm.addField("colani", "Impact Animation: ", 240);
-	rangedForm.addField("rng", "Range: ");
-	rangedForm.addField("spd", "Speed: ");
+	rangedForm.addField("rng", "Range(px): ");
+	rangedForm.addField("spd", "Speed(px/s): ");
 	rangedForm.addField("pts", "Impact Particle Generator: ");
-	rangedForm.addField("ptm", "Impact Particle Gen Time: ");
+	rangedForm.addField("ptm", "Impact Particle Gen Time(s): ");
 	form.addSubform("ranged", rangedForm);
 
 	if (item && (item->getCategory() == Item::Weapon || item->getCategory() == Item::SpellTomb)) {
@@ -166,7 +166,7 @@ void ItemDbEditor::doItem(int id) {
         form.hideInput("ranged");
     }
 
-    //addItemEffectsToForm(form, (item)?(item->effects):(ItemEffect::List()));
+    list<Form> effectForms = addItemEffectsToForm(form, (item)?(item->effects):(ItemEffect::List()));
 
     form.addToParent(winBox);
     Box::Ptr butBox = Box::Create(Box::Orientation::HORIZONTAL,5);
@@ -226,7 +226,7 @@ void ItemDbEditor::doItem(int id) {
 			int val = form.getFieldAsInt("v");
 			string mapImg = form.getField("mp");
 			string menuImg = form.getField("mn");
-			ItemEffect::List effects = ItemEffect::List();
+			ItemEffect::List effects = getItemEffectsFromForm(effectForms);
 			if (id>0 && name.size()>0 && desc.size()>0 && val>=0 && mapImg.size()>0 && menuImg.size()>0) {
                 if (item)
                     ItemDB::get().removeItem(item->id);

@@ -43,6 +43,7 @@ class Form {
 
 public:
     typedef std::function<void(int)> ComboCb;
+    typedef std::function<void()> ButtonCb;
 
 	/**
 	 * Creates the form and initializes it with the given direction to populate in
@@ -53,6 +54,11 @@ public:
 	 * Adds the field with the given name and width to the form
 	 */
 	void addField(const std::string& name, std::string text, int width = 120, std::string value = "");
+
+	/**
+	 * Adds the field with the given name and width to the form
+	 */
+	void addField(const std::string& name, std::string text, int width, int value);
 
 	/**
 	 * Adds the field with the given name and width to the form
@@ -68,6 +74,7 @@ public:
 	 * Returns the given field as an int
 	 */
 	int getFieldAsInt(const std::string& name);
+
 	/**
 	 * Returns the given field as a double
 	 */
@@ -82,6 +89,21 @@ public:
 	 * Helper function to set a field value from a double
 	 */
     void setField(const std::string& name, double val);
+
+    /**
+	 * Helper function to set a field value from an int
+	 */
+    void setField(const std::string& name, int val);
+
+    /**
+     * Adds a label
+     */
+    void addLabel(const std::string& text);
+
+    /**
+     * Adds a button
+     */
+    void addButton(const std::string& text, ButtonCb cb = ButtonCb());
 
 	/**
 	 * Adds the subform to this form
@@ -138,6 +160,11 @@ public:
 	 * Removes the form from the parent
 	 */
 	void removeFromParent(sfg::Box::Ptr parent);
+
+	/**
+	 * Returns whether or not the Form is visible
+	 */
+    bool isVisible();
 
 	/**
 	 * Call once per update loop
