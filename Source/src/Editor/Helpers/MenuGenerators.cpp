@@ -65,3 +65,14 @@ ItemEffect::List getItemEffectsFromForm(list<Form>& effectForms) {
 
     return effects;
 }
+
+void addParticleGeneratorsToForm(Form& form, const string& name) {
+    form.addDropdown(name, name, ParticleGeneratorFactory::getAllPresets());
+}
+
+ParticleGeneratorFactory::Preset getParticleGeneratorFromForm(Form& form, const string& name) {
+    unsigned int i = form.getSelectedDropdownOption(name);
+    if (i >= ParticleGeneratorFactory::getAllPresets().size())
+        i = 0;
+    return ParticleGeneratorFactory::Preset(i);
+}

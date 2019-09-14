@@ -136,7 +136,7 @@ void ItemDbEditor::doItem(int id) {
 	weaponForm.setDropdownSelection("type", 0);
 	weaponForm.addField("pwr", "Power: ");
 	weaponForm.addField("cldn", "Cooldown(s): ", 160);
-	weaponForm.addField("pts", "Particle Generator: ");
+	addParticleGeneratorsToForm(weaponForm, "Particle Generator");
 	weaponForm.addField("ptm", "Particle Gen Time(s): ");
 	form.addSubform("weapon", weaponForm);
 
@@ -144,7 +144,7 @@ void ItemDbEditor::doItem(int id) {
 	rangedForm.addField("colani", "Impact Animation: ", 240);
 	rangedForm.addField("rng", "Range(px): ");
 	rangedForm.addField("spd", "Speed(px/s): ");
-	rangedForm.addField("pts", "Impact Particle Generator: ");
+	addParticleGeneratorsToForm(rangedForm, "Impact Particle Generator");
 	rangedForm.addField("ptm", "Impact Particle Gen Time(s): ");
 	form.addSubform("ranged", rangedForm);
 
@@ -153,12 +153,12 @@ void ItemDbEditor::doItem(int id) {
         weaponForm.setDropdownSelection("type", a->getType()==CombatAttack::Melee ? 0 : 1);
         weaponForm.setField("pwr", a->getPower());
         weaponForm.setField("cldn", a->getAttackDelay());
-        weaponForm.setField("pts", a->getParticleType());
+        weaponForm.setDropdownSelection("Particle Generator", a->getParticleType());
         weaponForm.setField("ptm", a->getParticlePersistanceTime());
         rangedForm.setField("colani", a->getImpactAnimation());
         rangedForm.setField("rng", a->getRange());
         rangedForm.setField("spd", a->getSpeed());
-        rangedForm.setField("pts", a->getImpactParticles());
+        rangedForm.setDropdownSelection("Impact Particle Generator", a->getImpactParticles());
         rangedForm.setField("ptm", a->getImpactParticlePersistance());
     }
     else {
@@ -237,7 +237,7 @@ void ItemDbEditor::doItem(int id) {
                 else if (cat == Item::Weapon || cat == Item::SpellTomb) {
                     double pwr = weaponForm.getFieldAsDouble("pwr");
                     double cldn = weaponForm.getFieldAsDouble("cldn");
-                    ParticleGeneratorFactory::Preset pgen = ParticleGeneratorFactory::Preset(weaponForm.getFieldAsInt("pts"));
+                    ParticleGeneratorFactory::Preset pgen = getParticleGeneratorFromForm(weaponForm, "Impact Particle");
                     double ptime = weaponForm.getFieldAsDouble("ptm");
                     if (weaponForm.getSelectedDropdownOption("type") == 0)
                         ItemDB::get().getItems().emplace(id, Item::Ptr(new CombatAttack(id,name,desc,effects,val,mapImg,menuImg,pwr,cldn,pgen,ptime)));
@@ -245,7 +245,7 @@ void ItemDbEditor::doItem(int id) {
                         string ianim = rangedForm.getField("colani");
                         double rng = rangedForm.getFieldAsDouble("rng");
                         double spd = rangedForm.getFieldAsDouble("spd");
-                        ParticleGeneratorFactory::Preset ipgen = ParticleGeneratorFactory::Preset(rangedForm.getFieldAsInt("pts"));
+                        ParticleGeneratorFactory::Preset ipgen = getParticleGeneratorFromForm(rangedForm, "Impact Particle Generator");
                         double iptime = rangedForm.getFieldAsDouble("ptm");
                         ItemDB::get().getItems().emplace(id, Item::Ptr(new CombatAttack(id,name,desc,effects,val,mapImg,menuImg,pwr,cldn,pgen,ptime,cat,rng,spd,ianim,ipgen,iptime)));
                     }

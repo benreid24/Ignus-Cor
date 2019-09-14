@@ -1,6 +1,13 @@
 #include "Shared/Particles/ParticleGeneratorFactory.hpp"
 using namespace std;
 
+namespace {
+const vector<string> presets = {
+    "None",
+    "Smoke"
+};
+}
+
 ParticleGenerator::Ptr ParticleGeneratorFactory::createSmoke(ParticleGenerator::LifetimeType lifetimeType, float lifetime) {
     ParticleGenerator::ValueWindow spRad(0,7), spAng(0,360), spVel(2,5), spDir(-85,-110);
     ParticleGenerator::Ptr gen = ParticleGenerator::create(spRad, spAng, spVel, spDir);
@@ -43,4 +50,16 @@ ParticleGenerator::Ptr ParticleGeneratorFactory::create(Preset type, ParticleGen
             cout << "Warning: Invalid ParticleGeneratorFactory::Preset " << type << endl;
             return createBlank();
     }
+}
+
+const vector<string>& ParticleGeneratorFactory::getAllPresets() {
+    return presets;
+}
+
+ParticleGeneratorFactory::Preset ParticleGeneratorFactory::getPresetFromName(const string& name) {
+    for (unsigned int i = 0; i<presets.size(); ++i) {
+        if (presets[i] == name)
+            return Preset(i);
+    }
+    return None;
 }
