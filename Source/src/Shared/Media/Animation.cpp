@@ -30,11 +30,10 @@ void AnimationSource::load(const string& file)
     string path = File::getPath(file);
 
     spriteSheetFile = input.getString();
-    if (FileExists(path+spriteSheetFile))
-		path += spriteSheetFile;
-	else
-		path = Properties::SpriteSheetPath+spriteSheetFile;
-    sheet = imagePool.loadResource(path);
+    if (File::exists(path+spriteSheetFile))
+		sheet = imagePool.loadResource(path+spriteSheetFile);
+	else if (File::exists(Properties::SpriteSheetPath+spriteSheetFile))
+		sheet = imagePool.loadResource(Properties::SpriteSheetPath+spriteSheetFile);
     loop = bool(input.get<uint8_t>());
     int numFrames = input.get<uint16_t>();
     frames.resize(numFrames);
@@ -69,7 +68,7 @@ bool AnimationSource::isLooping() const
 
 const std::vector<sf::Sprite>& AnimationSource::getFrame(unsigned int i, Vector2f pos, bool centerOrigin)
 {
-    if (i>=frames.size()) {
+    if (i>=frames.size() || !sheet) {
         return sprites;
     }
 
@@ -93,7 +92,7 @@ const std::vector<sf::Sprite>& AnimationSource::getFrame(unsigned int i, Vector2
 }
 
 sf::Vector2f AnimationSource::getFrameSize(unsigned int n) {
-    if (n>=frames.size())
+    if (n>=frames.size() || !sheet)
         return Vector2f(0,0);
 
     sf::FloatRect bounds(0, 0, 0, 0); //width/height = right/bottom
@@ -145,8 +144,12 @@ unsigned int AnimationSource::numFrames() const
     return frames.size();
 }
 
-string AnimationSource::getSpritesheetFilename() {
+const string& AnimationSource::getSpritesheetFilename() const {
 	return spriteSheetFile;
+}
+
+bool AnimationSource::spritesheetFound() const {
+    return sheet.get() != nullptr;
 }
 
 Animation::Animation()

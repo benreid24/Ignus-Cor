@@ -101,7 +101,12 @@ public:
     /**
      * Returns the base filename of the spritesheet
      */
-	std::string getSpritesheetFilename();
+	const std::string& getSpritesheetFilename() const;
+
+	/**
+	 * Returns whether or not the spritesheet was found
+	 */
+    bool spritesheetFound() const;
 };
 
 typedef std::shared_ptr<AnimationSource> AnimationReference;

@@ -55,7 +55,7 @@ Item::Item(int i, Category cat, const string& nm, const string& desc,
 	description = desc;
 	effects = eft;
 	value = v;
-	mapImg = mp;
+	mapGfx = mp;
 	menuImg = mn;
 }
 
@@ -83,8 +83,8 @@ int Item::getValue() const {
 	return value;
 }
 
-const string& Item::getMapImageFile() const {
-	return mapImg;
+const string& Item::getMapGfxFile() const {
+	return mapGfx;
 }
 
 const string& Item::getMenuImageFile() const {
@@ -106,7 +106,7 @@ void Item::save(File& file) const {
 
     file.write<uint32_t>(getValue());
     file.writeString(getDescription());
-    file.writeString(getMapImageFile());
+    file.writeString(getMapGfxFile());
     file.writeString(getMenuImageFile());
 
     p_save(file);

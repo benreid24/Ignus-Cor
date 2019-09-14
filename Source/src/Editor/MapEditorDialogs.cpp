@@ -220,7 +220,7 @@ MapEditor::MapEditor(Desktop& dk, Notebook::Ptr parent) : tileBox(Box::Orientati
 
 void MapEditor::addTile() {
 	MapEditor* me = this;
-	string f = getFilename("Image (*.png)\0 *.png\0\0",false,false);
+	string f = File::getFile("Image", "png", false, false);
 	if (f.size()==0)
 		return;
 
@@ -240,8 +240,8 @@ void MapEditor::addTile() {
 
 void MapEditor::addTileFolder() {
 	MapEditor* me = this;
-	string path = getFoldername();
-	vector<string> files = listDirectory(path, "png", true);
+	string path = File::getFolder();
+	vector<string> files = File::listDirectory(path, "png", true);
 	for (unsigned int i = 0; i<files.size(); ++i) {
 		int id = tileset.addTile(files[i]);
 		TextureReference txtr = tileset.getTile(id);
@@ -260,15 +260,15 @@ void MapEditor::addTileFolder() {
 
 void MapEditor::addAnim() {
 	MapEditor* me = this;
-	string f = getFilename("Animation (*.anim)\0 *.anim\0\0",false,false);
+	string f = File::getFile("Animation", "anim", false, false);
 	if (f.size()==0)
 		return;
 
 	//Determine if we need the spritesheet
 	AnimationSource anim(f);
 	string baseName = anim.getSpritesheetFilename();
-	if (!FileExists(Properties::SpriteSheetPath+baseName)) {
-		baseName = getFilename(string(baseName+" (*.png)\0 *.png\0\0").c_str(),false,false);
+	if (!File::exists(Properties::SpriteSheetPath+baseName)) {
+		baseName = File::getFile(baseName, "png", false, false);
 		if (baseName.size()==0)
 			return;
 	}
@@ -303,14 +303,12 @@ void MapEditor::loadAnim() {
 
 		//Determine if we need the spritesheet
 		AnimationSource anim(Properties::AnimationPath+file);
-		string baseName = anim.getSpritesheetFilename();
-		if (!FileExists(Properties::SpriteSheetPath+baseName)) {
-			baseName = getFilename(string(baseName+" (*.png)\0 *.png\0\0").c_str(),false,false);
+		string baseName = "NONE";
+		if (!anim.spritesheetFound()) {
+			baseName = File::getFile(baseName, "png", false, false);
 			if (baseName.size()==0)
 				return;
 		}
-		else
-			baseName = "NONE";
 
 		int id = tileset.addAnim(Properties::AnimationPath+file,baseName);
 		AnimationReference animSrc = tileset.getAnimation(id);

@@ -51,29 +51,29 @@ public:
      */
     static const std::vector<std::string>& getAllCategories();
 
-	/**
-	 * Returns the item id
-	 */
-	int getId() const;
+    /**
+     * Returns the item id
+     */
+    int getId() const;
 
-	/**
-	 * Returns the category of the item
-	 */
+    /**
+     * Returns the category of the item
+     */
     Category getCategory() const;
 
-	/**
-	 * Returns the item name
-	 */
-	const std::string& getName() const;
+    /**
+     * Returns the item name
+     */
+    const std::string& getName() const;
 
-	/**
-	 * Returns the item description
-	 */
-	const std::string& getDescription() const;
+    /**
+     * Returns the item description
+     */
+    const std::string& getDescription() const;
 
-	/**
-	 * Returns the item's effect
-	 */
+    /**
+     * Returns the item's effect
+     */
     const ItemEffect::List& getEffects() const;
 
     /**
@@ -84,7 +84,7 @@ public:
     /**
      * Returns the image of the item while on the map
      */
-    const std::string& getMapImageFile() const;
+    const std::string& getMapGfxFile() const;
 
     /**
      * Returns the image of the item in the menu
@@ -103,17 +103,17 @@ public:
 protected:
     int id, value;
     Category category;
-	std::string name, description, mapImg, menuImg;
-	ItemEffect::List effects;
+    std::string name, description, mapGfx, menuImg;
+    ItemEffect::List effects;
 
-	friend class ItemDbEditor;
-	friend class ItemFactory;
+    friend class ItemDbEditor;
+    friend class ItemFactory;
 
-	/**
+    /**
      * Constructs the item record from the given data
      */
-	Item(int id, Category category, const std::string& name, const std::string& desc,
-         const ItemEffect::List& effects, int value, const std::string& mapImg,
+    Item(int id, Category category, const std::string& name, const std::string& desc,
+         const ItemEffect::List& effects, int value, const std::string& mapGfx,
          const std::string& menuImg);
 
     /**

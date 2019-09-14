@@ -10,12 +10,12 @@
  * \ingroup Items
  */
 class ItemDB {
-	std::map<int,Item::Ptr> items;
+    std::map<int,Item::Ptr> items;
 
-	/**
-	 * Loads the items
-	 */
-	ItemDB();
+    /**
+     * Loads the items
+     */
+    ItemDB();
 
 public:
     /**
@@ -23,35 +23,35 @@ public:
      */
     static ItemDB& get();
 
-	/**
-	 * Returns item information for the given id
-	 */
-	Item::ConstPtr getItem(int id);
+    /**
+     * Returns item information for the given id
+     */
+    Item::ConstPtr getItem(int id);
 
-	/**
-	 * Tells whether or not the given item exists
-	 */
-	bool itemExists(int id);
+    /**
+     * Tells whether or not the given item exists
+     */
+    bool itemExists(int id);
 
-	/**
-	 * Removes the item with the given id
-	 */
-	void removeItem(int id);
+    /**
+     * Removes the item with the given id
+     */
+    void removeItem(int id);
 
-	/**
-	 * Returns a reference to the internal map of items
-	 */
-	std::map<int,Item::Ptr>& getItems();
+    /**
+     * Returns a reference to the internal map of items
+     */
+    std::map<int,Item::Ptr>& getItems();
 
-	/**
-	 * Returns a free id
-	 */
+    /**
+     * Returns a free id
+     */
     int getNextId();
 
-	/**
-	 * Saves the item database to the file
-	 */
-	void save();
+    /**
+     * Saves the item database to the file
+     */
+    void save();
 };
 
 #endif // ITEMDB_HPP

@@ -40,7 +40,7 @@ Playlist::~Playlist()
 
 void Playlist::load(string file, bool savePrev)
 {
-	if (file==curList || !FileExists(Properties::PlaylistPath+file))
+	if (file==curList || !File::exists(Properties::PlaylistPath+file))
 		return;
 	stop();
 

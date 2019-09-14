@@ -14,55 +14,55 @@ class Properties
 {
 public:
 	#ifndef EDITOR
-    const static int ScreenWidth = 800;
-    const static int ScreenHeight = 600;
-    const static int TilesWide = 25;
-    const static int TilesTall = 19;
+    static const int ScreenWidth = 800;
+    static const int ScreenHeight = 600;
+    static const int TilesWide = 25;
+    static const int TilesTall = 19;
     #else
-    const static int ScreenWidth = 1140;
-    const static int ScreenHeight = 860;
-    const static int TilesWide = 40;
-    const static int TilesTall = 27;
-    const static std::string EditorResources;
+    static const int ScreenWidth = 1140;
+    static const int ScreenHeight = 860;
+    static const int TilesWide = 40;
+    static const int TilesTall = 27;
+    static const std::string EditorResources;
     #endif
 
-    const static std::string GameSavePath;
+    static const std::string GameSavePath;
 
-    const static std::string MapPath;
-    const static std::string TilesetFile;
-    const static std::string MapTilePath;
-    const static std::string MapAnimPath;
-    const static std::string SpawnerPath;
+    static const std::string MapPath;
+    static const std::string TilesetFile;
+    static const std::string MapTilePath;
+    static const std::string MapAnimPath;
+    static const std::string SpawnerPath;
 
-    const static std::string EntityImagePath;
+    static const std::string EntityImagePath;
 
-    const static std::string AnimationPath;
-    const static std::string SpriteSheetPath;
+    static const std::string AnimationPath;
+    static const std::string SpriteSheetPath;
 
-    const static std::string ScriptPath;
-    const static std::string FontPath;
+    static const std::string ScriptPath;
+    static const std::string FontPath;
 
-    const static std::string PlaylistPath;
-    const static std::string MusicPath;
-    const static std::string AudioPath;
+    static const std::string PlaylistPath;
+    static const std::string MusicPath;
+    static const std::string AudioPath;
 
-    const static std::string NpcPath;
-    const static std::string ConversationPath;
-    constexpr static float ConversationTerminationDistance = 75;
+    static const std::string NpcPath;
+    static const std::string ConversationPath;
+    static constexpr float ConversationTerminationDistance = 75;
 
-    const static std::string EntityBubbleImageFile;
-    const static std::string EntityBubbleImagePath;
-    const static std::string EntityBubbleAnimPath;
+    static const std::string EntityBubbleImageFile;
+    static const std::string EntityBubbleImagePath;
+    static const std::string EntityBubbleAnimPath;
 
-    const static std::string MenuImagePath;
-    const static std::string MiscImagePath;
+    static const std::string MenuImagePath;
+    static const std::string ItemMenuImagePath;
+    static const std::string MiscImagePath;
 
-    const static std::string ItemDbFile;
-    const static std::string AttackDbFile;
-    const static std::string EffectDbFile;
+    static const std::string ItemDbFile;
+    static const std::string ItemAnimationPath;
 
-    const static std::string ParticleImagePath;
-    const static std::string ParticleAnimPath;
+    static const std::string ParticleImagePath;
+    static const std::string ParticleAnimPath;
 
     static sf::Font PrimaryMenuFont;
     static sf::Font SecondaryMenuFont;

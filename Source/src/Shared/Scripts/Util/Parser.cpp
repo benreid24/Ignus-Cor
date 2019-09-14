@@ -14,9 +14,9 @@ Parser::Parser(string source)
 
 	if (File::getExtension(source)=="scr")
 	{
-		if (!FileExists(source))
+		if (!File::exists(source))
 			source = Properties::ScriptPath+source;
-		if (!FileExists(source))
+		if (!File::exists(source))
 			throw runtime_error("Failed to load script: "+source);
 		File input(source);
 		script.clear();

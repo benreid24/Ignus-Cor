@@ -11,7 +11,7 @@ ParticleGraphics::ParticleGraphics(const string& file) : ParticleGraphics() {
 void ParticleGraphics::load(const string& file) {
     if (File::getExtension(file)=="anim") {
         gfxType = Anim;
-        if (!FileExists(file))
+        if (!File::exists(file))
             animRef = animPool.loadResource(Properties::ParticleAnimPath + file);
         else
             animRef = animPool.loadResource(file);
@@ -19,7 +19,7 @@ void ParticleGraphics::load(const string& file) {
     }
     else if (File::getExtension(file)=="png") {
         gfxType = Image;
-        if (!FileExists(file))
+        if (!File::exists(file))
             texture = imagePool.loadResource(Properties::ParticleImagePath + file);
         else
             texture = imagePool.loadResource(file);

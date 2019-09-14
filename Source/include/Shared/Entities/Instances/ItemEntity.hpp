@@ -16,7 +16,7 @@ class ItemEntity : public Entity {
 	 * Constructs the ItemEntity from the given item id and position
 	 */
 	ItemEntity(Item::ConstPtr item, EntityPosition position) :
-	    Entity(item->getName(), position, item->getMapImageFile()) { }
+	    Entity(item->getName(), position, item->getMapGfxFile()) { }
 
     /**
      * Checks if the interacting Entity is a Player. If yes, gives itself to player then

@@ -20,10 +20,10 @@ const std::string Properties::EntityBubbleImageFile = "Resources/Media/Images/En
 const std::string Properties::EntityBubbleImagePath = "Resources/Media/Images/Entities/Bubbles/";
 const std::string Properties::EntityBubbleAnimPath = "Resources/Media/Animations/Entities/Bubbles/";
 const std::string Properties::MenuImagePath = "Resources/Media/Images/Menu/";
+const std::string Properties::ItemMenuImagePath = "Resources/Media/Images/Menu/Items/";
 const std::string Properties::MiscImagePath = "Resources/Media/Images/Misc/";
 const std::string Properties::ItemDbFile = "Resources/Data/DB/items.db";
-const std::string Properties::AttackDbFile = "Resources/Data/DB/attacks.db";
-const std::string Properties::EffectDbFile = "Resources/Data/DB/effects.db";
+const std::string Properties::ItemAnimationPath = "Resources/Media/Animations/Items/";
 const std::string Properties::ParticleAnimPath = "Resources/Media/Animations/Particles/";
 const std::string Properties::ParticleImagePath = "Resources/Media/Images/Particles/";
 

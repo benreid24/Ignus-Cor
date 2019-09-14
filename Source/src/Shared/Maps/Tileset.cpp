@@ -12,7 +12,7 @@ Tileset::Tileset() {
     string f;
 
     nextTileId = nextAnimId = 1;
-    if (!FileExists(Properties::TilesetFile))
+    if (!File::exists(Properties::TilesetFile))
 		return;
 
     for (n = loader.get<uint16_t>(); n>0; --n) {
@@ -52,7 +52,7 @@ void Tileset::save() {
 
 int Tileset::addTile(std::string file) {
 	string newFile = intToString(nextTileId)+"__"+File::getBaseName(file)+".png";
-	copyFile(file,Properties::MapTilePath+newFile);
+	File::copy(file,Properties::MapTilePath+newFile);
 	tileFiles[nextTileId] = newFile;
 	tiles[nextTileId] = imagePool.loadResource(Properties::MapTilePath+newFile);
 	nextTileId++;
@@ -73,10 +73,13 @@ int Tileset::numTiles() {
 }
 
 int Tileset::addAnim(std::string file, std::string spritesheet) {
+    AnimationSource anim(Properties::AnimationPath+file);
 	string newFile = intToString(nextAnimId)+"__"+File::getBaseName(file)+".anim";
-	copyFile(file,Properties::MapAnimPath+newFile);
+	File::copy(file,Properties::MapAnimPath+newFile);
 	if (spritesheet!="NONE")
-		copyFile(spritesheet,Properties::SpriteSheetPath+File::getBaseName(spritesheet)+".png");
+		File::copy(spritesheet,Properties::SpriteSheetPath+File::getBaseName(spritesheet)+".png");
+    else if (File::exists(File::getPath(file)+anim.getSpritesheetFilename()))
+        File::copy(File::getPath(file)+anim.getSpritesheetFilename(), Properties::MapAnimPath+anim.getSpritesheetFilename());
 	animFiles[nextAnimId] = newFile;
 	anims[nextAnimId] = animPool.loadResource(Properties::MapAnimPath+newFile);
 	nextAnimId++;
