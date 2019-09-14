@@ -1,7 +1,7 @@
 #ifndef ITEMDBEDITOR_HPP
 #define ITEMDBEDITOR_HPP
 
-#include "Shared/GUI/CellTable.hpp"
+#include "Editor/GUI/CellTable.hpp"
 #include <SFGUI/ComboBox.hpp>
 
 /**

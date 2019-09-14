@@ -1,4 +1,4 @@
-#include "Shared/GUI/Form.hpp"
+#include "Editor/GUI/Form.hpp"
 #include "Shared/Util/Util.hpp"
 #include <iostream>
 #include <SFML/Graphics.hpp>

@@ -44,6 +44,11 @@ public:
 	std::map<int,Item::Ptr>& getItems();
 
 	/**
+	 * Returns a free id
+	 */
+    int getNextId();
+
+	/**
 	 * Saves the item database to the file
 	 */
 	void save();

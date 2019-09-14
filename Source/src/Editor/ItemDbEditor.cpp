@@ -4,7 +4,7 @@
 #include "Shared/Items/ItemDB.hpp"
 #include "Shared/Combat/CombatArmor.hpp"
 #include "Shared/Combat/CombatAttack.hpp"
-#include "Shared/GUI/Form.hpp"
+#include "Editor/GUI/Form.hpp"
 #include "Editor/Helpers/FilePicker.hpp"
 #include "Editor/Helpers/MenuGenerators.hpp"
 #include "Shared/Util/Util.hpp"
@@ -89,8 +89,8 @@ void ItemDbEditor::updateGui() {
 }
 
 void ItemDbEditor::doItem(int id) {
-   // if (id < 0)
-   //     return;
+    if (id < 0)
+        return;
 
 	Item::ConstPtr item = ItemDB::get().getItem(id);
 
@@ -112,7 +112,7 @@ void ItemDbEditor::doItem(int id) {
 	int lastSelectedCat = -1;
 
 	Form form;
-	form.addField("i", "Id: ",160,(item)?(item->id):(0));
+	form.addField("i", "Id: ",160,(item)?(item->id):(ItemDB::get().getNextId()));
 	form.addDropdown("cat", "Type: ", Item::getAllCategories());
 	if (item) form.setDropdownSelection("cat", item->getCategory());
 	form.addField("n", "Name: ",160,(item)?(item->name):(""));
@@ -133,6 +133,7 @@ void ItemDbEditor::doItem(int id) {
 
 	Form weaponForm;
 	weaponForm.addDropdown("type", "Type: ", {"Melee", "Ranged"});
+	weaponForm.setDropdownSelection("type", 0);
 	weaponForm.addField("pwr", "Power: ");
 	weaponForm.addField("cldn", "Cooldown: ", 160);
 	weaponForm.addField("pts", "Particle Generator: ");

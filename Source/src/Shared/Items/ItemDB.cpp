@@ -36,6 +36,15 @@ bool ItemDB::itemExists(int id) {
 	return items.find(id)!=items.end();
 }
 
+int ItemDB::getNextId() {
+    int id = 1;
+    for (auto i = items.begin(); i!=items.end(); ++i) {
+        if (i->first >= id)
+            id = i->first + 1;
+    }
+    return id;
+}
+
 void ItemDB::save() {
 	File file(Properties::ItemDbFile,File::Out);
 

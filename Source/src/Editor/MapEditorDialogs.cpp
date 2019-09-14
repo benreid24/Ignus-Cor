@@ -4,10 +4,10 @@
 #include "Editor/Helpers/FilePicker.hpp"
 #include "Shared/Util/Util.hpp"
 #include "Shared/Util/File.hpp"
-#include "Shared/GUI/ResizableImage.hpp"
+#include "Editor/GUI/ResizableImage.hpp"
 #include "Shared/Media/Animation.hpp"
 #include "Shared/Properties.hpp"
-#include "Shared/GUI/Form.hpp"
+#include "Editor/GUI/Form.hpp"
 using namespace sfg;
 using namespace sf;
 using namespace std;

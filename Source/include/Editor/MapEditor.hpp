@@ -6,7 +6,7 @@
 #include <SFGUI/SFGUI.hpp>
 #include "Shared/Maps/Map.hpp"
 #include "Shared/Maps/Tileset.hpp"
-#include "Shared/GUI/WrappingBox.hpp"
+#include "Editor/GUI/WrappingBox.hpp"
 #include "Editor/Helpers/LayerButtons.hpp"
 
 extern sfg::SFGUI sfgui;

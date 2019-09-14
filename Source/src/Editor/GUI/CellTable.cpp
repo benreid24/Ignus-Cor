@@ -1,4 +1,4 @@
-#include "Shared/GUI/CellTable.hpp"
+#include "Editor/GUI/CellTable.hpp"
 #include "Shared/Util/UUID.hpp"
 #include "Shared/Util/Util.hpp"
 #include "Shared/Properties.hpp"

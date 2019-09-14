@@ -1,4 +1,4 @@
-#include <Shared/GUI/WrappingBox.hpp>
+#include <Editor/GUI/WrappingBox.hpp>
 #include <algorithm>
 using namespace sfg;
 using namespace sf;
