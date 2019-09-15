@@ -15,7 +15,7 @@ const std::string Properties::PlaylistPath = "Resources/Data/Playlists/";
 const std::string Properties::MusicPath = "Resources/Media/Music/";
 const std::string Properties::AudioPath = "Resources/Media/Audio/";
 const std::string Properties::NpcPath;
-const std::string Properties::ConversationPath;
+const std::string Properties::ConversationPath = "Resources/Data/Conversations/";
 const std::string Properties::EntityBubbleImageFile = "Resources/Media/Images/Entities/Bubbles/bubble.png";
 const std::string Properties::EntityBubbleImagePath = "Resources/Media/Images/Entities/Bubbles/";
 const std::string Properties::EntityBubbleAnimPath = "Resources/Media/Animations/Entities/Bubbles/";
