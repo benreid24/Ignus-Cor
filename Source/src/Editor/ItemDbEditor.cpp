@@ -7,6 +7,7 @@
 #include "Editor/GUI/Form.hpp"
 #include "Editor/Helpers/FileImporter.hpp"
 #include "Editor/Helpers/MenuGenerators.hpp"
+#include "Editor/Helpers/Dialogs.hpp"
 #include "Shared/Util/Util.hpp"
 using namespace sfg;
 using namespace sf;
@@ -43,7 +44,7 @@ ItemDbEditor::ItemDbEditor(Desktop& dk, Notebook::Ptr parent) : desktop(dk), own
     container->Pack(catBox,false,false);
 
     Box::Ptr cellBox = Box::Create();
-    data = new CellTable(cellBox);
+    data = new CellTable(cellBox, {"Id", "Type", "Name", "Description", "Value"});
     cellBox->Pack(Separator::Create(Separator::Orientation::VERTICAL),false,false);
     container->Pack(cellBox,false,false);
     owner->AppendPage(container,Label::Create("Items"));
@@ -56,14 +57,15 @@ void ItemDbEditor::save() {
 
 void ItemDbEditor::update() {
     int editCell = data->getEditCell();
-    if (editCell!=-1)
+    if (editCell != -1)
         doItem(editCell);
-    if (data->needsReorder())
-        data->reorder();
-    vector<int> delIds = data->getDeletedIds();
-    for (unsigned int i = 0; i<delIds.size(); ++i) {
-        if (delIds[i] >= 0)
-            ItemDB::get().removeItem(delIds[i]);
+
+    int delCell = data->getDeleteCell();
+    if (delCell != -1) {
+        if (yesnobox(desktop, owner, "Delete Item?", "Are you sure you want to delete "+ItemDB::get().getItem(delCell)->getName()+"?")) {
+            ItemDB::get().removeItem(delCell);
+            data->removeRow(delCell);
+        }
     }
 }
 
@@ -77,14 +79,13 @@ void ItemDbEditor::updateGui() {
         string desc = i->second->getDescription();
         desc = (desc.size()<60)?(desc):(desc.substr(0,57)+"...");
         vector<string> cols = {
-            "Id: "+intToString(i->second->getId()),
-            "Type: "+Item::getCategorySingular(i->second->getCategory()),
-            "Name: "+i->second->getName(),
-            "Description: "+desc,
-            "Value: "+intToString(i->second->getValue())
+            intToString(i->second->getId()),
+            Item::getCategorySingular(i->second->getCategory()),
+            i->second->getName(),
+            desc,
+            intToString(i->second->getValue())
         };
-        Box::Ptr row = packRow(cols);
-        data->appendRow(i->first,row);
+        data->appendRow(i->first,cols);
     }
 }
 
