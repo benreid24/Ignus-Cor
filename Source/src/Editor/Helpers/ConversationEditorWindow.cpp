@@ -170,7 +170,7 @@ ConversationEditorWindow::ConversationEditorWindow(Widget::Ptr pr, const string&
     nodeForm.addDropdown("type", "Type: ",
                          EditorConvNode::typeStrings,
                          [me] (int t) { me->nodeTypeChangeCb(t); });
-    nodeForm.addField("data", "Data: ", 250);
+    nodeForm.addField("data", "Data: ", 300);
     button = Button::Create("Update Node");
     button->GetSignal(Button::OnLeftClick).Connect( [me] { me->updateNodeProps(); });
     nodePropsBox->Pack(button);
@@ -182,8 +182,7 @@ ConversationEditorWindow::ConversationEditorWindow(Widget::Ptr pr, const string&
     destNodesBox->SetRequisition(sf::Vector2f(200,300));
     bottomArea->Pack(destNodesBox);
 
-    if (nodes.size() > 0)
-        selectNode(nodes[0].name);
+    currentNode = nodes[0].name;
     refreshGui();
 }
 
@@ -430,12 +429,15 @@ void ConversationEditorWindow::recalcInvalidNodes() {
 
 void ConversationEditorWindow::selectNode(const string& name) {
     getNodeIndex(name); //ensure exists
+    if (name != currentNode)
+        updateNodeProps();
     currentNode = name;
     needsRefresh = true;
 }
 
 void ConversationEditorWindow::insertNode() {
     dirty = true;
+    updateNodeProps();
     unsigned int i = getNodeIndex(currentNode);
     EditorConvNode node;
     node.name = "set me";
@@ -446,6 +448,7 @@ void ConversationEditorWindow::insertNode() {
 
 void ConversationEditorWindow::appendNode() {
     dirty = true;
+    updateNodeProps();
     unsigned int i = getNodeIndex(currentNode);
     EditorConvNode node;
     node.name = "set me";
@@ -463,6 +466,7 @@ void ConversationEditorWindow::moveNodeUp() {
     if (i == 0)
         return;
 
+    updateNodeProps();
     EditorConvNode temp = nodes[i];
     nodes[i] = nodes[i-1];
     nodes[i-1] = temp;
@@ -475,6 +479,7 @@ void ConversationEditorWindow::moveNodeDown() {
     if (i == nodes.size()-1)
         return;
 
+    updateNodeProps();
     EditorConvNode temp = nodes[i];
     nodes[i] = nodes[i+1];
     nodes[i+1] = temp;
@@ -514,7 +519,6 @@ void ConversationEditorWindow::updateNodeProps() {
     currentNode = nodes[i].name;
 
     nodes[i].data = nodeForm.getField("data");
-
     int t = nodeForm.getSelectedDropdownOption("type");
     nodes[i].type = EditorConvNode::fromIndex(t);
     dirty = true;
@@ -522,7 +526,8 @@ void ConversationEditorWindow::updateNodeProps() {
 }
 
 void ConversationEditorWindow::nodeTypeChangeCb(int type) {
-    //TODO - update form with proper labels
+    updateNodeProps();
+    needsRefresh = true;
 }
 
 void ConversationEditorWindow::save() {
@@ -600,4 +605,23 @@ void ConversationEditorWindow::refreshGui() {
     nodeForm.setField("name", node.name);
     nodeForm.setField("data", node.data);
     nodeForm.setDropdownSelection("type", EditorConvNode::fromType(node.type));
+
+    nodeForm.showInput("data");
+    switch (node.type) {
+    case EditorConvNode::Talk:
+        nodeForm.updateFieldLabel("data", "Line: ");
+        break;
+    case EditorConvNode::Jump:
+        nodeForm.updateFieldLabel("data", "Node: ");
+        break;
+
+    case EditorConvNode::Script:
+        nodeForm.updateFieldLabel("data", "Script: "); //TODO - script entry window w/ syntax checking
+        break;
+
+    case EditorConvNode::Option:
+        //TODO - add option generator
+    default:
+        nodeForm.hideInput("data");
+    }
 }

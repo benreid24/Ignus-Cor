@@ -66,6 +66,11 @@ public:
 	void addField(const std::string& name, std::string text, int width, double value);
 
 	/**
+	 * Updates the given field's label
+	 */
+    void updateFieldLabel(const std::string& name, const std::string& label);
+
+	/**
 	 * Returns the value entered into the given field
 	 */
 	std::string getField(const std::string& name);

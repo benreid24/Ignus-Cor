@@ -59,6 +59,13 @@ void Form::addField(const string& name, string text, int width, int value) {
 	addField(name, text, width, intToString(value));
 }
 
+void Form::updateFieldLabel(const string& name, const string& label) {
+    auto i = fields.find(name);
+    if (i != fields.end()) {
+        i->second.first->SetText(label);
+    }
+}
+
 void Form::addLabel(const string& text) {
     pack(text, Label::Create(text));
 }
