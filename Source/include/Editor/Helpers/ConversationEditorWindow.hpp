@@ -81,7 +81,7 @@ private:
     std::vector<EditorConvNode> nodes;
     std::string currentNode;
     bool dirty, needsRefresh;
-    bool closed, nodeDeleted;
+    bool closed, nodeDeleted, saved;
 
     sfg::Widget::Ptr parent;
     sfg::Window::Ptr window;
@@ -178,9 +178,14 @@ private:
     void nodeTypeChangeCb(int type);
 
     /**
-     * Saves the conversation to the file. Creates subfolders if need be
+     * Marks to save
      */
     void save();
+
+    /**
+     * Actually saves to file
+     */
+    void doSave();
 
     /**
      * Closes the conversation. Prompts to save if not saved

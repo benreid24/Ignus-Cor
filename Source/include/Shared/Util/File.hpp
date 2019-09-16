@@ -213,6 +213,13 @@ public:
     static void copy(const std::string& src, const std::string& dest);
 
     /**
+     * Creates directories recursively to ensure that the given directory is valid
+     *
+     * \param dir The full directory path to create
+     */
+    static void createDirectories(const std::string& dir);
+
+    /**
      * Returns a file listing of the given directory
      *
      * \param dir The directory to search

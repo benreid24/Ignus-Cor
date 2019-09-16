@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <dirent.h>
+#include <direct.h>
 using namespace std;
 
 bool File::exists(const string& filename)
@@ -137,6 +138,16 @@ vector<string> File::listDirectory(string dir, const string& ext, bool inclSubdi
         }
     }
     return total;
+}
+
+void File::createDirectories(const string& dir) {
+    string cd;
+    cd.reserve(dir.size());
+    for (unsigned int i = 0; i<dir.size(); ++i) {
+        if (dir[i] == '/' || dir[i] == '\\')
+            _mkdir(cd.c_str());
+        cd.push_back(dir[i]);
+    }
 }
 
 #ifdef EDITOR

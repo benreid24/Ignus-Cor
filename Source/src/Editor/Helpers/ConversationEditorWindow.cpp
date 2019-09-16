@@ -16,7 +16,7 @@ extern SFGUI sfgui;
 const vector<string> ConversationEditorWindow::EditorConvNode::typeStrings = {"Talk", "Options", "Jump", "Script", "Exit"};
 
 ConversationEditorWindow::ConversationEditorWindow(Widget::Ptr pr, const string& file)
-: parent(pr), dirty(false), needsRefresh(false), closed(false), nodeDeleted(false) {
+: parent(pr), dirty(false), needsRefresh(false), closed(false), nodeDeleted(false), saved(false) {
     if (File::exists(Properties::ConversationPath+file)) {
         filename = file;
         File input(Properties::ConversationPath+file);
@@ -43,8 +43,8 @@ ConversationEditorWindow::ConversationEditorWindow(Widget::Ptr pr, const string&
                 node.trueNode = input.getString();
                 node.falseNode = input.getString();
             }
-            else
-                cout << "Error: Unsupported node type " << node.type << endl;
+            else if (node.type != EditorConvNode::Exit)
+                cout << "Error: Unsupported node type " << char(node.type) << endl;
             nodes.push_back(node);
         }
     }
@@ -227,6 +227,15 @@ string ConversationEditorWindow::editConversation(Desktop& desktop) {
         if (needsRefresh) {
             needsRefresh = false;
             refreshGui();
+        }
+        if (saved) {
+            saved = false;
+            bool performSave = true;
+            if (invalidNodes.size() > 0 || unreachableNodes.size() > 0) {
+                performSave = yesnobox(desktop, window, "Save with errors?", "Errors present, save anyways?");
+            }
+            if (performSave)
+                doSave();
         }
 
         desktop.BringToFront(window);
@@ -531,8 +540,7 @@ void ConversationEditorWindow::nodeTypeChangeCb(int type) {
 }
 
 void ConversationEditorWindow::save() {
-    //TODO - save to file
-    dirty = false;
+    saved = true;
 }
 
 void ConversationEditorWindow::close() {
@@ -620,8 +628,44 @@ void ConversationEditorWindow::refreshGui() {
         break;
 
     case EditorConvNode::Option:
+        nodeForm.updateFieldLabel("data", "Prompt: ");
         //TODO - add option generator
+        break;
     default:
         nodeForm.hideInput("data");
+    }
+}
+
+void ConversationEditorWindow::doSave() {
+    dirty = false;
+
+    string saveFile = fileEntry->GetText();
+    if (File::getExtension(saveFile) != "conv") {
+        saveFile += ".conv";
+        fileEntry->SetText(saveFile);
+    }
+    File::createDirectories(Properties::ConversationPath+File::getPath(saveFile));
+
+    File output(Properties::ConversationPath+saveFile, File::Out);
+
+    output.write<uint16_t>(nodes.size());
+    for (unsigned int i = 0; i<nodes.size(); ++i) {
+        output.write<char>(char(nodes[i].type));
+        output.writeString(nodes[i].name);
+
+        if (nodes[i].type != EditorConvNode::Exit)
+            output.writeString(nodes[i].data);
+
+        if (nodes[i].type == EditorConvNode::Option) {
+            output.write<uint16_t>(nodes[i].choices.size());
+            for (unsigned int j = 0; j<nodes[i].choices.size(); ++j) {
+                output.writeString(nodes[i].choices[j].first);
+                output.writeString(nodes[i].choices[j].second);
+            }
+        }
+        else if (nodes[i].type == EditorConvNode::Script) {
+            output.writeString(nodes[i].trueNode);
+            output.writeString(nodes[i].falseNode);
+        }
     }
 }
