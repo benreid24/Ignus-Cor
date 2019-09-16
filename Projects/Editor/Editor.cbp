@@ -77,7 +77,9 @@ Make script entry window. Can pick file. Can write script. Can validate and save
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="../../Source/include/Editor/AnimationEditor.hpp" />
+		<Unit filename="../../Source/include/Editor/ConversationEditor.hpp" />
 		<Unit filename="../../Source/include/Editor/GUI/CellTable.hpp" />
+		<Unit filename="../../Source/include/Editor/GUI/EditableCellTable.hpp" />
 		<Unit filename="../../Source/include/Editor/GUI/Form.hpp" />
 		<Unit filename="../../Source/include/Editor/GUI/ResizableImage.hpp" />
 		<Unit filename="../../Source/include/Editor/GUI/WrappingBox.hpp" />
@@ -152,7 +154,9 @@ Make script entry window. Can pick file. Can write script. Can validate and save
 		<Unit filename="../../Source/include/Shared/Util/Util.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/Vector2d.hpp" />
 		<Unit filename="../../Source/src/Editor/AnimationEditor.cpp" />
+		<Unit filename="../../Source/src/Editor/ConversationEditor.cpp" />
 		<Unit filename="../../Source/src/Editor/GUI/CellTable.cpp" />
+		<Unit filename="../../Source/src/Editor/GUI/EditableCellTable.cpp" />
 		<Unit filename="../../Source/src/Editor/GUI/Form.cpp" />
 		<Unit filename="../../Source/src/Editor/GUI/WrappingBox.cpp" />
 		<Unit filename="../../Source/src/Editor/Helpers/ConversationEditorWindow.cpp" />

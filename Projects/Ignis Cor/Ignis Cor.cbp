@@ -37,10 +37,8 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 					<Add option="-DGAME" />
 					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
 					<Add directory="../../Source/include" />
-					<Add directory="C:/Users/Ben/SFGUI/include" />
 				</Compiler>
 				<Linker>
-					<Add library="C:/Users/Ben/SFGUI/lib/libsfgui.a" />
 					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-audio.a" />
 					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-graphics.a" />
 					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-network.a" />
@@ -63,7 +61,6 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 					<Add option="-DGAME" />
 					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
 					<Add directory="../../Source/include" />
-					<Add directory="C:/Users/Ben/SFGUI/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -73,7 +70,6 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-window.a" />
 					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-system.a" />
 					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-main.a" />
-					<Add library="C:/Users/Ben/SFGUI/lib/libsfgui.a" />
 				</Linker>
 			</Target>
 		</Build>

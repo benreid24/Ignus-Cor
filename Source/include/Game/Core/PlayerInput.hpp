@@ -1,7 +1,6 @@
 #ifndef PLAYERINPUT_HPP
 #define PLAYERINPUT_HPP
 
-#include <SFGUI/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include "Game/Core/EventObserver.hpp"
 #include "Shared/Util/File.hpp"
