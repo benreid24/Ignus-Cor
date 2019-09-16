@@ -10,6 +10,7 @@
  * Helper class to create a table of cells that can be added to, edited (separately), and deleted
  */
 class CellTable {
+protected:
     std::vector<std::string> columns;
 	std::map<int,std::vector<sfg::Widget::Ptr> > rows; //uuid -> list of widgets for row
 	int editId; //id of cell to edit
@@ -33,7 +34,7 @@ public:
 	/**
 	 * Initializes GUI elements
 	 */
-	CellTable(sfg::Box::Ptr parent, const std::vector<std::string>& colNames);
+	CellTable(sfg::Box::Ptr parent, const std::vector<std::string>& colNames, int width = 0);
 
 	/**
 	 * Returns the set of ids in the table

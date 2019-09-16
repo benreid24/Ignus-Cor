@@ -15,8 +15,10 @@ extern SFGUI sfgui;
 
 const vector<string> ConversationEditorWindow::EditorConvNode::typeStrings = {"Talk", "Options", "Jump", "Script", "Exit"};
 
-ConversationEditorWindow::ConversationEditorWindow(Widget::Ptr pr, const string& file)
-: parent(pr), dirty(false), needsRefresh(false), closed(false), nodeDeleted(false), saved(false) {
+ConversationEditorWindow::ConversationEditorWindow(Desktop& dk, Widget::Ptr pr, const string& file)
+: desktop(dk), parent(pr), dirty(false), needsRefresh(false), closed(false)
+, nodeDeleted(false), saved(false), window(Window::Create())
+, nodeOptions(dk, window, vector<string>({"Choice", "Node"}), "Option") {
     if (File::exists(Properties::ConversationPath+file)) {
         filename = file;
         File input(Properties::ConversationPath+file);
@@ -65,8 +67,6 @@ ConversationEditorWindow::ConversationEditorWindow(Widget::Ptr pr, const string&
 
     //set up GUI
     ConversationEditorWindow* me = this;
-
-    window = Window::Create();
     window->SetTitle("Conversation Editor");
 
     Box::Ptr winBox = Box::Create(Box::Orientation::VERTICAL, 15);
@@ -166,6 +166,7 @@ ConversationEditorWindow::ConversationEditorWindow(Widget::Ptr pr, const string&
     nodePropsBox = Box::Create(Box::Orientation::VERTICAL, 5);
     nodePropsBox->SetRequisition(sf::Vector2f(200,300));
     nodeForm.addToParent(nodePropsBox);
+    nodeOptions.addToParent(nodePropsBox);
     nodeForm.addField("name", "Name: ", 160);
     nodeForm.addDropdown("type", "Type: ",
                          EditorConvNode::typeStrings,
@@ -186,7 +187,7 @@ ConversationEditorWindow::ConversationEditorWindow(Widget::Ptr pr, const string&
     refreshGui();
 }
 
-string ConversationEditorWindow::editConversation(Desktop& desktop) {
+string ConversationEditorWindow::editConversation() {
     parent->SetState(Widget::State::INSENSITIVE);
     desktop.Add(window);
 
@@ -199,6 +200,8 @@ string ConversationEditorWindow::editConversation(Desktop& desktop) {
                 sfWindow.close();
         }
         desktop.Update(30/1000);
+        nodeForm.update();
+        nodeOptions.update();
 
         if (closed) {
             closed = false;
@@ -530,6 +533,14 @@ void ConversationEditorWindow::updateNodeProps() {
     nodes[i].data = nodeForm.getField("data");
     int t = nodeForm.getSelectedDropdownOption("type");
     nodes[i].type = EditorConvNode::fromIndex(t);
+    if (nodes[i].type == EditorConvNode::Option) {
+        vector<vector<string> > options = nodeOptions.getAllValues();
+        nodes[i].choices.clear();
+        for (unsigned int j = 0; j<options.size(); ++j) {
+            nodes[i].choices.emplace_back(options[j][0], options[j][1]);
+        }
+    }
+
     dirty = true;
     needsRefresh = true;
 }
@@ -615,6 +626,7 @@ void ConversationEditorWindow::refreshGui() {
     nodeForm.setDropdownSelection("type", EditorConvNode::fromType(node.type));
 
     nodeForm.showInput("data");
+    nodeOptions.show(false);
     switch (node.type) {
     case EditorConvNode::Talk:
         nodeForm.updateFieldLabel("data", "Line: ");
@@ -627,9 +639,14 @@ void ConversationEditorWindow::refreshGui() {
         nodeForm.updateFieldLabel("data", "Script: "); //TODO - script entry window w/ syntax checking
         break;
 
-    case EditorConvNode::Option:
+    case EditorConvNode::Option: {
         nodeForm.updateFieldLabel("data", "Prompt: ");
-        //TODO - add option generator
+        nodeOptions.show(true);
+        nodeOptions.clear();
+        for (unsigned int i = 0; i<node.choices.size(); ++i) {
+            nodeOptions.appendRow(vector<string>({node.choices[i].first, node.choices[i].second}));
+        }
+        }
         break;
     default:
         nodeForm.hideInput("data");

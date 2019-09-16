@@ -2,7 +2,7 @@
 #define CONVERSATIONEDITORWINDOW_HPP
 
 #include "Editor/GUI/Form.hpp"
-#include "Shared/Entities/EntityConversationNodeFactory.hpp"
+#include "Editor/GUI/EditableCellTable.hpp"
 #include <SFGUI/Widgets.hpp>
 
 /**
@@ -69,14 +69,16 @@ public:
     /**
      * Loads an existing conversation from file and edits it. If the file does not exist, creates a new conversation
      */
-    ConversationEditorWindow(sfg::Widget::Ptr parent, const std::string& file);
+    ConversationEditorWindow(sfg::Desktop& desktop, sfg::Widget::Ptr parent, const std::string& file);
 
     /**
      * Creates the window and performs the actual editing. Returns the filename of the created conversation
      */
-    std::string editConversation(sfg::Desktop& desktop);
+    std::string editConversation();
 
 private:
+    sfg::Desktop& desktop;
+
     std::string filename;
     std::vector<EditorConvNode> nodes;
     std::string currentNode;
@@ -100,6 +102,7 @@ private:
 
     sfg::Box::Ptr sourceNodesBox, destNodesBox, nodePropsBox;
     Form nodeForm;
+    EditableCellTable nodeOptions;
 
     /**
      * Returns the index of the node with the given name. Creates it first if it doesn't exist

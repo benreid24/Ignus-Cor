@@ -10,18 +10,22 @@ namespace {
 const int HEADER = -1234567;
 }
 
-CellTable::CellTable(sfg::Box::Ptr pr, const vector<string>& colNames)
+CellTable::CellTable(sfg::Box::Ptr pr, const vector<string>& colNames, int width)
 : columns(colNames), editId(-1), toRemove(-1), parent(pr) {
+    if (width == 0)
+        width = colNames.size()*270;
+
 	cellArea = ScrolledWindow::Create();
-	cellArea->SetRequisition(Vector2f(Properties::ScreenWidth+450,Properties::ScreenHeight-20));
+	cellArea->SetRequisition(Vector2f(width, 800));
     cellArea->SetScrollbarPolicy( sfg::ScrolledWindow::HORIZONTAL_ALWAYS | sfg::ScrolledWindow::VERTICAL_ALWAYS );
 
     table = Table::Create();
+    table->SetRequisition(Vector2f(colNames.size()*230, 0));
     table->SetColumnSpacings(10);
     table->SetRowSpacings(5);
 
     cellArea->AddWithViewport(table);
-    parent->Pack(cellArea,false,true);
+    parent->Pack(cellArea,false,false);
 
     appendRow(HEADER, columns, false);
 }
@@ -74,7 +78,7 @@ void CellTable::removeAll() {
 	table->RemoveAll();
 	rows.clear();
 	appendRow(HEADER, columns, false);
-	parent->Pack(cellArea,false,true);
+	parent->Pack(cellArea,false,false);
 }
 
 int CellTable::getEditCell() {
@@ -93,13 +97,14 @@ void CellTable::reorder() {
 	parent->Remove(cellArea);
 	table->RemoveAll();
 	unsigned int row = 0;
-	for (auto i = rows.begin(); i!=rows.end(); ++i, ++row) {
+	for (auto i = rows.begin(); i!=rows.end(); ++i, row += 2) {
 		vector<Widget::Ptr>& cols = i->second;
 		for (unsigned int col = 0; col<cols.size(); ++col) {
             table->Attach(cols[col], Rect<uint32_t>(col, row, 1, 1));
 		}
+		table->Attach(Separator::Create(), Rect<uint32_t>(0, row+1, cols.size(), 1));
 	}
-	parent->Pack(cellArea,false,true);
+	parent->Pack(cellArea,false,false);
 }
 
 vector<int> CellTable::getIds() {
