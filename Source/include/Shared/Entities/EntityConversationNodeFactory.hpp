@@ -58,6 +58,11 @@ private:
         virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override;
 
         /**
+         * Removes the text from the bubble
+         */
+        virtual void cleanup(EntityBubble& playerbubble, EntityBubble& owner) override;
+
+        /**
          * Resets internal state
          */
         virtual void reset() override;
@@ -89,9 +94,14 @@ private:
         virtual ~OptionNode() = default;
 
         /**
-         * Outputs the text to the given bubble
+         * Outputs the options to the given bubble
          */
         virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override;
+
+        /**
+         * Removes the options from the bubble
+         */
+        virtual void cleanup(EntityBubble& playerbubble, EntityBubble& owner) override;
 
         /**
          * Resets internal state
@@ -125,6 +135,11 @@ private:
          * Outputs the text to the given bubble
          */
         virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override {}
+
+        /**
+         * Does nothing
+         */
+        virtual void cleanup(EntityBubble& playerbubble, EntityBubble& owner) override {}
 
         /**
          * Resets internal state
@@ -162,6 +177,11 @@ private:
         virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override;
 
         /**
+         * Does nothing
+         */
+        virtual void cleanup(EntityBubble& playerbubble, EntityBubble& owner) override {}
+
+        /**
          * Resets internal state
          */
         virtual void reset() override;
@@ -191,6 +211,11 @@ private:
          * Outputs the text to the given bubble
          */
         virtual void apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) override { conv->stop(); }
+
+        /**
+         * Does nothing
+         */
+        virtual void cleanup(EntityBubble& playerbubble, EntityBubble& owner) override {}
 
         /**
          * Resets internal state

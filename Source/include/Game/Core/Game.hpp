@@ -7,6 +7,7 @@
 #include "Shared/Media/SoundEngine.hpp"
 #include "Shared/Entities/EntityManager.hpp"
 #include "Shared/Maps/MapManager.hpp"
+#include "Game/Core/EventDispatcher.hpp"
 #include "BaseState.hpp"
 
 /**
@@ -19,10 +20,16 @@
   * \ingroup Core
   */
 class Game {
+    std::stack<BaseState*> states;
+    friend class BaseState;
+
     /**
 	 * Initializes core game data structures
 	 */
 	Game();
+
+	Game(const Game&) = delete;
+	Game& operator=(const Game&) = delete;
 
 public:
 	/**
@@ -40,10 +47,15 @@ public:
 	  */
 	 void run();
 
+	 /**
+	  * Signals to the currently running state to run a new state
+	  */
+    void runNewState(BaseState::Ptr state);
+
 	 sf::RenderWindow window;
+	 EventDispatcher eventDispatcher;
 	 bool inFocus;
 
-	 std::stack<BaseState*> states;
 	 Entity::Ptr player;
 };
 

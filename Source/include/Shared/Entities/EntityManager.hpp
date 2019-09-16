@@ -74,7 +74,7 @@ public:
 	/**
      * Returns an Entity::Ptr from an Entity*
      */
-    Entity::Ptr getEntityPtr(Entity* ent);
+    Entity::Ptr getEntityPtr(Entity* ent); //TODO - replace with std::enable_shared_from_this
 
 	/**
 	 * Removes the given Entity by name, and optionally by type

@@ -25,8 +25,14 @@ void EntityConversation::activate() {
     }
 }
 
+bool EntityConversation::isActive() {
+    return active;
+}
+
 void EntityConversation::stop() {
     active = false;
+    if (currentNode != nullptr)
+        currentNode->cleanup(player->getBubble(), owner->getBubble());
 }
 
 void EntityConversation::update() {

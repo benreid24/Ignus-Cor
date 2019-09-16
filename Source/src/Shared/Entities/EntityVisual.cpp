@@ -37,7 +37,11 @@ void EntityVisual::load(std::string path1, std::string path2) {
 		}
 		else {
 			type = SingleAnim;
-			path1 = Properties::AnimationPath + path1;
+
+			if (File::exists(Properties::AnimationPath + path1))
+                path1 = Properties::AnimationPath + path1;
+			if (!File::exists(path1))
+                path1 = Properties::ItemAnimationPath + path1;
 			slowSrc[0] = animPool.loadResource(path1);
 			slow[0].setSource(slowSrc[0]);
 		}

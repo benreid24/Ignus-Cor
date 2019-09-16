@@ -1,26 +1,26 @@
 #include "Shared/Entities/EntityBubble.hpp"
 #include "Shared/Util/File.hpp"
+#include "Shared/Util/Timer.hpp"
 #include "Shared/Properties.hpp"
+#include "Game/Core/PlayerInput.hpp"
 using namespace sf;
 using namespace std;
-
-const Clock& EntityBubble::timer() {
-    static Clock timer;
-    return timer;
-}
 
 EntityBubble::EntityBubble(Mode m) {
 	mode = m;
 	bubbleTxtr = imagePool.loadResource(Properties::EntityBubbleImageFile);
 	bubble.setTexture(*bubbleTxtr);
 	nextId = 1;
+	finishTime = -1;
 }
 
-int EntityBubble::addContent(const string& content, double length) {
-    Content::Ptr c = Content::create(nextId++, content, length);
+int EntityBubble::addContent(const string& content, PersistType type, double length) {
+    Content::Ptr c = Content::create(nextId++, content, type, length);
     contentQueue.push_back(c); //TODO - queue content addition to ensure primary thread loads resources
-    if (contentQueue.size() == 1)
-        startTime = EntityBubble::timer().getElapsedTime().asSeconds();
+    if (contentQueue.size() == 1) {
+        startTime = Timer::get().timeElapsedSeconds();
+        finishTime = -1;
+    }
     return c->getId();
 }
 
@@ -62,9 +62,12 @@ void EntityBubble::render(sf::RenderTarget& target, sf::Vector2f position) {
 	if (contentQueue.size() > 0) {
         position.y -= bubbleTxtr->getSize().y;
         Sprite sprite((*contentQueue.begin())->render().getTexture());
-        sprite.setScale(1,-1);
+        float xscale = float(bubbleTxtr->getSize().x-10)/float(sprite.getTexture()->getSize().x);
+        float yscale = float(bubbleTxtr->getSize().y-10)/float(sprite.getTexture()->getSize().y);
+        float scale = min(xscale, yscale);
+        sprite.setScale(scale,-scale);
         bubble.setPosition(position);
-        sprite.setPosition(position+Vector2f(5,sprite.getGlobalBounds().height+5));
+        sprite.setPosition(position+Vector2f(6,sprite.getGlobalBounds().height+5));
         target.draw(bubble);
         target.draw(sprite);
 	}
@@ -73,16 +76,35 @@ void EntityBubble::render(sf::RenderTarget& target, sf::Vector2f position) {
 void EntityBubble::update() {
     if (contentQueue.size() > 0) {
         Content::Ptr c = *contentQueue.begin();
-        c->update(timer().getElapsedTime().asSeconds() - startTime);
+        c->update(Timer::get().timeElapsedSeconds() - startTime);
         if (c->finished()) {
-            if (timer().getElapsedTime().asSeconds() - startTime >= c->getLength() && c->getLength() >= 0) {
-                if (mode == Loop)
-                    contentQueue.push_back(c);
-                contentQueue.pop_front();
-                startTime = timer().getElapsedTime().asSeconds();
+            if (finishTime < 0)
+                finishTime = Timer::get().timeElapsedSeconds();
+            else if (Timer::get().timeElapsedSeconds() - finishTime > 0.5) {
+                bool timeDone = Timer::get().timeElapsedSeconds() - startTime >= c->getLength() && c->getLength() >= 0;
+                bool inputDone = c->persistType() == Input && clicked();
+                if ((c->persistType() == Time && timeDone) || (c->persistType() == Input && inputDone)) {
+                    if (mode == Loop)
+                        contentQueue.push_back(c);
+                    contentQueue.pop_front();
+                    startTime = Timer::get().timeElapsedSeconds();
+                    finishTime = -1;
+                }
             }
         }
+        if (c->persistType() == Input && clicked())
+            c->fastForward();
     }
+}
+
+bool EntityBubble::clicked() {
+    #ifdef GAME
+    if (PlayerInput::get().screenClicked())
+        return bubble.getGlobalBounds().contains(PlayerInput::get().clickPosition());
+    return false;
+    #else
+    return false;
+    #endif
 }
 
 /**
@@ -96,13 +118,14 @@ class EntityBubble::TextContent : public EntityBubble::Content {
     string text;
     sf::Text renderText;
     sf::RenderTexture canvas;
+    bool showAll;
 
 public:
     /**
      * Creates the internal rendering buffer and word wraps the text
      */
-    TextContent(int id, const string& txt, double length)
-        : Content(id, length), text(txt) {
+    TextContent(int id, const string& txt, EntityBubble::PersistType pt, double length)
+        : Content(id, pt, length), text(txt), showAll(false) {
         renderText.setFont(Properties::ConversationFont);
         renderText.setCharacterSize(fontSize);
         renderText.setFillColor(Color::Black);
@@ -133,7 +156,6 @@ public:
         renderText.setString(text);
         canvas.create(renderText.getGlobalBounds().width+4, renderText.getGlobalBounds().height+4);
         renderText.setString("");
-        renderText.setPosition(2, 2);
     }
 
     /**
@@ -152,8 +174,15 @@ public:
      * Updates the ghost writer
      */
     virtual void update(double timeAlive) override {
-        const int chars = min(int(timeAlive / ghostCharTime), int(text.size()));
+        const int chars = showAll ? text.size() : min(int(timeAlive / ghostCharTime), int(text.size()));
         renderText.setString(text.substr(0, chars));
+    }
+
+    /**
+     * Displays the full text
+     */
+    virtual void fastForward() override {
+        showAll = true;
     }
 
     /**
@@ -175,8 +204,8 @@ public:
     /**
      * Loads the image
      */
-    ImageContent(int id, const string& file, double length)
-        : Content(id, length) {
+    ImageContent(int id, const string& file, EntityBubble::PersistType pt, double length)
+        : Content(id, pt, length) {
         texture = imagePool.loadResource(Properties::EntityBubbleImagePath+file);
         canvas.create(texture->getSize().x+4, texture->getSize().y+4);
         sprite.setTexture(*texture);
@@ -201,6 +230,11 @@ public:
     virtual void update(double timeAlive) override {}
 
     /**
+     * Does nothing
+     */
+    virtual void fastForward() override {}
+
+    /**
      * Renders the image and returns the RenderTexture
      */
     virtual const RenderTexture& render() override {
@@ -214,15 +248,16 @@ class EntityBubble::AnimContent : public EntityBubble::Content {
     AnimationReference animSrc;
     Animation anim;
     RenderTexture canvas;
-    bool started;
+    bool started, skipped;
 
 public:
     /**
      * Loads the animation
      */
-    AnimContent(int id, const string& file, double length)
-        : Content(id, length) {
+    AnimContent(int id, const string& file, EntityBubble::PersistType pt, double length)
+        : Content(id, pt, length) {
         started = false;
+        skipped = false;
         animSrc = animPool.loadResource(Properties::EntityBubbleAnimPath+file);
         anim.setSource(animSrc);
         anim.setLooping(length < 0);
@@ -249,7 +284,7 @@ public:
      * Returns true if the animation has played at least once
      */
     virtual bool finished() override {
-        return started && !anim.isPlaying();
+        return (started && !anim.isPlaying()) || skipped;
     }
 
     /**
@@ -261,6 +296,13 @@ public:
             started = true;
         }
         anim.update();
+    }
+
+    /**
+     * Skips the rest of the animation
+     */
+    virtual void fastForward() override {
+        skipped = true;
     }
 
     /**
@@ -279,11 +321,11 @@ public:
     }
 };
 
-EntityBubble::Content::Ptr EntityBubble::Content::create(int id, const string& str, double len) {
+EntityBubble::Content::Ptr EntityBubble::Content::create(int id, const string& str, EntityBubble::PersistType pt, double len) {
     const string ext = File::getExtension(str);
     if (str == "anim")
-        return Ptr(new EntityBubble::AnimContent(id, str, len));
+        return Ptr(new EntityBubble::AnimContent(id, str, pt, len));
     else if (str == "png" || str == "jpg")
-        return Ptr(new EntityBubble::ImageContent(id, str, len));
-    return Ptr(new EntityBubble::TextContent(id, str, len));
+        return Ptr(new EntityBubble::ImageContent(id, str, pt, len));
+    return Ptr(new EntityBubble::TextContent(id, str, pt, len));
 }

@@ -15,7 +15,8 @@ typedef std::shared_ptr<sf::Texture> TextureReference;
 struct AnimationFrame
 {
     sf::Vector2f sourcePos, size, renderOffset;
-    int length, rotation, alpha;
+    unsigned int length;
+    int rotation, alpha;
     double scaleX,scaleY;
 };
 
@@ -83,7 +84,7 @@ public:
      * \param lTime The time elapsed since the last update
      * \return The index of the new animation frame that should be rendered
      */
-    unsigned int incFrame(unsigned int cFrm, int lTime);
+    unsigned int incFrame(unsigned int cFrm, unsigned long lTime);
 
     /**
      * Tells the total number of frames in the loaded animation
@@ -100,7 +101,12 @@ public:
     /**
      * Returns the base filename of the spritesheet
      */
-	std::string getSpritesheetFilename();
+	const std::string& getSpritesheetFilename() const;
+
+	/**
+	 * Returns whether or not the spritesheet was found
+	 */
+    bool spritesheetFound() const;
 };
 
 typedef std::shared_ptr<AnimationSource> AnimationReference;
@@ -207,8 +213,6 @@ public:
      * \param window A pointer to the window to render to
      */
     void draw(sf::RenderTarget& window);
-
-    static sf::Clock clock;
 };
 
 #endif // ANIMATION_HPP

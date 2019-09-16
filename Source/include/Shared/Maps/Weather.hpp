@@ -17,7 +17,7 @@ class Map;
 struct Vector4D
 {
     float x,y,z;
-    int time;
+    unsigned long time;
 
     /**
      * Initializes the vector with the given parameters
@@ -151,7 +151,7 @@ class Thunder
 {
     sf::RectangleShape flash;
     int goTime; //time for first flash to go down, then time for second flash to start, then time for second flash to die. init based on alpha channel of flash
-    int lastTime;
+    unsigned int lastTime;
 
 public:
     /**
@@ -260,7 +260,8 @@ class SnowWeather : public BaseWeatherType
     bool canThunder;
 
     bool isStopping, isDone;
-    int lChng, lifeTime, creationTimer;
+    int lChng;
+    unsigned int lifeTime, creationTimer;
     double createPerSec;
 
 public:
@@ -558,8 +559,6 @@ public:
      */
     int getLightModifier();
 
-    static sf::Clock timer;
-
 private:
 	Map* owner;
     SoundEngine* sEngine;
@@ -567,7 +566,7 @@ private:
     std::map<std::string,PastWeather> pastWeather;
     std::shared_ptr<BaseWeatherType> weather;
     Type type;
-    int nextChange;
+    unsigned int nextChange;
     int curLight, desiredLight;
     bool isStopping, keepRemembered;
 

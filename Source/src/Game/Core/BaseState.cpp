@@ -1,14 +1,16 @@
 #include "Game/Core/BaseState.hpp"
+#include "Game/Core/States/PauseState.hpp"
 #include "Game/Core/Game.hpp"
+#include "Game/Core/PlayerInput.hpp"
 #include "Shared/Properties.hpp"
 #include "Shared/DebugOverlays.hpp"
+#include "Shared/Util/Timer.hpp"
 using namespace std;
 using namespace sf;
 
 const float BaseState::fpsLimit = 60;
-const float BaseState::frameLength = 1000.0/BaseState::fpsLimit;
+const float BaseState::frameLength = 1.0/BaseState::fpsLimit;
 float BaseState::lastUpdateTime = 0;
-Clock BaseState::timer;
 
 namespace {
     View getView(float w, float h)
@@ -58,25 +60,31 @@ bool BaseState::start() {
 }
 
 void BaseState::runState(BaseState::Ptr immediate) {
+	if (immediateState)
+        cout << "Warning: runState() called on state but another state already queued up\n";
 	immediateState = immediate;
 }
 
-void BaseState::runImmediate() {
+bool BaseState::runImmediate() {
 	if (immediateState) {
-		immediateState->start();
+		bool r = immediateState->start();
 		immediateState.reset();
+		return r;
 	}
+	return false;
 }
 
 void BaseState::ensureFps() {
-    float dTime = timer.getElapsedTime().asSeconds()-lastUpdateTime;
-    int waitTime = frameLength-dTime*1000;
+    float dTime = Timer::get().timeElapsedRaw().asSeconds()-lastUpdateTime;
+    int waitTime = frameLength-dTime;
     if (waitTime>0)
-        sleep(milliseconds(waitTime));
-    lastUpdateTime = timer.getElapsedTime().asSeconds();
+        sleep(seconds(waitTime));
+    lastUpdateTime = Timer::get().timeElapsedRaw().asSeconds();
 }
 
 bool BaseState::handleWindow() {
+    Game::get().eventDispatcher.notifyFrameStart();
+
     Event event;
     while (Game::get().window.pollEvent(event)) {
         if (event.type==Event::Closed) {
@@ -88,8 +96,12 @@ bool BaseState::handleWindow() {
 		}
 		if (event.type==Event::GainedFocus)
 			Game::get().inFocus = true;
-		if (event.type==Event::LostFocus)
+		if (event.type==Event::LostFocus) {
 			Game::get().inFocus = false;
+			runState(PauseState::create());
+		}
+
+        Game::get().eventDispatcher.dispatch(event);
     }
 
     if (Keyboard::isKeyPressed(Keyboard::Numpad1))

@@ -5,8 +5,8 @@
 #include "Shared/Entities/EntityManager.hpp"
 using namespace std;
 
-AttackEntity::AttackEntity(Entity::Ptr atk, CombatAttack::ConstPtr weapon)
-: Entity(weapon->getName(), atk->getPosition(), weapon->getAnimation(), "") {
+AttackEntity::AttackEntity(Entity::Ptr atk, CombatAttack::Ref weapon)
+: Entity(weapon->getName(), atk->getPosition(), weapon->getMapGfxFile(), "") {
     attacker = atk;
     attack = weapon;
     particlesCreated = false;
@@ -70,7 +70,7 @@ bool AttackEntity::shouldApplyDamage(Entity::Ptr ent) {
     return false;
 }
 
-Entity::Ptr AttackEntity::create(Entity::Ptr attacker, CombatAttack::ConstPtr atk, int atkDir) {
+Entity::Ptr AttackEntity::create(Entity::Ptr attacker, CombatAttack::Ref atk, int atkDir) {
     switch (atk->getType()) {
         case CombatAttack::Ranged:
             return RangedAttackEntity::create(attacker, atk, atkDir);

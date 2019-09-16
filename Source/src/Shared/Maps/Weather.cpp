@@ -2,11 +2,10 @@
 #include "Shared/Maps/Map.hpp"
 #include "Shared/Properties.hpp"
 #include "Shared/Util/Util.hpp"
+#include "Shared/Util/Timer.hpp"
 #include <cmath>
 using namespace std;
 using namespace sf;
-
-Clock Weather::timer;
 
 BaseWeatherType::BaseWeatherType(Map* o) {
 	owner = o;
@@ -52,7 +51,7 @@ void Thunder::update(SoundEngine* sEngine)
 {
     if (goTime!=0)
     {
-        int t = Weather::timer.getElapsedTime().asMilliseconds()-goTime;
+        int t = Timer::get().timeElapsedMilliseconds()-goTime;
         const int a = 70, c = 400, d = 750;
         int alpha = 0;
 
@@ -67,12 +66,12 @@ void Thunder::update(SoundEngine* sEngine)
         }
         flash.setFillColor(Color(255,255,255,alpha));
     }
-    else if (randomInt(10000,25000)<Weather::timer.getElapsedTime().asMilliseconds()-lastTime)
+    else if ((unsigned)randomInt(10000,25000)<Timer::get().timeElapsedMilliseconds()-lastTime)
     {
         sEngine->playSound("thunder.wav");
         flash.setFillColor(Color(255,255,255,128));
-        goTime = Weather::timer.getElapsedTime().asMilliseconds();
-        lastTime = Weather::timer.getElapsedTime().asMilliseconds();
+        goTime = Timer::get().timeElapsedMilliseconds();
+        lastTime = Timer::get().timeElapsedMilliseconds();
     }
 }
 
@@ -86,7 +85,7 @@ RainWeather::RainWeather(Map* m, SoundEngine* se, bool isHard, bool thunder) : B
     isStopping = isDone = false;
     sEngine = se;
     lastTime = 0;
-    creationTimer = Weather::timer.getElapsedTime().asMilliseconds();
+    creationTimer = Timer::get().timeElapsedMilliseconds();
     canThunder = thunder;
     airDrop = imagePool.loadResource(Properties::MiscImagePath+"rainDrop.png");
     splashDrop[0] = imagePool.loadResource(Properties::MiscImagePath+"rainSplash1.png");
@@ -147,9 +146,9 @@ void RainWeather::update() {
 		return;
     }
 
-	double dt = Weather::timer.getElapsedTime().asMilliseconds()-lastTime;
+	double dt = Timer::get().timeElapsedMilliseconds()-lastTime;
 	Vector3f dif(rainVel.x*dt,rainVel.y*dt,rainVel.z*dt);
-	lastTime = Weather::timer.getElapsedTime().asMilliseconds();
+	lastTime = Timer::get().timeElapsedMilliseconds();
 
     for (unsigned int i = 0; i<rainDrops.size(); ++i)
     {
@@ -162,8 +161,8 @@ void RainWeather::update() {
         if (rainDrops[i].z==0)
         {
             if (rainDrops[i].time==0)
-                rainDrops[i].time = Weather::timer.getElapsedTime().asMilliseconds();
-            else if (Weather::timer.getElapsedTime().asMilliseconds()-rainDrops[i].time>=80 && !isStopping)
+                rainDrops[i].time = Timer::get().timeElapsedMilliseconds();
+            else if (Timer::get().timeElapsedMilliseconds()-rainDrops[i].time>=80 && !isStopping)
             {
                 int xMin = owner->getCamera().x-300;
                 int yMin = owner->getCamera().y-300;
@@ -177,11 +176,11 @@ void RainWeather::update() {
         }
     }
 
-	if (Weather::timer.getElapsedTime().asMilliseconds()-creationTimer>100)
+	if (Timer::get().timeElapsedMilliseconds()-creationTimer>100)
     {
     	int created = 0;
-		int makeNow = double(Weather::timer.getElapsedTime().asMilliseconds()-creationTimer)*createPerSec;
-		creationTimer = Weather::timer.getElapsedTime().asMilliseconds();
+		int makeNow = double(Timer::get().timeElapsedMilliseconds()-creationTimer)*createPerSec;
+		creationTimer = Timer::get().timeElapsedMilliseconds();
 		while (signed(rainDrops.size())<maxDrops && created<makeNow)
 		{
 			int xMin = owner->getCamera().x-300;
@@ -213,7 +212,7 @@ void RainWeather::draw(RenderTarget& window)
         }
         else
         {
-            int x = (Weather::timer.getElapsedTime().asMilliseconds()-rainDrops[i].time)/60;
+            int x = (Timer::get().timeElapsedMilliseconds()-rainDrops[i].time)/60;
             if (x>1)
                 x = 1;
             splashSpr[x].setPosition(rainDrops[i].toScreen(owner->getCamera()+Vector2f(Properties::ScreenWidth,Properties::ScreenHeight)));
@@ -229,7 +228,7 @@ SnowWeather::SnowWeather(Map* m, SoundEngine* se, bool h, bool t) : BaseWeatherT
 	sEngine = se;
     isStopping = isDone = false;
     lastTime = 0;
-    creationTimer = Weather::timer.getElapsedTime().asMilliseconds();
+    creationTimer = Timer::get().timeElapsedMilliseconds();
     flake = imagePool.loadResource(Properties::MiscImagePath+"snowFlake.png");
     spr.setTexture(*flake);
     canThunder = t;
@@ -278,8 +277,8 @@ void SnowWeather::update()
         return;
     }
 
-	double dif = double(Weather::timer.getElapsedTime().asMilliseconds()-lastTime)*fallSpeed;
-	lastTime = Weather::timer.getElapsedTime().asMilliseconds();
+	double dif = double(Timer::get().timeElapsedMilliseconds()-lastTime)*fallSpeed;
+	lastTime = Timer::get().timeElapsedMilliseconds();
 
     for (unsigned int i = 0; i<flakes.size(); ++i)
     {
@@ -289,7 +288,7 @@ void SnowWeather::update()
             if (flakes[i].z<=0)
             {
                 flakes[i].z = 0;
-                flakes[i].time = Weather::timer.getElapsedTime().asMilliseconds();
+                flakes[i].time = Timer::get().timeElapsedMilliseconds();
             }
             else
             {
@@ -307,7 +306,7 @@ void SnowWeather::update()
         }
         else
         {
-            if (Weather::timer.getElapsedTime().asMilliseconds()-flakes[i].time>lifeTime)
+            if (Timer::get().timeElapsedMilliseconds()-flakes[i].time>lifeTime)
             {
             	if (!isStopping)
                 {
@@ -324,11 +323,11 @@ void SnowWeather::update()
         }
     }
 
-	if (Weather::timer.getElapsedTime().asMilliseconds()-creationTimer>100)
+	if (Timer::get().timeElapsedMilliseconds()-creationTimer>100)
     {
-    	int createNow = double(Weather::timer.getElapsedTime().asMilliseconds()-creationTimer)*createPerSec;
+    	int createNow = double(Timer::get().timeElapsedMilliseconds()-creationTimer)*createPerSec;
     	int created = 0;
-    	creationTimer = Weather::timer.getElapsedTime().asMilliseconds();
+    	creationTimer = Timer::get().timeElapsedMilliseconds();
 		while (signed(flakes.size())<maxFlakes && created<createNow)
 		{
 			int xMin = owner->getCamera().x-300;
@@ -354,7 +353,7 @@ void SnowWeather::draw(RenderTarget& window)
     {
         spr.setPosition(flakes[i].toScreen(owner->getCamera()+Vector2f(Properties::ScreenWidth,Properties::ScreenHeight)));
         if (flakes[i].time!=0)
-            spr.setColor(Color(255,255,255,255-255*(double(Weather::timer.getElapsedTime().asMilliseconds()-flakes[i].time)/double(lifeTime))));
+            spr.setColor(Color(255,255,255,255-255*(double(Timer::get().timeElapsedMilliseconds()-flakes[i].time)/double(lifeTime))));
         else
             spr.setColor(Color(255,255,255,255));
         window.draw(spr);
@@ -393,17 +392,17 @@ void SunnyWeather::update()
 {
     if (!isStopping)
 	{
-		t += double(Weather::timer.getElapsedTime().asMilliseconds()-lastTime)*0.030303;
+		t += double(Timer::get().timeElapsedMilliseconds()-lastTime)*0.030303;
 		cover.setFillColor(Color(255,255,60,45+cos(double(t)/45*3.1415926)*25));
 	}
     else
 	{
-		a -= 0.0151515*double(Weather::timer.getElapsedTime().asMilliseconds()-lastTime);
+		a -= 0.0151515*double(Timer::get().timeElapsedMilliseconds()-lastTime);
 		if (a<0)
 			a = 0;
 		cover.setFillColor(Color(255,255,60,a));
 	}
-	lastTime = Weather::timer.getElapsedTime().asMilliseconds();
+	lastTime = Timer::get().timeElapsedMilliseconds();
 }
 
 void SunnyWeather::draw(RenderTarget& window)
@@ -420,7 +419,7 @@ FogWeather::FogWeather(Map* m, bool isThick) : BaseWeatherType(m)
 {
 	a = 0;
     isStopping = false;
-    lastTime = Weather::timer.getElapsedTime().asMilliseconds();
+    lastTime = Timer::get().timeElapsedMilliseconds();
     spr.setColor(Color(255,255,255,0)); //gradually increase
     fogTxtr = imagePool.loadResource(Properties::MiscImagePath+"fog.png");
     spr.setTexture(*fogTxtr);
@@ -470,8 +469,8 @@ int FogWeather::getLightChange()
 
 void FogWeather::update()
 {
-	double dt = Weather::timer.getElapsedTime().asMilliseconds()-lastTime;
-	lastTime = Weather::timer.getElapsedTime().asMilliseconds();
+	double dt = Timer::get().timeElapsedMilliseconds()-lastTime;
+	lastTime = Timer::get().timeElapsedMilliseconds();
 	double difY = dt*0.030303;
 	double difX = difY*2;
 
@@ -515,7 +514,7 @@ void FogWeather::draw(RenderTarget& window)
 SandstormWeather::SandstormWeather(Map* m) : BaseWeatherType(m), cover(Vector2f(800,600))
 {
     isStopping = false;
-    lastTime = Weather::timer.getElapsedTime().asMilliseconds();
+    lastTime = Timer::get().timeElapsedMilliseconds();
     a = 0;
     lChng = 30;
     mainTxtr = imagePool.loadResource(Properties::MiscImagePath+"sandMain.png");
@@ -568,8 +567,8 @@ void SandstormWeather::update()
     int minY = owner->getCamera().y - 100;
     int sX = owner->getCamera().x + 1468;
     int sY = owner->getCamera().y + 660;
-    double dt = Weather::timer.getElapsedTime().asMilliseconds()-lastTime;
-    lastTime = Weather::timer.getElapsedTime().asMilliseconds();
+    double dt = Timer::get().timeElapsedMilliseconds()-lastTime;
+    lastTime = Timer::get().timeElapsedMilliseconds();
     double dx1 = dt*0.363636, dy1 = dt*0.090909;
     double dx2 = dt*0.545454, dy2 = dt*0.121212, dz = dt*0.454545;
 
@@ -689,7 +688,7 @@ void Weather::init(Type tp, bool force)
 	if (type!=AllRandom && type!=WaterRandom && type!=SnowRandom && type!=DesertRandom && type!=None)
 		logWeather(type);
 
-	nextChange = Weather::timer.getElapsedTime().asMilliseconds()+randomInt(180000,420000);
+	nextChange = Timer::get().timeElapsedMilliseconds()+randomInt(180000,420000);
 }
 
 bool Weather::enterMap(string name)
@@ -699,7 +698,7 @@ bool Weather::enterMap(string name)
 
 	if (pastWeather.find(name)!=pastWeather.end())
 	{
-		long age = Weather::timer.getElapsedTime().asMilliseconds()-pastWeather[name].timeRecorded;
+		long age = Timer::get().timeElapsedMilliseconds()-pastWeather[name].timeRecorded;
 		if (age<300000) //5 minutes
 		{
 			init(pastWeather[name].type);
@@ -716,7 +715,7 @@ void Weather::logWeather(Type tp)
 {
 	PastWeather t;
 	t.mapName = curMap;
-	t.timeRecorded = Weather::timer.getElapsedTime().asMilliseconds();
+	t.timeRecorded = Timer::get().timeElapsedMilliseconds();
 	t.type = tp;
 	pastWeather[curMap] = t;
 }
@@ -740,7 +739,7 @@ void Weather::update()
     {
         weather->update();
         desiredLight = weather->getLightChange();
-        if (Weather::timer.getElapsedTime().asMilliseconds()>=nextChange && (type==WaterRandom || type==SnowRandom || type==DesertRandom || type==AllRandom) && !isStopping)
+        if (Timer::get().timeElapsedMilliseconds()>=nextChange && (type==WaterRandom || type==SnowRandom || type==DesertRandom || type==AllRandom) && !isStopping)
         {
             weather->stop();
             isStopping = true;
@@ -752,12 +751,12 @@ void Weather::update()
                 isStopping = false;
                 weather.reset();
                 weather = nullptr;
-                nextChange = Weather::timer.getElapsedTime().asMilliseconds()+randomInt(180000,420000);
+                nextChange = Timer::get().timeElapsedMilliseconds()+randomInt(180000,420000);
             }
         }
     }
 
-    else if (Weather::timer.getElapsedTime().asMilliseconds()>=nextChange)
+    else if (Timer::get().timeElapsedMilliseconds()>=nextChange)
     {
         if (type==WaterRandom)
             createRain();
@@ -787,7 +786,7 @@ void Weather::update()
 				logWeather(SandStorm);
 			}
         }
-        nextChange = Weather::timer.getElapsedTime().asMilliseconds()+randomInt(120000,600000);
+        nextChange = Timer::get().timeElapsedMilliseconds()+randomInt(120000,600000);
     }
 }
 

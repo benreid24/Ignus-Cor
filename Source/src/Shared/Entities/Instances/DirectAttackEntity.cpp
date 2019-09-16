@@ -2,7 +2,7 @@
 #include "Shared/Entities/EntityManager.hpp"
 using namespace std;
 
-DirectAttackEntity::DirectAttackEntity(Entity::Ptr attacker, CombatAttack::ConstPtr atk, bool followAttacker)
+DirectAttackEntity::DirectAttackEntity(Entity::Ptr attacker, CombatAttack::Ref atk, bool followAttacker)
 : AttackEntity(attacker, atk) {
     speed[0] = speed[1] = 0;
     offset = position.coords - attacker->getPosition().coords;
@@ -10,7 +10,7 @@ DirectAttackEntity::DirectAttackEntity(Entity::Ptr attacker, CombatAttack::Const
     collisionsEnabled = false;
 }
 
-Entity::Ptr DirectAttackEntity::create(Entity::Ptr attacker, CombatAttack::ConstPtr atk, bool follow) {
+Entity::Ptr DirectAttackEntity::create(Entity::Ptr attacker, CombatAttack::Ref atk, bool follow) {
     return Entity::Ptr(new DirectAttackEntity(attacker, atk, follow));
 }
 

@@ -34,7 +34,7 @@ void AiEntity::beforeTimerUpdate() {
     afterBehaviorUpdate();
 }
 
-void AiEntity::p_notifyWasAttacked(Ptr attacker, CombatAttack::ConstPtr attack) {
+void AiEntity::p_notifyWasAttacked(Ptr attacker, CombatAttack::Ref attack) {
     if (behavior != nullptr)
         behavior->notifyAttacked(attacker, attack);
     p_notifyAiAttacked(attacker, attack);

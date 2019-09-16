@@ -16,7 +16,7 @@ class File : private sf::NonCopyable
 {
     std::fstream file;
 
-    public:
+public:
     /**
      * Defines the mode of the file
      */
@@ -37,7 +37,7 @@ class File : private sf::NonCopyable
      * \param name The path to the file to open
      * \param mode The mode to open the file in
      */
-    File(std::string name, OpenMode mode = In);
+    File(const std::string& name, OpenMode mode = In);
 
     /**
      * Closes the file
@@ -50,7 +50,7 @@ class File : private sf::NonCopyable
      * \param name The path to the file to open
      * \param mode The mode to open the file in
      */
-    void setFile(std::string name, OpenMode mode= In);
+    void setFile(const std::string& name, OpenMode mode= In);
 
     /**
      * Closes the file
@@ -79,7 +79,7 @@ class File : private sf::NonCopyable
      *
      * \param str The string to write
      */
-    void writeString(std::string str)
+    void writeString(const std::string& str)
     {
         if (file.good())
         {
@@ -168,7 +168,7 @@ class File : private sf::NonCopyable
      * \param file The filename to parse for the extension
      * \return The extension of the file
      */
-    static std::string getExtension(std::string file);
+    static std::string getExtension(const std::string& file);
 
     /**
      * Returns the base name of a file by removing the path and extension
@@ -176,7 +176,15 @@ class File : private sf::NonCopyable
      * \param file The filename to parse
      * \return The base name of the file
      */
-    static std::string getBaseName(std::string file);
+    static std::string getBaseName(const std::string& file);
+
+    /**
+     * Returns the name of a file (incl extension) without the path
+     *
+     * \param file The full filename
+     * \return The filename without the path
+     */
+    static std::string stripPath(const std::string& file);
 
     /**
      * Returns the path of a given filename
@@ -184,55 +192,63 @@ class File : private sf::NonCopyable
      * \param file The filename
      * \return The path of the passed file
      */
-	static std::string getPath(std::string file);
+	static std::string getPath(const std::string& file);
+
+	/**
+     * Tells whether or not the given file exists
+     *
+     * \param filename The file to check
+     * \return Whether or not the file exists
+     *
+     * \ingroup Utilities
+     */
+    static bool exists(const std::string& filename);
+
+    /**
+     * Copies the given file to the given destination
+     *
+     * \param src The file to copy from
+     * \param dest The file to copy to
+     */
+    static void copy(const std::string& src, const std::string& dest);
+
+    /**
+     * Creates directories recursively to ensure that the given directory is valid
+     *
+     * \param dir The full directory path to create
+     */
+    static void createDirectories(const std::string& dir);
+
+    /**
+     * Returns a file listing of the given directory
+     *
+     * \param dir The directory to search
+     * \param ext The file extension
+     * \param inclSubdirs Whether or not to recursively search
+     * \return A vector containing the filenames of all the files that matched
+     */
+    static std::vector<std::string> listDirectory(std::string dir, const std::string& ext, bool inclSubdirs);
+
+    #ifdef EDITOR
+    /**
+     * Helper function to open the Window file dialog window to get a file
+     *
+     * \param name The file type name to prompt the user for
+     * \param ext The file extension to filter out
+     * \param save True if this is a file being saved
+     * \param create True if this is a file being created
+     */
+    static std::string getFile(const std::string& name, const std::string& ext, bool save, bool create);
+
+    /**
+     * Helper function to open the Window file dialog window to get a folder
+     *
+     * \param f The file extension to look for
+     * \param s True if this is a file being saved
+     * \param c True if this is a file being created
+     */
+    static std::string getFolder();
+    #endif
 };
-
-/**
- * Tells whether or not the given file exists
- *
- * \param filename The file to check
- * \return Whether or not the file exists
- *
- * \ingroup Utilities
- */
-bool FileExists(std::string filename);
-
-/**
- * Copies the given file to the given destination
- *
- * \param src The file to copy from
- * \param dest The file to copy to
- */
-void copyFile(std::string src, std::string dest);
-
-/**
- * Returns a file listing of the given directory
- *
- * \param dir The directory to search
- * \param ext The file extension
- * \param inclSubdirs Whether or not to recursively search
- * \return A vector containing the filenames of all the files that matched
- */
-std::vector<std::string> listDirectory(std::string dir, std::string ext, bool inclSubdirs);
-
-#ifdef EDITOR
-/**
- * Helper function to open the Window file dialogue window to get a file
- *
- * \param f The file extension to look for
- * \param s True if this is a file being saved
- * \param c True if this is a file being created
- */
-std::string getFilename(const char* f, bool s, bool c);
-
-/**
- * Helper function to open the Window file dialogue window to get a folder
- *
- * \param f The file extension to look for
- * \param s True if this is a file being saved
- * \param c True if this is a file being created
- */
-std::string getFoldername();
-#endif
 
 #endif

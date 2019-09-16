@@ -61,7 +61,38 @@ private:
 protected:
     EntityPosition startPosition;
     Entity* owner;
-    int state;
+
+    struct StateValue {
+        int lastState;
+
+        StateValue() { state = lastState = EntityBehavior::Default; }
+        StateValue(const int s) { state = lastState = s; }
+        StateValue& operator=(const int s) { lastState = state; state = s; return *this; }
+        operator int() { return state; }
+
+    private:
+        int state;
+    }state;
+
+    /**
+     * For derived classes to implement custom update behavior
+     */
+    virtual void p_update() = 0;
+
+    /**
+     * Notify derived class of being attacked
+     */
+    virtual void p_notifyAttacked(Entity::Ptr attacker, CombatAttack::Ref attack) {}
+
+    /**
+     * Notify derived class of nearby combat
+     */
+    virtual void p_notifyCombatNearby(Entity::List combatants) {}
+
+    /**
+     * Notify derived class of being interacted with
+     */
+    virtual void p_notifyInteracted(Entity::Ptr interactor) {}
 
 public:
     /**
@@ -77,22 +108,27 @@ public:
     /**
      * Perform one update cycle. This will potentially modify the owning Entity
      */
-    virtual void update();
+     void update();
 
     /**
-     * Notify of being attacked. Child classes should call this to update the attacker list
+     * Notify of being attacked
      */
-    virtual void notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr attack);
+    void notifyAttacked(Entity::Ptr attacker, CombatAttack::Ref attack);
 
     /**
      * Notify of nearby combat
      */
-    virtual void notifyCombatNearby(Entity::List combatants);
+    void notifyCombatNearby(Entity::List combatants);
 
     /**
-     * Notify of being interacted with. Child classes should call this to update the interactor WeakPtr
+     * Notify of being interacted with
      */
-    virtual void notifyInteracted(Entity::Ptr interactor);
+    void notifyInteracted(Entity::Ptr interactor);
+
+    /**
+     * Terminates the interaction
+     */
+    void terminateInteraction();
 
     /**
      * Accessor function for Entity interactor. Returns nullptr if none or expired

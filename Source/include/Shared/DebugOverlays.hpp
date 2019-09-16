@@ -1,7 +1,7 @@
 #ifndef DEBUGOVERLAYS_HPP
 #define DEBUGOVERLAYS_HPP
 
-#include <SFML/System.hpp>
+#include "Shared/Util/Timer.hpp"
 #include <iostream>
 #include <string>
 
@@ -22,7 +22,6 @@ public:
 private:
     static Type& p_get() { static Type debug = None; return debug; }
     static int& p_lastUpdate() { static int ltime = 0; return ltime; }
-    static sf::Clock& p_timer() { static sf::Clock clock; return clock; }
 
 public:
     static inline bool isOverlayActive(Type overlay) {
@@ -46,9 +45,9 @@ public:
     }
 
     static inline void toggleOverlay(Type overlay) {
-        if (p_timer().getElapsedTime().asMilliseconds()-p_lastUpdate() >= 500 || p_lastUpdate()==0) {
+        if (Timer::get().timeElapsedMilliseconds()-p_lastUpdate() >= 500 || p_lastUpdate()==0) {
             p_get() = Type((int)p_get() ^ (int)overlay);
-            p_lastUpdate() = p_timer().getElapsedTime().asMilliseconds();
+            p_lastUpdate() = Timer::get().timeElapsedMilliseconds();
             std::cout << "Active Debug Overlays: " << toString(p_get()) << std::endl;
         }
     }

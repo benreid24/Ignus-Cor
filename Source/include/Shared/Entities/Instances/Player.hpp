@@ -4,7 +4,14 @@
 #include "Shared/Entities/Virtual/CombatEntity.hpp"
 
 /**
+ * \defgroup Player Classes related to the human player
+ */
+
+/**
  * Class to represent the player(s) in the game. Stores inventory and other player data
+ *
+ * \ingroup Entities
+ * \ingroup Player
  */
 class Player : public CombatEntity {
 	//player data (money, inventory, etc)

@@ -1,7 +1,7 @@
 #ifndef GAMECLOCK_HPP
 #define GAMECLOCK_HPP
 
-#include "SFML.hpp"
+#include "Shared/Util/Timer.hpp"
 
 /**
  * Structure for storing the game time in hour:minute form
@@ -41,55 +41,23 @@ struct ClockTime
  */
 class GameClock
 {
-    sf::Clock timer;
     ClockTime start;
-    int startTime; //for tracking elapsed time since game play started
-    int pausedTime;
-    bool paused;
 
 public:
     /**
-     * Starts the timer and initializes the elapsed time to 0
+     * Starts the time noon
      */
-    GameClock()
-    {
-        startTime = 0;
-        pausedTime = 0;
-        start = ClockTime(12,0);
-        paused = false;
-    }
-
-    /**
-     * Does nothing, wasn't invited to the party, just showed up
-     */
-    ~GameClock(){}
-
-    /**
-     * Returns the time elapsed since program start in milliseconds
-     */
-    long getTimeStamp()
-    {
-        return timer.getElapsedTime().asMilliseconds();
-    }
-
-    /**
-     * Returns the time elapsed in microseconds
-     */
-	long getMicros()
-	{
-		return timer.getElapsedTime().asMicroseconds();
-	}
+    GameClock(): start(12,0) {}
 
     /**
      * Returns the simulated in game time
      */
     ClockTime getClockTime() //present scale: 3 seconds = 1 minute
     {
-        ClockTime t;
-        int s = (paused)?(pausedTime):(getTimeStamp()-startTime);
-
-        t.hour = (start.hour+(s/3000+start.minute)/60)%24;
-        t.minute = (start.minute+s/3000)%60;
+        ClockTime t = start;
+        float s = Timer::get().timeElapsedSeconds();
+        t.hour += int(s/3.0+(float)t.minute)/60)%24;
+        t.minute += int(s/3.0)%60;
 
         return t;
     }
@@ -102,35 +70,6 @@ public:
     void setClockTime(ClockTime t)
     {
         start = t;
-        startTime = timer.getElapsedTime().asMilliseconds();
-    }
-
-    /**
-     * Sets the time to noon and resets the timer so that the time is synced
-     */
-	void newGame()
-	{
-		setClockTime(ClockTime(12,0));
-		startTime = getTimeStamp();
-		paused = false;
-	}
-
-    /**
-     * Stops recording simulation time passing. Pauses time in essence, however getTimeStamp will still function
-     */
-    void pause()
-    {
-        pausedTime = getTimeStamp();
-        paused = true;
-    }
-
-    /**
-     * Continues tracking in game time
-     */
-    void unPause()
-    {
-        startTime += getTimeStamp()-pausedTime;
-        paused = false;
     }
 };
 

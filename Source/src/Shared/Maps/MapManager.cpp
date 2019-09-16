@@ -3,6 +3,7 @@
 #include "Shared/Entities/EntityManager.hpp"
 #include "Shared/Media/Playlist.hpp"
 #include "Shared/Media/SoundEngine.hpp"
+#include "Shared/Util/Timer.hpp"
 using namespace std;
 using namespace sf;
 
@@ -45,7 +46,7 @@ bool MapManager::spaceFree(EntityPosition space, Vector2f size) {
 void MapManager::loadMap(string mapfile) {
     if (maps.find(mapfile)==maps.end()) {
         MapHolder temp;
-        temp.lastActiveTime = timer.getElapsedTime().asMilliseconds();
+        temp.lastActiveTime = Timer::get().timeElapsedMilliseconds();
         temp.mapdata = shared_ptr<Map>(new Map(mapfile, tileset, player));
         maps.insert(make_pair(mapfile, temp)).first;
         if (maps.size()==1)
@@ -62,12 +63,12 @@ void MapManager::mapChange(Entity::Ptr e, string mapfile, string spawn) {
 }
 
 void MapManager::update() {
-    maps[activeMap].lastActiveTime = timer.getElapsedTime().asMilliseconds();
+    maps[activeMap].lastActiveTime = Timer::get().timeElapsedMilliseconds();
 
     vector<string> todelete;
     for (map<string,MapHolder>::iterator i = maps.begin(); i!=maps.end(); ++i) {
         i->second.mapdata->update();
-        if (timer.getElapsedTime().asMilliseconds()-i->second.lastActiveTime >= mapTimeout)
+        if (Timer::get().timeElapsedMilliseconds()-i->second.lastActiveTime >= mapTimeout)
             todelete.push_back(i->first);
     }
     for (unsigned int i = 0; i<todelete.size(); ++i) {

@@ -25,11 +25,19 @@ string intToString(int i)
     return ss.str();
 }
 
-int stringToInt(string s)
+string doubleToString(double d)
 {
     stringstream ss;
-    ss << s;
-    int i = 0;
-    ss >> i;
-    return i;
+    ss << d;
+    return ss.str();
+}
+
+int stringToInt(const string& s)
+{
+    return stoi(s.c_str());
+}
+
+double stringToDouble(const string& s)
+{
+    return stod(s.c_str());
 }

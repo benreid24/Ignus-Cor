@@ -1,71 +1,51 @@
 #ifndef COMBATARMOR_HPP
 #define COMBATARMOR_HPP
 
-#include <list>
-#include <string>
+#include "Shared/Items/Item.hpp"
 
-/**
- * Represents effects that armor can have
- *
- * \ingroup Combat
- */
-struct CombatArmorEffect {
-    enum Type {
-        None,
-        ResistFire,
-        ResistIce,
-        ResistElectricity,
-        ResistPoison
-    };
-    Type type;
-    double intensity, chance;
-
-    CombatArmorEffect() : type(None) {}
-
-    CombatArmorEffect(Type type, double intensity, double chance) : type(type), intensity(intensity), chance(chance) {}
-};
+class ItemFactory;
 
 /**
  * Armor that Entities can wear to help negate combat damage
  *
  * \ingroup Combat
+ * \ingroup Items
  */
-class CombatArmor {
+class CombatArmor : public Item {
     //TODO - graphics change?
-    std::string name, description;
     double damageResist;
-    std::list<CombatArmorEffect> effects;
 
-public:
-    /**
-     * Empty armor
-     */
-    CombatArmor();
+    CombatArmor() = delete;
 
     /**
      * Constructs from all parameters
      */
-    CombatArmor(const std::string& name, const std::string& description, double damageResistance, const std::list<CombatArmorEffect>& effects);
+    CombatArmor(int id, const std::string& name, const std::string& desc,
+                const ItemEffect::List& effects, int value, const std::string& mapImg,
+                const std::string& menuImg, double damageResistance);
 
     /**
-     * Returns the name
+     * Saves damage resistance to the file
      */
-    std::string getName() const;
+    virtual void p_save(File& file) const override;
+
+    friend class ItemFactory;
+    friend class ItemDbEditor;
+
+public:
+    typedef std::shared_ptr<const CombatArmor> Ref;
+
+    virtual ~CombatArmor() = default;
 
     /**
-     * Returns the description
+     * Helper function for pointer cast
      */
-    std::string getDescription() const;
+    static Ref fromItem(Item::ConstPtr item);
 
     /**
      * Returns the damage resistance
      */
     double getDamageResist() const;
-
-    /**
-     * Returns the list of effects
-     */
-    std::list<CombatArmorEffect> getEffects() const;
 };
 
 #endif // COMBATARMOR_HPP

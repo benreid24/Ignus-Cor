@@ -1,12 +1,11 @@
 #include "Shared/Media/Animation.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Util/ResourcePool.hpp"
+#include "Shared/Util/Timer.hpp"
 #include "Shared/Properties.hpp"
 #include <iostream>
 using namespace std;
 using namespace sf;
-
-Clock Animation::clock;
 
 AnimationSource::AnimationSource()
 {
@@ -31,11 +30,10 @@ void AnimationSource::load(const string& file)
     string path = File::getPath(file);
 
     spriteSheetFile = input.getString();
-    if (FileExists(path+spriteSheetFile))
-		path += spriteSheetFile;
-	else
-		path = Properties::SpriteSheetPath+spriteSheetFile;
-    sheet = imagePool.loadResource(path);
+    if (File::exists(path+spriteSheetFile))
+		sheet = imagePool.loadResource(path+spriteSheetFile);
+	else if (File::exists(Properties::SpriteSheetPath+spriteSheetFile))
+		sheet = imagePool.loadResource(Properties::SpriteSheetPath+spriteSheetFile);
     loop = bool(input.get<uint8_t>());
     int numFrames = input.get<uint16_t>();
     frames.resize(numFrames);
@@ -70,7 +68,7 @@ bool AnimationSource::isLooping() const
 
 const std::vector<sf::Sprite>& AnimationSource::getFrame(unsigned int i, Vector2f pos, bool centerOrigin)
 {
-    if (i>=frames.size()) {
+    if (i>=frames.size() || !sheet) {
         return sprites;
     }
 
@@ -94,7 +92,7 @@ const std::vector<sf::Sprite>& AnimationSource::getFrame(unsigned int i, Vector2
 }
 
 sf::Vector2f AnimationSource::getFrameSize(unsigned int n) {
-    if (n>=frames.size())
+    if (n>=frames.size() || !sheet)
         return Vector2f(0,0);
 
     sf::FloatRect bounds(0, 0, 0, 0); //width/height = right/bottom
@@ -115,7 +113,7 @@ sf::Vector2f AnimationSource::getFrameSize(unsigned int n) {
     return sf::Vector2f(bounds.width - bounds.left, bounds.height - bounds.top);
 }
 
-unsigned int AnimationSource::incFrame(unsigned int cFrm, int lTime)
+unsigned int AnimationSource::incFrame(unsigned int cFrm, unsigned long lTime)
 {
     if (cFrm>=frames.size()) {
         return 0;
@@ -128,7 +126,7 @@ unsigned int AnimationSource::incFrame(unsigned int cFrm, int lTime)
 		return cFrm;
 	}
 
-    if (Animation::clock.getElapsedTime().asMilliseconds()-lTime>=frames[cFrm][0].length)
+    if (Timer::get().timeElapsedMilliseconds()-lTime>=frames[cFrm][0].length)
     {
         if (cFrm+1<frames.size())
             return cFrm+1;
@@ -146,8 +144,12 @@ unsigned int AnimationSource::numFrames() const
     return frames.size();
 }
 
-string AnimationSource::getSpritesheetFilename() {
+const string& AnimationSource::getSpritesheetFilename() const {
 	return spriteSheetFile;
+}
+
+bool AnimationSource::spritesheetFound() const {
+    return sheet.get() != nullptr;
 }
 
 Animation::Animation()
@@ -174,7 +176,7 @@ void Animation::setSource(AnimationReference src)
 {
     animSrc = src;
     curFrm = 0;
-    lastFrmChangeTime = Animation::clock.getElapsedTime().asMilliseconds();
+    lastFrmChangeTime = Timer::get().timeElapsedMilliseconds();
     looping = animSrc->isLooping();
 }
 
@@ -187,7 +189,7 @@ void Animation::update()
     if (playing || isLooping())
         curFrm = animSrc->incFrame(curFrm,lastFrmChangeTime);
     if (t!=curFrm)
-        lastFrmChangeTime = Animation::clock.getElapsedTime().asMilliseconds();
+        lastFrmChangeTime = Timer::get().timeElapsedMilliseconds();
 
     if (curFrm==animSrc->numFrames()-1 && playing)
     {
@@ -201,7 +203,7 @@ void Animation::update()
 void Animation::setFrame(unsigned int frm)
 {
     curFrm = frm;
-    lastFrmChangeTime = Animation::clock.getElapsedTime().asMilliseconds();
+    lastFrmChangeTime = Timer::get().timeElapsedMilliseconds();
     playing = false;
 }
 

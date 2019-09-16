@@ -22,13 +22,12 @@ class MapManager {
      */
     struct MapHolder {
         std::shared_ptr<Map> mapdata;
-        int lastActiveTime;
+        unsigned long lastActiveTime;
     };
 
     std::map<std::string, MapHolder> maps;
     Tileset tileset;
     std::string activeMap;
-    sf::Clock timer;
 
     Entity::Ptr player;
 

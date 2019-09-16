@@ -52,8 +52,7 @@ public:
     };
 
 protected:
-    sf::Clock timer;
-    float zeroTime;
+    float zeroTime, startTime;
 
     std::list<Particle*> particles;
     int totalCreated;

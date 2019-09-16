@@ -9,7 +9,9 @@
 			<notes>
 				<![CDATA[Create scripting document with functions
 Return uuid to scriptor when spawning entities. Also allow uuid to be fetched from name
-Allow attacking to occur in 360 directions (not just 4)]]>
+Allow attacking to occur in 360 directions (not just 4)
+
+Make script entry window. Can pick file. Can write script. Can validate and save script. Write to file?]]>
 			</notes>
 		</Option>
 		<Build>
@@ -75,6 +77,15 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="../../Source/include/Editor/AnimationEditor.hpp" />
+		<Unit filename="../../Source/include/Editor/ConversationEditor.hpp" />
+		<Unit filename="../../Source/include/Editor/GUI/CellTable.hpp" />
+		<Unit filename="../../Source/include/Editor/GUI/EditableCellTable.hpp" />
+		<Unit filename="../../Source/include/Editor/GUI/Form.hpp" />
+		<Unit filename="../../Source/include/Editor/GUI/ResizableImage.hpp" />
+		<Unit filename="../../Source/include/Editor/GUI/WrappingBox.hpp" />
+		<Unit filename="../../Source/include/Editor/Helpers/ConversationEditorWindow.hpp" />
+		<Unit filename="../../Source/include/Editor/Helpers/Dialogs.hpp" />
+		<Unit filename="../../Source/include/Editor/Helpers/FileImporter.hpp" />
 		<Unit filename="../../Source/include/Editor/Helpers/FilePicker.hpp" />
 		<Unit filename="../../Source/include/Editor/Helpers/LayerButtons.hpp" />
 		<Unit filename="../../Source/include/Editor/Helpers/MenuGenerators.hpp" />
@@ -84,13 +95,8 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/include/Editor/version.h" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatArmor.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatAttack.hpp" />
-		<Unit filename="../../Source/include/Shared/Combat/CombatEffect.hpp" />
-		<Unit filename="../../Source/include/Shared/Combat/CombatMeleeAttack.hpp" />
-		<Unit filename="../../Source/include/Shared/Data/AttackDB.hpp" />
-		<Unit filename="../../Source/include/Shared/Data/EffectDB.hpp" />
-		<Unit filename="../../Source/include/Shared/Data/ItemDB.hpp" />
 		<Unit filename="../../Source/include/Shared/DebugOverlays.hpp" />
-		<Unit filename="../../Source/include/Shared/Entities/Behaviors/WanderingBehavior.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/Behaviors/NpcWanderingBehavior.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Entity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityBehavior.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityBubble.hpp" />
@@ -109,10 +115,11 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/include/Shared/Entities/Virtual/AttackEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Virtual/CombatEntity.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Virtual/GraphicalEffectEntity.hpp" />
-		<Unit filename="../../Source/include/Shared/GUI/CellTable.hpp" />
-		<Unit filename="../../Source/include/Shared/GUI/Form.hpp" />
-		<Unit filename="../../Source/include/Shared/GUI/ResizableImage.hpp" />
-		<Unit filename="../../Source/include/Shared/GUI/WrappingBox.hpp" />
+		<Unit filename="../../Source/include/Shared/Items/Item.hpp" />
+		<Unit filename="../../Source/include/Shared/Items/ItemDB.hpp" />
+		<Unit filename="../../Source/include/Shared/Items/ItemEffect.hpp" />
+		<Unit filename="../../Source/include/Shared/Items/ItemFactory.hpp" />
+		<Unit filename="../../Source/include/Shared/Items/OwnedItem.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/Map.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/MapManager.hpp" />
 		<Unit filename="../../Source/include/Shared/Maps/Map_priv.hpp" />
@@ -121,8 +128,6 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/include/Shared/Media/Animation.hpp" />
 		<Unit filename="../../Source/include/Shared/Media/Playlist.hpp" />
 		<Unit filename="../../Source/include/Shared/Media/SoundEngine.hpp" />
-		<Unit filename="../../Source/include/Shared/Objects/Item.hpp" />
-		<Unit filename="../../Source/include/Shared/Objects/ItemEffect.hpp" />
 		<Unit filename="../../Source/include/Shared/Particles/Particle.hpp" />
 		<Unit filename="../../Source/include/Shared/Particles/ParticleGenerator.hpp" />
 		<Unit filename="../../Source/include/Shared/Particles/ParticleGeneratorFactory.hpp" />
@@ -144,10 +149,19 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/include/Shared/Util/GameClock.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/ResourcePool.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/ResourceTypes.hpp" />
+		<Unit filename="../../Source/include/Shared/Util/Timer.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/UUID.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/Util.hpp" />
 		<Unit filename="../../Source/include/Shared/Util/Vector2d.hpp" />
 		<Unit filename="../../Source/src/Editor/AnimationEditor.cpp" />
+		<Unit filename="../../Source/src/Editor/ConversationEditor.cpp" />
+		<Unit filename="../../Source/src/Editor/GUI/CellTable.cpp" />
+		<Unit filename="../../Source/src/Editor/GUI/EditableCellTable.cpp" />
+		<Unit filename="../../Source/src/Editor/GUI/Form.cpp" />
+		<Unit filename="../../Source/src/Editor/GUI/WrappingBox.cpp" />
+		<Unit filename="../../Source/src/Editor/Helpers/ConversationEditorWindow.cpp" />
+		<Unit filename="../../Source/src/Editor/Helpers/Dialogs.cpp" />
+		<Unit filename="../../Source/src/Editor/Helpers/FileImporter.cpp" />
 		<Unit filename="../../Source/src/Editor/Helpers/FilePicker.cpp" />
 		<Unit filename="../../Source/src/Editor/Helpers/LayerButtons.cpp" />
 		<Unit filename="../../Source/src/Editor/Helpers/MenuGenerators.cpp" />
@@ -157,10 +171,7 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/src/Editor/main.cpp" />
 		<Unit filename="../../Source/src/Shared/Combat/CombatArmor.cpp" />
 		<Unit filename="../../Source/src/Shared/Combat/CombatAttack.cpp" />
-		<Unit filename="../../Source/src/Shared/Data/AttackDB.cpp" />
-		<Unit filename="../../Source/src/Shared/Data/EffectDB.cpp" />
-		<Unit filename="../../Source/src/Shared/Data/ItemDB.cpp" />
-		<Unit filename="../../Source/src/Shared/Entities/Behaviors/WanderingBehavior.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/Behaviors/NpcWanderingBehavior.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Entity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityBehavior.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityBubble.cpp" />
@@ -178,9 +189,11 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/src/Shared/Entities/Virtual/AttackEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Virtual/CombatEntity.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Virtual/GraphicalEffectEntity.cpp" />
-		<Unit filename="../../Source/src/Shared/GUI/CellTable.cpp" />
-		<Unit filename="../../Source/src/Shared/GUI/Form.cpp" />
-		<Unit filename="../../Source/src/Shared/GUI/WrappingBox.cpp" />
+		<Unit filename="../../Source/src/Shared/Items/Item.cpp" />
+		<Unit filename="../../Source/src/Shared/Items/ItemDB.cpp" />
+		<Unit filename="../../Source/src/Shared/Items/ItemEffect.cpp" />
+		<Unit filename="../../Source/src/Shared/Items/ItemFactory.cpp" />
+		<Unit filename="../../Source/src/Shared/Items/OwnedItem.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/Map.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/MapManager.cpp" />
 		<Unit filename="../../Source/src/Shared/Maps/Tileset.cpp" />
@@ -188,8 +201,6 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/src/Shared/Media/Animation.cpp" />
 		<Unit filename="../../Source/src/Shared/Media/Playlist.cpp" />
 		<Unit filename="../../Source/src/Shared/Media/SoundEngine.cpp" />
-		<Unit filename="../../Source/src/Shared/Objects/Item.cpp" />
-		<Unit filename="../../Source/src/Shared/Objects/ItemEffect.cpp" />
 		<Unit filename="../../Source/src/Shared/Particles/Particle.cpp" />
 		<Unit filename="../../Source/src/Shared/Particles/ParticleGenerator.cpp" />
 		<Unit filename="../../Source/src/Shared/Particles/ParticleGeneratorFactory.cpp" />
@@ -204,6 +215,7 @@ Allow attacking to occur in 360 directions (not just 4)]]>
 		<Unit filename="../../Source/src/Shared/Util/Directory.cpp" />
 		<Unit filename="../../Source/src/Shared/Util/File.cpp" />
 		<Unit filename="../../Source/src/Shared/Util/ResourcePool.cpp" />
+		<Unit filename="../../Source/src/Shared/Util/Timer.cpp" />
 		<Unit filename="../../Source/src/Shared/Util/Util.cpp" />
 		<Extensions>
 			<code_completion />

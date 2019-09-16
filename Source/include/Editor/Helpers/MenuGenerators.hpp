@@ -1,12 +1,17 @@
 #ifndef MENUGENERATORS_HPP
 #define MENUGENERATORS_HPP
 
-#include "Shared/GUI/Form.hpp"
-#include "Shared/Objects/ItemEffect.hpp"
+#include "Editor/GUI/Form.hpp"
+#include "Shared/Items/ItemEffect.hpp"
+#include "Shared/Particles/ParticleGeneratorFactory.hpp"
+#include <list>
 
-void addItemEffectsToForm(Form& form, const ItemEffect::List& effects);
-ItemEffect::List getItemEffectsFromForm(Form& form);
+std::list<Form> addItemEffectsToForm(Form& form, const ItemEffect::List& effects);
+ItemEffect::List getItemEffectsFromForm(std::list<Form>& effectForms);
 
-//TODO - particle generator presets. more things?
+void addParticleGeneratorsToForm(Form& form, const std::string& name);
+ParticleGeneratorFactory::Preset getParticleGeneratorFromForm(Form& form, const std::string& name);
+
+//TODO - Drop downs for items
 
 #endif // MENUGENERATORS_HPP

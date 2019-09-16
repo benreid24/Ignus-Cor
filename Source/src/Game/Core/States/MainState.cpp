@@ -6,6 +6,8 @@ bool MainState::doState() {
     while (true) {
         if (handleWindow())
             return true;
+        if (runImmediate())
+            return true;
 
 		MapManager::get()->update();
 		EntityManager::get()->update();

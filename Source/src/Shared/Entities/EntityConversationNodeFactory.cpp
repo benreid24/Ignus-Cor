@@ -58,9 +58,14 @@ EntityConversationNodeFactory::TalkNode::TalkNode(const string& line)
 
 void EntityConversationNodeFactory::TalkNode::apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) {
     if (bubbleId < 0)
-        bubbleId = owner.addContent(say);
+        bubbleId = owner.addContent(say, EntityBubble::Input);
     else
         done = owner.queryContent(bubbleId) == EntityBubble::Finished;
+}
+
+void EntityConversationNodeFactory::TalkNode::cleanup(EntityBubble& playerbubble, EntityBubble& owner) {
+    if (bubbleId >= 0)
+        owner.removeContent(bubbleId);
 }
 
 void EntityConversationNodeFactory::TalkNode::reset() {
@@ -95,14 +100,21 @@ EntityConversationNodeFactory::OptionNode::OptionNode(File& input)
 
 void EntityConversationNodeFactory::OptionNode::apply(EntityConversation* conv, EntityBubble& playerbubble, EntityBubble& owner) {
     if (promptId < 0)
-        promptId = owner.addContent(prompt, -1);
+        promptId = owner.addContent(prompt, EntityBubble::Time, -1);
     if (optionsId < 0)
-        optionsId = playerbubble.addContent("TODO", -1); //TODO - add options to speech bubbles
+        optionsId = playerbubble.addContent("TODO", EntityBubble::Input, -1); //TODO - add options to speech bubbles
     chosenOption = playerbubble.queryContentSpecificStatus(optionsId);
     if (chosenOption >= 0) {
         owner.removeContent(promptId);
         playerbubble.removeContent(optionsId);
     }
+}
+
+void EntityConversationNodeFactory::OptionNode::cleanup(EntityBubble& playerbubble, EntityBubble& owner) {
+    if (promptId >= 0)
+        owner.removeContent(promptId);
+    if (optionsId >= 0)
+        playerbubble.removeContent(optionsId);
 }
 
 void EntityConversationNodeFactory::OptionNode::reset() {

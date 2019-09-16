@@ -28,8 +28,8 @@ class CombatEntity : public Entity {
 
 protected:
     EntityStats stats;
-    CombatAttack::ConstPtr weapon;
-	CombatArmor armor;
+    CombatAttack::Ref weapon;
+	CombatArmor::Ref armor;
 	double xpRewardMultiplier; //xp reward = levelDiff^2 * xpRewardMultiplier + level
 
 	/**
@@ -62,12 +62,12 @@ protected:
     /**
 	 * Notifies the Entity that they were attacked by another Entity
 	 */
-    void p_notifyAttacked(Ptr attacker, CombatAttack::ConstPtr attack) override final;
+    void p_notifyAttacked(Ptr attacker, CombatAttack::Ref attack) override final;
 
     /**
      * Notifies the Entity that they were attacked. For derived to override
      */
-    virtual void p_notifyWasAttacked(Ptr attcker, CombatAttack::ConstPtr attack) {}
+    virtual void p_notifyWasAttacked(Ptr attcker, CombatAttack::Ref attack) {}
 
     /**
      * Notifies the Entity of nearby combat. For derived to override
@@ -93,7 +93,7 @@ public:
     /**
      * Returns the current armor of the Entity
      */
-    const CombatArmor& getArmor();
+    CombatArmor::Ref getArmor();
 };
 
 #endif // COMBATENTITY_HPP

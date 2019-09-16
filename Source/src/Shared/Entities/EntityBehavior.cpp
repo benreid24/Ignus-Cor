@@ -1,4 +1,5 @@
 #include "Shared/Entities/EntityBehavior.hpp"
+#include "Shared/Properties.hpp"
 using namespace std;
 
 EntityBehavior::EntityBehavior(Entity* ent) {
@@ -27,24 +28,47 @@ Entity::List EntityBehavior::getAttackers() {
     return ret;
 }
 
-void EntityBehavior::notifyAttacked(Entity::Ptr attacker, CombatAttack::ConstPtr attack) {
+void EntityBehavior::notifyAttacked(Entity::Ptr attacker, CombatAttack::Ref attack) {
     attackers.push_back(Entity::WeakPtr(attacker));
+    p_notifyAttacked(attacker, attack);
 }
 
 void EntityBehavior::notifyInteracted(Entity::Ptr user) {
     if (!interactor.expired()) {
-        cout << "Warning: " << owner->getIdString() << " interacted with by " << user->getIdString()
-             << " but has interactor " << interactor.lock()->getIdString() << " active still\n";
+        if (interactor.lock().get() != user.get())
+            cout << "Warning: " << owner->getIdString() << " interacted with by " << user->getIdString()
+                 << " but has interactor " << interactor.lock()->getIdString() << " active still\n";
     }
-    else
+    else {
         interactor = user;
+        p_notifyInteracted(user);
+    }
+}
+
+void EntityBehavior::terminateInteraction() {
+    if (state == Interacting)
+        state = state.lastState;
+    interactor.reset();
 }
 
 void EntityBehavior::notifyCombatNearby(Entity::List combatants) {
     cout << "Combat detected near " << owner->getIdString() << endl;
+    p_notifyCombatNearby(combatants);
 }
 
 void EntityBehavior::update() {
+    if (!interactor.expired()) {
+        Entity::Ptr user = interactor.lock();
+        sf::Vector2f dist = owner->getPosition().coords - user->getPosition().coords;
+        if (abs(dist.x) >= Properties::ConversationTerminationDistance ||
+            abs(dist.y) >= Properties::ConversationTerminationDistance ||
+            user->getPosition().mapName != owner->getPosition().mapName) {
+                terminateInteraction();
+            }
+    }
+
+    p_update(); //derived class sets state. Can set to the below states to get shared behavior
+
     switch (state) {
         case Fleeing:
             doFlee();
@@ -69,8 +93,6 @@ void EntityBehavior::doFight() {
     if (enemies.size()>0) {
         //TODO - figure out how to fight
     }
-    else
-        state = Default;
 }
 
 void EntityBehavior::doFlee() {
@@ -78,15 +100,27 @@ void EntityBehavior::doFlee() {
     if (enemies.size()>0) {
         //TODO - find best runaway path and run that way
     }
-    else
-        state = Default;
 }
 
 void EntityBehavior::doInteract() {
     Entity::Ptr user = getInteractor();
     if (user) {
-        //TODO - face them. Walk next to them?
+        EntityPosition::Direction dir;
+        sf::Vector2f myPos = owner->getPosition().coords;
+        sf::Vector2f iPos = user->getPosition().coords;
+        if (abs(myPos.x-iPos.x) > abs(myPos.y-iPos.y)) {
+            if (myPos.x > iPos.x)
+                dir = EntityPosition::Left;
+            else
+                dir = EntityPosition::Right;
+        }
+        else if (myPos.y > iPos.y)
+            dir = EntityPosition::Up;
+        else
+            dir = EntityPosition::Down;
+        if (owner->getPosition().dir != dir)
+            owner->move(dir, false);
     }
     else
-        state = Default;
+        terminateInteraction();
 }
