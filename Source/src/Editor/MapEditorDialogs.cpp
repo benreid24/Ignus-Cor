@@ -533,7 +533,7 @@ void MapEditor::editProperties() {
 			break;
         }
         if (loadPressed || unloadPressed) {
-			FilePicker picker(desktop, owner, "Script", Properties::ScriptPath, "scr");
+			FilePicker picker(desktop, owner, "Script", Properties::ScriptPath, Properties::ScriptExtension);
 			if (picker.pickFile()) {
 				if (loadPressed)
 					form.setField("ol", picker.getChoice());
@@ -645,7 +645,7 @@ void MapEditor::mapEventHandler(Vector2i pos) {
         }
 		if (pickPressed) {
 			pickPressed = false;
-			FilePicker picker(desktop, owner, "Script", Properties::ScriptPath, "scr");
+			FilePicker picker(desktop, owner, "Script", Properties::ScriptPath, Properties::ScriptExtension);
 			if (picker.pickFile())
                 form.setField("s",picker.getChoice());
 		}

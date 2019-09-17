@@ -110,7 +110,7 @@ Map::Map(string file, Tileset& tlst, Entity::Ptr player) : Map(tlst) {
     //Load scripts
     loadScriptStr = input.getString();
     unloadScriptStr = input.getString();
-	if (File::getExtension(unloadScriptStr)=="scr")
+	if (File::getExtension(unloadScriptStr)==Properties::ScriptExtension)
 		unloadScript.reset(new Script(Properties::ScriptPath+unloadScriptStr));
 	else
 		unloadScript.reset(new Script(unloadScriptStr));
@@ -277,7 +277,7 @@ Map::Map(string file, Tileset& tlst, Entity::Ptr player) : Map(tlst) {
         evt.trigger = input.get<uint8_t>();
         evt.runs = 0;
         evt.script.reset(new Script());
-        if (File::getExtension(evt.scriptStr)=="scr")
+        if (File::getExtension(evt.scriptStr)==Properties::ScriptExtension)
             evt.script->load(Properties::ScriptPath+evt.scriptStr);
         else
             evt.script->load(evt.scriptStr);

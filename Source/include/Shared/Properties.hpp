@@ -40,6 +40,7 @@ public:
     static const std::string SpriteSheetPath;
 
     static const std::string ScriptPath;
+    static const std::string ScriptExtension;
     static const std::string FontPath;
 
     static const std::string PlaylistPath;

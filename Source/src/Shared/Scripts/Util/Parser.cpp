@@ -12,7 +12,7 @@ Parser::Parser(string source)
 	file = source;
 	script = source;
 
-	if (File::getExtension(source)=="scr")
+	if (File::getExtension(source)==Properties::ScriptExtension)
 	{
 		if (!File::exists(source))
 			source = Properties::ScriptPath+source;
