@@ -1,0 +1,6 @@
+[submodule "lib/SFML"]
+	path = lib/SFML
+	url = git@github.com:SFML/SFML.git
+[submodule "lib/SFGUI"]
+	path = lib/SFGUI
+	url = git@github.com:TankOs/SFGUI.git
