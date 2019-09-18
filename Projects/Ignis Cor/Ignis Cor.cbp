@@ -23,7 +23,7 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 		<Build>
 			<Target title="Debug">
 				<Option output="../../IgnisCorDebug" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../../../Development" />
+				<Option working_dir="../../" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -35,21 +35,21 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 					<Add option="-Wno-reorder" />
 					<Add option="-Wno-switch" />
 					<Add option="-DGAME" />
-					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
+					<Add directory="../../lib/SFML/include" />
 					<Add directory="../../Source/include" />
 				</Compiler>
 				<Linker>
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-audio.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-graphics.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-network.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-window.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-system.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-main.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-audio.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-graphics.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-network.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-window.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-system.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-main.a" />
 				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="../../IgnisCor" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../../../Development" />
+				<Option working_dir="../../" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -59,17 +59,17 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 					<Add option="-Wno-reorder" />
 					<Add option="-Wno-switch" />
 					<Add option="-DGAME" />
-					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
+					<Add directory="../../lib/SFML/include" />
 					<Add directory="../../Source/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-audio.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-graphics.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-network.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-window.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-system.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-main.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-audio.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-graphics.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-network.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-window.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-system.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-main.a" />
 				</Linker>
 			</Target>
 		</Build>

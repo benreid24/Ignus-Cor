@@ -25,7 +25,7 @@ Value Script::executeLibraryFunction(string name, vector<Value> args) {
 	try {
 	    return libraryFunctions[name](args, this, contextData);
 	}
-	catch (out_of_range e) {
+	catch (const out_of_range& e) {
 		throw runtime_error("Not enough arguments in call to "+name);
 	}
 }

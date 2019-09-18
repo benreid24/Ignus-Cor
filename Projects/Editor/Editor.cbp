@@ -17,7 +17,7 @@ Make script entry window. Can pick file. Can write script. Can validate and save
 		<Build>
 			<Target title="Debug">
 				<Option output="../../EditorDebug" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../../../Development" />
+				<Option working_dir="../../" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -28,24 +28,24 @@ Make script entry window. Can pick file. Can write script. Can validate and save
 					<Add option="-Wno-reorder" />
 					<Add option="-Wno-switch" />
 					<Add option="-DEDITOR" />
-					<Add directory="C:/Users/Ben/SFGUI/include" />
-					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
+					<Add directory="../../lib/SFGUI/include" />
+					<Add directory="../../lib/SFML/include" />
 					<Add directory="../../Source/include" />
 				</Compiler>
 				<Linker>
 					<Add library="comdlg32" />
-					<Add library="C:/Users/Ben/SFGUI/lib/libsfgui.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-audio.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-network.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-graphics.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-window.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-system.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-main.a" />
+					<Add library="../../lib/SFGUI/build/lib/libSFGUI.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-audio.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-graphics.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-network.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-window.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-system.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-main.a" />
 				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="../../Editor" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../../../Development" />
+				<Option working_dir="../../" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -57,19 +57,19 @@ Make script entry window. Can pick file. Can write script. Can validate and save
 					<Add option="-Wno-switch" />
 					<Add option="-DEDITOR" />
 					<Add directory="../../Source/include" />
-					<Add directory="C:/Users/Ben/SFGUI/include" />
-					<Add directory="C:/Users/Ben/SFML-2.4.2/include" />
+					<Add directory="../../lib/SFGUI/include" />
+					<Add directory="../../lib/SFML/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
 					<Add library="comdlg32" />
-					<Add library="C:/Users/Ben/SFGUI/lib/libsfgui.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-audio.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-network.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-graphics.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-window.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-system.a" />
-					<Add library="C:/Users/Ben/SFML-2.4.2/lib/libsfml-main.a" />
+					<Add library="../../lib/SFGUI/build/lib/libSFGUI.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-audio.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-graphics.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-network.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-window.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-system.a" />
+					<Add library="../../lib/SFML/build/lib/libsfml-main.a" />
 				</Linker>
 			</Target>
 		</Build>
