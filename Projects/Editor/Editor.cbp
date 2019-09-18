@@ -81,6 +81,7 @@ Make script entry window. Can pick file. Can write script. Can validate and save
 		<Unit filename="../../Source/include/Editor/GUI/CellTable.hpp" />
 		<Unit filename="../../Source/include/Editor/GUI/EditableCellTable.hpp" />
 		<Unit filename="../../Source/include/Editor/GUI/Form.hpp" />
+		<Unit filename="../../Source/include/Editor/GUI/MultiLineEntry.hpp" />
 		<Unit filename="../../Source/include/Editor/GUI/ResizableImage.hpp" />
 		<Unit filename="../../Source/include/Editor/GUI/WrappingBox.hpp" />
 		<Unit filename="../../Source/include/Editor/Helpers/ConversationEditorWindow.hpp" />
@@ -89,6 +90,7 @@ Make script entry window. Can pick file. Can write script. Can validate and save
 		<Unit filename="../../Source/include/Editor/Helpers/FilePicker.hpp" />
 		<Unit filename="../../Source/include/Editor/Helpers/LayerButtons.hpp" />
 		<Unit filename="../../Source/include/Editor/Helpers/MenuGenerators.hpp" />
+		<Unit filename="../../Source/include/Editor/Helpers/ScriptEditorWindow.hpp" />
 		<Unit filename="../../Source/include/Editor/ItemDbEditor.hpp" />
 		<Unit filename="../../Source/include/Editor/MapEditor.hpp" />
 		<Unit filename="../../Source/include/Editor/NpcEditor.hpp" />
@@ -158,6 +160,7 @@ Make script entry window. Can pick file. Can write script. Can validate and save
 		<Unit filename="../../Source/src/Editor/GUI/CellTable.cpp" />
 		<Unit filename="../../Source/src/Editor/GUI/EditableCellTable.cpp" />
 		<Unit filename="../../Source/src/Editor/GUI/Form.cpp" />
+		<Unit filename="../../Source/src/Editor/GUI/MultiLineEntry.cpp" />
 		<Unit filename="../../Source/src/Editor/GUI/WrappingBox.cpp" />
 		<Unit filename="../../Source/src/Editor/Helpers/ConversationEditorWindow.cpp" />
 		<Unit filename="../../Source/src/Editor/Helpers/Dialogs.cpp" />
@@ -165,6 +168,7 @@ Make script entry window. Can pick file. Can write script. Can validate and save
 		<Unit filename="../../Source/src/Editor/Helpers/FilePicker.cpp" />
 		<Unit filename="../../Source/src/Editor/Helpers/LayerButtons.cpp" />
 		<Unit filename="../../Source/src/Editor/Helpers/MenuGenerators.cpp" />
+		<Unit filename="../../Source/src/Editor/Helpers/ScriptEditorWindow.cpp" />
 		<Unit filename="../../Source/src/Editor/ItemDbEditor.cpp" />
 		<Unit filename="../../Source/src/Editor/MapEditor.cpp" />
 		<Unit filename="../../Source/src/Editor/MapEditorDialogs.cpp" />

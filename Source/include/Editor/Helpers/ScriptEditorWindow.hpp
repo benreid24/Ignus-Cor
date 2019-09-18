@@ -2,6 +2,7 @@
 #define SCRIPTEDITORWINDOW_HPP
 
 #include <SFGUI/Widgets.hpp>
+#include "Editor/GUI/MultiLineEntry.hpp"
 
 /**
  * Creates a window for picking existing scripts, creating new scripts, and editing scripts.
@@ -26,7 +27,8 @@ private:
     sfg::Desktop& desktop;
     sfg::Widget::Ptr parent;
     sfg::Window::Ptr window;
-    sfg::Entry::Ptr scriptEntry, fileEntry;
+    sfg::MultiLineEntry::Ptr scriptEntry;
+    sfg::Entry::Ptr fileEntry;
     std::string loadedFile; //determine if overwriting different file
     bool savePressed, openPressed, validatePressed, selectPressed;
 

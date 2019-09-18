@@ -20,7 +20,7 @@ ScriptEditorWindow::ScriptEditorWindow(Desktop& dk, Widget::Ptr pr, const string
 : desktop(dk), parent(pr), savePressed(false), openPressed(false)
 , validatePressed(false), selectPressed(false) {
     window = Window::Create();
-    scriptEntry = Entry::Create(scr);
+    scriptEntry = MultiLineEntry::Create(scr);
     fileEntry = Entry::Create();
 
     if (File::getExtension(scr) == Properties::ScriptExtension) {
@@ -119,6 +119,7 @@ void ScriptEditorWindow::openScript() {
         stringstream stream;
         stream << file.rdbuf();
         scriptEntry->SetText(stream.str());
+        fileEntry->SetText(loadedFile);
     }
 }
 
