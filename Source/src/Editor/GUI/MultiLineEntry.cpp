@@ -123,10 +123,10 @@ void MultiLineEntry::SetPositionFromMousePos(int mouseX, int mouseY) {
 
 	mouseY -= GetAllocation().top + text_padding;
 	cursorY = mouseY / line_height;
+	if (cursorY > signed(enteredText.size())-1)
+        cursorY = enteredText.size() - 1;
 	if (cursorY < 0)
         cursorY = 0;
-    if (cursorY > signed(enteredText.size()))
-        cursorY = enteredText.size();
 
     if (enteredText.size() > 0) {
         basic_string<sf::Uint32> temp(enteredText[cursorY].begin(), enteredText[cursorY].end());
@@ -323,8 +323,7 @@ sf::Vector2f MultiLineEntry::CalculateRequisition() {
 	const sf::Font& font(*Context::Get().GetEngine().GetResourceManager().GetFont(font_name));
 	auto line_height = Context::Get().GetEngine().GetFontLineHeight(font, font_size);
 
-	//TODO - update height
-	return sf::Vector2f(2 * (border_width + text_padding), line_height + 2 * (border_width + text_padding));
+	return sf::Vector2f(2 * (border_width + text_padding), enteredText.size() * line_height + 2 * (border_width + text_padding));
 }
 
 bool MultiLineEntry::IsCursorVisible() const {

@@ -1,4 +1,5 @@
 #include "Editor/Helpers/ConversationEditorWindow.hpp"
+#include "Editor/Helpers/ScriptEditorWindow.hpp"
 #include "Editor/Helpers/Dialogs.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Properties.hpp"
@@ -17,7 +18,7 @@ const vector<string> ConversationEditorWindow::EditorConvNode::typeStrings = {"T
 
 ConversationEditorWindow::ConversationEditorWindow(Desktop& dk, Widget::Ptr pr, const string& file)
 : desktop(dk), parent(pr), dirty(false), needsRefresh(false), closed(false)
-, nodeDeleted(false), saved(false), window(Window::Create())
+, nodeDeleted(false), saved(false), doEditScript(false), window(Window::Create())
 , nodeOptions(dk, window, vector<string>({"Choice", "Node"}), "Option") {
     if (File::exists(Properties::ConversationPath+file)) {
         filename = file;
@@ -172,6 +173,8 @@ ConversationEditorWindow::ConversationEditorWindow(Desktop& dk, Widget::Ptr pr, 
                          EditorConvNode::typeStrings,
                          [me] (int t) { me->nodeTypeChangeCb(t); });
     nodeForm.addField("data", "Data: ", 300);
+    Form::ButtonCb cb = [this] { this->doEditScript = true; };
+    nodeForm.addButton("Choose/Edit Script", cb);
     button = Button::Create("Update Node");
     button->GetSignal(Button::OnLeftClick).Connect( [me] { me->updateNodeProps(); });
     nodePropsBox->Pack(button);
@@ -226,6 +229,11 @@ string ConversationEditorWindow::editConversation() {
             }
             else
                 showmessage(desktop, window, "Error", "Need at least 1 node");
+        }
+        if (doEditScript) {
+            doEditScript = false;
+            ScriptEditorWindow scriptEditor(desktop, window, nodeForm.getField("data"), true);
+            nodeForm.setField("data", scriptEditor.getScript());
         }
         if (needsRefresh) {
             needsRefresh = false;
@@ -626,6 +634,7 @@ void ConversationEditorWindow::refreshGui() {
     nodeForm.setDropdownSelection("type", EditorConvNode::fromType(node.type));
 
     nodeForm.showInput("data");
+    nodeForm.hideInput("Choose/Edit Script");
     nodeOptions.show(false);
     switch (node.type) {
     case EditorConvNode::Talk:
@@ -636,7 +645,8 @@ void ConversationEditorWindow::refreshGui() {
         break;
 
     case EditorConvNode::Script:
-        nodeForm.updateFieldLabel("data", "Script: "); //TODO - script entry window w/ syntax checking
+        nodeForm.updateFieldLabel("data", "Script: ");
+        nodeForm.showInput("Choose/Edit Script");
         break;
 
     case EditorConvNode::Option: {

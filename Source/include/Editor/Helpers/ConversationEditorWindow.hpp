@@ -84,6 +84,7 @@ private:
     std::string currentNode;
     bool dirty, needsRefresh;
     bool closed, nodeDeleted, saved;
+    bool doEditScript;
 
     sfg::Widget::Ptr parent;
     sfg::Window::Ptr window;

@@ -142,6 +142,7 @@ void ScriptEditorWindow::openScript() {
         stream << file.rdbuf();
         scriptEntry->SetText(stream.str());
         fileEntry->SetText(loadedFile);
+        dirty = false;
     }
 }
 
@@ -150,14 +151,15 @@ void ScriptEditorWindow::saveScript() {
     if (loadedFile != filename && File::exists(Properties::ScriptPath+filename)) {
         if (!yesnobox(desktop, window, "Overwrite?", filename+" already exists, overwrite?"))
             return;
-        loadedFile = filename;
     }
+    loadedFile = filename;
 
     if (validateScript() != NOERROR) {
         if (!yesnobox(desktop, window, "Errors Exist", "Errors present, save anyways?"))
             return;
     }
 
+    File::createDirectories(Properties::ScriptPath+File::getPath(filename));
     ofstream file(string(Properties::ScriptPath+filename).c_str());
     file << string(scriptEntry->GetText());
     dirty = false;
