@@ -94,6 +94,7 @@ Make script entry window. Can pick file. Can write script. Can validate and save
 		<Unit filename="../../Source/include/Editor/ItemDbEditor.hpp" />
 		<Unit filename="../../Source/include/Editor/MapEditor.hpp" />
 		<Unit filename="../../Source/include/Editor/NpcEditor.hpp" />
+		<Unit filename="../../Source/include/Editor/ScriptEditor.hpp" />
 		<Unit filename="../../Source/include/Editor/version.h" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatArmor.hpp" />
 		<Unit filename="../../Source/include/Shared/Combat/CombatAttack.hpp" />
@@ -172,6 +173,7 @@ Make script entry window. Can pick file. Can write script. Can validate and save
 		<Unit filename="../../Source/src/Editor/ItemDbEditor.cpp" />
 		<Unit filename="../../Source/src/Editor/MapEditor.cpp" />
 		<Unit filename="../../Source/src/Editor/MapEditorDialogs.cpp" />
+		<Unit filename="../../Source/src/Editor/ScriptEditor.cpp" />
 		<Unit filename="../../Source/src/Editor/main.cpp" />
 		<Unit filename="../../Source/src/Shared/Combat/CombatArmor.cpp" />
 		<Unit filename="../../Source/src/Shared/Combat/CombatAttack.cpp" />

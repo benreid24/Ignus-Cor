@@ -6,6 +6,7 @@
 #include "Editor/ItemDbEditor.hpp"
 #include "Editor/AnimationEditor.hpp"
 #include "Editor/ConversationEditor.hpp"
+#include "Editor/ScriptEditor.hpp"
 #include "Editor/version.h"
 #include "Shared/Properties.hpp"
 using namespace std;
@@ -25,6 +26,7 @@ int main() {
 	ItemDbEditor itemEditor(desktop,tabs);
 	AnimationEditor animEditor(desktop,tabs);
 	ConversationEditor convEditor(desktop, tabs);
+	ScriptEditor scriptEditor(desktop, tabs);
 
 	tabs->AppendPage(sfg::Label::Create("make this"),sfg::Label::Create("NPC Editor"));
 	desktop.Add(tabs);
@@ -52,6 +54,8 @@ int main() {
             animEditor.update();
         else if (tabs->GetCurrentPage()==3 && sfWindow.hasFocus())
             convEditor.update();
+        else if (tabs->GetCurrentPage()==4 && sfWindow.hasFocus())
+            scriptEditor.update();
 
 		sfWindow.clear(Color(50,50,50));
 		sfgui.Display(sfWindow);
