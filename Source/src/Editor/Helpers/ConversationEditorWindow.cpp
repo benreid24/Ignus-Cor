@@ -205,7 +205,7 @@ string ConversationEditorWindow::editConversation() {
 
         if (closed) {
             closed = false;
-            if (dirty) {
+            if (dirty || filename != fileEntry->GetText()) {
                 if (yesnobox(desktop, window, "Close without saving?", "Unsaved changes! Close anyway?"))
                     break;
             }
@@ -251,7 +251,7 @@ string ConversationEditorWindow::editConversation() {
     desktop.Remove(window);
     parent->SetState(Widget::State::NORMAL);
 
-    return fileEntry->GetText();
+    return filename;
 }
 
 unsigned int ConversationEditorWindow::getNodeIndex(const string& name) {
@@ -662,6 +662,14 @@ void ConversationEditorWindow::doSave() {
         fileEntry->SetText(saveFile);
     }
     File::createDirectories(Properties::ConversationPath+File::getPath(saveFile));
+
+    if (filename != saveFile && File::exists(Properties::ConversationPath+saveFile)) {
+        if (!yesnobox(desktop, window, "Overwrite?", saveFile+" already exists, overwrite?")) {
+            dirty = true;
+            return;
+        }
+    }
+    filename = saveFile;
 
     File output(Properties::ConversationPath+saveFile, File::Out);
 
