@@ -1,6 +1,5 @@
-#include <iostream>
-#include <direct.h>
 #include "Editor/MapEditor.hpp"
+#include "Editor/Helpers/ScriptEditorWindow.hpp"
 #include "Editor/Helpers/FilePicker.hpp"
 #include "Shared/Util/Util.hpp"
 #include "Shared/Util/File.hpp"
@@ -8,6 +7,8 @@
 #include "Shared/Media/Animation.hpp"
 #include "Shared/Properties.hpp"
 #include "Editor/GUI/Form.hpp"
+#include <iostream>
+#include <direct.h>
 using namespace sfg;
 using namespace sf;
 using namespace std;
@@ -579,7 +580,7 @@ void MapEditor::mapEventHandler(Vector2i pos) {
 	desktop.Add(window);
 
     Form form;
-    Button::Ptr pickButton(Button::Create("Pick File")), saveButton(Button::Create("Save")), cancelButton(Button::Create("Cancel")), delButton(Button::Create("Delete"));
+    Button::Ptr pickButton(Button::Create("Pick/Edit Script")), saveButton(Button::Create("Save")), cancelButton(Button::Create("Cancel")), delButton(Button::Create("Delete"));
 	bool cancelPressed(false), savePressed(false), delPressed(false), pickPressed(false);
 	pickButton->GetSignal(Button::OnLeftClick).Connect( [&pickPressed] { pickPressed = true; });
 	delButton->GetSignal(Button::OnLeftClick).Connect( [&delPressed] { delPressed= true; });
@@ -591,7 +592,7 @@ void MapEditor::mapEventHandler(Vector2i pos) {
     form.addField("w","Width: ",80,intToString(evt->size.x));
     form.addField("h","Height: ",80,intToString(evt->size.y));
     form.addField("r","Max Runs: ",80,intToString(evt->maxRuns));
-    form.addField("s","Script: ",200,evt->scriptStr);
+    form.addField("s","Script: ",250,evt->scriptStr);
     form.addToParent(winBox);
 
     Box::Ptr box = Box::Create(Box::Orientation::HORIZONTAL,5);
@@ -645,9 +646,8 @@ void MapEditor::mapEventHandler(Vector2i pos) {
         }
 		if (pickPressed) {
 			pickPressed = false;
-			FilePicker picker(desktop, owner, "Script", Properties::ScriptPath, Properties::ScriptExtension);
-			if (picker.pickFile())
-                form.setField("s",picker.getChoice());
+			ScriptEditorWindow editor(desktop, owner, form.getField("s"), true);
+			form.setField("s", editor.getScript());
 		}
 
         desktop.BringToFront(window);

@@ -104,6 +104,8 @@ void MultiLineEntry::SetText(const sf::String& text) {
         else
             line += text[i];
 	}
+	if (line.getSize() > 0)
+        enteredText.push_back(line);
 
 	cursorX = cursorY = 0;
 	Invalidate();
