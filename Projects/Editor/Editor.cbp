@@ -34,7 +34,7 @@ Make script entry window. Can pick file. Can write script. Can validate and save
 				</Compiler>
 				<Linker>
 					<Add library="comdlg32" />
-					<Add library="../../lib/SFGUI/build/lib/libSFGUI.a" />
+					<Add library="../../lib/SFGUI/lib/libsfgui.a" />
 					<Add library="../../lib/SFML/build/lib/libsfml-audio.a" />
 					<Add library="../../lib/SFML/build/lib/libsfml-graphics.a" />
 					<Add library="../../lib/SFML/build/lib/libsfml-network.a" />
@@ -63,7 +63,7 @@ Make script entry window. Can pick file. Can write script. Can validate and save
 				<Linker>
 					<Add option="-s" />
 					<Add library="comdlg32" />
-					<Add library="../../lib/SFGUI/build/lib/libSFGUI.a" />
+					<Add library="../../lib/SFGUI/lib/libsfgui.a" />
 					<Add library="../../lib/SFML/build/lib/libsfml-audio.a" />
 					<Add library="../../lib/SFML/build/lib/libsfml-graphics.a" />
 					<Add library="../../lib/SFML/build/lib/libsfml-network.a" />
