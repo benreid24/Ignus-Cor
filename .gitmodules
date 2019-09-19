@@ -2,7 +2,3 @@
 	path = lib/SFML
 	url = git@github.com:SFML/SFML.git
 	ignore = dirty
-[submodule "lib/SFGUI"]
-	path = lib/SFGUI
-	url = git@github.com:TankOs/SFGUI.git
-	ignore = dirty
