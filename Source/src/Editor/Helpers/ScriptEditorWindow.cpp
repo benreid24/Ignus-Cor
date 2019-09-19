@@ -18,7 +18,7 @@ const string NOERROR = "No errors";
 
 ScriptEditorWindow::ScriptEditorWindow(Desktop& dk, Widget::Ptr pr, const string& scr, bool choose)
 : desktop(dk), parent(pr), savePressed(false), openPressed(false)
-, validatePressed(false), selectPressed(false) {
+, validatePressed(false), selectPressed(false), dirty(false) {
     window = Window::Create();
     scriptEntry = MultiLineEntry::Create(scr);
     fileEntry = Entry::Create();
@@ -35,6 +35,7 @@ ScriptEditorWindow::ScriptEditorWindow(Desktop& dk, Widget::Ptr pr, const string
     window->SetTitle("Script Picker/Editor");
     Box::Ptr vertBox = Box::Create(Box::Orientation::VERTICAL, 5);
     Box::Ptr horBox = Box::Create(Box::Orientation::HORIZONTAL, 3);
+    scriptEntry->GetSignal(MultiLineEntry::OnTextChanged).Connect( [this] { this->dirty = true; });
 
     Button::Ptr button = Button::Create("Open New Script");
     button->GetSignal(Button::OnLeftClick).Connect( [this] { this->openPressed = true; });
@@ -90,8 +91,27 @@ string ScriptEditorWindow::getScript() {
             validatePressed = false;
             showmessage(desktop, window, "Validation Result", validateScript());
         }
-        if (selectPressed)
-            break;
+        if (selectPressed) {
+            selectPressed = false;
+            if (File::getExtension(fileEntry->GetText()) == Properties::ScriptExtension) {
+                if (loadedFile == fileEntry->GetText()) {
+                    if (dirty) {
+                        if (yesnobox(desktop, window, "Unsaved Changes", "Discard unsaved changes?"))
+                            break;
+                    }
+                    else
+                        break;
+                }
+                else if (yesnobox(desktop, window, "File switched", "Entered filename is different than loaded file, use entered file?")) {
+                    loadedFile = fileEntry->GetText();
+                    break;
+                }
+            }
+            else if (fileEntry->GetText().getSize() == 0)
+                break;
+            else
+                showmessage(desktop, window, "Error", "Invalid filename: "+fileEntry->GetText());
+        }
 
         desktop.BringToFront(window);
         sfWindow.clear();
@@ -100,7 +120,6 @@ string ScriptEditorWindow::getScript() {
         sf::sleep(sf::milliseconds(30));
     }
 
-    saveScript();
     desktop.Remove(window);
     parent->SetState(Widget::State::NORMAL);
 
@@ -110,7 +129,10 @@ string ScriptEditorWindow::getScript() {
 }
 
 void ScriptEditorWindow::openScript() {
-    saveScript();
+    if (dirty) {
+        if (!yesnobox(desktop, window, "Unsaved Changes", "Discard unsaved changes?"))
+            return;
+    }
 
     FilePicker picker(desktop, window, "Open Script", Properties::ScriptPath, Properties::ScriptExtension);
     if (picker.pickFile()) {
@@ -138,6 +160,7 @@ void ScriptEditorWindow::saveScript() {
 
     ofstream file(string(Properties::ScriptPath+filename).c_str());
     file << string(scriptEntry->GetText());
+    dirty = false;
 }
 
 string ScriptEditorWindow::validateScript() {

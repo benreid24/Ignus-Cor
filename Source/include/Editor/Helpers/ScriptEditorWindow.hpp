@@ -31,6 +31,7 @@ private:
     sfg::Entry::Ptr fileEntry;
     std::string loadedFile; //determine if overwriting different file
     bool savePressed, openPressed, validatePressed, selectPressed;
+    bool dirty;
 
     /**
      * Performs validation of the currently loaded script and returns any errors
