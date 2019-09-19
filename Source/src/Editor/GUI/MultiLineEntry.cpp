@@ -10,7 +10,8 @@ using namespace std;
 namespace sfg {
 
 namespace eng {
-unique_ptr<RenderQueue> createEntryDrawable(shared_ptr<const MultiLineEntry> entry) {
+unique_ptr<RenderQueue> createEntryDrawable(shared_ptr<const MultiLineEntry> entry,
+                                            const sf::String& line, int y) {
     Engine& e = Context::Get().GetEngine();
 	auto border_color = sf::Color::Black;
 	auto background_color = sf::Color::White;
@@ -47,22 +48,7 @@ unique_ptr<RenderQueue> createEntryDrawable(shared_ptr<const MultiLineEntry> ent
 
 	// Draw cursor if entry is active and cursor is visible.
 	if (entry->HasFocus() && entry->IsCursorVisible()) {
-        sf::String text(entry->GetText());
-		/*if (entry->GetCursorPosition() - entry->GetVisibleOffset() < static_cast<int>(text.getSize())) {
-			text.erase(static_cast<std::size_t>(entry->GetCursorPosition() - entry->GetVisibleOffset()), text.getSize());
-		}*/
-
-		int y = 0;
-		sf::String temp;
-        for (unsigned int i = 0; signed(i)<entry->GetCursorPosition() && i<text.getSize(); ++i) {
-            if (text[i] == '\n') {
-                ++y;
-                temp.clear();
-            }
-            else
-                temp += text[i];
-        }
-		sf::Vector2f metrics(e.GetTextStringMetrics(temp, *font, font_size));
+		sf::Vector2f metrics(e.GetTextStringMetrics(line, *font, font_size));
 
 		queue->Add(
 			Renderer::Get().CreateRect(
@@ -85,7 +71,8 @@ Signal::SignalID MultiLineEntry::OnTextChanged = 0;
 
 MultiLineEntry::MultiLineEntry() :
 	enteredText(),
-	cursorPos(0),
+	cursorX(0),
+	cursorY(0),
 	elapsedTime(0.f),
 	textMargin(0.f),
 	cursorStatus(false)
@@ -99,97 +86,80 @@ MultiLineEntry::Ptr MultiLineEntry::Create(const sf::String& text) {
 }
 
 unique_ptr<RenderQueue> MultiLineEntry::InvalidateImpl() const {
+    sf::String line = enteredText.size() > 0 ? enteredText[cursorY] : "";
+    if (signed(line.getSize()) > cursorX)
+        line.erase(cursorX, line.getSize()-cursorX);
 	return eng::createEntryDrawable(
-        dynamic_pointer_cast<const MultiLineEntry>(shared_from_this()));
+        dynamic_pointer_cast<const MultiLineEntry>(shared_from_this()), line, cursorY);
 }
 
 void MultiLineEntry::SetText(const sf::String& text) {
-	enteredText = text;
-	cursorPos = 0;
+	enteredText.clear();
+	sf::String line;
+	for (unsigned int i = 0; i<text.getSize(); ++i) {
+        if (text[i] == '\n') {
+            enteredText.push_back(line);
+            line.clear();
+        }
+        else
+            line += text[i];
+	}
+
+	cursorX = cursorY = 0;
+	Invalidate();
 	GetSignals().Emit(OnTextChanged);
 }
 
-const sf::String& MultiLineEntry::GetText() const {
-	return enteredText;
+sf::String MultiLineEntry::GetText() const {
+	return getScrolledText();
 }
 
-void MultiLineEntry::SetCursorPosition(int new_position) {
-	if (new_position == cursorPos) {
-		return;
-	}
-
-	int delta = new_position - cursorPos;
-	MoveCursor(delta);
-}
-
-int MultiLineEntry::GetPositionFromMousePos(int mouseX, int mouseY) {
+void MultiLineEntry::SetPositionFromMousePos(int mouseX, int mouseY) {
 	const string& font_name(Context::Get().GetEngine().GetProperty<string>("FontName", shared_from_this()));
 	unsigned int font_size(Context::Get().GetEngine().GetProperty<unsigned int>("FontSize", shared_from_this()));
 	const sf::Font& font(*Context::Get().GetEngine().GetResourceManager().GetFont(font_name));
 	float text_padding(Context::Get().GetEngine().GetProperty<float>("Padding", shared_from_this()));
     auto line_height = Context::Get().GetEngine().GetFontLineHeight(font, font_size);
 
-	basic_string<sf::Uint32> temp;
-
 	mouseY -= GetAllocation().top + text_padding;
-	int y = 1;
-	unsigned int offset = 0;
-	for (; offset<enteredText.getSize(); ++offset) {
-        if (enteredText[offset] == '\n') {
-            ++y;
-            temp.clear();
-        }
-        else
-            temp.push_back(enteredText[offset]);
+	cursorY = mouseY / line_height;
+	if (cursorY < 0)
+        cursorY = 0;
+    if (cursorY > signed(enteredText.size()))
+        cursorY = enteredText.size();
 
-        if (y * line_height >= mouseY) {
-            unsigned int i = offset + 1;
-            while (enteredText[i] != '\n' && i < enteredText.getSize()) {
-                temp.push_back(enteredText[i]);
-                ++i;
+    if (enteredText.size() > 0) {
+        basic_string<sf::Uint32> temp(enteredText[cursorY].begin(), enteredText[cursorY].end());
+        auto text_start = GetAllocation().left + text_padding;
+        auto last_delta = fabs(text_start - static_cast<float>(mouseX));
+        cursorX = 0;
+
+        for(cursorX = 0; cursorX < signed(temp.size()); cursorX++) {
+            auto text_length = Context::Get().GetEngine().GetTextStringMetrics(
+                                    temp.substr(0, static_cast<size_t>(cursorX + 1)), font, font_size).x;
+            auto new_delta = fabs(text_start + text_length - static_cast<float>(mouseX));
+            if (new_delta < last_delta) {
+                last_delta = new_delta;
             }
-            break;
+            else {
+                break;
+            }
         }
-	}
-
-	auto text_start = GetAllocation().left + text_padding;
-	auto last_delta = fabs(text_start - static_cast<float>(mouseX));
-	int cursor_position = 0;
-	auto length = static_cast<int>(temp.size());
-
-	//TODO - update
-	for(cursor_position = 0; cursor_position < length; cursor_position++) {
-		auto text_length = Context::Get().GetEngine().GetTextStringMetrics(temp.substr(0, static_cast<size_t>(cursor_position + 1)), font, font_size).x;
-		auto new_delta = fabs(text_start + text_length - static_cast<float>(mouseX));
-		if (new_delta < last_delta) {
-			last_delta = new_delta;
-		}
-		else {
-			break;
-		}
-	}
-
-	return cursor_position + offset;
-}
-
-void MultiLineEntry::MoveCursor(int delta) {
-	if (delta && (cursorPos + delta >= 0) && (cursorPos + delta <= signed(enteredText.getSize()))) {
-		cursorPos += delta;
-
-		// Make cursor visible.
-		elapsedTime = 0.f;
-		cursorStatus = true;
-
-		Invalidate();
-	}
+    }
+    else
+        cursorX = 0;
 }
 
 void MultiLineEntry::HandleTextEvent(sf::Uint32 character) {
 	if (character > 0x1f && character != 0x7f) {
-		// not a control character
-		enteredText.insert(cursorPos, character);
-		MoveCursor(1);
-
+		if (enteredText.size() == 0)
+            enteredText.push_back("");
+        if (cursorX < signed(enteredText[cursorY].getSize()))
+            enteredText[cursorY].insert(cursorX, character);
+        else
+            enteredText[cursorY] += character;
+		++cursorX;
+        Invalidate();
 		GetSignals().Emit(OnTextChanged);
 	}
 }
@@ -201,100 +171,86 @@ void MultiLineEntry::HandleKeyEvent(sf::Keyboard::Key key, bool press) {
 
 	switch(key) {
 	case sf::Keyboard::BackSpace: { // backspace
-		if ((enteredText.getSize() > 0) && (cursorPos > 0)) {
-			enteredText.erase(static_cast<size_t>(cursorPos - 1));
-			MoveCursor(-1);
-			elapsedTime = 0.f;
-			cursorStatus = true;
-			GetSignals().Emit(OnTextChanged);
+		if (enteredText.size() > 0) {
+            if (cursorX>0) {
+                enteredText[cursorY].erase(cursorX-1);
+                --cursorX;
+                Invalidate();
+                GetSignals().Emit(OnTextChanged);
+            }
 		}
 	} break;
 	case sf::Keyboard::Delete: {
-		if ((enteredText.getSize() > 0) && (cursorPos < static_cast<int>(enteredText.getSize()))) {
-			enteredText.erase(static_cast<size_t>(cursorPos));
-			elapsedTime = 0.f;
-			cursorStatus = true;
-			GetSignals().Emit(OnTextChanged);
-			Invalidate();
+		if (enteredText.size() > 0) {
+            if (cursorX < signed(enteredText[cursorY].getSize()-1)) {
+                enteredText[cursorY].erase(cursorX);
+                Invalidate();
+                GetSignals().Emit(OnTextChanged);
+            }
 		}
 	} break;
 	case sf::Keyboard::Home: {
-		if (enteredText.getSize() > 0) {
-			int c = GetCursorPosition();
-			if (c > 0 && enteredText[c] == '\n')
-                --c;
-			while (c > 0 && enteredText[c] != '\n')
-                --c;
-            if (c > 0)
-                ++c;
-            SetCursorPosition(c);
-		}
+		cursorX = 0;
+		Invalidate();
 	} break;
 	case sf::Keyboard::End: {
-		if (enteredText.getSize() > 0) {
-			int c = GetCursorPosition();
-            while (enteredText[c] != '\n' && c < signed(enteredText.getSize()))
-                ++c;
-            SetCursorPosition(c);
+		if (enteredText.size() > 0) {
+			cursorX = enteredText[cursorY].getSize();
+			Invalidate();
 		}
 	} break;
 	case sf::Keyboard::Left: {
-		MoveCursor(-1);
+		if (cursorX > 0) {
+            --cursorX;
+            Invalidate();
+		}
+		else if (cursorY > 0) {
+            --cursorY;
+            cursorX = enteredText[cursorY].getSize();
+            Invalidate();
+		}
 	} break;
 	case sf::Keyboard::Right: {
-		MoveCursor(1);
+		if (cursorX < signed(enteredText[cursorY].getSize())) {
+            ++cursorX;
+            Invalidate();
+		}
+		else if (cursorY < signed(enteredText.size())) {
+            ++cursorY;
+            cursorX = 0;
+            Invalidate();
+		}
 	} break;
 	case sf::Keyboard::Up: {
-		int c = GetCursorPosition();
-		int x = 0;
-		while (enteredText[c] != '\n' && c > 0) {
-            --c;
-            ++x;
-		}
-		int w = 0;
-		if (c > 0) {
-            --c;
-            if (enteredText[c] == '\n' && c > 0)
-                --c;
-            while (enteredText[c] != '\n' && c > 0) {
-                --c;
-                ++w;
+        if (cursorY > 0) {
+            --cursorY;
+            if (cursorY<signed(enteredText.size())) {
+                cursorX = min(size_t(cursorX), enteredText[cursorY].getSize());
             }
-		}
-		x = min(x, w);
-		SetCursorPosition(c+x);
+            Invalidate();
+        }
+        else {
+            cursorX = 0;
+            Invalidate();
+        }
 	} break;
 	case sf::Keyboard::Down: {
-		int c = GetCursorPosition();
-		int x = 0;
-		while (enteredText[c] != '\n' && c > 0) {
-            --c;
-            ++x;
+		if (cursorY < signed(enteredText.size()-1)) {
+            ++cursorY;
+            cursorX = min(size_t(cursorX), enteredText[cursorY].getSize());
+            Invalidate();
 		}
-		c = GetCursorPosition();
-		int o = 0;
-		while (enteredText[c] != '\n' && c < signed(enteredText.getSize())) {
-            ++c;
-            ++o;
+		else if (enteredText.size() > 0) {
+            cursorX = enteredText[cursorY].getSize();
+            Invalidate();
 		}
-		int w = 0;
-		if (c < signed(enteredText.getSize())) {
-            ++c;
-            while (enteredText[c] != '\n' && c < signed(enteredText.getSize())) {
-                ++c;
-                ++w;
-            }
-            c -= w;
-		}
-		if (o > 0)
-            o = 1;
-		x = min(x, w);
-		SetCursorPosition(c+x-o);
 	} break;
 	case sf::Keyboard::Return: {
-        enteredText.insert(cursorPos, '\n');
-		MoveCursor(1);
+        enteredText.insert(enteredText.begin()+cursorY+1, "");
+        ++cursorY;
+        cursorX = 0;
 		GetSignals().Emit(OnTextChanged);
+		Invalidate();
 	} break;
 	default: break;
 	}
@@ -321,7 +277,7 @@ void MultiLineEntry::HandleMouseButtonEvent(sf::Mouse::Button button, bool press
         return;
 
 	GrabFocus();
-	SetCursorPosition(GetPositionFromMousePos(x, y));
+	SetPositionFromMousePos(x, y);
 }
 
 void MultiLineEntry::HandleUpdate(float seconds) {
@@ -355,7 +311,8 @@ void MultiLineEntry::HandleSizeChange() {
 		GrabFocus(Widget::Ptr());
 	}
 
-	SetCursorPosition(0);
+	cursorX = cursorY = 0;
+	Invalidate();
 }
 
 sf::Vector2f MultiLineEntry::CalculateRequisition() {
@@ -366,15 +323,12 @@ sf::Vector2f MultiLineEntry::CalculateRequisition() {
 	const sf::Font& font(*Context::Get().GetEngine().GetResourceManager().GetFont(font_name));
 	auto line_height = Context::Get().GetEngine().GetFontLineHeight(font, font_size);
 
+	//TODO - update height
 	return sf::Vector2f(2 * (border_width + text_padding), line_height + 2 * (border_width + text_padding));
 }
 
 bool MultiLineEntry::IsCursorVisible() const {
 	return cursorStatus;
-}
-
-int MultiLineEntry::GetCursorPosition() const {
-	return cursorPos;
 }
 
 const string& MultiLineEntry::GetName() const {
@@ -384,6 +338,17 @@ const string& MultiLineEntry::GetName() const {
 
 void MultiLineEntry::SetTextMargin(float margin) {
 	textMargin = margin;
+}
+
+sf::String MultiLineEntry::getScrolledText(int topLine, int firstChar, int width, int height) const {
+    sf::String result;
+    for (int y = topLine; y<signed(enteredText.size()) && ((y-topLine)<=height || height==0); ++y) {
+        for (int x = firstChar; x<signed(enteredText[y].getSize()) && ((x-firstChar)<=width || width==0); ++x) {
+            result += enteredText[y][x];
+        }
+        result += "\n";
+    }
+    return result;
 }
 
 }

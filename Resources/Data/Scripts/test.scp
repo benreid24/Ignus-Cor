@@ -1,5 +1,7 @@
-int tessdvt jh= 5;
-print(tes st);
+int test= 5;
+print(test); //woah
+
+string hello = "world";
 
 string sdsw podfgdop = "oh no " + test;
-print(proop);
+

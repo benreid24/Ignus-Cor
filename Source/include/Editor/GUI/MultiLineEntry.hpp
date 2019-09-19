@@ -35,25 +35,18 @@ public:
      * Get text.
      * @return Text.
      */
-    const sf::String& GetText() const;
-
-    /**
-     * Get current cursor position.
-     * @return Cursor position.
-     */
-    int GetCursorPosition() const;
-
-    /**
-     * Set cursor position.
-     * @param pos Position.
-     */
-    void SetCursorPosition(int pos);
+    sf::String GetText() const;
 
     /**
      * Check if cursor is visible.
      * @return true if visible.
      */
     bool IsCursorVisible() const;
+
+    /**
+     * Returns the text, but modified to reflect scrolled position
+     */
+    sf::String getScrolledText(int topLine = 0, int firstChar = 0, int width = 0, int height = 0) const;
 
     static Signal::SignalID OnTextChanged; //!< Fired when the text changes.
 
@@ -86,19 +79,13 @@ private:
      * @param mouseY y coordinate
      * @return Closest cursor position.
      */
-    int GetPositionFromMousePos(int mouseX, int mouseY);
-
-    /**
-     * Move cursor.
-     * @param delta Number of units to move cursor by. Negative to move left. Positive to move right.
-     */
-    void MoveCursor(int delta);
+    void SetPositionFromMousePos(int mouseX, int mouseY);
 
     void HandleMouseEnter(int x, int y) override;
     void HandleMouseLeave(int x, int y) override;
 
-    sf::String enteredText;
-    int cursorPos;
+    std::vector<sf::String> enteredText;
+    int cursorX, cursorY;
     float elapsedTime;
     float textMargin;
     mutable bool cursorStatus;
