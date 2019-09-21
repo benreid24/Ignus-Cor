@@ -180,12 +180,26 @@ void MultiLineEntry::HandleKeyEvent(sf::Keyboard::Key key, bool press) {
                 Invalidate();
                 GetSignals().Emit(OnTextChanged);
             }
+            else if (cursorY>0) {
+                cursorX = enteredText[cursorY-1].getSize();
+                enteredText[cursorY-1] += enteredText[cursorY];
+                enteredText.erase(enteredText.begin()+cursorY);
+                --cursorY;
+                Invalidate();
+                GetSignals().Emit(OnTextChanged);
+            }
 		}
 	} break;
 	case sf::Keyboard::Delete: {
 		if (enteredText.size() > 0) {
             if (cursorX < signed(enteredText[cursorY].getSize()-1)) {
                 enteredText[cursorY].erase(cursorX);
+                Invalidate();
+                GetSignals().Emit(OnTextChanged);
+            }
+            else if (cursorY < signed(enteredText.size())-1) {
+                enteredText[cursorY] += enteredText[cursorY+1];
+                enteredText.erase(enteredText.begin()+cursorY+1);
                 Invalidate();
                 GetSignals().Emit(OnTextChanged);
             }
@@ -248,7 +262,12 @@ void MultiLineEntry::HandleKeyEvent(sf::Keyboard::Key key, bool press) {
 		}
 	} break;
 	case sf::Keyboard::Return: {
-        enteredText.insert(enteredText.begin()+cursorY+1, "");
+	    string newline = "";
+	    if (enteredText.size() > 0) {
+            newline = enteredText[cursorY].substring(cursorX);
+            enteredText[cursorY].erase(cursorX, sf::String::InvalidPos);
+	    }
+        enteredText.insert(enteredText.begin()+cursorY+1, newline);
         ++cursorY;
         cursorX = 0;
 		GetSignals().Emit(OnTextChanged);

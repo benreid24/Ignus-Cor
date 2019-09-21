@@ -26,7 +26,7 @@ double stringToInt(string s) {
 }
 }
 
-Script::Script()
+Script::Script() : isDryRun(false)
 {
 	reset();
 	initBuiltins();
@@ -762,7 +762,6 @@ void Script::run()
 		return;
 
 	reset();
-	srand(time(NULL));
 	stopped = false;
 	stopping = false;
 	try
@@ -779,6 +778,32 @@ void Script::run()
 		cout << original << endl;
 	}
 	stopped = true;
+}
+
+string Script::dryRun()
+{
+	if (tokens.size()==0)
+		return "";
+
+	reset();
+	stopped = false;
+	stopping = false;
+	isDryRun = true;
+	try
+	{
+		runTokens(0);
+	}
+	catch (const out_of_range& e)
+	{
+		return ("Parenthesis or bracket mismatch somewhere in file "+tokens.at(0).file);
+	}
+	catch (const runtime_error& e)
+	{
+		return e.what();
+	}
+	stopped = true;
+	isDryRun = false;
+	return "";
 }
 
 void Script::stop()

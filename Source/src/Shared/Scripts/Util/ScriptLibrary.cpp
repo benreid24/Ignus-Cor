@@ -10,7 +10,7 @@ using namespace std;
 using namespace sf;
 
 namespace {
-	extern map<string,Script::LibraryFunction> builtins;
+extern map<string,Script::LibraryFunction> builtins;
 }
 
 void Script::initBuiltins() {
@@ -22,6 +22,8 @@ bool Script::isLibraryFunction(string name) {
 }
 
 Value Script::executeLibraryFunction(string name, vector<Value> args) {
+    if (isDryRun)
+        return Value("0");
 	try {
 	    return libraryFunctions[name](args, this, contextData);
 	}
@@ -31,20 +33,20 @@ Value Script::executeLibraryFunction(string name, vector<Value> args) {
 }
 
 namespace {
-    Value print(vector<Value> args, Script*, const Script::ContextData&) {
-        for (unsigned int i = 0; i<args.size(); ++i) {
-            if (args.at(i).type==Value::Integer)
-                cout << args.at(i).iValue;
-            else
-                cout << args.at(i).sValue;
-        }
-        cout << endl;
-        return Value();
+Value print(vector<Value> args, Script*, const Script::ContextData&) {
+    for (unsigned int i = 0; i<args.size(); ++i) {
+        if (args.at(i).type==Value::Integer)
+            cout << args.at(i).iValue;
+        else
+            cout << args.at(i).sValue;
     }
+    cout << endl;
+    return Value();
+}
 
-    //For runScript, make copy first then run that
+//For runScript, make copy first then run that
 
-    map<string,Script::LibraryFunction> builtins = {
-        {"print", &print}
-    };
+map<string,Script::LibraryFunction> builtins = {
+    {"print", &print}
+};
 }

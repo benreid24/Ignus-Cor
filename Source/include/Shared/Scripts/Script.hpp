@@ -29,7 +29,7 @@ protected:
 private:
     Value runResult;
 	std::string original;
-	bool stopping, stopped;
+	bool stopping, stopped, isDryRun;
 	std::deque<Frame> stackFrames;
 	Frame globalFrame;
 	std::map<std::string,FunctionEntry> functions; //index to jump to for functions
@@ -99,7 +99,12 @@ public:
 	/**
 	 * Runs the script
 	 */
-	virtual void run();
+	void run();
+
+	/**
+	 * Runs the script, but does not modify any external state. Returns error message if any
+	 */
+    std::string dryRun();
 
 	/**
 	 * Stops the script and returns when the script has finished

@@ -1,6 +1,7 @@
 #include "Editor/Helpers/ScriptEditorWindow.hpp"
 #include "Editor/Helpers/Dialogs.hpp"
 #include "Editor/Helpers/FilePicker.hpp"
+#include "Shared/Scripts/Script.hpp"
 #include "Shared/Properties.hpp"
 #include "Shared/Util/File.hpp"
 #include <SFGUI/SFGUI.hpp>
@@ -177,7 +178,12 @@ string ScriptEditorWindow::validateScript() {
         script = stream.str();
     }
 
-    //TODO - create script object and dryRun
-
-    return NOERROR;
+    Script runner(script);
+    string errors = runner.dryRun();
+    if (errors.empty())
+        return NOERROR;
+    auto i = errors.find(" in file ");
+    if (i != string::npos)
+        errors.erase(i);
+    return errors;
 }
