@@ -27,6 +27,7 @@ public:
      * as well. In that case this enum is also used to properly cast
      */
     enum Category {
+        All = -1,
         Armor = 0,
         Weapon,
         Potion,
@@ -50,6 +51,11 @@ public:
      * All categories
      */
     static const std::vector<std::string>& getAllCategories();
+
+    /**
+     * Converts a category string back to a category
+     */
+    static Category getCategoryFromName(const std::string& name);
 
     /**
      * Returns the item id

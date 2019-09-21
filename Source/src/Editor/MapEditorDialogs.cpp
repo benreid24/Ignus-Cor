@@ -7,6 +7,7 @@
 #include "Shared/Media/Animation.hpp"
 #include "Shared/Properties.hpp"
 #include "Editor/GUI/Form.hpp"
+#include "Editor/Helpers/MenuGenerators.hpp"
 #include <iostream>
 #include <direct.h>
 using namespace sfg;
@@ -957,15 +958,8 @@ void MapEditor::itemHandler(sf::Vector2i pos) {
     form.addToParent(winBox);
 
     Box::Ptr box = Box::Create(Box::Orientation::HORIZONTAL,5);
-    ComboBox::Ptr idEntry = ComboBox::Create();
     map<int,int> comboIdMap, idComboMap;
-    int j = 0;
-    for (map<int,Item::Ptr>::iterator i = ItemDB::get().getItems().begin(); i!=ItemDB::get().getItems().end(); ++i) {
-		idEntry->AppendItem(intToString(i->second->getId())+": "+i->second->getName());
-		comboIdMap[j] = i->second->getId();
-		idComboMap[i->second->getId()] = j;
-		++j;
-    }
+    ComboBox::Ptr idEntry = generateItemSelector(comboIdMap, idComboMap);
     if (!newItem)
 		idEntry->SelectItem(idComboMap[item->itemId]);
 	else

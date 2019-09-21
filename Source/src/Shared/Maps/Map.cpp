@@ -1114,8 +1114,8 @@ void Map::addItem(int itemId, Vector2i position) {
 	EntityPosition pos;
 	pos.coords = Vector2f(position);
 	pos.mapName = uniqueName;
-	Entity::Ptr ie = ItemEntity::create(item.itemId, pos);
-	EntityManager::get()->add(ie);
+	item.ie = ItemEntity::create(item.itemId, pos);
+	EntityManager::get()->add(item.ie);
 	items.push_back(item);
 }
 

@@ -2,7 +2,7 @@
 #define MENUGENERATORS_HPP
 
 #include "Editor/GUI/Form.hpp"
-#include "Shared/Items/ItemEffect.hpp"
+#include "Shared/Items/Item.hpp"
 #include "Shared/Particles/ParticleGeneratorFactory.hpp"
 #include <list>
 
@@ -12,6 +12,10 @@ ItemEffect::List getItemEffectsFromForm(std::list<Form>& effectForms);
 void addParticleGeneratorsToForm(Form& form, const std::string& name);
 ParticleGeneratorFactory::Preset getParticleGeneratorFromForm(Form& form, const std::string& name);
 
-//TODO - Drop downs for items
+sfg::ComboBox::Ptr generateItemCategoryFilter();
+Item::Category getItemCategoryFromDropdown(sfg::ComboBox::Ptr dropdown);
+sfg::ComboBox::Ptr generateItemSelector(std::map<int,int>& indexToIdMap,
+                                        std::map<int,int>& idToIndexMap,
+                                        Item::Category filter = Item::All);
 
 #endif // MENUGENERATORS_HPP

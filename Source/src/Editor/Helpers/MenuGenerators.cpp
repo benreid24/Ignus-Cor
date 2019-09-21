@@ -1,4 +1,5 @@
 #include "Editor/Helpers/MenuGenerators.hpp"
+#include "Shared/Items/ItemDB.hpp"
 #include "Shared/Util/Util.hpp"
 using namespace std;
 
@@ -75,4 +76,36 @@ ParticleGeneratorFactory::Preset getParticleGeneratorFromForm(Form& form, const 
     if (i >= ParticleGeneratorFactory::getAllPresets().size())
         i = 0;
     return ParticleGeneratorFactory::Preset(i);
+}
+
+sfg::ComboBox::Ptr generateItemCategoryFilter() {
+    sfg::ComboBox::Ptr box = sfg::ComboBox::Create();
+    for (auto i = Item::getAllCategories().begin(); i != Item::getAllCategories().end(); ++i) {
+        box->AppendItem(*i);
+    }
+    return box;
+}
+
+Item::Category getItemCategoryFromDropdown(sfg::ComboBox::Ptr box) {
+    unsigned int i = box->GetSelectedItem();
+    if (i < Item::getAllCategories().size())
+        return Item::getCategoryFromName(Item::getAllCategories()[i]);
+    return Item::All;
+}
+
+sfg::ComboBox::Ptr generateItemSelector(map<int,int>& idMap, map<int,int>& indexMap, Item::Category filter) {
+    sfg::ComboBox::Ptr box = sfg::ComboBox::Create();
+    int index = 0;
+    for (auto i = ItemDB::get().getItems().begin(); i!=ItemDB::get().getItems().end(); ++i, ++index) {
+        if (i->second->getCategory() == filter || filter == Item::All) {
+            string item = intToString(i->first) + " | ";
+            item += i->second->getName() + " | ";
+            item += Item::getCategorySingular(i->second->getCategory()) + " | ";
+            item += "$" + intToString(i->second->getValue());
+            box->AppendItem(item);
+            indexMap[i->first] = index;
+            idMap[index] = i->first;
+        }
+    }
+    return box;
 }
