@@ -52,7 +52,7 @@ bool PauseState::doState() {
             return true;
 
         Game::get().window.clear();
-        MapManager::get()->render();
+        MapManager::get().render();
         menu.render(Game::get().window);
         Game::get().window.display();
         ensureFps();

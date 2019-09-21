@@ -23,7 +23,7 @@ void ParticleGeneratorEntity::beforeTimerUpdate() {
     if (boundTo.expired() && wasBound)
         generator->stop();
     if (generator->finished())
-        EntityManager::get()->remove(this);
+        EntityManager::get().remove(this);
 }
 
 const string ParticleGeneratorEntity::getType() const {

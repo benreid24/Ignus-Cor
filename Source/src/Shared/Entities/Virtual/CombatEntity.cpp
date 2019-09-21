@@ -39,7 +39,7 @@ void CombatEntity::p_notifyAttacked(Entity::Ptr attacker, CombatAttack::Ref atk)
             double rewardXp = levelMult*xpRewardMultiplier + stats.level;
             atkr->stats.currentXp += rewardXp; //TODO - level up?
 
-            EntityManager::get()->remove(this);
+            EntityManager::get().remove(this);
         }
     }
     else
@@ -50,8 +50,8 @@ void CombatEntity::p_notifyAttacked(Entity::Ptr attacker, CombatAttack::Ref atk)
 
 void CombatEntity::doAttack(int atkDir) {
     if (Timer::get().timeElapsedSeconds()-lastAttackTime >= weapon->getAttackDelay()) {
-        Entity::Ptr atkEnt = AttackEntity::create(EntityManager::get()->getEntityPtr(this), weapon, atkDir);
-        EntityManager::get()->add(atkEnt);
+        Entity::Ptr atkEnt = AttackEntity::create(EntityManager::get().getEntityPtr(this), weapon, atkDir);
+        EntityManager::get().add(atkEnt);
         lastAttackTime = Timer::get().timeElapsedSeconds();
     }
 }

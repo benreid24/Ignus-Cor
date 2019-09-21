@@ -14,7 +14,7 @@ int UUID::nextUuid = 1;
 EntityPosition::EntityPosition(Vector2f pos, Direction d) {
     coords = pos;
     dir = d;
-    mapName = MapManager::get()->getCurrentMap();
+    mapName = MapManager::get().getCurrentMap();
 }
 
 Entity::Entity(string nm, EntityPosition pos, string gfx1, string gfx2) {
@@ -95,7 +95,7 @@ void Entity::shift(sf::Vector2f amount, const string& newMap) {
 	position.coords += amount;
 	if (newMap.size() > 0)
         position.mapName = newMap;
-	EntityManager::get()->updatePosition(this, oldPos);
+	EntityManager::get().updatePosition(this, oldPos);
 }
 
 const string& Entity::getName() const {
@@ -184,15 +184,15 @@ bool Entity::move(EntityPosition::Direction dir, bool fast, float elapsedTime) {
 		newPosOffset.coords += Vector2f(boundingBox.left, boundingBox.top);
 		Vector2f size = Vector2f(boundingBox.width, boundingBox.height);
 
-		if (EntityManager::get()->canMove(this, oldPosOffset, newPosOffset, size)) {
+		if (EntityManager::get().canMove(this, oldPosOffset, newPosOffset, size)) {
 			graphics.setMoving(position.dir, fast);
 
 			EntityPosition oldPos = position;
 			FloatRect oldBox = getBoundingBox();
 			position.coords = newPos;
 
-			EntityManager::get()->updatePosition(this, oldPos);
-			MapManager::get()->registerEntityMovement(EntityManager::get()->getEntityPtr(this), oldBox);
+			EntityManager::get().updatePosition(this, oldPos);
+			MapManager::get().registerEntityMovement(EntityManager::get().getEntityPtr(this), oldBox);
 			return true;
 		}
 	}
@@ -210,8 +210,8 @@ void Entity::update() {
 }
 
 Entity::Ptr Entity::interact() {
-    List ents = EntityManager::get()->getEntitiesInSpace(position.mapName, getInteractBox());
-    Ptr me = EntityManager::get()->getEntityPtr(this);
+    List ents = EntityManager::get().getEntitiesInSpace(position.mapName, getInteractBox());
+    Ptr me = EntityManager::get().getEntityPtr(this);
     if (ents.size()>0) {
         if (ents.size()>1)
             cout << "Warning: " << getIdString() << " interacted with " << ents.size() << "entities\n";

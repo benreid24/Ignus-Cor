@@ -35,7 +35,7 @@ void RangedAttackEntity::beforeTimerUpdate() {
     Entity::shift(movedist);
     distanceTraveled += displacement;
 
-    Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, getBoundingBox());
+    Entity::List hits = EntityManager::get().getEntitiesInSpace(position.mapName, getBoundingBox());
     if ((hits.size()>1 && find(hits.begin(), hits.end(), attacker)==hits.end()) || hits.size()>2) {
         //apply damage
         for (Entity::List::iterator i = hits.begin(); i!=hits.end(); ++i) {
@@ -45,7 +45,7 @@ void RangedAttackEntity::beforeTimerUpdate() {
         }
         done = true;
     }
-    if (distanceTraveled >= attack->getRange() || !MapManager::get()->spaceFree(position, sf::Vector2f(boundingBox.width, boundingBox.height)))
+    if (distanceTraveled >= attack->getRange() || !MapManager::get().spaceFree(position, sf::Vector2f(boundingBox.width, boundingBox.height)))
         done = true;
 
     if (done) {
@@ -60,8 +60,8 @@ void RangedAttackEntity::beforeTimerUpdate() {
             pos.coords.y += boundingBox.height/2 - xbox.height/2 + sinDir*displacement;
             explosion->setPositionAndDirection(pos);
 
-            EntityManager::get()->add(explosion);
+            EntityManager::get().add(explosion);
         }
-        EntityManager::get()->remove(this);
+        EntityManager::get().remove(this);
     }
 }

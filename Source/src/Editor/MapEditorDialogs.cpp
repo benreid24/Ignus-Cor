@@ -387,7 +387,7 @@ void MapEditor::newMap() {
 				mkdir(string(Properties::MapPath+mapFolder).c_str());
 				if (mapData!=nullptr)
 					delete mapData;
-				EntityManager::get()->clear();
+				EntityManager::get().clear();
 				layerButtons.clear();
 
 				mapData = new Map(name,mapFolder+"/"+name+".map",Vector2i(w,h),tileset,nLayers,firstY,firstTop);
@@ -418,7 +418,7 @@ void MapEditor::loadMap() {
 		if (mapData!=nullptr) {
 			delete mapData;
 		}
-		EntityManager::get()->clear();
+		EntityManager::get().clear();
 		layerButtons.clear();
 		mapData = new Map(picker.getChoice(),tileset);
 		layerButtons.setLayers(mapData->getLayerCount());

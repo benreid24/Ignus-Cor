@@ -23,10 +23,9 @@ class ItemEntity : public Entity {
      * removes itself from the world
      */
     virtual void p_notifyInteracted(Entity::Ptr user) override {
-        Entity::notifyInteracted(user);
         if (user->getType()=="Player") {
             //TODO - add to inventory
-            EntityManager::get()->remove(this);
+            EntityManager::get().remove(this);
         }
     }
 

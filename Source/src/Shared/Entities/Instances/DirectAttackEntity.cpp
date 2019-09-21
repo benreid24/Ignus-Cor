@@ -24,7 +24,7 @@ void DirectAttackEntity::beforeTimerUpdate() {
         Entity::shift(shiftAmount);
     }
 
-    Entity::List hits = EntityManager::get()->getEntitiesInSpace(position.mapName, getBoundingBox());
+    Entity::List hits = EntityManager::get().getEntitiesInSpace(position.mapName, getBoundingBox());
     for (Entity::List::iterator i = hits.begin(); i!=hits.end(); ++i) {
         if (shouldApplyDamage(*i)) {
             (*i)->notifyAttacked(attacker, attack);
@@ -34,7 +34,7 @@ void DirectAttackEntity::beforeTimerUpdate() {
 
 void DirectAttackEntity::p_afterTimerUpdate() {
     if (graphics.animationDone())
-        EntityManager::get()->remove(this);
+        EntityManager::get().remove(this);
 
     graphics.setMoving(position.dir, false);
 }

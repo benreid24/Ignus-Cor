@@ -11,7 +11,7 @@ Game::Game() {
 	window.create(VideoMode(Properties::ScreenWidth, Properties::ScreenHeight, 32), "Ignis Cor", Style::Close|Style::Resize|Style::Titlebar);
 
 	player = Player::create();
-	MapManager::get()->setPlayer(player);
+	MapManager::get().setPlayer(player);
 
 	eventDispatcher.addGlobalObserver(&PlayerInput::get());
 }

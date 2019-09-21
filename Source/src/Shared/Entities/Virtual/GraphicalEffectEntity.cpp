@@ -19,7 +19,7 @@ void GraphicalEffectEntity::afterTimerUpdate() {
         Entity::shift(shiftAmt, boundTo.lock()->getPosition().mapName);
     }
     else if (wasBound && removeWithBound && canDestroy())
-        EntityManager::get()->remove(this);
+        EntityManager::get().remove(this);
 }
 
 bool GraphicalEffectEntity::canDestroy() {

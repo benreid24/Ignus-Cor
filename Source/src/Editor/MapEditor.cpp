@@ -124,6 +124,7 @@ void MapEditor::update() {
 			camPos.y += 32*moveAmount;
 		mapData->setRenderPosition(camPos+Vector2f(Properties::ScreenWidth/2,Properties::ScreenHeight/2));
 		mapData->update();
+		EntityManager::get().update();
 
 		if (Mouse::isButtonPressed(Mouse::Left)) {
 			Vector2i pos = Mouse::getPosition(sfWindow);

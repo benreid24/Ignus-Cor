@@ -40,7 +40,7 @@ public:
     /**
      * Returns a pointer to the MapManager
      */
-    static MapManager* get();
+    static MapManager& get();
 
     /**
      * Sets the internal reference to the player

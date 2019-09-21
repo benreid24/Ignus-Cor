@@ -16,9 +16,9 @@ EntityManager::~EntityManager() {
 	clear();
 }
 
-EntityManager* EntityManager::get() {
+EntityManager& EntityManager::get() {
     static EntityManager manager;
-    return &manager;
+    return manager;
 }
 
 void EntityManager::updatePosition(Entity* e, EntityPosition oldPos) {
@@ -101,8 +101,8 @@ bool EntityManager::spaceFree(Entity* e, EntityPosition space, Vector2f size) {
 
 bool EntityManager::canMove(Entity* e, EntityPosition oldPos, EntityPosition newPos, Vector2f size) {
     if (oldPos.mapName==newPos.mapName)
-		return MapManager::get()->movementValid(oldPos, newPos, size) && spaceFree(e, newPos, size);
-    return MapManager::get()->spaceFree(newPos, size) && spaceFree(e, newPos, size);
+		return MapManager::get().movementValid(oldPos, newPos, size) && spaceFree(e, newPos, size);
+    return MapManager::get().spaceFree(newPos, size) && spaceFree(e, newPos, size);
 }
 
 void EntityManager::clear() {

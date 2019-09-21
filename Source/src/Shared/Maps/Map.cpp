@@ -86,7 +86,7 @@ Map::Map(string nm, string uniqueNm, Vector2i sz, Tileset& tlst, int nLayers, in
 	}
 	collisions.setSize(size.x,size.y);
 	resetYSorted();
-	EntityManager::get()->registerMap(uniqueNm, size.y);
+	EntityManager::get().registerMap(uniqueNm, size.y);
 }
 
 Map::Map(string file, Tileset& tlst, Entity::Ptr player) : Map(tlst) {
@@ -200,7 +200,7 @@ Map::Map(string file, Tileset& tlst, Entity::Ptr player) : Map(tlst) {
 		setRenderPosition(player->getPosition().coords);
 
     //Load AI
-	EntityManager::get()->registerMap(uniqueName, size.y);
+	EntityManager::get().registerMap(uniqueName, size.y);
     tInt = input.get<uint16_t>();
     for (int i = 0; i<tInt; ++i) {
         Vector2f pos;
@@ -247,7 +247,7 @@ Map::Map(string file, Tileset& tlst, Entity::Ptr player) : Map(tlst) {
 			pos.mapName = uniqueName;
 			item.ie = ItemEntity::create(item.itemId,pos);
             items.push_back(item);
-            EntityManager::get()->add(item.ie);
+            EntityManager::get().add(item.ie);
         }
 		if (item.mapId>maxMapItemId)
 			maxMapItemId = item.mapId+1;
@@ -558,13 +558,13 @@ void Map::draw(sf::RenderTarget& target) {
                     }
                 }
             }
-            for (unsigned int i = 0; i<EntityManager::get()->getYSortedEntities(uniqueName).at(y).size(); ++i) {
-                EntityManager::get()->getYSortedEntities(uniqueName).at(y).at(i)->render(target,camPos);
+            for (unsigned int i = 0; i<EntityManager::get().getYSortedEntities(uniqueName).at(y).size(); ++i) {
+                EntityManager::get().getYSortedEntities(uniqueName).at(y).at(i)->render(target,camPos);
             }
         }
     }
-    for (unsigned int i = 0; i<EntityManager::get()->getTopEntities(uniqueName).size(); ++i) {
-        EntityManager::get()->getTopEntities(uniqueName)[i]->render(target,camPos);
+    for (unsigned int i = 0; i<EntityManager::get().getTopEntities(uniqueName).size(); ++i) {
+        EntityManager::get().getTopEntities(uniqueName)[i]->render(target,camPos);
     }
 
     weather->draw(target);
@@ -643,13 +643,13 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection, 
                     }
                 }
             }
-            for (unsigned int i = 0; i<EntityManager::get()->getYSortedEntities(uniqueName).at(y).size(); ++i) {
-                EntityManager::get()->getYSortedEntities(uniqueName).at(y).at(i)->render(target,camPos);
+            for (unsigned int i = 0; i<EntityManager::get().getYSortedEntities(uniqueName).at(y).size(); ++i) {
+                EntityManager::get().getYSortedEntities(uniqueName).at(y).at(i)->render(target,camPos);
             }
         }
     }
-    for (unsigned int i = 0; i<EntityManager::get()->getTopEntities(uniqueName).size(); ++i) {
-        EntityManager::get()->getTopEntities(uniqueName)[i]->render(target,camPos);
+    for (unsigned int i = 0; i<EntityManager::get().getTopEntities(uniqueName).size(); ++i) {
+        EntityManager::get().getTopEntities(uniqueName)[i]->render(target,camPos);
     }
 
     weather->draw(target);
@@ -1115,7 +1115,7 @@ void Map::addItem(int itemId, Vector2i position) {
 	pos.coords = Vector2f(position);
 	pos.mapName = uniqueName;
 	item.ie = ItemEntity::create(item.itemId, pos);
-	EntityManager::get()->add(item.ie);
+	EntityManager::get().add(item.ie);
 	items.push_back(item);
 }
 
@@ -1129,15 +1129,15 @@ MapItem* Map::getItem(Vector2i position) {
 
 void Map::updateItem(MapItem* orig) {
 	EntityPosition pos = orig->ie->getPosition();
-	EntityManager::get()->remove(orig->ie);
+	EntityManager::get().remove(orig->ie);
 	orig->ie = ItemEntity::create(orig->itemId, pos);
-	EntityManager::get()->add(orig->ie);
+	EntityManager::get().add(orig->ie);
 }
 
 void Map::removeItem(Vector2i position) {
 	for (unsigned int i = 0; i<items.size(); ++i) {
 		if (abs(items[i].position.x-position.x)<=32 && abs(items[i].position.y-position.y)<=32) {
-			EntityManager::get()->remove(items[i].ie);
+			EntityManager::get().remove(items[i].ie);
 			items.erase(items.begin()+i);
 			--i;
 		}

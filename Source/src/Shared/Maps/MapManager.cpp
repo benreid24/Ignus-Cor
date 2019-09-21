@@ -15,9 +15,9 @@ MapManager::MapManager() {
     //ctor
 }
 
-MapManager* MapManager::get() {
+MapManager& MapManager::get() {
     static MapManager manager;
-    return &manager;
+    return manager;
 }
 
 void MapManager::setPlayer(Entity::Ptr p) {
@@ -83,7 +83,7 @@ void MapManager::registerEntityMovement(Entity::Ptr ent, FloatRect oldBox) {
         i->second.mapdata->moveOntoTile(ent, oldBox);
     else {
         cout << "Error: " << ent->getIdString() << " in unloaded map " << ent->getPosition().mapName << ", deleting\n";
-        EntityManager::get()->remove(ent);
+        EntityManager::get().remove(ent);
     }
 }
 

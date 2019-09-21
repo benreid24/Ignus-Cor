@@ -54,7 +54,7 @@ class EntityManager {
 	friend class Entity;
 
 public:
-	static EntityManager* get();
+	static EntityManager& get();
 
 	/**
 	 * Deletes all of the Entities that are owned

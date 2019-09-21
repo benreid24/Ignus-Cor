@@ -52,7 +52,7 @@ void Player::beforeTimerUpdate() {
         Game::get().runNewState(PauseState::create());
     #endif
 
-	MapManager::get()->updateRenderPosition(position.coords);
+	MapManager::get().updateRenderPosition(position.coords);
 }
 
 const string Player::getType() const {

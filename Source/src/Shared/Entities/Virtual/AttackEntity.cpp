@@ -54,8 +54,8 @@ void AttackEntity::afterTimerUpdate() {
                                                                       attack->getParticlePersistanceTime());
         EntityPosition pos = position;
         pos.coords = getCenter();
-        Entity::Ptr genEnt = ParticleGeneratorEntity::create(EntityManager::get()->getEntityPtr(this), pos, gen);
-        EntityManager::get()->add(genEnt);
+        Entity::Ptr genEnt = ParticleGeneratorEntity::create(EntityManager::get().getEntityPtr(this), pos, gen);
+        EntityManager::get().add(genEnt);
     }
     p_afterTimerUpdate();
 }
