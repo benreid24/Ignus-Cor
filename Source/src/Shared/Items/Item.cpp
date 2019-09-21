@@ -7,9 +7,9 @@ constexpr int Item::DefaultWeapon;
 
 namespace {
 const string invalid = "~~INVALID~~";
-const string all = "All";
 
 const vector<string> categories = {
+    "All",
     "Armor",
     "Weapons",
     "Potions",
@@ -20,6 +20,7 @@ const vector<string> categories = {
 };
 
 const vector<string> categoriesSingle = {
+    "All",
     "Armor",
     "Weapon",
     "Potion",
@@ -32,26 +33,26 @@ const vector<string> categoriesSingle = {
 
 const string& Item::getCategoryString(Category cat) {
     if (cat == All)
-        return all;
+        return categories[0];
     unsigned int i = cat;
     if (i<categories.size())
-        return categories[i];
+        return categories[i+1];
     return invalid;
 }
 
 const string& Item::getCategorySingular(Category cat) {
     if (cat == All)
-        return all;
-    unsigned int i = cat;
+        return categoriesSingle[0];
+    unsigned int i = cat;;
     if (i<categoriesSingle.size())
-        return categoriesSingle[i];
+        return categoriesSingle[i+1];
     return invalid;
 }
 
 Item::Category Item::getCategoryFromName(const string& name) {
     for (unsigned int i = 0; i<categories.size(); ++i) {
         if (categories[i] == name || categoriesSingle[i] == name)
-            return Category(i);
+            return Category(signed(i)-1);
     }
     return All;
 }

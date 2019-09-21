@@ -958,6 +958,12 @@ void MapEditor::itemHandler(sf::Vector2i pos) {
     form.addToParent(winBox);
 
     Box::Ptr box = Box::Create(Box::Orientation::HORIZONTAL,5);
+    ComboBox::Ptr catEntry = generateItemCategoryFilter();
+    box->Pack(Label::Create("Type filter: "),false,false);
+    box->Pack(catEntry,false,false);
+    winBox->Pack(box,false,false);
+
+    box = Box::Create(Box::Orientation::HORIZONTAL,5);
     map<int,int> comboIdMap, idComboMap;
     ComboBox::Ptr idEntry = generateItemSelector(comboIdMap, idComboMap);
     if (!newItem)
@@ -967,6 +973,7 @@ void MapEditor::itemHandler(sf::Vector2i pos) {
     box->Pack(Label::Create("Item: "),false,false);
     box->Pack(idEntry,false,false);
     winBox->Pack(box,false,false);
+    integrateItemFilterToList(catEntry, idEntry, &comboIdMap, &idComboMap);
 
     Box::Ptr butBox = Box::Create(Box::Orientation::HORIZONTAL,5);
     butBox->Pack(saveButton,false,false);

@@ -113,7 +113,7 @@ void ItemDbEditor::doItem(int id) {
     impactBut->GetSignal(Button::OnLeftClick).Connect( [&impactAnimPressed] { impactAnimPressed = true; });
     mapAnimBut->GetSignal(Button::OnLeftClick).Connect( [&mapAnimPressed] { mapAnimPressed = true; });
 
-    int lastSelectedCat = -1;
+    string lastSelectedCat;
 
     Form form;
     form.addField("i", "Id: ",160,(item)?(item->id):(ItemDB::get().getNextId()));
@@ -200,9 +200,9 @@ void ItemDbEditor::doItem(int id) {
         desktop.Update(30/1000);
         form.update();
 
-        if (form.getSelectedDropdownOption("cat") != lastSelectedCat) {
-            lastSelectedCat = form.getSelectedDropdownOption("cat");
-            Item::Category c = Item::Category(lastSelectedCat);
+        if (form.getSelectedDropdownText("cat") != lastSelectedCat) {
+            lastSelectedCat = form.getSelectedDropdownText("cat");
+            Item::Category c = Item::getCategoryFromName(lastSelectedCat);
 
             if (c == Item::Armor) {
                 form.showInput("armor");
@@ -227,7 +227,7 @@ void ItemDbEditor::doItem(int id) {
                 impactBut->Show(false);
             }
         }
-        if (lastSelectedCat == Item::Weapon || lastSelectedCat == Item::SpellTomb) {
+        if (Item::getCategoryFromName(lastSelectedCat) == Item::Weapon || Item::getCategoryFromName(lastSelectedCat) == Item::SpellTomb) {
             if (weaponForm.getSelectedDropdownOption("type") == 1) {
                 form.showInput("ranged");
                 impactBut->Show(true);
@@ -242,7 +242,7 @@ void ItemDbEditor::doItem(int id) {
             savePressed = false;
 
             int id = form.getFieldAsInt("i");
-            Item::Category cat = Item::Category(form.getSelectedDropdownOption("cat"));
+            Item::Category cat = Item::getCategoryFromName(form.getSelectedDropdownText("cat"));
             string name = form.getField("n");
             string desc = form.getField("d");
             int val = form.getFieldAsInt("v");

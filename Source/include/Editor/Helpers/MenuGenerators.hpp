@@ -17,5 +17,7 @@ Item::Category getItemCategoryFromDropdown(sfg::ComboBox::Ptr dropdown);
 sfg::ComboBox::Ptr generateItemSelector(std::map<int,int>& indexToIdMap,
                                         std::map<int,int>& idToIndexMap,
                                         Item::Category filter = Item::All);
+void integrateItemFilterToList(sfg::ComboBox::Ptr itemFilter, sfg::ComboBox::Ptr itemList,
+                               std::map<int,int>* idMap, std::map<int,int>* indexMap);
 
 #endif // MENUGENERATORS_HPP

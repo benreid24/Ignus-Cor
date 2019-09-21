@@ -13,6 +13,24 @@ const ItemEffect* getEffectFromList(const ItemEffect::List& effects, const strin
     return nullptr;
 }
 
+void addItemsToDropdown(sfg::ComboBox* box, map<int,int>& idMap, map<int,int>& indexMap, Item::Category filter) {
+    idMap.clear();
+    indexMap.clear();
+    int index = 0;
+    for (auto i = ItemDB::get().getItems().begin(); i!=ItemDB::get().getItems().end(); ++i) {
+        if (i->second->getCategory() == filter || filter == Item::All) {
+            string item = intToString(i->first) + " | ";
+            item += i->second->getName() + " | ";
+            item += Item::getCategorySingular(i->second->getCategory()) + " | ";
+            item += "$" + intToString(i->second->getValue());
+            box->AppendItem(item);
+            indexMap[i->first] = index;
+            idMap[index] = i->first;
+            ++index;
+        }
+    }
+}
+
 }
 
 list<Form> addItemEffectsToForm(Form& form, const ItemEffect::List& effects) {
@@ -83,6 +101,7 @@ sfg::ComboBox::Ptr generateItemCategoryFilter() {
     for (auto i = Item::getAllCategories().begin(); i != Item::getAllCategories().end(); ++i) {
         box->AppendItem(*i);
     }
+    box->SelectItem(0);
     return box;
 }
 
@@ -95,17 +114,16 @@ Item::Category getItemCategoryFromDropdown(sfg::ComboBox::Ptr box) {
 
 sfg::ComboBox::Ptr generateItemSelector(map<int,int>& idMap, map<int,int>& indexMap, Item::Category filter) {
     sfg::ComboBox::Ptr box = sfg::ComboBox::Create();
-    int index = 0;
-    for (auto i = ItemDB::get().getItems().begin(); i!=ItemDB::get().getItems().end(); ++i, ++index) {
-        if (i->second->getCategory() == filter || filter == Item::All) {
-            string item = intToString(i->first) + " | ";
-            item += i->second->getName() + " | ";
-            item += Item::getCategorySingular(i->second->getCategory()) + " | ";
-            item += "$" + intToString(i->second->getValue());
-            box->AppendItem(item);
-            indexMap[i->first] = index;
-            idMap[index] = i->first;
-        }
-    }
+    addItemsToDropdown(box.get(), idMap, indexMap, filter);
     return box;
+}
+
+void integrateItemFilterToList(sfg::ComboBox::Ptr filter, sfg::ComboBox::Ptr items, map<int,int>* idMap, map<int,int>* indexMap) {
+    sfg::ComboBox* itemFilter = filter.get();
+    sfg::ComboBox* itemList = items.get();
+    filter->GetSignal(sfg::ComboBox::OnSelect).Connect( [itemFilter, itemList, idMap, indexMap] {
+        Item::Category s = getItemCategoryFromDropdown(dynamic_pointer_cast<sfg::ComboBox>(itemFilter->shared_from_this()));
+        itemList->Clear();
+        addItemsToDropdown(itemList, *idMap, *indexMap, s);
+    });
 }

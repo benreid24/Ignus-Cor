@@ -149,6 +149,13 @@ int Form::getSelectedDropdownOption(const string& name) const {
     return -1;
 }
 
+string Form::getSelectedDropdownText(const string& name) const {
+    auto i = dropdowns.find(name);
+    if (i != dropdowns.end())
+        return i->second->GetSelectedText();
+    return "";
+}
+
 void Form::setDropdownSelection(const string& name, int i) {
     auto d = dropdowns.find(name);
     if (d != dropdowns.end())

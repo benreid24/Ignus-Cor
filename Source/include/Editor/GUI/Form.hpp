@@ -142,6 +142,11 @@ public:
     int getSelectedDropdownOption(const std::string& name) const;
 
     /**
+     * Returns the selected text of the given dropdown
+     */
+    std::string getSelectedDropdownText(const std::string& name) const;
+
+    /**
      * Sets the value of the dropdown
      */
     void setDropdownSelection(const std::string& name, int i);
