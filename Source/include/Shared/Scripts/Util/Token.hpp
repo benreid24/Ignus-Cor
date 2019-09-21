@@ -52,6 +52,33 @@ struct Token
 
 		return *this;
 	}
+
+	static const std::string& toString(Type tp) {
+        static const std::vector<std::string> types = {
+            "Identifier",
+            "Assignment",
+            "DataType",
+            "IntVal",
+            "StrVal",
+            "Operator",
+            "ArgDelim",
+            "LineDelim",
+            "BlockOpen",
+            "BlockClose",
+            "Conditional",
+            "Elif",
+            "Else",
+            "Loop",
+            "Branch",
+            "Label",
+            "Return"
+        };
+        static const std::string invalid = "UNKNOWN";
+        unsigned int i = (unsigned int)tp;
+        if (i < types.size())
+            return types[i];
+        return invalid;
+	}
 };
 
 #endif // TOKEN_HPP

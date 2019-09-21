@@ -11,6 +11,8 @@ using namespace std;
 using namespace sf;
 
 namespace {
+const string ERROR_FILE_PREFIX = " in file ";
+
 string intToString(double i)
 {
        stringstream ss;
@@ -18,11 +20,21 @@ string intToString(double i)
        return ss.str();
 }
 
-double stringToInt(string s) {
+double stringToInt(const string& s) {
     stringstream ss(s);
     double d;
     ss >> d;
     return d;
+}
+
+void raiseError(string error, const Token* token = nullptr) {
+    if (token) {
+        error += " on line ";
+        error += intToString(token->line);
+        error += ERROR_FILE_PREFIX;
+        error += token->file;
+    }
+    throw runtime_error(error);
 }
 }
 
@@ -32,7 +44,7 @@ Script::Script() : isDryRun(false)
 	initBuiltins();
 }
 
-Script::Script(string scr) : Script()
+Script::Script(const string&scr) : Script()
 {
     load(scr);
 }
@@ -110,7 +122,7 @@ void Script::locateFunctions()
 					arg.type = Value::Integer;
 			}
 			else
-				throw runtime_error("Was expecting a data type in file "+tokens.at(i).file+" line "+intToString(tokens.at(i).line));
+				raiseError("Was expecting a data type", &tokens.at(i));
 			break;
 
 		case ScanningArgName:
@@ -121,7 +133,7 @@ void Script::locateFunctions()
 				func.arguments.push_back(arg);
 			}
 			else
-				throw runtime_error("Was expecting an identifier next on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file);
+				raiseError("Was expecting an identifier next", &tokens.at(i));
 			break;
 
 		case NextArgTransition:
@@ -136,12 +148,12 @@ void Script::locateFunctions()
 				func.arguments.clear();
 			}
 			else
-				throw runtime_error("Was expecting ',' or ')' on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file);
+				raiseError("Was expecting ',' or ')'", &tokens.at(i));
 		}
 	}
 }
 
-void Script::load(string str)
+void Script::load(const string&str)
 {
 	Parser parser(str);
 	tokens = parser.getTokens();
@@ -153,7 +165,7 @@ void Script::load(string str)
 		if (tokens.at(i).type==Token::Label)
 		{
 			if (branchTable.find(tokens.at(i).data)!=branchTable.end())
-				throw runtime_error("Branch label '"+tokens.at(i).data+"' duplicate encountered on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file);
+				raiseError("Branch label '"+tokens.at(i).data+"' duplicate encountered", &tokens.at(i));
 			branchTable[tokens.at(i).data] = i;
 		}
 	}
@@ -208,9 +220,9 @@ Value Script::combine(Token left, Token op, Token right)
 	}
 
 	if (right.type!=Token::IntVal)
-		throw runtime_error("Was expecting integer on line "+intToString(right.line)+" in file "+right.file);
+		raiseError("Was expecting integer", &right);
 	if (left.type!=Token::IntVal)
-		throw runtime_error("Was expecting integer on line "+intToString(left.line)+" in file "+left.file);
+		raiseError("Was expecting integer", &left);
 
 	if (op.data=="-")
 		ret.iValue = left.value-right.value;
@@ -233,7 +245,7 @@ Value Script::combine(Token left, Token op, Token right)
 	else if (op.data=="||")
 		ret.iValue = int(int(left.value+0.5)!=0 || int(right.value+0.5)!=0);
 	else
-		throw runtime_error("Illegal operator '"+op.data+"' encountered on line "+intToString(op.line)+" in file "+op.file);
+		raiseError("Illegal operator '"+op.data+"' encountered", &op);
 
 	return ret;
 }
@@ -258,13 +270,13 @@ Value Script::evalEq(vector<Token> tkns)
 
 			while (parenCount>0)
 			{
-				i++;
+				++i;
 				if (tkns.at(i).type==Token::Operator && tkns.at(i).data=="(")
 					parenCount++;
 				if (tkns.at(i).type==Token::Operator && tkns.at(i).data==")")
 					parenCount--;
 				if (i>=tkns.size())
-					throw runtime_error("Unexpected end of equation on line "+intToString(tkns[tkns.size()-1].line)+" in file "+tkns[tkns.size()-1].file);
+					raiseError("Unexpected end of equation", &tkns[tkns.size()-1]);
 			}
 			end = i-1;
 			subEq.reserve(end-start+1);
@@ -299,7 +311,7 @@ Value Script::evalEq(vector<Token> tkns)
                 tkns.at(i+1).value = double(tkns.at(i+1).data.size()!=0);
 			}
 			else
-				throw runtime_error("Illegal operand type on line "+intToString(tkns.at(i+1).line)+" in file "+tkns.at(i+1).file);
+				raiseError("Illegal operand type", &tkns.at(i+1));
 		}
 	}
 
@@ -314,6 +326,8 @@ Value Script::evalEq(vector<Token> tkns)
 		{
 			if (ops[i].find(tkns.at(j).data)!=string::npos && tkns.at(j).type==Token::Operator)
 			{
+			    if (j<=0 || j>=tkns.size()-1)
+                    raiseError("Invalid number of operands for operator "+tkns.at(j).data, &tkns.at(j));
 				tkns.at(j-1) = combine(tkns.at(j-1),tkns.at(j),tkns.at(j+1));
 				tkns.erase(tkns.begin()+j+1);
 				tkns.erase(tkns.begin()+j);
@@ -337,7 +351,8 @@ Value Script::evalEq(vector<Token> tkns)
 		}
 		return r;
 	}
-	throw runtime_error("An error occurred solving the equation on line "+intToString(tkns[0].line)+" in file "+tkns[0].file);
+	raiseError("An error occurred solving the equation", &tkns[0]);
+	return Value(); //unreachable but makes the compiler happy
 }
 
 Value Script::evaluate(vector<Token> tkns)
@@ -351,9 +366,9 @@ Value Script::evaluate(vector<Token> tkns)
 		if (tkns.at(i).type==Token::Identifier)
 		{
 			if (isVariable(tkns.at(i).data))
-                tkns.at(i) = getIdentifier(tkns.at(i).data);
+                tkns.at(i) = getIdentifier(tkns.at(i).data, &tkns.at(i));
 			else if (!isFunction(tkns.at(i).data))
-				throw  runtime_error("Unknown identifier '"+tkns.at(i).data+"' encountered on line "+intToString(tkns.at(i).line)+" in file "+tkns.at(i).file);
+                raiseError("Unknown identifier '"+tkns.at(i).data+"' encountered", &tkns.at(i));
 		}
 	}
 
@@ -379,7 +394,9 @@ Value Script::evaluate(vector<Token> tkns)
 				state = ReadingArgEq;
 				parenCount = 1;
 				start = i;
-				i++; //just assume that next token is '('
+				++i;
+                if (tkns.at(i).type != Token::Operator || tkns.at(i).data != "(")
+                    raiseError("Unexpected token "+Token::toString(tkns.at(i).type), &tkns.at(i));
 				argEq.clear();
 				args.clear();
 			}
@@ -407,9 +424,9 @@ Value Script::evaluate(vector<Token> tkns)
 						for (unsigned int j = 0; j<args.size(); ++j)
 						{
 							if (j>=functions[name].arguments.size())
-								throw runtime_error("Too many arguments passed to function '"+name+"' on line "+intToString(tkns[start].line)+" in file "+tkns[start].file);
+								raiseError("Too many arguments passed to function '"+name+"'", &tkns[start]);
 							else if (args[j].type!=functions[name].arguments[j].type)
-								throw runtime_error("Type mismatch in call to '"+name+"' on line "+intToString(tkns[start].line)+" in file "+tkns[start].file);
+								raiseError("Type mismatch in call to '"+name+"'", &tkns[start]);
 							f.locals[functions[name].arguments[j].name] = args[j];
 						}
 						stackFrames.push_back(f);
@@ -441,12 +458,12 @@ Value Script::evaluate(vector<Token> tkns)
 	return evalEq(tkns);
 }
 
-bool Script::isFunction(string name)
+bool Script::isFunction(const string& name)
 {
 	return (isLibraryFunction(name) || functions.find(name)!=functions.end());
 }
 
-bool Script::isVariable(string id) {
+bool Script::isVariable(const string& id) {
     for (auto j = stackFrames.rbegin(); j!=stackFrames.rend(); ++j) {
         if (j->locals.find(id)!=j->locals.end())
             return true;
@@ -456,7 +473,7 @@ bool Script::isVariable(string id) {
     return false;
 }
 
-Value& Script::getIdentifier(string id) {
+Value& Script::getIdentifier(const string& id, const Token* info) {
     for (auto j = stackFrames.rbegin(); j!=stackFrames.rend(); ++j) {
         if (j->locals.find(id)!=j->locals.end())
             return j->locals[id];
@@ -467,11 +484,8 @@ Value& Script::getIdentifier(string id) {
         stackFrames.back().locals[id] = Value();
         return stackFrames.back().locals[id];
     }
-    else {
-        globalFrame.locals[id] = Value();
-        return globalFrame.locals[id];
-    }
-
+    raiseError("Undeclared identifier '"+id+"'", info);
+    static Value poop; return poop; //compiler man
 }
 
 Value Script::runTokens(int pos)
@@ -493,8 +507,11 @@ Value Script::runTokens(int pos)
 		switch (tokens.at(i).type)
 		{
 		case Token::DataType: //variable declaration or function definition
+		    if (i+2 >= tokens.size())
+                raiseError("Unexpected end of input", &tokens.at(i));
+
             if (tokens.at(i+1).type!=Token::Identifier)
-				throw runtime_error("Was expecting identifier after data type on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file);
+				raiseError("Was expecting identifier after data type", &tokens.at(i));
 
 			name = tokens.at(i+1).data;
 			i = i+2;
@@ -503,14 +520,14 @@ Value Script::runTokens(int pos)
 				if (stackFrames.empty())
 				{
 					if (globalFrame.locals.find(name)!=globalFrame.locals.end())
-						throw runtime_error("Identifier on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file+" already exists!");
+						raiseError("Redeclared identifier "+name, &tokens.at(i));
 					globalFrame.locals[name] = Value();
 					globalFrame.locals[name].type = Value::Integer;
 				}
 				else
 				{
                     if (stackFrames.back().locals.find(name)!=stackFrames.back().locals.end())
-                        throw runtime_error("Identifier on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file+" already exists!");
+                        raiseError("Redeclared identifier "+name, &tokens.at(i));
 					stackFrames.back().locals[name] = Value();
 					stackFrames.back().locals[name].type = Value::Integer;
 				}
@@ -520,10 +537,14 @@ Value Script::runTokens(int pos)
 					tkns.clear();
 					while (tokens.at(i).type!=Token::LineDelim)
 					{
-						i++;
+						++i;
+						if (i >= tokens.size())
+                            raiseError("Unexpected end of input", &tokens.at(i-1));
 						tkns.push_back(tokens.at(i));
 					}
 					tkns.erase(tkns.begin()+tkns.size()-1); //last one will be ';'
+					if (tkns.size() == 0)
+                        raiseError("Empty expression in assignment", &tokens.at(i-1));
 					if (stackFrames.empty())
 						globalFrame.locals[name] = evaluate(tkns);
 					else
@@ -533,11 +554,11 @@ Value Script::runTokens(int pos)
 			else //function definition, skip
 			{
 				while (tokens.at(i).type!=Token::BlockOpen)
-					i++;
+					++i;
 				parenCount = 1;
 				while (parenCount>0)
 				{
-					i++;
+					++i;
 					if (tokens.at(i).type==Token::BlockOpen)
 						parenCount++;
 					if (tokens.at(i).type==Token::BlockClose)
@@ -550,9 +571,9 @@ Value Script::runTokens(int pos)
 
 		case Token::Branch:
 			if (tokens.at(i+1).type!=Token::Identifier)
-				throw runtime_error("Expecting identifier after branch on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file);
+				raiseError("Expecting identifier after branch", &tokens.at(i));
 			if (branchTable.find(tokens.at(i+1).data)==branchTable.end())
-				throw runtime_error("Branch to unknown identifier encountered on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file);
+				raiseError("Branch to unknown identifier encountered", &tokens.at(i));
 			i = branchTable[tokens.at(i+1).data];
 
 			if (tokensTillResetCond == 0)
@@ -561,7 +582,7 @@ Value Script::runTokens(int pos)
 
 		case Token::Elif:
 			if (conditionalState==NoConditional)
-				throw runtime_error("'elif' encountered without preceding 'if' on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file);
+				raiseError("'elif' encountered without preceding 'if'", &tokens.at(i));
 			resetCondState = false; //to allow failure to fall through a chain of elif's
 			//fall through to check condition
 
@@ -570,7 +591,7 @@ Value Script::runTokens(int pos)
 				resetCondState = true; //we want to update the state
 
             if (tokens.at(i+1).type!=Token::Operator || tokens.at(i+1).data!="(")
-				throw runtime_error("Was expecting '(' after 'if' on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file);
+				raiseError("Was expecting '(' after 'if'", &tokens.at(i));
 			tkns.clear();
 			parenCount = 1;
 			i = i+2;
@@ -581,7 +602,7 @@ Value Script::runTokens(int pos)
 				if (tokens.at(i).type==Token::Operator && tokens.at(i).data==")")
 					parenCount--;
 				tkns.push_back(tokens.at(i));
-				i++;
+				++i;
 			}
 			i--; //so i points to the ')', that way i+1 means the same thing for both if and else
 			tkns.erase(tkns.begin()+tkns.size()-1); //last one will be ')'
@@ -604,14 +625,14 @@ Value Script::runTokens(int pos)
 				{
 				    stackFrames.push_back(Frame());
 					Value ret = runTokens(i+2);
+					stackFrames.pop_back();
 					if (!(ret.type==Value::Void && ret.iValue==0 && ret.sValue=="noret"))
                         return ret;
-					stackFrames.pop_back();
 					parenCount = 1;
-					i++;
+					++i;
 					while (parenCount>0)
 					{
-						i++;
+						++i;
 						if (tokens.at(i).type==Token::BlockOpen)
 							parenCount++;
 						if (tokens.at(i).type==Token::BlockClose)
@@ -633,7 +654,7 @@ Value Script::runTokens(int pos)
 							parenCount++;
 						if (tokens.at(i).type==Token::BlockClose)
 							parenCount--;
-						i++;
+						++i;
 					}
 					i--;
 				}
@@ -641,7 +662,7 @@ Value Script::runTokens(int pos)
 				{
 				    tokensTillResetCond = 2;
 					while (tokens.at(i).type!=Token::LineDelim)
-						i++;
+						++i;
 				}
 				if (resetCondState)
 					conditionalState = LastConditionalFailed;
@@ -650,7 +671,7 @@ Value Script::runTokens(int pos)
 
 		case Token::Loop:
             if (tokens.at(i+1).type!=Token::Operator || tokens.at(i+1).data!="(")
-				throw runtime_error("Was expecting '(' after 'while' on line "+intToString(tokens.at(i+1).line)+" in file "+tokens.at(i+1).file);
+				raiseError("Was expecting '(' after 'while'", &tokens.at(i));
 
 			i += 2;
 			parenCount = 1;
@@ -658,7 +679,7 @@ Value Script::runTokens(int pos)
 			while (parenCount>0)
 			{
 				tkns.push_back(tokens.at(i));
-				i++;
+				++i;
 				if (tokens.at(i).type==Token::Operator && tokens.at(i).data=="(")
 					parenCount++;
 				if (tokens.at(i).type==Token::Operator && tokens.at(i).data==")")
@@ -666,7 +687,7 @@ Value Script::runTokens(int pos)
 			}
 
 			if (tokens.at(i+1).type!=Token::BlockOpen)
-				throw runtime_error("Was expecting '{' after loop on line "+intToString(tokens.at(i).line)+" in file "+tokens.at(i).file);
+				raiseError("Was expecting '{' after loop", &tokens.at(i));
 
 			i += 2;
 			test = evaluate(tkns);
@@ -677,9 +698,9 @@ Value Script::runTokens(int pos)
 
                 stackFrames.push_back(Frame());
 				Value ret = runTokens(i);
+				stackFrames.pop_back();
 				if (!(ret.type==Value::Void && ret.iValue==0 && ret.sValue=="noret"))
                     return ret;
-				stackFrames.pop_back();
 				test = evaluate(tkns);
 			}
 
@@ -690,7 +711,7 @@ Value Script::runTokens(int pos)
 					parenCount--;
 				if (tokens.at(i).type==Token::BlockOpen)
 					parenCount++;
-				i++;
+				++i;
 			}
 			i--;
 			if (tokensTillResetCond == 0)
@@ -698,12 +719,12 @@ Value Script::runTokens(int pos)
 			break;
 
 		case Token::Return:
-			i++;
+			++i;
 			tkns.clear();
 			while (tokens.at(i).type!=Token::LineDelim)
 			{
                 tkns.push_back(tokens.at(i));
-                i++;
+                ++i;
 			}
 			return evaluate(tkns);
 
@@ -728,24 +749,35 @@ Value Script::runTokens(int pos)
 			conditionalState = NoConditional;
 			break;
 
-		default: //likely just a regular line, but have to check for assignment
-			name.clear();
-			if (tokens.at(i+1).type==Token::Assignment)
-			{
-				name = tokens.at(i).data;
-				i = i+2;
-			}
+		case Token::Identifier:
+			name = tokens.at(i).data;
 			tkns.clear();
+			if (i+1 >= tokens.size())
+                raiseError("Stray identifier", &tokens.at(i));
+            ++i;
+
 			while (tokens.at(i).type!=Token::LineDelim)
 			{
 				tkns.push_back(tokens.at(i));
-				i++;
+				++i;
+				if (i >= tokens.size())
+                    raiseError("Unexpected end of expression", &tokens.at(i-1));
 			}
-			test = evaluate(tkns);
-			getIdentifier(name) = test;
+			if (tkns[0].type == Token::Assignment) {
+                tkns.erase(tkns.begin());
+                if (tkns.size() == 0)
+                    raiseError("Empty expression in assignment", &tokens.at(i-1));
+                getIdentifier(name, &tokens.at(i)) = evaluate(tkns);
+			}
+			else
+                evaluate(tkns);
+
 			if (tokensTillResetCond == 0)
                 conditionalState = NoConditional;
 			break;
+
+        default:
+            raiseError("Unexpected token "+Token::toString(tokens.at(i).type)+" encountered", &tokens.at(i));
 		}
 
 		if (tokensTillResetCond > 0)
@@ -825,4 +857,11 @@ bool Script::isStopping() {
 
 Value Script::result() {
     return runResult;
+}
+
+string Script::minimizeError(string error) {
+    auto i = error.find(ERROR_FILE_PREFIX);
+    if (i != string::npos)
+        error.erase(i);
+    return error;
 }

@@ -17,11 +17,11 @@ void Script::initBuiltins() {
     libraryFunctions = builtins;
 }
 
-bool Script::isLibraryFunction(string name) {
+bool Script::isLibraryFunction(const string& name) {
 	return libraryFunctions.find(name) != libraryFunctions.end();
 }
 
-Value Script::executeLibraryFunction(string name, vector<Value> args) {
+Value Script::executeLibraryFunction(const string& name, const vector<Value>& args) {
     if (isDryRun)
         return Value("0");
 	try {
@@ -33,7 +33,7 @@ Value Script::executeLibraryFunction(string name, vector<Value> args) {
 }
 
 namespace {
-Value print(vector<Value> args, Script*, const Script::ContextData&) {
+Value print(const vector<Value>& args, Script*, const Script::ContextData&) {
     for (unsigned int i = 0; i<args.size(); ++i) {
         if (args.at(i).type==Value::Integer)
             cout << args.at(i).iValue;

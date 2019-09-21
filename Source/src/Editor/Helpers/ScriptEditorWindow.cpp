@@ -182,8 +182,5 @@ string ScriptEditorWindow::validateScript() {
     string errors = runner.dryRun();
     if (errors.empty())
         return NOERROR;
-    auto i = errors.find(" in file ");
-    if (i != string::npos)
-        errors.erase(i);
-    return errors;
+    return Script::minimizeError(errors);
 }

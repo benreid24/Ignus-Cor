@@ -20,7 +20,7 @@ public:
     typedef std::map<std::string,Value> ContextData;
 
     typedef std::shared_ptr<Script> Ptr;
-    typedef Value (*LibraryFunction)(std::vector<Value>, Script*, const ContextData&);
+    typedef Value (*LibraryFunction)(const std::vector<Value>&, Script*, const ContextData&);
 
 protected:
     ContextData contextData;
@@ -54,15 +54,15 @@ private:
 
     Value combine(Token left, Token op, Token right);
 
-    Value& getIdentifier(std::string id);
+    Value& getIdentifier(const std::string& id, const Token* info = nullptr);
 
-    bool isVariable(std::string id);
+    bool isVariable(const std::string& id);
 
-    bool isFunction(std::string name);
+    bool isFunction(const std::string& name);
 
-    bool isLibraryFunction(std::string name);
+    bool isLibraryFunction(const std::string& name);
 
-    Value executeLibraryFunction(std::string name, std::vector<Value> args);
+    Value executeLibraryFunction(const std::string& name, const std::vector<Value>& args);
 
     Value runTokens(int pos = 0); //this returns the end of the script is reached, or a return token is encountered
 
@@ -77,7 +77,7 @@ public:
 	 *
 	 * \param scr The file to load the script from
 	 */
-	Script(std::string scr);
+	Script(const std::string& scr);
 
 	/**
 	 * Copies the Script from an existing Script
@@ -94,7 +94,7 @@ public:
 	 *
 	 * \param scr The file to load the script from, or a string containing the script itself
 	 */
-	void load(std::string scr);
+	void load(const std::string& scr);
 
 	/**
 	 * Runs the script
@@ -125,6 +125,11 @@ public:
 	 * Returns the result of running the script
 	 */
     Value result();
+
+    /**
+     * Reduces an error message from dryRun to just the error and line
+     */
+    static std::string minimizeError(std::string error);
 };
 
 #endif // SCRIPTINTERPRETER_HPP

@@ -4,7 +4,7 @@ using namespace sf;
 
 namespace {
 
-Value getEventMap(vector<Value> args, Script*, const Script::ContextData& context) {
+Value getEventMapName(const vector<Value>& args, Script*, const Script::ContextData& context) {
     auto i = context.find("map");
     if (i!=context.end())
         return i->second;
@@ -22,6 +22,6 @@ MapScript::MapScript(const Script& scr, string mapName, Vector2i pos, Vector2i s
     //TODO - add info from entity
     contextData["runNumber"] = Value(runNumber);
 
-    libraryFunctions["getEventMap"] = &getEventMap;
+    libraryFunctions["getEventMapName"] = &getEventMapName;
     //TODO - add custom library functions
 }
