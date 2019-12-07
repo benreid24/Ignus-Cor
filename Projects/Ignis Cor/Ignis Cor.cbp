@@ -96,6 +96,7 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 		<Unit filename="../../Source/include/Shared/Entities/EntityBubble.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityConversation.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityConversationNodeFactory.hpp" />
+		<Unit filename="../../Source/include/Shared/Entities/EntityInventory.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityManager.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/EntityVisual.hpp" />
 		<Unit filename="../../Source/include/Shared/Entities/Instances/CreatureEntity.hpp" />
@@ -164,6 +165,7 @@ Maybe have spell list be different for saving/loading purposes. ie a tomb teache
 		<Unit filename="../../Source/src/Shared/Entities/EntityBubble.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityConversation.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityConversationNodeFactory.cpp" />
+		<Unit filename="../../Source/src/Shared/Entities/EntityInventory.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityManager.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/EntityVisual.cpp" />
 		<Unit filename="../../Source/src/Shared/Entities/Instances/CreatureEntity.cpp" />

@@ -1,6 +1,7 @@
 #ifndef OWNEDITEM_HPP
 #define OWNEDITEM_HPP
 
+#include <list>
 #include "Shared/Items/Item.hpp"
 
 /**
@@ -12,6 +13,8 @@ class OwnedItem {
     OwnedItem() = delete;
 
 public:
+    typedef std::list<OwnedItem> List;
+
     /**
      * Create by loading from the given file
      */
@@ -31,6 +34,11 @@ public:
      * Implicit conversion to Item
      */
     operator Item::ConstPtr() const { return item; }
+
+    /**
+     * Convenience converter to item
+     */
+    Item::ConstPtr operator->() const { return item; }
 
     /**
      * Explicit conversion
@@ -68,6 +76,7 @@ public:
     void save(File& file) const;
 
 private:
+    //TODO - allow for custom name? How to distinguish modified item from other versions of same base item?
     Item::ConstPtr item;
     unsigned int quantity;
     ItemEffect::List effects;
