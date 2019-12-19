@@ -23,7 +23,6 @@ public:
     static const int ScreenHeight = 860;
     static const int TilesWide = 40;
     static const int TilesTall = 27;
-    static const std::string EditorResources;
     #endif
 
     static const std::string GameSavePath;
@@ -69,6 +68,9 @@ public:
     static sf::Font SecondaryMenuFont;
     static sf::Font ConversationFont;
     static sf::Font BattleFont;
+
+    //Always defined due to cmake building Properties.cpp once for both editor and game
+    static const std::string EditorResources;
 };
 
 #endif // PROPERTIES_HPP

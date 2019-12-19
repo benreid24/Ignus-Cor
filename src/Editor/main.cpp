@@ -7,13 +7,12 @@
 #include "Editor/AnimationEditor.hpp"
 #include "Editor/ConversationEditor.hpp"
 #include "Editor/ScriptEditor.hpp"
-#include "Editor/version.h"
 #include "Shared/Properties.hpp"
 using namespace std;
 using namespace sf;
 
 sfg::SFGUI sfgui;
-RenderWindow sfWindow(VideoMode(1600,900,32), string("Ignis Cor Editor ")+AutoVersion::FULLVERSION_STRING, Style::Titlebar|Style::Close);
+RenderWindow sfWindow(VideoMode(1600,900,32), "Ignis Cor Editor", Style::Titlebar|Style::Close);
 
 int main() {
 	sfWindow.resetGLStates();

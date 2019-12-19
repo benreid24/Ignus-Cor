@@ -32,6 +32,4 @@ sf::Font Properties::PrimaryMenuFont;
 sf::Font Properties::SecondaryMenuFont;
 sf::Font Properties::ConversationFont;
 
-#ifdef EDITOR
 const std::string Properties::EditorResources = "Editor/";
-#endif // EDITOR
