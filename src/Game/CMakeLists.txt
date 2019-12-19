@@ -16,3 +16,6 @@ target_link_libraries(IgnisCor
 )
 
 install(TARGETS IgnisCor DESTINATION ${PROJECT_SOURCE_DIR})
+if (WIN32)
+    install(FILES ${CMAKE_BINARY_DIR}/build/bin/openal32.dll DESTINATION ${PROJECT_SOURCE_DIR})
+endif()
