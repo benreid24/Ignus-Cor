@@ -36,6 +36,15 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "Editor",
+            "type": "shell",
+            "command": "cd build && make install && cd ../ && ./IgnisCorEditor.exe",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ],
     "problemMatcher": {
