@@ -15,12 +15,4 @@ target_link_libraries(IgnisCor
     sfml-main
 )
 
-set(INSTALL_DIR ${PROJECT_SOURCE_DIR}/install)
-install(DIRECTORY DESTINATION ${INSTALL_DIR})
-
-install(TARGETS IgnisCor DESTINATION ${INSTALL_DIR})
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/Resources DESTINATION ${INSTALL_DIR})
-
-if(WIN32)
-    install(FILES ${PROJECT_SOURCE_DIR}/openal32.dll DESTINATION ${INSTALL_DIR})
-endif()
+install(TARGETS IgnisCor DESTINATION ${PROJECT_SOURCE_DIR})
