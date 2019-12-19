@@ -1,6 +1,6 @@
 #include "Shared/Scripts/Script.hpp"
 #include "Shared/Scripts/ScriptManager.hpp"
-#include "Shared/Scripts/Parser.hpp"
+#include "Shared/Scripts/Util/Parser.hpp"
 #include <SFML/System.hpp>
 #include <sstream>
 #include <stdexcept>

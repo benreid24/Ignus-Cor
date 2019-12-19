@@ -9,5 +9,5 @@
 *.save-failed
 *.xcuserstate
 tools/
-lib/SFML/build
-lib/SFGUI/build
+build
+install

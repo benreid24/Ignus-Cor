@@ -2,7 +2,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <iostream>
-#include "Shared/Scripts/Parser.hpp"
+#include "Shared/Scripts/Util/Parser.hpp"
 #include "Shared/Util/File.hpp"
 #include "Shared/Properties.hpp"
 using namespace std;
