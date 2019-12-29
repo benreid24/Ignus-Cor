@@ -1,6 +1,7 @@
 *.o
 *.ini
 *.exe
+*.dll
 *.a
 *.depend
 *.layout
@@ -8,3 +9,5 @@
 *.save-failed
 *.xcuserstate
 tools/
+build
+install

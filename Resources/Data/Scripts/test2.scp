@@ -1,0 +1,5 @@
+int test = 5;
+print(test);
+
+string poop = "oh no " + test;
+print(poop);

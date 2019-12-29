@@ -1,0 +1,4 @@
+[submodule "lib/SFML"]
+	path = lib/SFML
+	url = git@github.com:SFML/SFML.git
+	ignore = dirty
