@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "Shared/Entities/Instances/Player.hpp"
 #include "Shared/Entities/EntityManager.hpp"
 #include "Shared/Maps/MapManager.hpp"
@@ -5,7 +7,8 @@
 #include "Game/Core/Game.hpp"
 #include "Game/Core/PlayerInput.hpp"
 #include "Game/Core/States/PauseState.hpp"
-#include <cmath>
+#include "Shared/Items/ItemDB.hpp"
+
 using namespace std;
 using namespace sf;
 

@@ -1,10 +1,13 @@
 #include <iostream>
+
+#include "Shared/Entities/EntityManager.hpp"
 #include "Editor/MapEditor.hpp"
 #include "Shared/Util/Util.hpp"
 #include "Shared/Util/File.hpp"
 #include "Editor/GUI/ResizableImage.hpp"
 #include "Shared/Media/Animation.hpp"
 #include "Shared/Properties.hpp"
+
 using namespace sfg;
 using namespace sf;
 using namespace std;

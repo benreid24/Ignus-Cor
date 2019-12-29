@@ -1,0 +1,53 @@
+{
+    "env": {
+        "inclpath": [
+            "${workspaceFolder}/lib/SFML/include",
+            "${workspaceFolder}/lib/SFGUI/include",
+            "${workspaceFolder}/src"
+        ],
+        "compiler": "C:/mingw/bin/g++.exe"
+    },
+    "configurations": [
+        {
+            "name": "Game (Windows)",
+            "intelliSenseMode": "gcc-x64",
+            "includePath": [
+                "${inclpath}"
+            ],
+            "defines": [
+                "GAME"
+            ],
+            "compilerPath": "${compiler}",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            }
+        },
+        {
+            "name": "Editor (Windows)",
+            "intelliSenseMode": "gcc-x64",
+            "includePath": [
+                "${inclpath}"
+            ],
+            "defines": [
+                "EDITOR"
+            ],
+            "compilerPath": "${compiler}",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            }
+        }
+    ],
+    "version": 4
+}

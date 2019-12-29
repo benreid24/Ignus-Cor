@@ -1,7 +1,10 @@
-#include "Game/Core/Game.hpp"
-#include "Shared/DebugOverlays.hpp"
 #include <cstdlib>
 #include <ctime>
+
+#include "Game/Core/Game.hpp"
+#include "Shared/DebugOverlays.hpp"
+#include "Shared/Properties.hpp"
+
 using namespace std;
 
 int main() {

@@ -1,10 +1,13 @@
+#include <cmath>
+
 #include "Shared/Maps/Map.hpp"
 #include "Shared/Properties.hpp"
-#include "Shared/Util/File.hpp"
 #include "Shared/Media/Playlist.hpp"
 #include "Shared/Items/ItemDB.hpp"
 #include "Shared/Scripts/ScriptManager.hpp"
-#include <cmath>
+#include "Shared/Entities/EntityManager.hpp"
+#include "Shared/Entities/Instances/ItemEntity.hpp"
+
 using namespace sf;
 using namespace std;
 

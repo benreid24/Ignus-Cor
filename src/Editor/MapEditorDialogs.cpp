@@ -1,3 +1,6 @@
+#include <iostream>
+#include <direct.h>
+
 #include "Editor/MapEditor.hpp"
 #include "Editor/Helpers/ScriptEditorWindow.hpp"
 #include "Editor/Helpers/FilePicker.hpp"
@@ -8,8 +11,9 @@
 #include "Shared/Properties.hpp"
 #include "Editor/GUI/Form.hpp"
 #include "Editor/Helpers/MenuGenerators.hpp"
-#include <iostream>
-#include <direct.h>
+#include "Shared/Items/ItemDB.hpp"
+#include "Shared/Entities/EntityManager.hpp"
+
 using namespace sfg;
 using namespace sf;
 using namespace std;
