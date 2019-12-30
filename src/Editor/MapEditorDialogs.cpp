@@ -419,12 +419,14 @@ void MapEditor::loadMap() {
 	FilePicker picker(desktop, owner, "Map", Properties::MapPath, "map");
 
 	if (picker.pickFile()) {
+		const std::string file = picker.getChoice();
 		if (mapData!=nullptr) {
 			delete mapData;
 		}
+		mapFolder = File::getPath(file); 
 		EntityManager::get().clear();
 		layerButtons.clear();
-		mapData = new Map(picker.getChoice(),tileset);
+		mapData = new Map(file, tileset);
 		layerButtons.setLayers(mapData->getLayerCount());
 	}
 }
@@ -564,14 +566,17 @@ void MapEditor::editProperties() {
 
 void MapEditor::mapEventHandler(Vector2i pos) {
 	MapEvent defaultEvent;
+	defaultEvent.type = MapEvent::LoadMap;
 	defaultEvent.position = pos;
 	defaultEvent.size = Vector2i(1,1);
 	defaultEvent.maxRuns = 0;
-	defaultEvent.trigger = 1; //step in
+	defaultEvent.triggerType = MapEvent::StepIn;
+	defaultEvent.spawnName = "main";
+	defaultEvent.triggerDir = EntityPosition::Any;
 	bool newEvt = false;
 
-	MapEvent* evt = mapData->getEvent(pos.x,pos.y);
-	if (evt==nullptr) {
+	MapEvent::Ptr evt = mapData->getEvent(pos.x,pos.y);
+	if (!evt) {
 		mapData->addEvent(defaultEvent);
 		evt = mapData->getEvent(pos.x,pos.y);
 		newEvt = true;
@@ -585,12 +590,25 @@ void MapEditor::mapEventHandler(Vector2i pos) {
 	desktop.Add(window);
 
     Form form;
-    Button::Ptr pickButton(Button::Create("Pick/Edit Script")), saveButton(Button::Create("Save")), cancelButton(Button::Create("Cancel")), delButton(Button::Create("Delete"));
+    Button::Ptr pickButton(Button::Create("Pick/Edit Script")),
+			    saveButton(Button::Create("Save")),
+				cancelButton(Button::Create("Cancel")),
+				delButton(Button::Create("Delete"));
 	bool cancelPressed(false), savePressed(false), delPressed(false), pickPressed(false);
+	
 	pickButton->GetSignal(Button::OnLeftClick).Connect( [&pickPressed] { pickPressed = true; });
 	delButton->GetSignal(Button::OnLeftClick).Connect( [&delPressed] { delPressed= true; });
 	cancelButton->GetSignal(Button::OnLeftClick).Connect( [&cancelPressed] { cancelPressed = true; });
 	saveButton->GetSignal(Button::OnLeftClick).Connect( [&savePressed] { savePressed = true; });
+
+	Box::Ptr box = Box::Create(Box::Orientation::HORIZONTAL,5);
+    ComboBox::Ptr typeEntry = ComboBox::Create();
+    typeEntry->AppendItem("Run Script");
+    typeEntry->AppendItem("Load Map");
+    typeEntry->SelectItem(evt->type);
+    box->Pack(Label::Create("Type: "),false,false);
+    box->Pack(typeEntry,false,false);
+    winBox->Pack(box,false,false);
 
     form.addField("x","X: ",80,intToString(evt->position.x));
     form.addField("y","Y: ",80,intToString(evt->position.y));
@@ -598,19 +616,33 @@ void MapEditor::mapEventHandler(Vector2i pos) {
     form.addField("h","Height: ",80,intToString(evt->size.y));
     form.addField("r","Max Runs: ",80,intToString(evt->maxRuns));
     form.addField("s","Script: ",250,evt->scriptStr);
+	form.addField("sp","Spawn: ",250,evt->spawnName);
     form.addToParent(winBox);
 
-    Box::Ptr box = Box::Create(Box::Orientation::HORIZONTAL,5);
+    box = Box::Create(Box::Orientation::HORIZONTAL,5);
     ComboBox::Ptr triggerEntry = ComboBox::Create();
     triggerEntry->AppendItem("On Load");
     triggerEntry->AppendItem("On Enter");
     triggerEntry->AppendItem("On Leave");
     triggerEntry->AppendItem("On Enter or Leave");
     triggerEntry->AppendItem("While In");
-    triggerEntry->SelectItem(evt->trigger);
+	triggerEntry->AppendItem("On Interact");
+    triggerEntry->SelectItem(evt->triggerType);
     box->Pack(Label::Create("Trigger: "),false,false);
     box->Pack(triggerEntry,false,false);
     winBox->Pack(box,false,false);
+
+	Box::Ptr intbox = Box::Create(Box::Orientation::HORIZONTAL,5);
+    ComboBox::Ptr dirEntry = ComboBox::Create();
+    dirEntry->AppendItem("Up");
+    dirEntry->AppendItem("Right");
+	dirEntry->AppendItem("Down");
+	dirEntry->AppendItem("Left");
+	dirEntry->AppendItem("Any");
+    dirEntry->SelectItem(evt->triggerDir);
+    intbox->Pack(Label::Create("Interact Direction: "),false,false);
+    intbox->Pack(dirEntry,false,false);
+    winBox->Pack(intbox,false,false);
 
     Box::Ptr butBox = Box::Create(Box::Orientation::HORIZONTAL,5);
     butBox->Pack(pickButton,false,false);
@@ -627,17 +659,40 @@ void MapEditor::mapEventHandler(Vector2i pos) {
 			if (wv.type==Event::Closed)
 				sfWindow.close();
 		}
-        desktop.Update(30/1000);
-        form.update();
+
+		if (typeEntry->GetSelectedItem() == 0) { // Run Script
+			pickButton->SetLabel("Pick/Edit Script");
+			form.updateFieldLabel("s", "Script: ");
+			form.hideInput("sp");
+		}
+		else if (typeEntry->GetSelectedItem() == 1) { // Load Map
+			pickButton->SetLabel("Pick Map");
+			form.updateFieldLabel("s", "Map: ");
+			form.showInput("sp");
+		}
+
+		if (triggerEntry->GetSelectedItem() == 5) { // On Interact
+			intbox->Show(true);
+		}
+		else {
+			intbox->Show(false);
+		}
+
+		form.update();
+		desktop.Update(30/1000);
 
         if (savePressed) {
+			evt->type = (MapEvent::EventType)typeEntry->GetSelectedItem();
 			evt->position.x = form.getFieldAsInt("x");
 			evt->position.y = form.getFieldAsInt("y");
 			evt->size.x = form.getFieldAsInt("w");
 			evt->size.y = form.getFieldAsInt("h");
 			evt->maxRuns = form.getFieldAsInt("r");
 			evt->scriptStr = form.getField("s");
-			evt->trigger = triggerEntry->GetSelectedItem();
+			evt->newMapName = form.getField("s");
+			evt->spawnName = form.getField("sp");
+			evt->triggerType = (MapEvent::TriggerType)triggerEntry->GetSelectedItem();
+			evt->triggerDir = (EntityPosition::Direction)dirEntry->GetSelectedItem();
 			break;
         }
         if (delPressed) {
@@ -651,8 +706,15 @@ void MapEditor::mapEventHandler(Vector2i pos) {
         }
 		if (pickPressed) {
 			pickPressed = false;
-			ScriptEditorWindow editor(desktop, owner, form.getField("s"), true);
-			form.setField("s", editor.getScript());
+			if (typeEntry->GetSelectedItem() == 0) { // Run Script
+				ScriptEditorWindow editor(desktop, owner, form.getField("s"), true);
+				form.setField("s", editor.getScript());
+			}
+			else if (typeEntry->GetSelectedItem() == 1) { // Load Map
+				FilePicker picker(desktop, owner, "Pick Map", Properties::MapPath, "map");
+				if (picker.pickFile())
+					form.setField("s", picker.getChoice());
+			}
 		}
 
         desktop.BringToFront(window);

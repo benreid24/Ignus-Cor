@@ -163,6 +163,10 @@ Animation::Animation()
 Animation::Animation(AnimationReference ref, bool centerOrigin) : Animation()
 {
     isCenterOrigin = centerOrigin;
+    if (!ref) {
+        cout << "Null animation source given\n";
+        return;
+    }
     animSrc = ref;
     looping = ref->isLooping();
 }

@@ -2,7 +2,7 @@
 #define MAPTYPES_HPP
 
 #include "Shared/Media/Animation.hpp"
-#include "Shared/Scripts/Specialized/MapScript.hpp"
+#include "Shared/Maps/MapEvent.hpp"
 
 class Map;
 
@@ -16,12 +16,10 @@ struct Tile {
      * Creates an empty tile
      */
     Tile() {
-        nonZero = false;
         isAnim = false;
-        delA = false;
     }
-    bool isAnim, nonZero, delA;
-    Animation* anim;
+    bool isAnim;
+    std::shared_ptr<Animation> anim;
     sf::Sprite spr;
     int id;
 };
@@ -34,20 +32,6 @@ struct Tile {
 struct Light {
     sf::Vector2f position;
     int radius, threshold;
-};
-
-/**
- * Structure to store a script in the map
- *
- * \ingroup World
- */
-struct MapEvent {
-    Script::Ptr script;
-    std::string scriptStr;
-    sf::Vector2i position;
-    sf::Vector2i size;
-    int maxRuns, trigger; //0 = on load, 1 = step in range, 2 = step out of range, 3 = step in or out of range, 4 = in range
-    int runs;
 };
 
 /**

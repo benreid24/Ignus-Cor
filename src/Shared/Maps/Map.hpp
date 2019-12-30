@@ -18,7 +18,7 @@ class Map {
 	Tileset& tileset;
 	std::string music;
 
-	std::map<int,Animation*> animTable;
+	std::map<int,std::shared_ptr<Animation> > animTable;
     std::vector<Vector2D<Tile> > layers;
     std::vector<Vector2D<std::pair<int,Tile*> > > ySortedTiles; //here for actual image size
 
@@ -31,7 +31,7 @@ class Map {
 
 	std::vector<MapSpawner> spawners;
     std::vector<Light> lights;
-    std::vector<MapEvent> events;
+    std::vector<MapEvent::Ptr> events;
     sf::Vector2f camPos;
     sf::Vector2i camPosTiles;
 
@@ -71,13 +71,6 @@ class Map {
      * \param m The name of the place visited
      */
     static void addVisitedMap(std::string m);
-
-    /**
-     * Helper function for making MapScript objects
-     */
-    Script::Ptr makeMapScript(Script::Ptr scr, MapEvent evt, Entity::Ptr ent) {
-        return Script::Ptr(new MapScript(*scr, name, evt.position, evt.size, ent, evt.runs));
-    }
 
     static std::vector<std::string> visitedMaps;
     static std::map<std::string, std::vector<int> > pickedUpItems;

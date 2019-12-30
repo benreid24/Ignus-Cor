@@ -87,7 +87,8 @@ FloatRect Entity::getInteractBox() const {
 }
 
 void Entity::setPositionAndDirection(EntityPosition pos) {
-	position = pos;
+	swap(position, pos);
+    EntityManager::get().updatePosition(this, pos);
 }
 
 void Entity::shift(sf::Vector2f amount, const string& newMap) {

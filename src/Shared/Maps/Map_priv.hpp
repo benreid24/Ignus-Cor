@@ -197,4 +197,4 @@ void removeEvent(int x, int y);
 /**
  * Returns a pointer to the MapEvent at the given position, or nullptr if none found
  */
-MapEvent* getEvent(int x, int y);
+MapEvent::Ptr getEvent(int x, int y);

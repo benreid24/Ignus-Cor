@@ -48,7 +48,7 @@ void MapManager::loadMap(string mapfile) {
         MapHolder temp;
         temp.lastActiveTime = Timer::get().timeElapsedMilliseconds();
         temp.mapdata = shared_ptr<Map>(new Map(mapfile, tileset, player));
-        maps.insert(make_pair(mapfile, temp)).first;
+        maps.insert(make_pair(mapfile, temp));
         if (maps.size()==1)
 			activeMap = mapfile;
     }

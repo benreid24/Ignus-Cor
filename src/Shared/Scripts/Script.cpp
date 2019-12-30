@@ -44,7 +44,7 @@ Script::Script() : isDryRun(false)
 	initBuiltins();
 }
 
-Script::Script(const string&scr) : Script()
+Script::Script(const string& scr) : Script()
 {
     load(scr);
 }
@@ -55,6 +55,7 @@ Script::Script(const Script& scr) : Script() {
     tokens = scr.tokens;
     functions = scr.functions;
     branchTable = scr.branchTable;
+	original = scr.original;
 }
 
 Script::~Script()
@@ -153,7 +154,7 @@ void Script::locateFunctions()
 	}
 }
 
-void Script::load(const string&str)
+void Script::load(const string& str)
 {
 	Parser parser(str);
 	tokens = parser.getTokens();
@@ -754,7 +755,6 @@ Value Script::runTokens(int pos)
 			tkns.clear();
 			if (i+1 >= tokens.size())
                 raiseError("Stray identifier", &tokens.at(i));
-            ++i;
 
 			while (tokens.at(i).type!=Token::LineDelim)
 			{
@@ -764,7 +764,7 @@ Value Script::runTokens(int pos)
                     raiseError("Unexpected end of expression", &tokens.at(i-1));
 			}
 			if (tkns[0].type == Token::Assignment) {
-                tkns.erase(tkns.begin());
+                tkns.erase(tkns.begin(), tkns.begin()+1);
                 if (tkns.size() == 0)
                     raiseError("Empty expression in assignment", &tokens.at(i-1));
                 getIdentifier(name, &tokens.at(i)) = evaluate(tkns);
