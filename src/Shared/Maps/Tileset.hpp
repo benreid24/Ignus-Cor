@@ -7,6 +7,8 @@
 
 /**
  * Storage class that manages the tiles and animations for the map
+ * 
+ * \ingroup Maps
  */
 class Tileset {
 	std::map<int,TextureReference> tiles;

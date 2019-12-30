@@ -12,6 +12,11 @@
 
 class Playlist;
 
+/**
+ * Mega class that stores a loadable map and handles all updates, loading, saving, and rendering
+ * 
+ * \ingroup Maps
+ */
 class Map {
 	std::string name, uniqueName;
 	sf::Vector2i size;

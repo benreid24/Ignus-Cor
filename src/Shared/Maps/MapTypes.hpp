@@ -9,7 +9,7 @@ class Map;
 /**
  * Structure to store a tile in the map
  *
- * \ingroup World
+ * \ingroup Maps
  */
 struct Tile {
     /**
@@ -27,7 +27,7 @@ struct Tile {
 /**
  * Structure to store a light in the map
  *
- * \ingroup World
+ * \ingroup Maps
  */
 struct Light {
     sf::Vector2f position;
@@ -36,6 +36,8 @@ struct Light {
 
 /**
  * Struct to store entity spawn data
+ * 
+ * \ingroup Maps
  */
 struct EntitySpawn {
 	std::string name;
@@ -45,7 +47,7 @@ struct EntitySpawn {
 /**
  * Structure to store details of a spawner that is in a map
  *
- * \ingroup Map
+ * \ingroup Maps
  */
 struct MapSpawner {
 	sf::Vector2i position;
@@ -58,7 +60,7 @@ struct MapSpawner {
 /**
  * Structure to store details of items in the map
  *
- * \ingroup Map
+ * \ingroup Maps
  */
 struct MapItem {
 	int itemId, mapId;

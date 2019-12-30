@@ -13,7 +13,7 @@ class MapEditor;
 /**
  * Class to represent an event in a Map
  *
- * \ingroup World
+ * \ingroup Maps
  */
 class MapEvent {
 public:
