@@ -1,9 +1,17 @@
 #include "Shared/Maps/MapEvent.hpp"
 #include "Shared/Scripts/ScriptManager.hpp"
 #include "Shared/Maps/MapManager.hpp"
+#include "Shared/Entities/Instances/MapEventEntity.hpp"
+#include "Shared/Entities/EntityManager.hpp"
 
 MapEvent::Ptr MapEvent::create(const std::string& mapName, File& file) {
-    return MapEvent::Ptr(new MapEvent(mapName, file));
+    MapEvent::Ptr event(new MapEvent(mapName, file));
+    EntityPosition pos;
+    pos.coords.x = event->getPosition().x*32;
+    pos.coords.y = event->getPosition().y*32;
+    pos.mapName = mapName;
+    EntityManager::get().add(MapEventEntity::create(pos, event));
+    return event;
 }
 
 MapEvent::Ptr MapEvent::create(const MapEvent& event) {
@@ -131,4 +139,12 @@ void MapEvent::trigger(Entity::Ptr entity) {
 // TODO - check when player enters/exits map and trigger onload/unload scripts then
 MapEvent::TriggerType MapEvent::getTriggerType() const {
     return triggerType;
+}
+
+sf::Vector2i MapEvent::getPosition() const {
+    return position;
+}
+
+sf::Vector2i MapEvent::getSize() const {
+    return size;
 }

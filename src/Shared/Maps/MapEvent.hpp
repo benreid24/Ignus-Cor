@@ -57,6 +57,16 @@ public:
      */
     TriggerType getTriggerType() const;
 
+    /**
+     * Returns the position
+     */
+    sf::Vector2i getPosition() const;
+
+    /**
+     * Returns the size
+     */
+    sf::Vector2i getSize() const;
+
 private:
     /**
      * Loads the MapEvent from the file

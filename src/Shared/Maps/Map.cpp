@@ -260,7 +260,7 @@ Map::Map(string file, Tileset& tlst, Entity::Ptr player) : Map(tlst) {
     //Load events
     tInt = input.get<uint16_t>();
     for (int i = 0; i<tInt; ++i) {
-        events.push_back(MapEvent::create(name, input));
+        events.push_back(MapEvent::create(uniqueName, input));
     }
 
     //Run on-load script
