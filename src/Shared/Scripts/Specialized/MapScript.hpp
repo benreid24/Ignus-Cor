@@ -22,7 +22,10 @@ public:
      * \param triggerEntity The Entity that triggered the Script
      * \param runNumber Number of times the event has previously been triggered
      */
-    MapScript(const Script& scr, std::string mapName, sf::Vector2i pos, sf::Vector2i size, Entity::Ptr triggerEntity, int runNumber);
+    MapScript(
+        const Script& scr, std::string mapName, sf::Vector2i pos,
+        sf::Vector2i size, Entity::Ptr triggerEntity, int runNumber
+    );
 
     /**
      * vtable

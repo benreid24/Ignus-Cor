@@ -64,7 +64,7 @@ struct Vector4D
 /**
  * Basic structure for storing information about rotating particles
  *
- * \ingroup Utilities
+ * \ingroup Maps
  */
 struct WeatherParticle
 {

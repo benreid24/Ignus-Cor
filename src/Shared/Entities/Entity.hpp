@@ -27,7 +27,8 @@ struct EntityPosition {
         Up = 0,
         Right,
         Down,
-        Left
+        Left,
+		Any
 	}dir;
 
 	/**

@@ -1,10 +1,13 @@
+#include <cmath>
+
 #include "Shared/Maps/Map.hpp"
 #include "Shared/Properties.hpp"
-#include "Shared/Util/File.hpp"
 #include "Shared/Media/Playlist.hpp"
 #include "Shared/Items/ItemDB.hpp"
 #include "Shared/Scripts/ScriptManager.hpp"
-#include <cmath>
+#include "Shared/Entities/EntityManager.hpp"
+#include "Shared/Entities/Instances/ItemEntity.hpp"
+
 using namespace sf;
 using namespace std;
 
@@ -133,11 +136,6 @@ Map::Map(string file, Tileset& tlst, Entity::Ptr player) : Map(tlst) {
     weatherFreq = input.get<uint16_t>(); //TODO - pass weather frequency into weather
     ambientLightOverride = input.get<uint16_t>();
 
-    //Allocate memory for y-sorted tiles
-    ySortedTiles.resize(firstTopLayer-firstYSortLayer);
-    for (unsigned int i = 0; i<ySortedTiles.size(); ++i)
-        ySortedTiles[i].setSize(size.x,size.y);
-
 	//Load collisions
     for (int x = 0; x<size.x; ++x)
         for (int y = 0; y<size.y; ++y)
@@ -150,40 +148,35 @@ Map::Map(string file, Tileset& tlst, Entity::Ptr player) : Map(tlst) {
                 layers[i](x,y).isAnim = bool(input.get<uint8_t>());
                 int id = input.get<uint16_t>();
                 layers[i](x,y).id = id;
-                layers[i](x,y).nonZero = id!=0;
                 layers[i](x,y).anim = nullptr;
                 if (layers[i](x,y).isAnim) {
 					if (tileset.getAnimation(id)) {
-						layers[i](x,y).delA = true;
 						if (tileset.getAnimation(id)->isLooping()) { //Animation object is shared between all (sync's water, etc)
 							if (animTable.find(id)==animTable.end())
-								animTable[id] = new Animation(tileset.getAnimation(id));
+								animTable[id] = make_shared<Animation>(tileset.getAnimation(id));
 							layers[i](x,y).anim = animTable[id];
-							layers[i](x,y).delA = false;
 						}
 						else //Animation object is unique (so all grass doesn't move at once, etc)
-							layers[i](x,y).anim = new Animation(tileset.getAnimation(id));
+							layers[i](x,y).anim = make_shared<Animation>(tileset.getAnimation(id));
 					}
-					else
-						layers[i](x,y).nonZero = false;
+					else {
+						cout << "Warning: Reseting tile with missing anim at (" << x << "," << y << ")\n";
+						layers[i](x,y).id = 0;
+					}
 				}
                 else if (id!=0) {
 					TextureReference t = tileset.getTile(id);
 					if (t)
 						layers[i](x,y).spr.setTexture(*tileset.getTile(id));
+					else {
+						cout << "Warning: Reseting tile with missing texture at (" << x << "," << y << ")\n";
+						layers[i](x,y).id = 0;
+					}
 				}
-
-                if (i>=unsigned(firstYSortLayer) && i<unsigned(firstTopLayer)) {
-                    if (layers[i](x,y).nonZero) {
-                        int eY = y+layers[i](x,y).spr.getGlobalBounds().height/64+1; //TODO - possibly handle animations in this range as well
-                        if (eY>=size.y)
-                            eY = size.y-1;
-                        ySortedTiles[i-firstYSortLayer](x,eY) = make_pair(y,&layers[i](x,y));
-                    }
-                }
             }
         }
     }
+	resetYSorted();
 
     //Load player spawns
     tInt = input.get<uint16_t>();
@@ -267,32 +260,14 @@ Map::Map(string file, Tileset& tlst, Entity::Ptr player) : Map(tlst) {
     //Load events
     tInt = input.get<uint16_t>();
     for (int i = 0; i<tInt; ++i) {
-        MapEvent evt;
-        evt.scriptStr = input.getString();
-        evt.position.x = input.get<uint32_t>();
-        evt.position.y = input.get<uint32_t>();
-        evt.size.x = input.get<uint16_t>();
-        evt.size.y = input.get<uint16_t>();
-        evt.maxRuns = input.get<uint8_t>();
-        evt.trigger = input.get<uint8_t>();
-        evt.runs = 0;
-        evt.script.reset(new Script());
-        if (File::getExtension(evt.scriptStr)==Properties::ScriptExtension)
-            evt.script->load(Properties::ScriptPath+evt.scriptStr);
-        else
-            evt.script->load(evt.scriptStr);
-
-        if (evt.trigger==0)
-            ScriptManager::get().runScript(makeMapScript(evt.script, evt, nullptr));
-
-        events.push_back(evt);
+        events.push_back(MapEvent::create(uniqueName, input));
     }
 
     //Run on-load script
     Script loadScript(loadScriptStr);
     loadScript.run();
 
-    //Clean up Editor only data
+    //Clean up Editor only data. Game version does not need to keep items
     #ifndef EDITOR
     items.clear();
     #endif // EDITOR
@@ -300,31 +275,24 @@ Map::Map(string file, Tileset& tlst, Entity::Ptr player) : Map(tlst) {
 
 Map::~Map() {
 	if (name.size()>0 && unloadScript)
-		unloadScript->run();
-	for (auto i = animTable.begin(); i!=animTable.end(); ++i)
-		delete i->second;
-	for (unsigned int i = 0; i<layers.size(); ++i) {
-		for (int x = 0; x<size.x; ++x) {
-			for (int y = 0; y<size.y; ++y) {
-				if (layers[i](x,y).delA)
-					delete layers[i](x,y).anim;
-			}
-		}
-	}
+		unloadScript->run(); //TODO - Run when player leaves, not on destruction
 }
 
 void Map::spawnEntity(Entity::Ptr e, string spawn) {
     EntitySpawn spawnPoint;
+
     //TODO - what to do if spawn is filled?
     for (unsigned int i = 0; i<entitySpawns.size(); ++i) {
         if (entitySpawns[i].name==spawn)
             spawnPoint = entitySpawns[i];
     }
+	spawnPoint.position.mapName = uniqueName;
+	spawnPoint.position.coords.x *= 32; //TODO - do spawn positions in pixels?
+	spawnPoint.position.coords.y *= 32;
     e->setPositionAndDirection(spawnPoint.position);
 
 	if (e->getType()=="Player")
 		setRenderPosition(e->getPosition().coords);
-
 }
 
 void Map::resetYSorted() {
@@ -337,10 +305,12 @@ void Map::resetYSorted() {
 	for (int i = firstYSortLayer; i<firstTopLayer; ++i) {
 		for (int x = 0; x<size.x; ++x) {
 			for (int y = 0; y<size.y; ++y) {
-				if (layers[i](x,y).nonZero) {
+				if (layers[i](x,y).id > 0) {
 					int eY = y+layers[i](x,y).spr.getGlobalBounds().height/64+1;
 					if (eY>=size.y)
 						eY = size.y-1;
+					if (ySortedTiles[i-firstYSortLayer](x,eY).second)
+						cout << "Warning: Overriding y-sorted tile at (" << x << "," << y << ")\n";
 					ySortedTiles[i-firstYSortLayer](x,eY) = make_pair(y,&layers[i](x,y));
 				}
 			}
@@ -465,13 +435,7 @@ void Map::save(std::string file) {
     output.write<uint16_t>(events.size());
     for (unsigned int i = 0; i<events.size(); ++i)
     {
-        output.writeString(events[i].scriptStr);
-        output.write<uint32_t>(unsigned(events[i].position.x));
-        output.write<uint32_t>(unsigned(events[i].position.y));
-        output.write<uint16_t>(events[i].size.x);
-        output.write<uint16_t>(events[i].size.y);
-        output.write<uint8_t>(events[i].maxRuns);
-        output.write<uint8_t>(events[i].trigger);
+        events[i]->save(output);
     }
 }
 
@@ -504,7 +468,7 @@ void Map::update() {
 	//TODO - update the map
 	Map::weather->update();
 	calculateLighting();
-	for (map<int,Animation*>::iterator i = animTable.begin(); i!=animTable.end(); ++i) {
+	for (map<int,shared_ptr<Animation> >::iterator i = animTable.begin(); i!=animTable.end(); ++i) {
 		i->second->update();
 	}
 }
@@ -529,11 +493,11 @@ void Map::draw(sf::RenderTarget& target) {
             if (x>=0 && x<size.x)
             for (int y = camPosTiles.y-10; y<camPosTiles.y+Properties::TilesTall+10; ++y) {
                 if (y>=0 && y<size.y) {
-                    if (layers[i](x,y).isAnim && layers[i](x,y).nonZero) {
+                    if (layers[i](x,y).isAnim && layers[i](x,y).id > 0) {
                         layers[i](x,y).anim->setPosition(Vector2f(x*32-camPos.x,y*32-camPos.y));
                         layers[i](x,y).anim->draw(target);
                     }
-                    else if (layers[i](x,y).nonZero) {
+                    else if (layers[i](x,y).id > 0) {
                         layers[i](x,y).spr.setPosition(x*32-camPos.x,y*32-camPos.y);
                         target.draw(layers[i](x,y).spr);
                     }
@@ -547,11 +511,11 @@ void Map::draw(sf::RenderTarget& target) {
             for (int i = 0; i<firstTopLayer-firstYSortLayer; ++i) {
                 for (int x = camPosTiles.x-10; x<camPosTiles.x+Properties::TilesWide+10; ++x) {
                     if (x>=0 && x<size.x && ySortedTiles[i](x,y).second) {
-                        if (ySortedTiles[i](x,y).second->isAnim && ySortedTiles[i](x,y).second->nonZero) {
+                        if (ySortedTiles[i](x,y).second->isAnim && ySortedTiles[i](x,y).second->id > 0) {
                             ySortedTiles[i](x,y).second->anim->setPosition(Vector2f(x*32-camPos.x,ySortedTiles[i](x,y).first*32-camPos.y));
                             ySortedTiles[i](x,y).second->anim->draw(target);
                         }
-                        else if (ySortedTiles[i](x,y).second->nonZero) {
+                        else if (ySortedTiles[i](x,y).second->id > 0) {
                             ySortedTiles[i](x,y).second->spr.setPosition(x*32-camPos.x,ySortedTiles[i](x,y).first*32-camPos.y);
                             target.draw(ySortedTiles[i](x,y).second->spr);
                         }
@@ -590,11 +554,11 @@ void Map::draw(sf::RenderTarget& target) {
             if (x>=0 && x<size.x)
             for (int y = camPosTiles.y-10; y<camPosTiles.y+Properties::TilesTall+10; ++y) {
                 if (y>=0 && y<size.y) {
-                    if (layers[i](x,y).isAnim && layers[i](x,y).nonZero) {
+                    if (layers[i](x,y).isAnim && layers[i](x,y).id > 0) {
                         layers[i](x,y).anim->setPosition(Vector2f(x*32-camPos.x,y*32-camPos.y));
                         layers[i](x,y).anim->draw(target);
                     }
-                    else if (layers[i](x,y).nonZero) {
+                    else if (layers[i](x,y).id > 0) {
                         layers[i](x,y).spr.setPosition(x*32-camPos.x,y*32-camPos.y);
                         target.draw(layers[i](x,y).spr);
                     }
@@ -612,11 +576,11 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection, 
             if (x>=0 && x<size.x)
             for (int y = camPosTiles.y-10; y<camPosTiles.y+Properties::TilesTall+10; ++y) {
                 if (y>=0 && y<size.y) {
-                    if (layers[i](x,y).isAnim && layers[i](x,y).nonZero) {
+                    if (layers[i](x,y).isAnim && layers[i](x,y).id > 0) {
                         layers[i](x,y).anim->setPosition(Vector2f(x*32-camPos.x,y*32-camPos.y));
                         layers[i](x,y).anim->draw(target);
                     }
-                    else if (layers[i](x,y).nonZero) {
+                    else if (layers[i](x,y).id > 0) {
                         layers[i](x,y).spr.setPosition(x*32-camPos.x,y*32-camPos.y);
                         target.draw(layers[i](x,y).spr);
                     }
@@ -632,13 +596,13 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection, 
 					continue;
                 for (int x = camPosTiles.x-10; x<camPosTiles.x+Properties::TilesWide+10; ++x) {
                     if (x>=0 && x<size.x && ySortedTiles[i](x,y).second) {
-                        if (ySortedTiles[i](x,y).second->isAnim && ySortedTiles[i](x,y).second->nonZero) {
+						if (ySortedTiles[i](x,y).second->isAnim && ySortedTiles[i](x,y).second->id > 0) {
                             ySortedTiles[i](x,y).second->anim->setPosition(Vector2f(x*32-camPos.x,ySortedTiles[i](x,y).first*32-camPos.y));
                             ySortedTiles[i](x,y).second->anim->draw(target);
                         }
-                        else if (ySortedTiles[i](x,y).second->nonZero) {
+                        else if (ySortedTiles[i](x,y).second->id > 0) {
                             ySortedTiles[i](x,y).second->spr.setPosition(x*32-camPos.x,ySortedTiles[i](x,y).first*32-camPos.y);
-                            target.draw(ySortedTiles[i](x,y).second->spr);
+							target.draw(ySortedTiles[i](x,y).second->spr);
                         }
                     }
                 }
@@ -677,11 +641,11 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection, 
             if (x>=0 && x<size.x)
             for (int y = camPosTiles.y-10; y<camPosTiles.y+Properties::TilesTall+10; ++y) {
                 if (y>=0 && y<size.y) {
-                    if (layers[i](x,y).isAnim && layers[i](x,y).nonZero) {
+                    if (layers[i](x,y).isAnim && layers[i](x,y).id > 0) {
                         layers[i](x,y).anim->setPosition(Vector2f(x*32-camPos.x,y*32-camPos.y));
                         layers[i](x,y).anim->draw(target);
                     }
-                    else if (layers[i](x,y).nonZero) {
+                    else if (layers[i](x,y).id > 0) {
                         layers[i](x,y).spr.setPosition(x*32-camPos.x,y*32-camPos.y);
                         target.draw(layers[i](x,y).spr);
                     }
@@ -715,8 +679,8 @@ void Map::draw(sf::RenderTarget& target, vector<int> filter, IntRect selection, 
 		rect.setFillColor(Color(0,0,0,130));
 
 		for (unsigned int i = 0; i<events.size(); ++i) {
-			rect.setPosition(events[i].position.x*32-camPos.x, events[i].position.y*32-camPos.y);
-			rect.setSize(Vector2f(events[i].size.x*32,events[i].size.y*32));
+			rect.setPosition(events[i]->position.x*32-camPos.x, events[i]->position.y*32-camPos.y);
+			rect.setSize(Vector2f(events[i]->size.x*32,events[i]->size.y*32));
 			target.draw(rect);
 		}
     }
@@ -791,6 +755,12 @@ void Map::resize(Vector2i sz, bool useTop, bool useLeft) {
 		}
 	}
 
+	//Update size and reset y-sort
+	const Vector2i temp = size;
+	size = sz;
+	resetYSorted();
+	size = temp;
+
 	//Copy over tiles based on crop pattern
 	for (int x = 0; x<size.x; ++x) {
 		for (int y = 0; y<size.y; ++y) {
@@ -801,7 +771,7 @@ void Map::resize(Vector2i sz, bool useTop, bool useLeft) {
 		}
 	}
 
-	//Update size and reset y-sort
+	//Properly fix y-sort
 	size = sz;
 	resetYSorted();
 }
@@ -861,11 +831,11 @@ Vector2f Map::getCamera() {
 }
 
 void Map::moveOntoTile(Entity::Ptr ent, sf::FloatRect oldBox) {
-    FloatRect box = ent->getBoundingBox();
-    int minX = round(box.left/32+0.5);
-    int minY = round(box.top/32+0.5);
-    int maxX = ceil((box.left+box.width)/32-0.5);
-    int maxY = ceil((box.top+box.height)/32-0.5);
+    const FloatRect box = ent->getBoundingBox();
+    const int minX = round(box.left/32+0.5);
+    const int minY = round(box.top/32+0.5);
+    const int maxX = ceil((box.left+box.width)/32-0.5);
+    const int maxY = ceil((box.top+box.height)/32-0.5);
 
     //TODO - refine on tile detection
 
@@ -873,7 +843,7 @@ void Map::moveOntoTile(Entity::Ptr ent, sf::FloatRect oldBox) {
         for (int x = minX; x<=maxX; ++x) {
             for (int y = minY; y<=maxY; ++y) {
                 if (x>=0 && y>=0 && x<size.x && y<size.y) {
-                    if (layers[i](x,y).isAnim && layers[i](x,y).nonZero) {
+                    if (layers[i](x,y).isAnim && layers[i](x,y).id > 0) {
                         if (layers[i](x,y).anim) {
                             if (!layers[i](x,y).anim->isLooping() && !layers[i](x,y).anim->isPlaying())
                                 layers[i](x,y).anim->play();
@@ -884,17 +854,8 @@ void Map::moveOntoTile(Entity::Ptr ent, sf::FloatRect oldBox) {
         }
     }
 
-
-
     for (unsigned int i = 0; i<events.size(); ++i) {
-        FloatRect eventBox(events[i].position.x*32, events[i].position.y*32, events[i].size.x*32, events[i].size.y*32);
-        bool inNow = box.intersects(eventBox);
-        bool wasIn = oldBox.intersects(eventBox);
-        if ((events[i].trigger==1 && inNow && !wasIn) || (events[i].trigger==2 && !inNow && wasIn) || (events[i].trigger==3 && inNow!=wasIn) || (events[i].trigger==4 && inNow)) {
-            if (events[i].runs<events[i].maxRuns || events[i].maxRuns==0)
-                ScriptManager::get().runScript(makeMapScript(events[i].script, events[i], ent));
-            events[i].runs++;
-        }
+        events[i]->checkEntityMovement(ent, oldBox);
     }
 }
 
@@ -1182,39 +1143,35 @@ void Map::editTile(int x, int y, int layer, int nId, bool isAnim) {
         return;
 
 	if (layer>=firstYSortLayer && layer<firstTopLayer) {
-		if (layers[layer](x,y).nonZero) {
+		if (layers[layer](x,y).id > 0) {
 			int eY = y+layers[layer](x,y).spr.getGlobalBounds().height/64+1;
 			if (eY>=size.y)
 				eY = size.y-1;
 			if (ySortedTiles[layer-firstYSortLayer](x,eY).second) {
-				ySortedTiles[layer-firstYSortLayer](x,eY).second->nonZero = false;
+				ySortedTiles[layer-firstYSortLayer](x,eY).second = nullptr;
 			}
 		}
 	}
 
-	if (layers[layer](x,y).delA) {
-		delete layers[layer](x,y).anim;
-		layers[layer](x,y).delA = false;
+	if (layers[layer](x,y).isAnim) {
 		layers[layer](x,y).anim = nullptr;
 	}
 
 	layers[layer](x,y).id = nId;
 	layers[layer](x,y).isAnim = isAnim;
-	layers[layer](x,y).nonZero = nId!=0;
 
 	if (tileset.getTile(nId) && !isAnim)
 		layers[layer](x,y).spr.setTexture(*tileset.getTile(nId));
 	else if (tileset.getAnimation(nId) && isAnim) {
 		syncAnimTable();
-		layers[layer](x,y).delA = !tileset.getAnimation(nId)->isLooping();
-		if (layers[layer](x,y).delA)
-			layers[layer](x,y).anim = new Animation(tileset.getAnimation(nId));
+		if (!tileset.getAnimation(nId)->isLooping())
+			layers[layer](x,y).anim.reset(new Animation(tileset.getAnimation(nId)));
 		else
 			layers[layer](x,y).anim = animTable[nId];
 	}
 
 	if (layer>=firstYSortLayer && layer<firstTopLayer) {
-		if (layers[layer](x,y).nonZero) {
+		if (layers[layer](x,y).id > 0) {
 			int eY = y+layers[layer](x,y).spr.getGlobalBounds().height/64+1; //TODO - possibly handle animations in this range as well
 			if (eY>=size.y)
 				eY = size.y-1;
@@ -1228,14 +1185,13 @@ void Map::syncAnimTable() {
 	vector<int> del;
 	for (unsigned int i = 0; i<ids.size(); ++i) {
 		if (animTable.find(ids[i])==animTable.end())
-			animTable[ids[i]] = new Animation(tileset.getAnimation(ids[i]));
+			animTable[ids[i]] = make_shared<Animation>(tileset.getAnimation(ids[i]));
 	}
 	for (auto i = animTable.begin(); i!=animTable.end(); ++i) {
 		if (find(ids.begin(),ids.end(),i->first)==ids.end())
 			del.push_back(i->first);
 	}
 	for (unsigned int i = 0; i<del.size(); ++i) {
-		delete animTable[del[i]];
 		animTable.erase(del[i]);
 	}
 }
@@ -1246,13 +1202,9 @@ void Map::clearBrokenTiles() {
 			for (int y = 0; y<size.y; ++y) {
 				if (!tileset.getTile(layers[i](x,y).id) && !layers[i](x,y).isAnim) {
 					layers[i](x,y).id = 0;
-					layers[i](x,y).nonZero = false;
 				}
 				else if (!tileset.getAnimation(layers[i](x,y).id) && layers[i](x,y).isAnim) {
-					if (layers[i](x,y).delA)
-						delete layers[i](x,y).anim;
 					layers[i](x,y).id = 0;
-					layers[i](x,y).nonZero = false;
 					layers[i](x,y).anim = nullptr;
 				}
 			}
@@ -1261,22 +1213,22 @@ void Map::clearBrokenTiles() {
 }
 
 void Map::addEvent(MapEvent event) {
-	events.push_back(event);
+	events.push_back(MapEvent::create(event));
 }
 
 void Map::removeEvent(int x, int y) {
 	for (unsigned int i = 0; i<events.size(); ++i) {
-		if (events[i].position.x<=x && events[i].position.x+events[i].size.x>x && events[i].position.y<=y && events[i].position.y+events[i].size.y>y) {
+		if (events[i]->position.x<=x && events[i]->position.x+events[i]->size.x>x && events[i]->position.y<=y && events[i]->position.y+events[i]->size.y>y) {
 			events.erase(events.begin()+i);
 			i--;
 		}
 	}
 }
 
-MapEvent* Map::getEvent(int x, int y) {
+MapEvent::Ptr Map::getEvent(int x, int y) {
 	for (unsigned int i = 0; i<events.size(); ++i) {
-		if (events[i].position.x<=x && events[i].position.x+events[i].size.x>x && events[i].position.y<=y && events[i].position.y+events[i].size.y>y)
-			return &events[i];
+		if (events[i]->position.x<=x && events[i]->position.x+events[i]->size.x>x && events[i]->position.y<=y && events[i]->position.y+events[i]->size.y>y)
+			return events[i];
 	}
 	return nullptr;
 }

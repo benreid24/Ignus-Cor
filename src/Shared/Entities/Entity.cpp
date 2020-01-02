@@ -87,7 +87,8 @@ FloatRect Entity::getInteractBox() const {
 }
 
 void Entity::setPositionAndDirection(EntityPosition pos) {
-	position = pos;
+	swap(position, pos);
+    EntityManager::get().updatePosition(this, pos);
 }
 
 void Entity::shift(sf::Vector2f amount, const string& newMap) {
@@ -210,7 +211,7 @@ void Entity::update() {
 }
 
 Entity::Ptr Entity::interact() {
-    List ents = EntityManager::get().getEntitiesInSpace(position.mapName, getInteractBox());
+    List ents = EntityManager::get().getEntitiesInSpace(position.mapName, getInteractBox(), false);
     Ptr me = EntityManager::get().getEntityPtr(this);
     if (ents.size()>0) {
         if (ents.size()>1)
@@ -218,6 +219,7 @@ Entity::Ptr Entity::interact() {
         (*ents.begin())->notifyInteracted(me);
         return *ents.begin();
     }
+    cout << "No interact\n";
     return Ptr(nullptr);
 }
 

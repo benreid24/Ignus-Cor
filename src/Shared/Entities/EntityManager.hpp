@@ -114,7 +114,7 @@ public:
 	/**
 	 * Returns an Entity::List with all the Entities in the given space
 	 */
-    Entity::List getEntitiesInSpace(const std::string& mapName, const sf::FloatRect& area);
+    Entity::List getEntitiesInSpace(const std::string& mapName, const sf::FloatRect& area, bool respectCollisions = true);
 };
 
 #endif // ENTITYMANAGER_HPP

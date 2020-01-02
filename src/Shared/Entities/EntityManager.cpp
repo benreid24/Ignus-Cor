@@ -59,7 +59,7 @@ void EntityManager::updatePosition(Entity* e, EntityPosition oldPos) {
 	}
 }
 
-Entity::List EntityManager::getEntitiesInSpace(const string& mapName, const FloatRect& box) {
+Entity::List EntityManager::getEntitiesInSpace(const string& mapName, const FloatRect& box, bool respectCols) {
 	Entity::List ret;
 	auto i = ySortedEntities.find(mapName);
 	int spaceY = box.top/32;
@@ -68,7 +68,7 @@ Entity::List EntityManager::getEntitiesInSpace(const string& mapName, const Floa
 		for (int y = spaceY - 2; y <= spaceY + 2; ++y) {
 			if (y>=0 && y<signed(i->second.size())) {
                 for (unsigned int j = 0; j<i->second[y].size(); ++j) {
-					if (box.intersects(i->second[y][j]->getBoundingBox()) && i->second[y][j]->collidesWithOtherEntities())
+					if (box.intersects(i->second[y][j]->getBoundingBox()) && (i->second[y][j]->collidesWithOtherEntities() || !respectCols))
 						ret.push_back(i->second[y][j]);
                 }
 			}
