@@ -1,7 +1,7 @@
 #ifndef NPCWANDERINGBEHAVIOR_HPP
 #define NPCWANDERINGBEHAVIOR_HPP
 
-#include "Shared/Entities/EntityBehavior.hpp"
+#include "Shared/Entities/Behaviors/EntityBehavior.hpp"
 
 /**
  * Basic wandering behavior for Entities. Simply wander around in a given radius

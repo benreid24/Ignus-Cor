@@ -1,6 +1,6 @@
 #include "Shared/Entities/Entity.hpp"
 #include "Shared/Entities/EntityManager.hpp"
-#include "Shared/Entities/EntityBehavior.hpp"
+#include "Shared/Entities/Behaviors/EntityBehavior.hpp"
 #include "Shared/Maps/MapManager.hpp"
 #include "Shared/Util/UUID.hpp"
 #include "Shared/DebugOverlays.hpp"

@@ -1,4 +1,4 @@
-#include "Shared/Entities/EntityBehavior.hpp"
+#include "Shared/Entities/Behaviors/EntityBehavior.hpp"
 #include "Shared/Properties.hpp"
 using namespace std;
 

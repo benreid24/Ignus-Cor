@@ -1,5 +1,5 @@
 #include "Shared/Entities/Virtual/AiEntity.hpp"
-#include "Shared/Entities/EntityBehavior.hpp"
+#include "Shared/Entities/Behaviors/EntityBehavior.hpp"
 
 #ifdef GAME
 #include <Game/Core/Game.hpp>

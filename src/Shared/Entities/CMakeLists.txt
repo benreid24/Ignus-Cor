@@ -5,8 +5,6 @@ add_subdirectory(Virtual)
 target_sources(Shared PUBLIC
     Entity.hpp
     Entity.cpp
-    EntityBehavior.hpp
-    EntityBehavior.cpp
     EntityBubble.hpp
     EntityBubble.cpp
     EntityConversation.hpp
